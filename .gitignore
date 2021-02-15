@@ -3,6 +3,7 @@ config.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
+/cogs/__pycache__/
 *.py[cod]
 *$py.class
 
