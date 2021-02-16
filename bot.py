@@ -6,6 +6,7 @@ import re
 import json
 import asyncpg
 import datetime
+from utils.context import CustomContext
 
 class SYSTEM32(commands.Bot):
     def __init__(self):
@@ -47,6 +48,12 @@ class SYSTEM32(commands.Bot):
                 bot.prefixes[message.guild.id] = bot.default_prefix
                 return commands.when_mentioned_or(bot.prefixes[message.guild.id])(bot, message)
 
+    async def try_user(self, user_id: int) -> discord.User:
+        user = self.get_user(user_id)
+        if not user:
+            user = await self.fetch_user(user_id)
+        return user.name
+
     def starter(self):
         try:
             print("Connecting to database ...")
@@ -71,7 +78,7 @@ class SYSTEM32(commands.Bot):
         await self.db.execute("CREATE TABLE IF NOT EXISTS economy (userid BIGINT PRIMARY KEY,wallet BIGINT,bank BIGINT)")
 
     async def get_context(self, message: discord.Message, *, cls=None):
-            return await super().get_context(message, cls=cls or commands.Context)
+            return await super().get_context(message, cls=cls or CustomContext)
 
     async def on_message(self, message: discord.Message):
         if message.author.bot:
@@ -87,6 +94,10 @@ class SYSTEM32(commands.Bot):
                     sprefix = bot.default_prefix
             await message.channel.send("My prefix on `{}` is `{}`".format(message.guild.name, sprefix))
         await self.process_commands(message)
+
+    async def on_message_edit(self, before, after):
+        if before.author.id in self.bot.owner_ids and not before.embeds and not after.embeds:
+            await self.bot.process_commands(after)
 
 bot = SYSTEM32()
 bot.loop.create_task(bot.create_tables())
