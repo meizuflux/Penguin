@@ -9,15 +9,7 @@ import typing
 class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 	def __init__(self, bot):
 		self.bot = bot
-	
-	@staticmethod
-	async def try_user(self, user_id: int) -> discord.User:
-	    user = self.bot.get_user(user_id)
-	    if not user:
-	        user = await self.bot.fetch_user(user_id)
-	    return user.name
-	   
-	   
+	    
 	@staticmethod
 	async def get_stats(self, id: int):
 		try:
@@ -51,8 +43,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 	@commands.command(help='Gets the top 5 users.', aliases=['top', 'lb', 'top5'])
 	async def leaderboard(self, ctx):
 		stats = await self.bot.db.fetch("SELECT * FROM economy ORDER BY bank+wallet DESC LIMIT 5")
-		leaderboard = [f'{number}) {await self.try_user(self, stats[number-1]["userid"])} » ${stats[number-1]["wallet"]+stats[number-1]["bank"]}' for number, i in enumerate(range(5), start=1)]
-		await ctx.send(embed=discord.Embed(title='Leaderboard', description='**TOP 5 PLAYERS:**\n```py\n' + "\n".join(leaderboard) + '```', color=self.bot.embed_color, timestamp=ctx.message.created_at).set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url))
+		await ctx.send(embed=discord.Embed(title='Leaderboard', description='**TOP 5 PLAYERS:**\n```py\n' + "\n".join([f'{number}) {await self.bot.try_user(stats[number-1]["userid"])} » ${stats[number-1]["wallet"]+stats[number-1]["bank"]}' for number, i in enumerate(range(5), start=1)]) + '```', color=self.bot.embed_color, timestamp=ctx.message.created_at).set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url))
 	
 	@commands.command(help='Deposits a set amount into your bank', aliases=['dep'])
 	async def deposit(self, ctx, amount):
