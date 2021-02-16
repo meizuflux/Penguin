@@ -50,7 +50,7 @@ class SYSTEM32(commands.Bot):
     def starter(self):
         try:
             print("Connecting to database ...")
-            pool_pg = self.loop.run_until_complete(asyncpg.create_pool(user=self.get_config('USER'), port=5432, host='localhost', password=self.get_config('PASSWORD')))
+            pool_pg = self.loop.run_until_complete(asyncpg.create_pool(dsn=self.get_config('DSN')))
             print("Connected to PostgreSQL server!")
         except Exception as e:
             print("Could not connect to database:", e)
@@ -58,7 +58,7 @@ class SYSTEM32(commands.Bot):
             print("Connecting to Discord ...")
             self.uptime = datetime.datetime.utcnow()
             self.db = pool_pg
-            extensions = ['jishaku', 'cogs.useful', 'cogs.owner', 'cogs.prefixes']
+            extensions = ['jishaku', 'cogs.useful', 'cogs.owner', 'cogs.prefixes', 'cogs.economy', 'cogs.errorhandler']
             for extension in extensions:
                 self.load_extension(extension)
             
@@ -68,6 +68,7 @@ class SYSTEM32(commands.Bot):
         await self.wait_until_ready()
         await self.db.execute("CREATE TABLE IF NOT EXISTS prefixes (serverid BIGINT PRIMARY KEY,prefix VARCHAR(50))")
         await self.db.execute("CREATE TABLE IF NOT EXISTS scoresaber (userid BIGINT PRIMARY KEY,ssid BIGINT)")
+        await self.db.execute("CREATE TABLE IF NOT EXISTS economy (userid BIGINT PRIMARY KEY,wallet BIGINT,bank BIGINT)")
 
     async def get_context(self, message: discord.Message, *, cls=None):
             return await super().get_context(message, cls=cls or commands.Context)
