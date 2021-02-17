@@ -4,7 +4,6 @@ from utils.permissions import mng_gld
 from utils.default import qembed
 
 
-
 class Prefixes(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -16,13 +15,17 @@ class Prefixes(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
-        await self.bot.db.execute("INSERT INTO prefixes(serverid,prefix) VALUES($1,$2) ON CONFLICT (serverid) DO UPDATE SET prefix = $2", guild.id, self.bot.default_prefix)
+        await self.bot.db.execute(
+            "INSERT INTO prefixes(serverid,prefix) VALUES($1,$2) ON CONFLICT (serverid) DO UPDATE SET prefix = $2",
+            guild.id, self.bot.default_prefix)
         self.bot.prefixes.pop(guild.id, None)
 
     @commands.command(aliases=['changeprefix', 'setprefix'])
     @mng_gld()
     async def prefix(self, ctx, prefix):
-        await self.bot.db.execute("INSERT INTO prefixes(serverid,prefix) VALUES($1,$2) ON CONFLICT (serverid) DO UPDATE SET prefix = $2",ctx.guild.id, prefix)
+        await self.bot.db.execute(
+            "INSERT INTO prefixes(serverid,prefix) VALUES($1,$2) ON CONFLICT (serverid) DO UPDATE SET prefix = $2",
+            ctx.guild.id, prefix)
         self.bot.prefixes[ctx.guild.id] = prefix
         await qembed(ctx, f"Changed prefix to `{prefix}`")
 
