@@ -1,17 +1,16 @@
 import time
-import json
-import discord
 import traceback
-from discord.ext import commands
-import timeago as timesince
-
 from io import BytesIO
+
+import discord
+import timeago as timesince
+from discord.ext import commands
 
 
 def traceback_maker(err, advance: bool = True):
     """ A way to debug your code anywhere """
     _traceback = ''.join(traceback.format_tb(err.__traceback__))
-    error = ('```py\n{1}{0}: {2}\n```').format(type(err).__name__, _traceback, err)
+    error = '```py\n{1}{0}: {2}\n```'.format(type(err).__name__, _traceback, err)
     return error if advance else f"{type(err).__name__}: {err}"
 
 
@@ -19,9 +18,11 @@ def timetext(name):
     """ Timestamp, but in text form """
     return f"{name}_{int(time.time())}.txt"
 
+
 async def qembed(ctx, text):
     bot = ctx.bot
-    embed=discord.Embed(description=text[:2048], color=bot.embed_color, timestamp=ctx.message.created_at).set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+    embed = discord.Embed(description=text[:2048], color=bot.embed_color, timestamp=ctx.message.created_at).set_footer(
+        text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
     await ctx.send(embed=embed)
 
 
@@ -36,6 +37,7 @@ def date(target, clock=True):
         return target.strftime("%d %B %Y")
     return target.strftime("%d %B %Y, %H:%M")
 
+
 def plural(text, size):
     logic = size == 1
     target = (("(s)", ("s", "")), ("(is/are)", ("are", "is")))
@@ -46,10 +48,10 @@ def plural(text, size):
 
 def responsible(target, reason):
     """ Default responsible maker targeted to find user in AuditLogs """
-    responsible = f"[ {target} ]"
+    creator = f"[ {target} ]"
     if not reason:
-        return f"{responsible} no reason given..."
-    return f"{responsible} {reason}"
+        return f"{creator} no reason given..."
+    return f"{creator} {reason}"
 
 
 def actionmessage(case, mass=False):
@@ -62,7 +64,7 @@ def actionmessage(case, mass=False):
     return f"✅ Successfully {output}"
 
 
-async def prettyResults(ctx, filename: str = "Results", resultmsg: str = "Here's the results:", loop=None):
+async def prettyresults(ctx, filename: str = "Results", resultmsg: str = "Here's the results:", loop=None):
     """ A prettier way to show loop results """
     if not loop:
         return await ctx.send("The result was empty...")
@@ -77,6 +79,7 @@ async def prettyResults(ctx, filename: str = "Results", resultmsg: str = "Here's
         content=resultmsg,
         file=discord.File(data, filename=timetext(filename.title()))
     )
+
 
 class CantRun(commands.CommandError):
     def __init__(self, message, *arg):

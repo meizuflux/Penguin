@@ -1,10 +1,11 @@
-import discord
-import traceback
 import sys
-from utils import default
-from discord.ext import commands
-import json
+import traceback
+
+import discord
 import humanize
+from discord.ext import commands
+
+from utils import default
 from utils.default import qembed
 
 
@@ -25,8 +26,8 @@ class CommandErrorHandler(commands.Cog):
             if cog._get_overridden_method(cog.cog_command_error) is not None:
                 return
 
-        ignored = (commands.CommandNotFound, ) #if you want to not send error messages
-        #ignored = ()
+        ignored = (commands.CommandNotFound,)  # if you want to not send error messages
+        # ignored = ()
 
         # Allows us to check for original exceptions raised and sent to CommandInvokeError.
         # If nothing is found. We keep the exception passed to on_command_error.
@@ -59,8 +60,7 @@ class CommandErrorHandler(commands.Cog):
         elif isinstance(error, commands.NoPrivateMessage):
             try:
                 e = discord.Embed(
-                    description=
-                    f'`{ctx.command}` can not be used in Private Messages.',
+                    description=f'`{ctx.command}` can not be used in Private Messages.',
                     color=self.bot.embed_color)
                 await ctx.author.send(embed=e)
             except discord.HTTPException:
@@ -75,8 +75,8 @@ class CommandErrorHandler(commands.Cog):
         # For this error example we check to see where it came from...
         elif isinstance(error, commands.BadArgument):
             if ctx.command.qualified_name == 'tag list':  # Check if the command being invoked is 'tag list'
-                await qembed(ctx, 
-                    'I could not find that member. Please try again.')
+                await qembed(ctx,
+                             'I could not find that member. Please try again.')
 
         else:
             # All other Errors not returned come here. And we can just print the default TraceBack.
@@ -86,9 +86,7 @@ class CommandErrorHandler(commands.Cog):
                                       error,
                                       error.__traceback__,
                                       file=sys.stderr)
-            error_collection = []
-            error_collection.append(
-                [default.traceback_maker(error, advance=False)])
+            error_collection = [[default.traceback_maker(error, advance=False)]]
             output = "\n".join(
                 [f"```diff\n- {g[0]}```" for g in error_collection])
             await qembed(ctx, f"{output}\n¯\_(ツ)_/¯")
