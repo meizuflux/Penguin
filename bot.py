@@ -69,8 +69,9 @@ class SYSTEM32(commands.Bot):
     def starter(self):
         """Runs the bot"""
         try:
+            dsn = os.environ['dsn'] or self.get_config('DSN')
             print("Connecting to database ...")
-            pool_pg = self.loop.run_until_complete(asyncpg.create_pool(dsn=os.environ['dsn']))
+            pool_pg = self.loop.run_until_complete(asyncpg.create_pool(dsn=dsn))
             print("Connected to PostgreSQL server!")
         except Exception as e:
             print("Could not connect to database:", e)
@@ -97,8 +98,8 @@ class SYSTEM32(commands.Bot):
                                     for subcommand3 in subcommand2.commands:
                                         self.command_list.append(str(subcommand3))
                                         self.command_list.extend([f"{subcommand2} {subcommand3_alias}" for subcommand3_alias in subcommand3.aliases])
-
-            self.run(os.environ['token'])
+            token = os.environ['token'] or self.get_config('token')
+            self.run(token)
 
     async def create_tables(self):
         """Creates the needed SQL tables for this bot"""
