@@ -26,6 +26,7 @@ class SYSTEM32(commands.Bot):
         self.session = aiohttp.ClientSession()
         self.embed_color = 0x9c5cb4  # 0x1E90FF
         self.prefixes = {}
+        self.command_list = []
         self.default_prefix = 'c//'
 
     @staticmethod
@@ -58,7 +59,7 @@ class SYSTEM32(commands.Bot):
     def starter(self):
         try:
             print("Connecting to database ...")
-            pool_pg = self.loop.run_until_complete(asyncpg.create_pool(dsn=self.get_config('DSN')))
+            pool_pg = self.loop.run_until_complete(asyncpg.create_pool(dsn=os.environ['dsn']))
             print("Connected to PostgreSQL server!")
         except Exception as e:
             print("Could not connect to database:", e)
@@ -69,8 +70,24 @@ class SYSTEM32(commands.Bot):
             extensions = ['jishaku', 'cogs.useful', 'cogs.owner', 'cogs.prefixes', 'cogs.economy', 'cogs.errorhandler']
             for extension in extensions:
                 self.load_extension(extension)
+            # from pb https://github.com/PB4162/PB-Bot/blob/38f2f5f9944a7c5fc959eaade0faf0300a18d509/utils/classes.py
+            for command in self.commands:
+                self.command_list.append(str(command))
+                self.command_list.extend([alias for alias in command.aliases])
+                if isinstance(command, commands.Group):
+                    for subcommand in command.commands:
+                        self.command_list.append(str(subcommand))
+                        self.command_list.extend([f"{command} {subcommand_alias}" for subcommand_alias in subcommand.aliases])
+                        if isinstance(subcommand, commands.Group):
+                            for subcommand2 in subcommand.commands:
+                                self.command_list.append(str(subcommand2))
+                                self.command_list.extend([f"{subcommand} {subcommand2_alias}" for subcommand2_alias in subcommand2.aliases])
+                                if isinstance(subcommand2, commands.Group):
+                                    for subcommand3 in subcommand2.commands:
+                                        self.command_list.append(str(subcommand3))
+                                        self.command_list.extend([f"{subcommand2} {subcommand3_alias}" for subcommand3_alias in subcommand3.aliases])
 
-            self.run(self.get_config('token'))
+            self.run(os.environ['token'])
 
     async def create_tables(self):
         await self.wait_until_ready()
@@ -98,7 +115,7 @@ class SYSTEM32(commands.Bot):
         await self.process_commands(message)
 
     async def on_message_edit(self, before, after):
-        if before.author.id == self.bot.author_id and not before.embeds and not after.embeds:
+        if before.author.id in self.owner_ids and not before.embeds and not after.embeds:
             await self.bot.process_commands(after)
 
 
