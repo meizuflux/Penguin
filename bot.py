@@ -69,7 +69,7 @@ class SYSTEM32(commands.Bot):
     def starter(self):
         """Runs the bot"""
         try:
-            dsn = os.environ['dsn'] or self.get_config('DSN')
+            #dsn = os.environ['dsn'] or self.get_config('DSN')
             print("Connecting to database ...")
             pool_pg = self.loop.run_until_complete(asyncpg.create_pool(dsn=self.get_config('DSN')))
             print("Connected to PostgreSQL server!")
@@ -82,6 +82,7 @@ class SYSTEM32(commands.Bot):
             extensions = ['jishaku', 'cogs.useful', 'cogs.owner', 'cogs.prefixes', 'cogs.economy', 'cogs.errorhandler']
             for extension in extensions:
                 self.load_extension(extension)
+
             # from pb https://github.com/PB4162/PB-Bot/blob/38f2f5f9944a7c5fc959eaade0faf0300a18d509/utils/classes.py
             for command in self.commands:
                 self.command_list.append(str(command))
@@ -98,7 +99,7 @@ class SYSTEM32(commands.Bot):
                                     for subcommand3 in subcommand2.commands:
                                         self.command_list.append(str(subcommand3))
                                         self.command_list.extend([f"{subcommand2} {subcommand3_alias}" for subcommand3_alias in subcommand3.aliases])
-            token = os.environ['token'] or self.get_config('token')
+            #token = os.environ['token'] or self.get_config('token')
             self.run(self.get_config('token'))
 
     async def create_tables(self):

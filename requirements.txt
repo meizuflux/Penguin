@@ -1,0 +1,9 @@
+discord.py
+discord
+asyncpg
+aiohttp
+timeago
+jishaku
+psutil
+prettytable
+humanize
