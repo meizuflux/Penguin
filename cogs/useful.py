@@ -1,15 +1,15 @@
-import contextlib
 import itertools
 import pathlib
 import platform
 import re
+import difflib
 
 import discord
 import humanize
 import psutil
 from discord.ext import commands
 
-from utils.default import plural, CantRun
+from utils.default import plural, qembed
 
 
 class Help(commands.MinimalHelpCommand):
@@ -46,9 +46,6 @@ class Help(commands.MinimalHelpCommand):
         embed = discord.Embed(description=error, color=0x9c5cb4, timestamp=ctx.message.created_at).set_footer(
             text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await destination.send(embed=embed)
-
-    def command_not_found(self, string):
-        return 'No command called "{}" found.'.format(string)
 
     def get_opening_note(self):
         return "`<arg>`  means the argument is required\n`[arg]`  means the argument is optional"
@@ -157,16 +154,23 @@ class Help(commands.MinimalHelpCommand):
         return embed
 
     async def handle_help(self, command):
-        with contextlib.suppress(commands.CommandError):
-            await command.can_run(self.context)
-            return await self.context.send(embed=self.get_command_help(command))
-        raise CantRun("You don't have enough permissions to see this help.") from None
+        if not await command.can_run(self.context):
+            return await qembed(self.context, f'You don\'t have enough permissions to see the help for `{command}`')
+        return await self.context.send(embed=self.get_command_help(command))
 
     async def send_group_help(self, group):
         await self.handle_help(group)
 
     async def send_command_help(self, command):
         await self.handle_help(command)
+
+    # from pb https://github.com/PB4162/PB-Bot/blob/master/cogs/Help.py#L11-L102
+    async def command_not_found(self, string: str):
+        matches = difflib.get_close_matches(string, self.context.bot.command_list)
+        if not matches:
+            return f"No command called `{string}` found."
+        match = "\n".join(matches[:1])
+        return f"No command called `{string}` found. Did you mean `{match}`?"
 
 
 class Useful(commands.Cog, command_attrs=dict(hidden=False)):
