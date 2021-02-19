@@ -77,7 +77,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
                 return await qembed(ctx, 'How exactly are you going to deposit a negative amount of money?')
             else:
                 updated_wallet = wallet - int(amount)
-                bank = bank + int(amount)
+                bank += int(amount)
                 message = f'You deposited ${humanize.intcomma(amount)}'
         await self.bot.db.execute("UPDATE economy SET wallet = $1, bank = $2 WHERE userid = $3", updated_wallet, bank,
                                   ctx.author.id)
@@ -100,7 +100,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             if bank < int(amount):
                 return await qembed(ctx, 'You don\'t have that much money!')
             else:
-                wallet = wallet + int(amount)
+                wallet += int(amount)
                 updated_bank = bank - int(amount)
                 message = f'You withdrew ${humanize.intcomma(amount)}'
         await self.bot.db.execute("UPDATE economy SET wallet = $1, bank = $2 WHERE userid = $3", wallet, updated_bank,
@@ -215,6 +215,21 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
                                   data[1], ctx.author.id)
         await qembed(ctx,
                      f'You sit on the streets of {cities["person"]["personal"]["city"]} and a nice {random.choice(gender)} hands you ${cash}.')
+
+    @commands.command(help='Resets a cooldown on one command', aliases=['reset', 'resetcooldown', 'cooldownreset'])
+    @commands.cooldown(rate=1, per=300, type=commands.BucketType.user)
+    async def cooldown(self, ctx, command):
+        eco = self.bot.get_cog("Economy")
+        data = await self.get_stats(self, ctx.author.id)
+        if self.bot.get_command(command) not in eco.walk_commands():
+            return await qembed(ctx, 'You can only reset the cooldown for commands in this Category.')
+        if command == 'daily':
+            return await qembed(ctx, 'You can\'t reset the daily command, sorry.')
+        if data[0] < 400:
+            return await qembed(ctx, 'You need at least 400 dollars.')
+        self.bot.get_command(command).reset_cooldown(ctx)
+        await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE userid = $2", data[0] - 400, ctx.author.id)
+        await qembed(ctx, f'Reset the command cooldown for the command `{command}`')
 
 
 def setup(bot):
