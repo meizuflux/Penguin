@@ -1,15 +1,20 @@
+"""The actual bot that you run"""
+import datetime
+import json
+import os
+import re
+
+
+import aiohttp
+import asyncpg
 import discord
 from discord.ext import commands
-import os
-import aiohttp
-import re
-import json
-import asyncpg
-import datetime
+
 from utils.context import CustomContext
 
 
 class SYSTEM32(commands.Bot):
+    """Subclassed Bot"""
     def __init__(self):
         self.bot = None
         intents = discord.Intents.default()
@@ -31,32 +36,38 @@ class SYSTEM32(commands.Bot):
 
     @staticmethod
     def get_config(item: str):
+        """Gets an item from the config"""
         with open('config.json', 'r') as f:
             f = json.load(f)
         return f[item]
 
-    async def get_prefix(bot, message):
+    async def get_prefix(self, message):
+        """Function for getting the command prefix"""
         if message.guild is None:
-            return commands.when_mentioned_or(bot.default_prefix)(bot, message)
+            return commands.when_mentioned_or(self.default_prefix)(self, message)
         try:
-            return commands.when_mentioned_or(bot.prefixes[message.guild.id])(bot, message)
+            return commands.when_mentioned_or(self.prefixes[message.guild.id])(self, message)
         except KeyError:
-            prefix = await bot.db.fetchval("SELECT prefix FROM prefixes WHERE serverid = $1", message.guild.id)
+            prefix = await self.db.fetchval("SELECT prefix FROM prefixes WHERE serverid = $1", message.guild.id)
             if prefix:
-                bot.prefixes[message.guild.id] = prefix
-                return commands.when_mentioned_or(bot.prefixes[message.guild.id])(bot, message)
+                self.prefixes[message.guild.id] = prefix
+                return commands.when_mentioned_or(self.prefixes[message.guild.id])(self, message)
             else:
-                await bot.db.execute("INSERT INTO prefixes(serverid,prefix) VALUES($1,$2) ON CONFLICT (serverid) DO UPDATE SET prefix = $2", message.guild.id, bot.default_prefix)
-                bot.prefixes[message.guild.id] = bot.default_prefix
-                return commands.when_mentioned_or(bot.prefixes[message.guild.id])(bot, message)
+                await self.db.execute(
+                    "INSERT INTO prefixes(serverid,prefix) VALUES($1,$2) ON CONFLICT (serverid) DO UPDATE SET prefix = $2",
+                    message.guild.id, self.default_prefix)
+                self.prefixes[message.guild.id] = self.default_prefix
+                return commands.when_mentioned_or(self.prefixes[message.guild.id])(self, message)
 
     async def try_user(self, user_id: int) -> discord.User:
+        """Method to try and fetch a user from cache then fetch from API"""
         user = self.get_user(user_id)
         if not user:
             user = await self.fetch_user(user_id)
         return user.name
 
     def starter(self):
+        """Runs the bot"""
         try:
             print("Connecting to database ...")
             pool_pg = self.loop.run_until_complete(asyncpg.create_pool(dsn=os.environ['dsn']))
@@ -90,6 +101,7 @@ class SYSTEM32(commands.Bot):
             self.run(os.environ['token'])
 
     async def create_tables(self):
+        """Creates the needed SQL tables for this bot"""
         await self.wait_until_ready()
         await self.db.execute("CREATE TABLE IF NOT EXISTS prefixes (serverid BIGINT PRIMARY KEY,prefix VARCHAR(50))")
         await self.db.execute("CREATE TABLE IF NOT EXISTS scoresaber (userid BIGINT PRIMARY KEY,ssid BIGINT)")
@@ -97,9 +109,11 @@ class SYSTEM32(commands.Bot):
             "CREATE TABLE IF NOT EXISTS economy (userid BIGINT PRIMARY KEY,wallet BIGINT,bank BIGINT)")
 
     async def get_context(self, message: discord.Message, *, cls=None):
+        """Method to override "ctx" """
         return await super().get_context(message, cls=cls or CustomContext)
 
     async def on_message(self, message: discord.Message):
+        """Checking if someone pings the bot"""
         if message.author.bot:
             return
         if re.fullmatch(f"^(<@!?{self.user.id}>)\s*", message.content):
@@ -115,8 +129,9 @@ class SYSTEM32(commands.Bot):
         await self.process_commands(message)
 
     async def on_message_edit(self, before, after):
+        """Check on command edit so that you don't have to retype your command"""
         if before.author.id in self.owner_ids and not before.embeds and not after.embeds:
-            await self.bot.process_commands(after)
+            await self.process_commands(after)
 
 
 bot = SYSTEM32()
@@ -129,6 +144,7 @@ os.environ["JISHAKU_HIDE"] = "True"
 
 @bot.event
 async def on_ready():
+    """Lets you know that the bot has run"""
     print(
         f'{bot.user} has connected to Discord!\nGuilds: {len(bot.guilds)}\nMembers: {str(sum([guild.member_count for guild in bot.guilds]))}')
 

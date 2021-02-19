@@ -1,9 +1,9 @@
 # credit here goes to DeltaWing#0700 its kinda cool
 
-import discord
-from discord.ext import commands
 import asyncpg
+from discord.ext import commands
 from prettytable import PrettyTable
+
 from utils.default import qembed
 
 
@@ -13,8 +13,8 @@ class Owner(commands.Cog):
 
     @commands.is_owner()
     @commands.command()
-    async def sql(self, ctx, *, command):
-        res = await self.bot.db.fetch(command)
+    async def sql(self, ctx, *, query):
+        res = await self.bot.db.fetch(query)
         if len(res) == 0:
             return await ctx.message.add_reaction('✅')
         headers = list(res[0].keys())
