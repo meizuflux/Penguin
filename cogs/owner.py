@@ -1,13 +1,16 @@
-# credit here goes to DeltaWing#0700 its kinda cool
+# credit here goes to DeltaWing#0700 for the sql command its kinda cool
+import subprocess
 
 import asyncpg
 from discord.ext import commands
 from prettytable import PrettyTable
+import discord
+import os
 
-from utils.default import qembed
+from utils.default import qembed, traceback_maker
 
 
-class Owner(commands.Cog):
+class Owner(commands.Cog, command_attrs=dict(hidden=True)):
     def __init__(self, bot):
         self.bot = bot
 
@@ -38,6 +41,34 @@ class Owner(commands.Cog):
                 await ctx.send(error)
         else:
             await ctx.send(error)
+
+    @commands.command(help='Syncs with GitHub and reloads all cogs')
+    @commands.is_owner()
+    async def sync(self, ctx):
+        out = subprocess.check_output("git pull", shell=True)
+        embed = discord.Embed(title="Pulling from GitHub",
+                              description=f"```py\nroot@SYSTEM32# git pull\n{out.decode('utf-8')}\n```",
+                              color=self.bot.success)
+
+        error_collection = []
+        for file in os.listdir("cogs"):
+            if file.endswith(".py"):
+                name = file[:-3]
+                try:
+                    self.bot.reload_extension(f"cogs.{name}")
+                except Exception as e:
+                    error_collection.append(
+                        [file, traceback_maker(e, advance=False)]
+                    )
+
+        if error_collection:
+            output = "\n".join([f"**{g[0]}** ```diff\n- {g[1]}```" for g in error_collection])
+            embed.add_field(name='Cog Reloading', value=f"Attempted to reload all extensions, was able to reload, "
+                                                        f"however the following failed...\n\n{output}")
+        else:
+            embed.add_field(name='Cog Reloading', value='All cogs were loaded successfully')
+        await ctx.send(embed=embed)
+
 
 
 def setup(bot):
