@@ -80,6 +80,12 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
                 embed.add_field(name='Cog Reloading', value='```\nAll cogs were loaded successfully```')
         await ctx.send(embed=embed)
 
+    @dev.command()
+    async def reboot(self, ctx):
+        """Calls bot.close() and lets the systems service handler restart it."""
+        await ctx.send("Goodbye. I'll be back soon.")
+        await self.bot.close()
+
 
 def setup(bot):
     bot.add_cog(Owner(bot))
