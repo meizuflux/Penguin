@@ -419,7 +419,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         pong.add_field(
             name='Websocket Latency',
             value=f'```python\n{round(self.bot.latency * 1000)} ms```', inline=False)
-        pong.add_field(name='PostgreSQL Latency',
+        pong.add_field(name='Database Latency',
                        value=f'```python\n{round(postduration)} ms```', inline=False)
         await message.edit(content=None, embed=pong)
 
