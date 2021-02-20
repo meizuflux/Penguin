@@ -402,26 +402,26 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         await self.do_rtfm(ctx, 'latest', obj)
 
 
-@commands.command(name='ping', help='only for cool kids')
-async def ping(self, ctx):
-    start = time.perf_counter()
-    message = await ctx.send("Pinging ...")
-    end = time.perf_counter()
-    duration = (end - start) * 1000
-    poststart = time.perf_counter()
-    await self.bot.db.fetch("SELECT 1")
-    postend = time.perf_counter()
-    postduration = (postend - poststart) * 1000
-    pong = discord.Embed(title='Ping', color=self.bot.embed_color, timestamp=ctx.message.created_at).set_footer(
-        text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
-    pong.add_field(name='Typing Latency',
-                   value=f'```python\n{round(duration)} ms```', inline=False)
-    pong.add_field(
-        name='Websocket Latency',
-        value=f'```python\n{round(self.bot.latency * 1000)} ms```', inline=False)
-    pong.add_field(name='PostgreSQL Latency',
-                   value=f'```python\n{round(postduration)} ms```', inline=False)
-    await message.edit(content=None, embed=pong)
+    @commands.command(name='ping', help='only for cool kids')
+    async def ping(self, ctx):
+        start = time.perf_counter()
+        message = await ctx.send("Pinging ...")
+        end = time.perf_counter()
+        duration = (end - start) * 1000
+        poststart = time.perf_counter()
+        await self.bot.db.fetch("SELECT 1")
+        postend = time.perf_counter()
+        postduration = (postend - poststart) * 1000
+        pong = discord.Embed(title='Ping', color=self.bot.embed_color, timestamp=ctx.message.created_at).set_footer(
+            text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+        pong.add_field(name='Typing Latency',
+                       value=f'```python\n{round(duration)} ms```', inline=False)
+        pong.add_field(
+            name='Websocket Latency',
+            value=f'```python\n{round(self.bot.latency * 1000)} ms```', inline=False)
+        pong.add_field(name='PostgreSQL Latency',
+                       value=f'```python\n{round(postduration)} ms```', inline=False)
+        await message.edit(content=None, embed=pong)
 
 
 def setup(bot):
