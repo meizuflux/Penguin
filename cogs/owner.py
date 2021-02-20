@@ -49,7 +49,6 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         embed = discord.Embed(title="Pulling from GitHub",
                               description=f"```py\nroot@SYSTEM32# git pull\n{out.decode('utf-8')}\n```",
                               color=self.bot.embed_color)
-        await ctx.send(out.decode('utf-8'))
 
         error_collection = []
         for file in os.listdir("cogs"):
@@ -67,7 +66,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
             embed.add_field(name='Cog Reloading', value=f"Attempted to reload all extensions, was able to reload, "
                                                         f"however the following failed...\n\n{output}")
         else:
-            if out.decode('utf-8') == 'Already up to date':
+            if out.decode('utf-8') == 'Already up to date.':
                 pass
             else:
                 embed.add_field(name='Cog Reloading', value='```\nAll cogs were loaded successfully```')
