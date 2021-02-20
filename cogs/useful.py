@@ -1,11 +1,11 @@
+import difflib
+import io
 import itertools
+import os
 import pathlib
 import platform
 import re
-import io
-import os
 import zlib
-import difflib
 
 import discord
 import humanize
@@ -46,7 +46,8 @@ class Help(commands.MinimalHelpCommand):
     async def send_error_message(self, error):
         ctx = self.context
         destination = self.get_destination()
-        embed = discord.Embed(description=error, color=ctx.bot.embed_color, timestamp=ctx.message.created_at).set_footer(
+        embed = discord.Embed(description=error, color=ctx.bot.embed_color,
+                              timestamp=ctx.message.created_at).set_footer(
             text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await destination.send(embed=embed)
 
@@ -175,6 +176,7 @@ class Help(commands.MinimalHelpCommand):
         match = "\n".join(matches[:1])
         return f"No command called `{string}` found. Did you mean `{match}`?"
 
+
 class SphinxObjectFileReader:
     # Inspired by Sphinx's InventoryFileReader
     BUFSIZE = 16 * 1024
@@ -212,7 +214,8 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     def __init__(self, bot):
         self.bot = bot
         self._original_help_command = bot.help_command
-        bot.help_command = Help(command_attrs=dict(hidden=False), aliases=['halp', 'h', 'help_command'], help='Literally shows this message. Jesus, do you really need this?')
+        bot.help_command = Help(command_attrs=dict(hidden=False), aliases=['halp', 'h', 'help_command'],
+                                help='Literally shows this message. Jesus, do you really need this?')
         bot.help_command.cog = self
 
     def cog_unload(self):
@@ -256,7 +259,6 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         emb.add_field(name='Average Member Count', value=f'```{average_members:.0f} members per guild```')
 
         await msg.edit(content=None, embed=emb)
-
 
     # https://github.com/Rapptz/RoboDanny/blob/1d0ddee9273338a13123117fbad6cac3493c8e7f/cogs/api.py from here till rtfm command
     def finder(self, text, collection, *, key=None, lazy=True):
@@ -377,6 +379,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                     break
 
         cache = list(self._rtfm_cache[key].items())
+
         def transform(tup):
             return tup[0]
 

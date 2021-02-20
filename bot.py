@@ -4,7 +4,6 @@ import json
 import os
 import re
 
-
 import aiohttp
 import asyncpg
 import discord
@@ -15,6 +14,7 @@ from utils.context import CustomContext
 
 class SYSTEM32(commands.Bot):
     """Subclassed Bot"""
+
     def __init__(self):
         self.bot = None
         intents = discord.Intents.default()
@@ -69,7 +69,7 @@ class SYSTEM32(commands.Bot):
     def starter(self):
         """Runs the bot"""
         try:
-            #dsn = os.environ['dsn'] or self.get_config('DSN')
+            # dsn = os.environ['dsn'] or self.get_config('DSN')
             print("Connecting to database ...")
             pool_pg = self.loop.run_until_complete(asyncpg.create_pool(dsn=self.get_config('DSN')))
             print("Connected to PostgreSQL server!")
@@ -90,16 +90,20 @@ class SYSTEM32(commands.Bot):
                 if isinstance(command, commands.Group):
                     for subcommand in command.commands:
                         self.command_list.append(str(subcommand))
-                        self.command_list.extend([f"{command} {subcommand_alias}" for subcommand_alias in subcommand.aliases])
+                        self.command_list.extend(
+                            [f"{command} {subcommand_alias}" for subcommand_alias in subcommand.aliases])
                         if isinstance(subcommand, commands.Group):
                             for subcommand2 in subcommand.commands:
                                 self.command_list.append(str(subcommand2))
-                                self.command_list.extend([f"{subcommand} {subcommand2_alias}" for subcommand2_alias in subcommand2.aliases])
+                                self.command_list.extend(
+                                    [f"{subcommand} {subcommand2_alias}" for subcommand2_alias in subcommand2.aliases])
                                 if isinstance(subcommand2, commands.Group):
                                     for subcommand3 in subcommand2.commands:
                                         self.command_list.append(str(subcommand3))
-                                        self.command_list.extend([f"{subcommand2} {subcommand3_alias}" for subcommand3_alias in subcommand3.aliases])
-            #token = os.environ['token'] or self.get_config('token')
+                                        self.command_list.extend(
+                                            [f"{subcommand2} {subcommand3_alias}" for subcommand3_alias in
+                                             subcommand3.aliases])
+            # token = os.environ['token'] or self.get_config('token')
             self.run(self.get_config('token'))
 
     async def create_tables(self):
