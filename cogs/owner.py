@@ -45,11 +45,12 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
     @commands.command(help='Syncs with GitHub and reloads all cogs')
     @commands.is_owner()
     async def sync(self, ctx):
+        await ctx.trigger_typing()
         out = subprocess.check_output("git pull", shell=True)
         embed = discord.Embed(title="Pulling from GitHub",
                               description=f"```py\nroot@SYSTEM32# git pull\n{out.decode('utf-8')}\n```",
                               color=self.bot.embed_color)
-
+        await ctx.send(len(out.decode('utf-8')))
         error_collection = []
         for file in os.listdir("cogs"):
             if file.endswith(".py"):
