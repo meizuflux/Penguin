@@ -37,7 +37,7 @@ class SYSTEM32(commands.Bot):
     @staticmethod
     def get_config(item: str):
         """Gets an item from the config"""
-        with open('config.json', 'r') as f:
+        with open('/root/sys32/SYSTEM32/config.json', 'r') as f:
             f = json.load(f)
         return f[item]
 
