@@ -14,8 +14,15 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.is_owner()
-    @commands.command()
+    async def cog_check(self, ctx):
+        return ctx.author.id == self.bot.author_id
+
+    @commands.group(help='Some developer commands')
+    async def dev(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help(str(ctx.command))
+
+    @dev.command()
     async def sql(self, ctx, *, query):
         res = await self.bot.db.fetch(query)
         if len(res) == 0:
@@ -42,14 +49,15 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         else:
             await ctx.send(error)
 
-    @commands.command(help='Syncs with GitHub and reloads all cogs')
-    @commands.is_owner()
+    @dev.command(help='Syncs with GitHub and reloads all cogs')
     async def sync(self, ctx):
         await ctx.trigger_typing()
         out = subprocess.check_output("git pull", shell=True)
         embed = discord.Embed(title="Pulling from GitHub",
                               description=f"```py\nroot@SYSTEM32# git pull\n{out.decode('utf-8')}\n```",
-                              color=self.bot.embed_color)
+                              color=self.bot.embed_color,
+                              timestamp=ctx.message.created_at).set_footer(text=f"Requested by {ctx.author}",
+                                                                           icon_url=ctx.author.avatar_url)
         error_collection = []
         for file in os.listdir("cogs"):
             if file.endswith(".py"):
@@ -71,7 +79,6 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
             else:
                 embed.add_field(name='Cog Reloading', value='```\nAll cogs were loaded successfully```')
         await ctx.send(embed=embed)
-
 
 
 def setup(bot):
