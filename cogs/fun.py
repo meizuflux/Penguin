@@ -19,6 +19,7 @@ class Fun(commands.Cog):
         await ctx.send(embed=embed, file=discord.File(BytesIO(buffer), filename=f"{code}.png"))
 
     @flags.add_flag("--dark", action='store_true', default=False)
+    @flags.add_flag("--light", action='store_true', default=False)
     @flags.command(help='Makes a supreme logo from text')
     async def fakesupreme(self, ctx, text, **flags):
         await ctx.send(f'{text} {flags["dark"]}')
