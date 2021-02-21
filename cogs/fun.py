@@ -28,7 +28,7 @@ class Fun(commands.Cog):
         """Makes a custom supreme logo
         example: supreme --text "hey guys" --dark"""
         if flags["dark"] and flags["light"]:
-            await qembed(ctx, "You can't have both dark and light, sorry.")
+            return await qembed(ctx, "You can't have both dark and light, sorry.")
         image = await self.bot.alex.supreme(text=flags["text"],
                                             dark=flags["dark"],
                                             light=flags["light"])
