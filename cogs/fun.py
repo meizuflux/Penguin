@@ -34,10 +34,13 @@ class Fun(commands.Cog):
                                             light=flags["light"])
         image_bytes = await image.read()
         file = discord.File(image_bytes, "supreme.png")
-        embed = discord.Embed(colour=self.bot.embed_color, timestamp=ctx.message.created_at)
+        embed = discord.Embed(colour=self.bot.embed_color,
+                              timestamp=ctx.message.created_at).set_footer(
+                                                                            text=f"Requested by {ctx.author}",
+                                                                            icon_url=ctx.author.avatar_url)
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         embed.set_image(url="attachment://supreme.png")
-        embed.set_footer(text="Powered by the AlexFlipnote API")
+
         await ctx.send(embed=embed, file=file)
 
 
