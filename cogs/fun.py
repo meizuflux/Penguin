@@ -5,6 +5,7 @@ from io import BytesIO
 
 class Fun(commands.Cog):
     """For the fun commands"""
+
     def __init__(self, bot):
         self.bot = bot
 
@@ -18,9 +19,9 @@ class Fun(commands.Cog):
         embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed, file=discord.File(BytesIO(buffer), filename=f"{code}.png"))
 
-    @flags.add_flag("--text", default="supreme")
     @flags.add_flag("--dark", action='store_true', default=False)
     @flags.add_flag("--light", action='store_true', default=False)
+    @flags.add_flag("--text", default="supreme")
     @flags.command(help='Makes a supreme logo from text')
     async def supreme(self, ctx, **flags):
         image = await self.bot.alex.supreme(text=flags["text"],
