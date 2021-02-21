@@ -7,7 +7,7 @@ class Fun(commands.Cog):
     """For the fun commands"""
     def __init__(self, bot):
         self.bot = bot
-        self.bot.add_command(self.supreme)
+        #self.bot.add_command(self.supreme)
 
     @commands.command(help='Sends a cat for every error code', aliases=['httpcat', 'http_cat'])
     async def http(self, ctx, code=404):
@@ -21,7 +21,7 @@ class Fun(commands.Cog):
 
     @flags.add_flag("--dark", action='store_true', default=False)
     @flags.command(help='Makes a supreme logo from text')
-    async def supreme(self, ctx, text, **flags):
+    async def fakesupreme(self, ctx, text, **flags):
         await ctx.send('{flags.dark)')
 
 
