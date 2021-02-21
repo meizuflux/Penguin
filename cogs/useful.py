@@ -405,7 +405,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(name='ping', help='only for cool kids')
     async def ping(self, ctx):
         start = time.perf_counter()
-        message = await ctx.send("Pinging ...")
+        message = await ctx.send("Pinging ...", reply=False)
         end = time.perf_counter()
         await message.delete()
         duration = (end - start) * 1000
