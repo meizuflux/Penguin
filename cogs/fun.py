@@ -3,7 +3,8 @@ from discord.ext import commands
 from io import BytesIO
 
 
-class Fun(commands.cog):
+class Fun(commands.Cog):
+    """For the fun commands"""
     def __init__(self, bot):
         self.bot = bot
 
