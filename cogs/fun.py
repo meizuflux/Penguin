@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands, flags
 from io import BytesIO
+from utils.default import qembed
 
 
 class Fun(commands.Cog):
@@ -26,7 +27,8 @@ class Fun(commands.Cog):
     async def supreme(self, ctx, **flags):
         """Makes a custom supreme logo
         example: supreme --text "hey guys" --dark"""
-
+        if flags["dark"] and flags["light"]:
+            await qembed(ctx, "You can't have both dark and light, sorry.")
         image = await self.bot.alex.supreme(text=flags["text"],
                                             dark=flags["dark"],
                                             light=flags["light"])
