@@ -25,5 +25,17 @@ class Fun(commands.Cog):
         await ctx.send(f'{text} {flags["dark"]} {flags["light"]}')
 
 
+        image = await self.bot.alex.supreme(text=text,
+                                            dark=flags["dark"],
+                                            light=flags["light"])
+        image_bytes = await image.read()
+        file = discord.File(image_bytes, "supreme.png")
+        embed = discord.Embed(colour=self.bot.embed_color, timestamp=ctx.message.created_at)
+        embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
+        embed.set_image(url="attachment://supreme.png")
+        embed.set_footer(text="Powered by the AlexFlipnote API")
+        await ctx.send(embed=embed, file=file)
+
+
 def setup(bot):
     bot.add_cog(Fun(bot))
