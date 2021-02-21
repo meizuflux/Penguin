@@ -8,7 +8,7 @@ class Fun(commands.Cog):
     """For the fun commands"""
     def __init__(self, bot):
         self.bot = bot
-        self.bot.alex = alexflipnote.Client(self.bot.config['alex_api_key'])
+        self.bot.alex = alexflipnote.Client(self.bot.get_config['alex_api_key'])
 
     @commands.command(help='Sends a cat for every error code', aliases=['httpcat', 'http_cat'])
     async def http(self, ctx, code=404):
