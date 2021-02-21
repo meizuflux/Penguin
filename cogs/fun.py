@@ -18,14 +18,12 @@ class Fun(commands.Cog):
         embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed, file=discord.File(BytesIO(buffer), filename=f"{code}.png"))
 
+    @flags.add_flag("--text", default="supreme")
     @flags.add_flag("--dark", action='store_true', default=False)
     @flags.add_flag("--light", action='store_true', default=False)
     @flags.command(help='Makes a supreme logo from text')
-    async def supreme(self, ctx, text, **flags):
-        await ctx.send(f'{text} {flags["dark"]} {flags["light"]}')
-
-
-        image = await self.bot.alex.supreme(text=text,
+    async def supreme(self, ctx, **flags):
+        image = await self.bot.alex.supreme(text=flags["text"],
                                             dark=flags["dark"],
                                             light=flags["light"])
         image_bytes = await image.read()
