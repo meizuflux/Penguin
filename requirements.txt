@@ -7,3 +7,5 @@ jishaku
 psutil
 prettytable
 humanize
+alexflipnote.py
+discord-flags
