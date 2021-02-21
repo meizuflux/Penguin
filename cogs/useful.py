@@ -407,6 +407,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         start = time.perf_counter()
         message = await ctx.send("Pinging ...")
         end = time.perf_counter()
+        await message.delete()
         duration = (end - start) * 1000
         poststart = time.perf_counter()
         await self.bot.db.fetch("SELECT 1")
@@ -421,7 +422,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             value=f'```python\n{round(self.bot.latency * 1000)} ms```', inline=False)
         pong.add_field(name='SQL Latency',
                        value=f'```python\n{round(postduration)} ms```', inline=False)
-        await message.edit(content=None, embed=pong)
+        await ctx.send(content=None, embed=pong)
 
 
 def setup(bot):
