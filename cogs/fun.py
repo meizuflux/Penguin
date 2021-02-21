@@ -22,8 +22,11 @@ class Fun(commands.Cog):
     @flags.add_flag("--dark", action='store_true', default=False)
     @flags.add_flag("--light", action='store_true', default=False)
     @flags.add_flag("--text", default="supreme")
-    @flags.command(help='Makes a supreme logo from text')
+    @flags.command()
     async def supreme(self, ctx, **flags):
+        """Makes a custom supreme logo
+        example: supreme --text "hey guys" --dark"""
+
         image = await self.bot.alex.supreme(text=flags["text"],
                                             dark=flags["dark"],
                                             light=flags["light"])
