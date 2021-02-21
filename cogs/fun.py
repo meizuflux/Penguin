@@ -22,7 +22,7 @@ class Fun(commands.Cog):
     @flags.add_flag("--dark", action='store_true', default=False)
     @flags.command(help='Makes a supreme logo from text')
     async def fakesupreme(self, ctx, text, **flags):
-        await ctx.send(f'{flags.dark}')
+        await ctx.send(f'{flags}')
 
 
 def setup(bot):
