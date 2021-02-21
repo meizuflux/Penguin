@@ -54,7 +54,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         await ctx.trigger_typing()
         out = subprocess.check_output("git pull", shell=True)
         embed = discord.Embed(title="Pulling from GitHub",
-                              description=f"```py\nroot@SYSTEM32# git pull\n{out.decode('utf-8')}\n```",
+                              description=f"```\nroot@SYSTEM32# git pull\n{out.decode('utf-8')}\n```",
                               color=self.bot.embed_color,
                               timestamp=ctx.message.created_at).set_footer(text=f"Requested by {ctx.author}",
                                                                            icon_url=ctx.author.avatar_url)
