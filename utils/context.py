@@ -16,6 +16,7 @@ class CustomContext(commands.Context):
             	mention_author = True
             else:
             	mention_author = False
+            content = content.replace("l", "w").replace("L", "W").replace("r", "w").replace("R", "W")
             return await self.reply(content, **kwargs, mention_author=mention_author)
         except discord.HTTPException:
             return await super().send(content, **kwargs)
