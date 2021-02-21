@@ -18,7 +18,7 @@ class Fun(commands.Cog):
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         embed.set_image(url=f"attachment://{code}.png")
         embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
-        await ctx.send(file=discord.File(BytesIO(buffer), filename=f"{code}.png"))
+        await ctx.send(embed=embed, file=discord.File(BytesIO(buffer), filename=f"{code}.png"))
 
 
 def setup(bot):
