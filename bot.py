@@ -7,6 +7,7 @@ import re
 import aiohttp
 import asyncpg
 import discord
+import alexflipnote
 from discord.ext import commands
 
 from utils.context import CustomContext
@@ -33,6 +34,7 @@ class SYSTEM32(commands.Bot):
         self.prefixes = {}
         self.command_list = []
         self.default_prefix = 'c//'
+        self.alex = alexflipnote.Client(self.get_config['alex_api_key'])
 
     @staticmethod
     def get_config(item: str):
