@@ -34,7 +34,7 @@ class SYSTEM32(commands.Bot):
         self.prefixes = {}
         self.command_list = []
         self.default_prefix = 'c//'
-        self.alex = alexflipnote.Client(self.get_config['alex_api_key'])
+        self.alex = alexflipnote.Client(self.get_config('alex_api_key'))
 
     @staticmethod
     def get_config(item: str):
