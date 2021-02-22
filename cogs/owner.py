@@ -110,7 +110,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         num = 0
         for line in source_lines:
             num += 1
-            paginator.add_line(num + line.replace("`", "\u200b`"))
+            paginator.add_line(str(num) + line.replace("`", "\u200b`"))
         await ctx.send(source_lines[0])
 
         interface = PaginatorInterface(ctx.bot, paginator, owner=ctx.author)
