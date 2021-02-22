@@ -33,7 +33,7 @@ class Utilites(commands.Cog):
         except KeyError:
             return None
 
-        readable_order = reversed(list(self.bot._deleted__messages_[channel_id]))
+        readable_order = list(reversed(self.bot._deleted__messages_[channel_id]))
         try:
             result = readable_order[index]
         except KeyError:
