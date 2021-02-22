@@ -9,6 +9,7 @@ import asyncpg
 import discord
 import alexflipnote
 from discord.ext import commands
+from collections import Counter
 
 from utils.context import CustomContext
 
@@ -34,6 +35,7 @@ class SYSTEM32(commands.Bot):
         self.prefixes = {}
         self.command_list = []
         self.default_prefix = 'c//'
+        self.command_list = Counter()
         self.alex = alexflipnote.Client(self.get_config('alex_api_key'))
 
     @staticmethod
