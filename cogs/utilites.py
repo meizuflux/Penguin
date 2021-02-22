@@ -42,9 +42,9 @@ class Utilites(commands.Cog):
         self.bot._deleted__messages_[message.channel.id].append(DeletedMessage(message))
     
     @commands.group(invoke_without_subcommand=True)
-    async def snipe(self, ctx, index: int, channel: discord.Channel):
+    async def snipe(self, ctx, index: int, channel: discord.TextChannel=None):
         if not channel:
-            channel = ctx.message.channel
+            channel = ctx.channel
         msg = self.deleted_message_for(index, channel.id) 
         if not msg:
             return await ctx.send('hehe')
