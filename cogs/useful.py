@@ -145,7 +145,11 @@ class Help(commands.MinimalHelpCommand):
     def get_command_help(self, command):
         ctx = self.context
         print(command.usage)
-        embed = discord.Embed(title=self.get_command_signature(command),
+        if command.usage:
+            title = f"{ctx.prefix}{command.usage}"
+        else:
+            title = self.get_command_signature(command)
+        embed = discord.Embed(title=title,
                               description=f'```{self.get_help(command, brief=False)}```', color=0x9c5cb4,
                               timestamp=ctx.message.created_at).set_footer(text=f"Requested by {ctx.author}",
                                                                            icon_url=ctx.author.avatar_url)
