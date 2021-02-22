@@ -51,7 +51,11 @@ class Utilities(commands.Cog):
     async def on_message_delete(self, message):
         nono = [671777334906454026]
         if message.author.id in nono: return
-        self.bot.deleted_messages[message.channel.id].append(DeletedMessage(message))
+        try:
+            self.bot.deleted_messages[message.channel.id].append(DeletedMessage(message))
+        except KeyError:
+            self.bot.deleted_messages[message.channel.id] = []
+            self.bot.deleted_messages[message.channel.id].append(DeletedMessage(message))
         if message.embeds:
             self.bot.last_embed = message.embeds[0]
             await message.channel.send('someone deleted an embed OOP')
