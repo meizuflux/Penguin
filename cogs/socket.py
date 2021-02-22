@@ -4,6 +4,7 @@ import warnings
 warnings.filterwarnings("ignore")
 from jishaku.paginators import PaginatorInterface
 import time
+import datetime
 
 
 class socket(commands.Cog):
@@ -43,7 +44,7 @@ class socket(commands.Cog):
     """
         current_time = time.time()
         lists = []
-        difference = int(current_time - self.bot.start_time) / 60
+        difference = int(datetime.datetime.utcnow() - self.bot.time) / 60
         lists.append(
             f"Received {self.bot.socket_receive} {self.bot.socket_receive//difference} per minute"
         )
