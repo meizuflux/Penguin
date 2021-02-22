@@ -56,7 +56,7 @@ class Utilites(commands.Cog):
             channel = ctx.channel
         msg = self.deleted_message_for(index, channel.id) 
         if not msg:
-            return await ctx.send('hehe')
+            return await qembed('Nothing to snipe!')
         snipe = discord.Embed(title='Content:', description=f'```{msg.content}```', color=self.bot.embed_color, timestamp=ctx.message.created_at)
         snipe.add_field(name='Message Stats', value=f'**Created At:** {msg.created_at}\n**Deleted At:** {msg.deleted_at}')
         snipe.set_author(name=f'{str(msg.author)} said in #{channel.name}:', icon_url=str(msg.author.avatar_url))
