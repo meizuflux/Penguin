@@ -426,9 +426,8 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Shows how long the bot has been online for')
     async def uptime(self, ctx):
-        x = self.bot.uptime - datetime.datetime.utcnow()
         await ctx.send(embed=discord.Embed(
-            description=f"I've been up for {humanize.precisedelta(x, suppress=['seconds'], format='%0.0f')}",
+            description=f"I've been up for {humanize.precisedelta(self.uptime - datetime.datetime.utcnow(), format='%0.0f')}",
             color=self.bot.embed_color,
             timestamp=ctx.message.created_at).set_footer(text=f"Requested by {ctx.author}",
                                                          icon_url=ctx.author.avatar_url))
