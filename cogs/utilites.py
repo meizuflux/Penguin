@@ -26,7 +26,10 @@ class Utilites(commands.Cog):
         self.bot._deleted__messages_ = {}
 
     def deleted_message_for(self, index: int, channel_id: int):
-        if index > len(self.bot._deleted__messages_[channel_id]):
+        try:
+            if index > len(self.bot._deleted__messages_[channel_id]):
+                return None
+        except KeyError:
             return None
 
         readable_order = self.bot._deleted__messages_[channel_id]
