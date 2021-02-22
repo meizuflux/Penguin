@@ -121,11 +121,16 @@ class SYSTEM32(commands.Bot):
         """Override process_commands to call typing every invoke"""
         if message.author.bot:
             return
-
+            
         ctx = await self.get_context(message)
         if ctx.valid:
             await ctx.trigger_typing()
         await self.invoke(ctx)
+
+    async def close(self):
+        await self.alex.close()
+        self.bot.session.close()
+        await super().close()
 
     async def get_context(self, message: discord.Message, *, cls=None):
         """Method to override "ctx" """
