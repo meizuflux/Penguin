@@ -7,7 +7,7 @@ class DeletedMessage:
     def __init__(self, message):
         self.author = message.author
         self.content = message.content
-        self.guild = mesasge.guild
+        self.guild = message.guild
         self.created_at = message.created_at
         self.deleted_at = datetime.datetime.utcnow()
 
@@ -16,7 +16,7 @@ class EditedMessage:
     def __init__(self, message):
         self.author = message.author
         self.content = message.content
-        self.guild = mesasge.guild
+        self.guild = message.guild
         self.created_at = message.created_at
         self.deleted_at = datetime.datetime.utcnow()
 
