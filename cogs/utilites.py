@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-import datetime
+import time
 from utils.default import qembed
 import humanize
 
@@ -11,7 +11,7 @@ class DeletedMessage:
         self.content = message.content
         self.guild = message.guild
         self.created_at = message.created_at
-        self.deleted_at = datetime.datetime.utcnow()
+        self.deleted_at = time.time()
 
 class EditedMessage:
     __slots__ = ('author', 'content', 'channel', 'guild', 'created_at', 'deleted_at')
@@ -20,7 +20,7 @@ class EditedMessage:
         self.content = message.content
         self.guild = message.guild
         self.created_at = message.created_at
-        self.deleted_at = datetime.datetime.utcnow()
+        self.deleted_at = time.time()
 
 class Utilites(commands.Cog):
     def __init__(self, bot):
