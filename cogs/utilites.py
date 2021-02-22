@@ -52,14 +52,14 @@ class Utilites(commands.Cog):
             self.bot._deleted__messages_[message.channel.id].append(DeletedMessage(message))
     
     @commands.group(invoke_without_subcommand=True)
-    async def snipe(self, ctx, index: int=0, channel: discord.TextChannel=None):
+    async def snipe(self, ctx, index: int=1, channel: discord.TextChannel=None):
         if not channel:
             channel = ctx.channel
-        msg = self.deleted_message_for(index, channel.id) 
+        msg = self.deleted_message_for(index-1, channel.id) 
         if not msg:
             return await qembed(ctx, 'Nothing to snipe!')
         snipe = discord.Embed(title='Content:', description=f'```{msg.content}```', color=self.bot.embed_color, timestamp=ctx.message.created_at)
-        snipe.add_field(name='Message Stats', value=f'**Created At:** {msg.created_at}\n**Deleted At:** {msg.deleted_at}\n**Index:** {index+1} / {len(self.bot._deleted__messages_[channel.id])}')
+        snipe.add_field(name='Message Stats', value=f'**Created At:** {msg.created_at}\n**Deleted At:** {msg.deleted_at}\n**Index:** {index} / {len(self.bot._deleted__messages_[channel.id])}')
         snipe.set_author(name=f'{str(msg.author)} said in #{channel.name}:', icon_url=str(msg.author.avatar_url))
         snipe.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=snipe)
