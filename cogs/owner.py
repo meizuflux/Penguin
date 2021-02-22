@@ -6,6 +6,8 @@ from discord.ext import commands
 from prettytable import PrettyTable
 import discord
 import os
+import inspect
+from jishaku.paginators import PaginatorInterface, WrappedPaginator
 
 from utils.default import qembed, traceback_maker
 
@@ -86,6 +88,33 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         await qembed(ctx, "Goodbye. I'll be back soon.")
         await self.bot.close()
 
+    @dev.Command(parent="jsk", name="source", aliases=["src"])
+    async def jsk_source(self, ctx: commands.Context, *, command_name: str):
+        """
+        Displays the source code for a command.
+        """
+
+        command = self.bot.get_command(command_name)
+        if not command:
+            return await ctx.send(f"Couldn't find command `{command_name}`.")
+
+        try:
+            source_lines, _ = inspect.getsourcelines(command.callback)
+        except (TypeError, OSError):
+            return await ctx.send(f"Was unable to retrieve the source for `{command}` for some reason.")
+
+        # getsourcelines for some reason returns WITH line endings
+        number = 0
+        for i in source_lines:
+            number += 1
+            source_lines = ''.join(source_lines).split('\n')
+
+        paginator = WrappedPaginator(prefix='```py', suffix='```', max_size=1985)
+        for line in source_lines:
+            paginator.add_line(line.replace("`", "\u200b"))
+
+        interface = PaginatorInterface(ctx.bot, paginator, owner=ctx.author)
+        await interface.send_to(ctx)
 
 def setup(bot):
     bot.add_cog(Owner(bot))
