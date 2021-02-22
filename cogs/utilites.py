@@ -39,8 +39,6 @@ class Utilites(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
-        if not self.bot._deleted__messages_[message.channel.id]:
-            self.bot._deleted__messages_[message.channel.id] = []
         self.bot._deleted__messages_[message.channel.id].append(DeletedMessage(message))
     
     @commands.group(invoke_without_subcommand=True)
