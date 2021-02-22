@@ -83,7 +83,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
     @dev.command()
     async def reboot(self, ctx):
         """Calls bot.close() and lets the systems service handler restart it."""
-        await ctx.send("Goodbye. I'll be back soon.")
+        await qembed(ctx, "Goodbye. I'll be back soon.")
         await self.bot.close()
 
 
