@@ -2,6 +2,7 @@
 import datetime
 import json
 import os
+import time
 import re
 
 import aiohttp
@@ -38,6 +39,7 @@ class SYSTEM32(commands.Bot):
         self.socket_stats = Counter()
         self.socket_receive = 0
         self.alex = alexflipnote.Client(self.get_config('alex_api_key'))
+        self.timetime = time.time()
 
     @staticmethod
     def get_config(item: str):
