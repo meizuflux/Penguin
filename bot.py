@@ -37,7 +37,6 @@ class SYSTEM32(commands.Bot):
         self.command_list = []
         self.default_prefix = 'c//'
         self.deleted__messages = {}
-        self.socket_stats = Counter()
         self.socket_receive = 0
         self.alex = alexflipnote.Client(self.get_config('alex_api_key'))
         self.timetime = time.time()
@@ -87,7 +86,7 @@ class SYSTEM32(commands.Bot):
             print("Connecting to Discord ...")
             self.uptime = datetime.datetime.utcnow()
             self.db = pool_pg
-            extensions = ['jishaku', 'cogs.useful', 'cogs.owner', 'cogs.prefixes', 'cogs.economy', 'cogs.errorhandler', 'cogs.fun', 'cogs.socket', 'cogs.utilites']
+            extensions = ['jishaku', 'cogs.useful', 'cogs.owner', 'cogs.prefixes', 'cogs.economy', 'cogs.errorhandler', 'cogs.fun', 'cogs.utilites']
             for extension in extensions:
                 self.load_extension(extension)
 
