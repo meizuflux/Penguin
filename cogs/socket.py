@@ -44,7 +44,7 @@ class socket(commands.Cog):
     """
         current_time = time.time()
         lists = []
-        difference = int(datetime.datetime.utcnow() - self.bot.time) / 60
+        difference = int(datetime.datetime.utcnow() - self.bot.uptime) / 60
         lists.append(
             f"Received {self.bot.socket_receive} {self.bot.socket_receive//difference} per minute"
         )
