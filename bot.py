@@ -116,6 +116,17 @@ class SYSTEM32(commands.Bot):
         await self.db.execute(
             "CREATE TABLE IF NOT EXISTS economy (userid BIGINT PRIMARY KEY,wallet BIGINT,bank BIGINT)")
 
+    # https://github.com/InterStella0/stella_bot/blob/4636627b2f99b7f58260869f020e5adebb62e27d/main.py
+    async def process_commands(self, message):
+        """Override process_commands to call typing every invoke"""
+        if message.author.bot:
+            return
+
+        ctx = await self.get_context(message)
+        if ctx.valid:
+            await ctx.trigger_typing()
+        await self.invoke(ctx)
+
     async def get_context(self, message: discord.Message, *, cls=None):
         """Method to override "ctx" """
         return await super().get_context(message, cls=cls or CustomContext)
