@@ -14,21 +14,25 @@ import humanize
 import psutil
 from discord.ext import commands
 
-from utils.default import plural, qembed, timesince
+from utils.default import plural, qembed
 
 
 class Help(commands.MinimalHelpCommand):
     def get_command_signature(self, command, ctx=None):
         """Method to return a commands name and signature"""
+        if command.usage:
+            sig = command.usage
+        else:
+            sig = command.signature
         if not ctx:
             if not command.signature and not command.parent:
                 return f'`{self.clean_prefix}{command.name}`'
             if command.signature and not command.parent:
-                return f'`{self.clean_prefix}{command.name}` `{command.signature}`'
+                return f'`{self.clean_prefix}{command.name}` `{sig}`'
             if not command.signature and command.parent:
-                return f'`{self.clean_prefix}{command.parent}` `{command.name}`'
+                return f'`{self.clean_prefix}{command.parent}` `{sig}`'
             else:
-                return f'`{self.clean_prefix}{command.parent}` `{command.name}` `{command.signature}`'
+                return f'`{self.clean_prefix}{command.parent}` `{command.name}` `{sig}`'
         else:
             def get_invoke_with():
                 msg = ctx.message.content
@@ -39,11 +43,11 @@ class Help(commands.MinimalHelpCommand):
             if not command.signature and not command.parent:
                 return f'{ctx.prefix}{ctx.invoked_with}'
             if command.signature and not command.parent:
-                return f'{ctx.prefix}{ctx.invoked_with} {command.signature}'
+                return f'{ctx.prefix}{ctx.invoked_with} {sig}'
             if not command.signature and command.parent:
                 return f'{ctx.prefix}{get_invoke_with()}{ctx.invoked_with}'
             else:
-                return f'{ctx.prefix}{get_invoke_with()}{ctx.invoked_with} {command.signature}'
+                return f'{ctx.prefix}{get_invoke_with()}{ctx.invoked_with} {sig}'
 
     async def send_error_message(self, error):
         ctx = self.context
@@ -144,9 +148,8 @@ class Help(commands.MinimalHelpCommand):
 
     def get_command_help(self, command):
         ctx = self.context
-        print(command.usage)
         if command.usage:
-            title = f"{ctx.prefix}{command.usage}"
+            title = f"`{ctx.prefix}{command.usage}`"
         else:
             title = self.get_command_signature(command)
         embed = discord.Embed(title=title,
