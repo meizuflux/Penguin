@@ -424,6 +424,11 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                        value=f'```python\n{round(postduration)} ms```', inline=False)
         await ctx.send(content=None, embed=pong)
 
+    @commands.command(help='Shows how long the bot has been online for')
+    async def uptime(self, ctx):
+        await ctx.send(embed=discord.Embed(
+            description=f"I've been up for: {humanize.precisedelta(self.bot.uptime, suppress=['seconds'], format='%0.0f')}"))
+
 
 def setup(bot):
     bot.add_cog(Useful(bot))
