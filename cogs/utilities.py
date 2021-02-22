@@ -48,11 +48,7 @@ class Utilities(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
-        try:
-            self.bot.deleted_messages[message.channel.id].append(DeletedMessage(message))
-        except KeyError:
-            self.bot.deleted_messages[message.channel.id] = []
-            self.bot.deleted_messages[message.channel.id].append(DeletedMessage(message))
+        self.bot.deleted_messages[message.channel.id].append(DeletedMessage(message))
         if message.embeds:
             self.bot.last_embed = message.embeds[0]
             await message.channel.send('someone deleted an embed OOP')
@@ -61,8 +57,9 @@ class Utilities(commands.Cog):
     async def snipe(self, ctx, index: int = 1, channel: discord.TextChannel = None):
         if not channel:
             channel = ctx.channel
-        msg = self.deleted_message_for(index - 1, channel.id)
-        if not msg:
+        try:
+            msg = self.deleted_message_for(index - 1, channel.id)
+        except IndexError:
             return await qembed(ctx, 'Nothing to snipe!')
         snipe = discord.Embed(title='Content:', description=msg.content, color=self.bot.embed_color,
                               timestamp=ctx.message.created_at)
