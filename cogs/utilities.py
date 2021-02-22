@@ -14,6 +14,7 @@ class DeletedMessage:
         self.guild = message.guild
         self.created_at = message.created_at
         self.deleted_at = datetime.datetime.utcnow()
+        self.embed = message.embeds[0]
 
 
 class EditedMessage:
@@ -63,7 +64,7 @@ class Utilities(commands.Cog):
             return await qembed(ctx, 'Nothing to snipe!')
         snipe = discord.Embed(title='Content:', description=msg.content, color=self.bot.embed_color,
                               timestamp=ctx.message.created_at)
-        snipe.add_field(name='Message Stats', value=
+        snipe.add_field(name='Message Stats:', value=
                         f"""**Created At:** {humanize.naturaldelta(msg.created_at - datetime.datetime.utcnow())} ago
                         **Deleted At:** {humanize.naturaldelta(msg.deleted_at - datetime.datetime.utcnow())} ago
                         **Index:** {index} / {len(self.bot.deleted_messages[channel.id])}""")
