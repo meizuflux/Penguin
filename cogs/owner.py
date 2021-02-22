@@ -107,8 +107,10 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         source_lines = ''.join(source_lines).split('\n')
 
         paginator = WrappedPaginator(prefix='```py', suffix='```', max_size=1985)
+        num = 0
         for line in source_lines:
-            paginator.add_line(line.replace("`", "\u200b`"))
+            num += 1
+            paginator.add_line(num + line.replace("`", "\u200b`"))
         await ctx.send(source_lines[0])
 
         interface = PaginatorInterface(ctx.bot, paginator, owner=ctx.author)
