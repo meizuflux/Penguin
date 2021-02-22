@@ -49,6 +49,8 @@ class Utilities(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
+        nono = [671777334906454026]
+        if message.author.id in nono: return
         try:
             self.bot.deleted_messages[message.channel.id].append(DeletedMessage(message))
         except KeyError:
