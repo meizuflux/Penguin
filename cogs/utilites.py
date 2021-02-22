@@ -54,7 +54,7 @@ class Utilites(commands.Cog):
         msg = self.deleted_message_for(index, channel.id) 
         if not msg:
             return await ctx.send('hehe')
-        await ctx.send(msg)
+        await ctx.send(msg.content)
 
 
 
