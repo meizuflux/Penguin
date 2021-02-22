@@ -6,7 +6,7 @@ import humanize
 
 
 class DeletedMessage:
-    __slots__ = ('author', 'content', 'channel', 'guild', 'created_at', 'deleted_at')
+    __slots__ = ('author', 'content', 'channel', 'guild', 'created_at', 'deleted_at', 'embed')
 
     def __init__(self, message):
         self.author = message.author
@@ -14,6 +14,7 @@ class DeletedMessage:
         self.guild = message.guild
         self.created_at = message.created_at
         self.deleted_at = datetime.datetime.utcnow()
+        self.embed = message.embeds[0]
 
 
 class EditedMessage:
@@ -54,7 +55,7 @@ class Utilities(commands.Cog):
             self.bot.deleted_messages[message.channel.id] = []
             self.bot.deleted_messages[message.channel.id].append(DeletedMessage(message))
         if message.embeds:
-            self.bot.last_embed = message.embeds
+            self.bot.last_embed = message.embeds[0]
             await message.channel.send('someone deleted an embed OOP')
 
     @commands.group(invoke_without_subcommand=True)
