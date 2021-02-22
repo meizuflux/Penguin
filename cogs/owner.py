@@ -88,8 +88,8 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         await qembed(ctx, "Goodbye. I'll be back soon.")
         await self.bot.close()
 
-    @dev.Command(parent="jsk", name="source", aliases=["src"])
-    async def jsk_source(self, ctx: commands.Context, *, command_name: str):
+    @dev.command(name="source", aliases=["src"])
+    async def jsk_source(self, ctx, *, command_name: str):
         """
         Displays the source code for a command.
         """
@@ -107,7 +107,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         number = 0
         for i in source_lines:
             number += 1
-            source_lines = ''.join(source_lines).split('\n')
+            source_lines = f'{number}'.join(source_lines).split('\n')
 
         paginator = WrappedPaginator(prefix='```py', suffix='```', max_size=1985)
         for line in source_lines:
