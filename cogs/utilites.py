@@ -40,9 +40,11 @@ class Utilites(commands.Cog):
     @commands.Cog.listener()
     async def on_message_delete(self, message):
         await message.channel.send('lmao')
-        if not self.bot._deleted__messages_[message.channel.id]:
+        try:
+            self.bot._deleted__messages_[message.channel.id].append(DeletedMessage(message))
+        except KeyError:
             self.bot._deleted__messages_[message.channel.id] = []
-        self.bot._deleted__messages_[message.channel.id].append(DeletedMessage(message))
+            self.bot._deleted__messages_[message.channel.id].append(DeletedMessage(message))
     
     @commands.group(invoke_without_subcommand=True)
     async def snipe(self, ctx, index: int, channel: discord.TextChannel=None):
