@@ -30,7 +30,7 @@ class Utilites(commands.Cog):
             return None
 
         readable_order = reversed(self.bot._deleted__messages_[channel_id])
-        await ctx.send(readable_order)
+        return readable_order
         try:
             result = readable_order[index]
         except KeyError:
