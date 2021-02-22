@@ -104,7 +104,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
             return await ctx.send(f"Was unable to retrieve the source for `{command}` for some reason.")
 
         # getsourcelines for some reason returns WITH line endings
-        source_lines = f'{number}'.join(source_lines).split('\n')
+        source_lines = ''.join(source_lines).split('\n')
 
         paginator = WrappedPaginator(prefix='```py', suffix='```', max_size=1985)
         for line in source_lines:
