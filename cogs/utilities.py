@@ -14,8 +14,8 @@ class DeletedMessage:
         self.guild = message.guild
         self.created_at = message.created_at
         self.deleted_at = datetime.datetime.utcnow()
-        #if message.embeds is not None:
-            #self.embed = message.embeds[0]
+        if message.embeds is not None:
+            self.embed = message.embeds[0]
 
 
 class EditedMessage:
