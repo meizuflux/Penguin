@@ -55,11 +55,10 @@ class Utilites(commands.Cog):
         if not msg:
             return await ctx.send('hehe')
         snipe = discord.Embed(title='Content:', description=f'```{msg.content}```', color=self.bot.embed_color, timestamp=ctx.message.created_at)
-        embed.add_field(name='Message Stats', value=f'**Created At:** {msg.created_at}\n**Deleted At:** {msg.deleted_at}')
-        snipe.set_author(name=f'{str{msg.author}} said in #{channel.name}:', icon_url=str(msg.author.avatar_url))
+        snipe.add_field(name='Message Stats', value=f'**Created At:** {msg.created_at}\n**Deleted At:** {msg.deleted_at}')
+        snipe.set_author(name=f'{str(msg.author)} said in #{channel.name}:', icon_url=str(msg.author.avatar_url))
         snipe.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=snipe)
-
 
 
 def setup(bot):
