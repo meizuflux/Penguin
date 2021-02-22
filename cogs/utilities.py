@@ -53,7 +53,7 @@ class Utilities(commands.Cog):
         except KeyError:
             self.bot.deleted_messages[message.channel.id] = []
             self.bot.deleted_messages[message.channel.id].append(DeletedMessage(message))
-        if isinstance(message, discord.Embed):
+        if message.embeds:
             await message.channel.send('someone deleted an embed OOP')
 
     @commands.group(invoke_without_subcommand=True)
