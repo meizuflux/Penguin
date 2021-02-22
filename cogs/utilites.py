@@ -25,16 +25,16 @@ class EditedMessage:
 class Utilites(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
+        self.bot._deleted__messages_ = {}
 
     def deleted_message_for(self, index: int, channel_id: int):
         try:
-            if index > len(self.bot.deleted_messages[channel_id]):
+            if index > len(self.bot._deleted__messages_[channel_id]):
                 return None
         except KeyError:
             return None
 
-        readable_order = list(reversed(self.bot.deleted_messages[channel_id]))
+        readable_order = list(reversed(self.bot._deleted__messages_[channel_id]))
         try:
             result = readable_order[index]
         except KeyError:
@@ -47,8 +47,8 @@ class Utilites(commands.Cog):
         try:
             self.bot._deleted__messages_[message.channel.id].append(DeletedMessage(message))
         except KeyError:
-            self.bot.deleted_messages[message.channel.id] = []
-            self.bot.deleted_messages[message.channel.id].append(DeletedMessage(message))
+            self.bot._deleted__messages_[message.channel.id] = []
+            self.bot._deleted__messages_[message.channel.id].append(DeletedMessage(message))
     
     @commands.group(invoke_without_subcommand=True)
     async def snipe(self, ctx, index: int=1, channel: discord.TextChannel=None):
@@ -58,7 +58,7 @@ class Utilites(commands.Cog):
         if not msg:
             return await qembed(ctx, 'Nothing to snipe!')
         snipe = discord.Embed(title='Content:', description=f'```{msg.content}```', color=self.bot.embed_color, timestamp=ctx.message.created_at)
-        snipe.add_field(name='Message Stats', value=f'**Created At:** {humanize.naturaldelta(msg.created_at)}\n**Deleted At:** {humanize.naturaldelta(msg.deleted_at)}\n**Index:** {index} / {len(self.bot.deleted_messages[channel.id])}')
+        snipe.add_field(name='Message Stats', value=f'**Created At:** {humanize.naturaldelta(msg.created_at)}\n**Deleted At:** {humanize.naturaldelta(msg.deleted_at)}\n**Index:** {index} / {len(self.bot._deleted__messages_[channel.id])}')
         snipe.set_author(name=f'{str(msg.author)} said in #{channel.name}:', icon_url=str(msg.author.avatar_url))
         snipe.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=snipe)

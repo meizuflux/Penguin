@@ -47,6 +47,10 @@ class Fun(commands.Cog):
     async def replacespace(self, ctx, char, *, text):
         await qembed(ctx, text.replace(' ', f' {char} '))
 
+    @commands.command(help='Reverses some text')
+    async def reverse(self, ctx, *, text):
+        await qembed(ctx, text.replace(' ', ''.join(reversed(text))))
+
 
 def setup(bot):
     bot.add_cog(Fun(bot))
