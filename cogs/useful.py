@@ -13,7 +13,7 @@ import humanize
 import psutil
 from discord.ext import commands
 
-from utils.default import plural, qembed
+from utils.default import plural, qembed, timeago
 
 
 class Help(commands.MinimalHelpCommand):
@@ -426,7 +426,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(help='Shows how long the bot has been online for')
     async def uptime(self, ctx):
         await ctx.send(embed=discord.Embed(
-            description=f"I've been up for: {humanize.precisedelta(self.bot.uptime, suppress=['seconds'], format='%0.0f')}",
+            description=f"I've been up for: {timeago(self.bot.uptime)}",
             color=self.bot.embed_color,
             timestamp=ctx.message.created_at).set_footer(text=f"Requested by {ctx.author}",
                                                          icon_url=ctx.author.avatar_url))
