@@ -36,7 +36,7 @@ class Utilites(commands.Cog):
         readable_order = self.bot._deleted__messages_[channel_id]
         readable_order.reverse
         try:
-            result = readable_order[index-1]
+            result = readable_order[index]
         except KeyError:
             return None
         else:
