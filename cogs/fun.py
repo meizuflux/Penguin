@@ -44,7 +44,7 @@ class Fun(commands.Cog):
         await ctx.send(embed=embed, file=file)
 
     @commands.command(help='Replaces the spaces in a string with a character')
-    async def replacespace(self, ctx, char, text):
+    async def replacespace(self, ctx, char, *, text):
         await qembed(ctx, text.replace(' ', char))
 
 
