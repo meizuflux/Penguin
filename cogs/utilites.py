@@ -54,7 +54,7 @@ class Utilites(commands.Cog):
         msg = self.deleted_message_for(index, channel.id) 
         if not msg:
             return await ctx.send('hehe')
-        await ctx.send(msg.content)
+        await ctx.send(embed=discord.Embed(description=msg.content, color=self.bot.embed_color, timestamp=msg.created_at).set_author(name=str(msg.author), icon_url=str(msg.author.avatar_url)).set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url))
 
 
 
