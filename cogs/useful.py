@@ -401,7 +401,6 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         """
         await self.do_rtfm(ctx, 'latest', obj)
 
-
     @commands.command(name='ping', help='only for cool kids')
     async def ping(self, ctx):
         start = time.perf_counter()
@@ -427,8 +426,10 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(help='Shows how long the bot has been online for')
     async def uptime(self, ctx):
         await ctx.send(embed=discord.Embed(
-            description=f"I've been up for: {humanize.precisedelta(self.bot.uptime, suppress=['seconds'], format='%0.0f')}"), color=self.bot.embed_color, timestamp=ctx.message.created_at).set_footer(
-            text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+            description=f"I've been up for: {humanize.precisedelta(self.bot.uptime, suppress=['seconds'], format='%0.0f')}",
+            color=self.bot.embed_color,
+            timestamp=ctx.message.created_at).set_footer(text=f"Requested by {ctx.author}",
+                                                         icon_url=ctx.author.avatar_url))
 
 
 def setup(bot):
