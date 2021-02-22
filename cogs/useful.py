@@ -144,6 +144,7 @@ class Help(commands.MinimalHelpCommand):
 
     def get_command_help(self, command):
         ctx = self.context
+        await ctx.send(command.usage)
         embed = discord.Embed(title=self.get_command_signature(command),
                               description=f'```{self.get_help(command, brief=False)}```', color=0x9c5cb4,
                               timestamp=ctx.message.created_at).set_footer(text=f"Requested by {ctx.author}",
