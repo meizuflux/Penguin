@@ -34,6 +34,7 @@ class SYSTEM32(commands.Bot):
         self.session = aiohttp.ClientSession()
         self.embed_color = 0x9c5cb4  # 0x1E90FF
         self.prefixes = {}
+        self.bot.deleted_messages = {}
         self.command_list = []
         self.default_prefix = 'c//'
         self.socket_stats = Counter()
