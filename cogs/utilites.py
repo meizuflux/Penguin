@@ -30,6 +30,7 @@ class Utilites(commands.Cog):
             return None
 
         readable_order = reversed(self.bot._deleted__messages_[channel_id])
+        await ctx.send(readable_order)
         try:
             result = readable_order[index]
         except KeyError:
@@ -47,7 +48,7 @@ class Utilites(commands.Cog):
             self.bot._deleted__messages_[message.channel.id].append(DeletedMessage(message))
     
     @commands.group(invoke_without_subcommand=True)
-    async def snipe(self, ctx, index: int, channel: discord.TextChannel=None):
+    async def snipe(self, ctx, index: int=1, channel: discord.TextChannel=None):
         if not channel:
             channel = ctx.channel
         msg = self.deleted_message_for(index, channel.id) 
