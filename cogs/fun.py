@@ -24,12 +24,12 @@ class Fun(commands.Cog):
     @flags.add_flag("--light", action='store_true', default=False)
     @flags.add_flag("--text", default="supreme")
     @flags.command()
-    async def supreme(self, ctx, **flags, *text):
+    async def supreme(self, ctx, **flags):
         """Makes a custom supreme logo
         example: supreme --text "hey guys" --dark"""
         if flags["dark"] and flags["light"]:
             return await qembed(ctx, "You can't have both dark and light, sorry.")
-        image = await self.bot.alex.supreme(text=text,
+        image = await self.bot.alex.supreme(text=flags["text"],
                                             dark=flags["dark"],
                                             light=flags["light"])
         image_bytes = await image.read()
