@@ -29,7 +29,8 @@ class Utilites(commands.Cog):
         if index > len(self.bot._deleted__messages_[channel_id]):
             return None
 
-        readable_order = self.bot._deleted__messages_[channel_id].reverse
+        readable_order = self.bot._deleted__messages_[channel_id]
+        readable_order.reverse
         return readable_order
         try:
             result = readable_order[index]
