@@ -1,5 +1,4 @@
 discord.py
-discord
 asyncpg
 aiohttp
 timeago
