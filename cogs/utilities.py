@@ -39,6 +39,9 @@ class Utilities(commands.Cog):
                 return None
         except KeyError:
             return None
+        
+        if len(self.bot.deleted_messages[channel_id]) > 100:
+            del self.bot.deleted_messages[channel_id][0]
 
         readable_order = list(reversed(self.bot.deleted_messages[channel_id]))
         try:

@@ -21,6 +21,7 @@ class CustomContext(commands.Context):
     def secret(self):
         return 'my secret here'
 
+    @property
     async def confirm(self):
         await self.send('hey guys vsauce here')
 
