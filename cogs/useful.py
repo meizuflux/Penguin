@@ -28,7 +28,7 @@ class CustomContext(commands.Context):
         message = await self.send(embed=e)
         await message.add_reaction('✅')
         await message.add_reaction('❌')
-        def terms(self, reaction, user):
+        def terms(reaction, user):
             return user == self.author and str(reaction.emoji) == '✅' or user == self.author and str(reaction.emoji) == '❌'
 
         try:
