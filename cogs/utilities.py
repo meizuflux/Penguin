@@ -119,7 +119,7 @@ class Utilities(commands.Cog):
             msg = self.edited_message_for(index - 1, channel.id)
         except IndexError:
             return await qembed(ctx, 'Nothing to snipe!')
-        snipe = discord.Embed(title='Content:', description=msg.content, color=self.bot.embed_color,
+        snipe = discord.Embed(title='Content:', description=msg.before, color=self.bot.embed_color,
                               timestamp=ctx.message.created_at)
         if msg.attachment:
             snipe.add_field(name='Attachment', value=msg.attachment)
