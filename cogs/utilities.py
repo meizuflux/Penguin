@@ -78,8 +78,6 @@ class Utilities(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
-        if before.channel.id == 381963689470984203:
-            await before.channel.send(before.content)
         self.bot.edits[before.channel.id].append(EditedMessage(before))
 
     @commands.group(invoke_without_subcommand=True)
