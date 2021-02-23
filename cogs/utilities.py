@@ -70,8 +70,8 @@ class Utilities(commands.Cog):
         snipe = discord.Embed(title='Content:', description=content, color=self.bot.embed_color,
                               timestamp=ctx.message.created_at)
         snipe.add_field(name='Message Stats:', value=
-                            f"**Created At:** {humanize.naturaldelta(msg.created_at - datetime.datetime.utcnow())} ago"\n
-                            f"**Deleted At:** {humanize.naturaldelta(msg.deleted_at - datetime.datetime.utcnow())} ago"\n
+                            f"**Created At:** {humanize.naturaldelta(msg.created_at - datetime.datetime.utcnow())} ago\n"
+                            f"**Deleted At:** {humanize.naturaldelta(msg.deleted_at - datetime.datetime.utcnow())} ago\n"
                             f"**Index:** {index} / {len(self.bot.deleted_messages[channel.id])}")
         snipe.set_author(name=f'{str(msg.author)} said in #{channel.name}:', icon_url=str(msg.author.avatar_url))
         snipe.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
