@@ -31,6 +31,8 @@ class EditedMessage:
         self.created_at = message.created_at
         self.edited_at = datetime.datetime.utcnow()
         self.before_id = message.id
+        if message.attachments:
+            self.attachment = message.attachments[0].url
 
 
 class Utilities(commands.Cog):
@@ -111,7 +113,7 @@ class Utilities(commands.Cog):
         await ctx.send(embed=snipe)
 
     @commands.command(help='yeah')
-    async def edit(self, ctx, index: int = 1, channel: discord.TextChannel = None):
+    async def snipeedit(self, ctx, index: int = 1, channel: discord.TextChannel = None):
         if channel and channel.is_nsfw():
             return await qembed(ctx, 'no sorry')
         if not channel:
