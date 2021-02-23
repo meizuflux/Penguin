@@ -62,10 +62,10 @@ class Utilities(commands.Cog):
             msg = self.deleted_message_for(index - 1, channel.id)
             try:
                 await ctx.send(embed=msg.del_embed)
-                content = 'User sent an embed.'
+                content = 'User deleted an embed which is above.'
             except AttributeError:
                 pass
-            content = msg.content
+                content = msg.content
         except IndexError:
             return await qembed(ctx, 'Nothing to snipe!')
         snipe = discord.Embed(title='Content:', description=content, color=self.bot.embed_color,
