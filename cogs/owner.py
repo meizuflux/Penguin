@@ -7,6 +7,7 @@ from prettytable import PrettyTable
 import discord
 import os
 import inspect
+import aiohttp
 from jishaku.paginators import PaginatorInterface, WrappedPaginator
 
 from utils.default import qembed, traceback_maker
@@ -26,6 +27,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
 
     @dev.command()
     async def sql(self, ctx, *, query):
+        """Execute SQL commands"""
         res = await self.bot.db.fetch(query)
         if len(res) == 0:
             return await ctx.message.add_reaction('✅')
@@ -85,8 +87,12 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
     @dev.command()
     async def reboot(self, ctx):
         """Calls bot.close() and lets the systems service handler restart it."""
-        await qembed(ctx, "Goodbye. I'll be back soon.")
-        await self.bot.close()
+        this = await ctx.confirm('Click to confirm.')
+        if this:
+            await qembed(ctx, "Goodbye. I'll be back soon.")
+            await self.bot.close()
+        if not this:
+            return await qembed(ctx, "Cancelling")
 
     @dev.command(name="source", aliases=["src"])
     async def jsk_source(self, ctx, *, command_name: str):
@@ -114,6 +120,59 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
 
         interface = PaginatorInterface(ctx.bot, paginator, owner=ctx.author)
         await interface.send_to(ctx)
+
+    @commands.group()
+    @commands.is_owner()
+    async def change(self, ctx):
+        """Change things about the bot without the developer portal"""
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help(str(ctx.command))
+
+    @change.command(name="username")
+    @commands.is_owner()
+    async def change_username(self, ctx, *, name: str):
+        """ Change username. """
+        try:
+            await self.bot.user.edit(username=name)
+            await qembed(ctx, f"Successfully changed username to **{name}**")
+        except discord.HTTPException as err:
+            await qembed(ctx, err)
+
+    @change.command(name="nickname")
+    @commands.is_owner()
+    async def change_nickname(self, ctx, *, name: str = None):
+        """ Change nickname. """
+        try:
+            await ctx.guild.me.edit(nick=name)
+            if name:
+                await qembed(ctx, f"Successfully changed nickname to **{name}**")
+            else:
+                await qembed(ctx, "Successfully removed nickname")
+        except Exception as err:
+            await ctx.send(err)
+
+    @change.command(name="avatar")
+    @commands.is_owner()
+    async def change_avatar(self, ctx, url: str = None):
+        """Changes the bot's avatar"""
+        cs = aiohttp.ClientSession()
+        if url is None and len(ctx.message.attachments) == 1:
+            url = ctx.message.attachments[0].url
+        else:
+            url = url.strip('<>') if url else None
+
+        try:
+            bio = await cs.get(url, res_method="read")
+            await self.bot.user.edit(avatar=bio)
+            await qembed(ctx, f"Successfully changed the avatar. Currently using:\n{url}")
+        except aiohttp.InvalidURL:
+            await qembed(ctx, "The URL is invalid...")
+        except discord.InvalidArgument:
+            await qembed(ctx, "This URL does not contain a useable image")
+        except discord.HTTPException as err:
+            await qembed(ctx, err)
+        except TypeError:
+            await qembed(ctx, "You need to either provide an image URL or upload one with the command")
 
 def setup(bot):
     bot.add_cog(Owner(bot))
