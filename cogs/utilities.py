@@ -17,7 +17,7 @@ class DeletedMessage:
         if message.embeds:
             self.del_embed = message.embeds[0]
         if message.attachments:
-            self.attachment = message.attachments[0].url
+            self.attachment = message.attachments[0].proxy_url
         else:
             self.attachment = None
 
@@ -36,7 +36,7 @@ class EditedMessage:
         if message.embeds:
             self.edit_embed = message.embeds[0]
         if message.attachments:
-            self.attachment = message.attachments[0].url
+            self.attachment = message.attachments[0].proxy_url
         else:
             self.attachment = None
 
