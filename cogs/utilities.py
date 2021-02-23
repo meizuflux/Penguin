@@ -54,7 +54,7 @@ class Utilities(commands.Cog):
 
         if len(self.bot.deleted_messages[channel_id]) > 200:
             dele = len(self.bot.deleted_messages[channel_id]) - 200
-            for number, thing in enumerate(range(dele)):
+            for number in range(dele):
                 del self.bot.deleted_messages[channel_id][number]
 
 
@@ -75,7 +75,7 @@ class Utilities(commands.Cog):
         
         if len(self.bot.edited_messages[channel_id]) > 200:
             dele = len(self.bot.edited_messages[channel_id]) - 200
-            for number, thing in enumerate(range(dele)):
+            for number in range(dele):
                 del self.bot.edited_messages[channel_id][number]
 
         readable_order = list(reversed(self.bot.edited_messages[channel_id]))
@@ -95,7 +95,7 @@ class Utilities(commands.Cog):
         
         if len(self.bot.edited_messages_after[channel_id]) > 200:
             dele = len(self.bot.edited_messages_after[channel_id]) - 200
-            for number, thing in enumerate(range(dele)):
+            for number in range(dele):
                 del self.bot.edited_messages_after[channel_id][number]
 
         readable_order = list(reversed(self.bot.edited_messages_after[channel_id]))
