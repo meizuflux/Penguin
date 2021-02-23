@@ -58,9 +58,9 @@ class Utilities(commands.Cog):
     async def on_message_delete(self, message):
         self.bot.deleted_messages[message.channel.id].append(DeletedMessage(message))
 
-	@commands.Cog.listener()
-	async def on_message_edit(self, before, after):
-		self.bot.edits[before.channel.id].append(EditedMessage(before))
+    @commands.Cog.listener()
+    async def on_message_edit(self, before, after):
+    	self.bot.edits[before.channel.id].append(EditedMessage(before))
 
     @commands.group(invoke_without_subcommand=True)
     async def snipe(self, ctx, index: int = 1, channel: discord.TextChannel = None):
