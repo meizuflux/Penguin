@@ -12,6 +12,7 @@ import discord
 import datetime
 import humanize
 import psutil
+import asyncio
 from discord.ext import commands
 
 from utils.default import plural, qembed
@@ -22,8 +23,28 @@ class CustomContext(commands.Context):
         return 'my secret here'
 
 
-    async def confirm(self):
-        await self.send('hey guys vsauce here')
+    async def confirm(self, text):
+        e = discord.Embed(title='Confirm before doing this', description=text)
+        e.set_footer(text='React to this message with ✅ to confirm and ❌ to cancel')
+        message = await self.send(embed=e)
+        await message.add_reaction('✅')
+        await message.add_reaction('❌')
+        def terms(reaction, user):
+            return user == ctx.author and str(reaction.emoji) == '✅' or user == ctx.author and str(reaction.emoji) == '❌'
+
+        try:
+            reaction, user = await self.bot.wait_for('reaction_add',
+                                                    timeout=15,
+                                                    check=terms)
+        except asyncio.TimeoutError:
+                    await qembed(self, 'You did not react in time.')
+        else:
+            if reaction.emoji == '✅':
+                await message.delete()
+                return True
+            if reaction.emoji == '❌':
+                await message.delete()
+                return False
 
 
 class Help(commands.MinimalHelpCommand):
