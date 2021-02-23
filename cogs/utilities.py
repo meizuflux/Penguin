@@ -108,8 +108,8 @@ class Utilities(commands.Cog):
         snipe.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=snipe)
 
-@commands.group(invoke_without_subcommand=True)
-    async def snipe_edit(self, ctx, index: int = 1, channel: discord.TextChannel = None):
+    @snipe.command(help='yeah')
+    async def edit(self, ctx, index: int = 1, channel: discord.TextChannel = None):
         if channel and channel.is_nsfw():
             return await qembed(ctx, 'no sorry')
         if not channel:
