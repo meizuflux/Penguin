@@ -72,7 +72,7 @@ class Utilities(commands.Cog):
                 pass
                 content = msg.content
             try:
-                await ctx.send(msg.attachment)
+                await ctx.send(msg.attachment['url'])
             except:
                 pass
         except IndexError:
