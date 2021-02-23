@@ -76,7 +76,7 @@ class Utilities(commands.Cog):
                             f"**Index:** {index} / {len(self.bot.deleted_messages[channel.id])}")
         snipe.set_author(name=f'{str(msg.author)} said in #{channel.name}:', icon_url=str(msg.author.avatar_url))
         snipe.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
-        await ctx.send(embed=snipe, reply=False)
+        await ctx.send(embed=snipe)
 
 
 def setup(bot):

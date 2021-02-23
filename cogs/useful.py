@@ -264,7 +264,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                       value=f'```{str(sum([guild.member_count for guild in self.bot.guilds]))} members```', inline=True)
         emb.add_field(name='Average Member Count', value=f'```{average_members:.0f} members per guild```')
 
-        await msg.edit(content=None, embed=emb, mention_author=False)
+        await msg.edit(content=None, embed=emb)
 
     # https://github.com/Rapptz/RoboDanny/blob/1d0ddee9273338a13123117fbad6cac3493c8e7f/cogs/api.py from here till rtfm command
     def finder(self, text, collection, *, key=None, lazy=True):
@@ -409,7 +409,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(name='ping', help='only for cool kids')
     async def ping(self, ctx):
         start = time.perf_counter()
-        message = await ctx.send("Pinging ...", reply=False)
+        message = await ctx.send("Pinging ...")
         end = time.perf_counter()
         await message.delete()
         duration = (end - start) * 1000
