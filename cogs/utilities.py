@@ -117,6 +117,7 @@ class Utilities(commands.Cog):
             channel = ctx.channel
         try:
             msg = self.edited_message_for(index - 1, channel.id)
+            await ctx.send(msg.before_content)
         except IndexError:
             return await qembed(ctx, 'Nothing to snipe!')
         snipe = discord.Embed(title='Content:', description=msg.before_content, color=self.bot.embed_color,
