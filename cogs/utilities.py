@@ -6,7 +6,7 @@ import humanize
 
 
 class DeletedMessage:
-    __slots__ = ('author', 'content', 'channel', 'guild', 'created_at', 'deleted_at', 'del_embed')
+    __slots__ = ('author', 'content', 'channel', 'guild', 'created_at', 'deleted_at', 'del_embed', 'attachment')
 
     def __init__(self, message):
         self.author = message.author
@@ -16,6 +16,8 @@ class DeletedMessage:
         self.deleted_at = datetime.datetime.utcnow()
         if message.embeds:
             self.del_embed = message.embeds[0]
+        if message.attachments:
+            self.attachment = message.attachments[0]
 
 
 class EditedMessage:
