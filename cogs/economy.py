@@ -50,6 +50,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Gets the top 5 users.', aliases=['top', 'lb'])
     async def leaderboard(self, ctx, number: int = 5):
+        if number > 10: return qembed(ctx, 'No more than 10 please!')
         stats = await self.bot.db.fetch("SELECT * FROM economy ORDER BY bank+wallet DESC LIMIT $1", number)
         lb = []
         for number, i in enumerate(range(number)):
