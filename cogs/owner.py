@@ -27,6 +27,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
 
     @dev.command()
     async def sql(self, ctx, *, query):
+        """Execute SQL commands"""
         res = await self.bot.db.fetch(query)
         if len(res) == 0:
             return await ctx.message.add_reaction('✅')
@@ -119,6 +120,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
     @commands.group()
     @commands.is_owner()
     async def change(self, ctx):
+        """Change things about the bot without the developer portal"""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(str(ctx.command))
 
@@ -148,6 +150,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
     @change.command(name="avatar")
     @commands.is_owner()
     async def change_avatar(self, ctx, url: str = None):
+        """Changes the bot's avatar"""
         cs = aiohttp.ClientSession()
         if url is None and len(ctx.message.attachments) == 1:
             url = ctx.message.attachments[0].url
