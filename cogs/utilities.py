@@ -18,6 +18,8 @@ class DeletedMessage:
             self.del_embed = message.embeds[0]
         if message.attachments:
             self.attachment = message.attachments[0].url
+        else:
+            self.attachment = None
 
 
 class EditedMessage:
@@ -33,6 +35,8 @@ class EditedMessage:
         self.before_id = message.id
         if message.attachments:
             self.attachment = message.attachments[0].url
+        else:
+            self.attachment = None
 
 
 class Utilities(commands.Cog):
@@ -89,7 +93,6 @@ class Utilities(commands.Cog):
             return await qembed(ctx, 'no sorry')
         if not channel:
             channel = ctx.channel
-        await ctx.send(self.bot.edited_messages[channel.id][0].before_content)
         try:
             msg = self.deleted_message_for(index - 1, channel.id)
             try:
