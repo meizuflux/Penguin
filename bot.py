@@ -13,7 +13,7 @@ import collections
 from discord.ext import commands
 from collections import Counter
 
-from utils.context import CustomContext
+from cogs.useful import CustomContext
 
 
 class SYSTEM32(commands.Bot):

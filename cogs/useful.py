@@ -16,6 +16,14 @@ from discord.ext import commands
 
 from utils.default import plural, qembed
 
+class CustomContext(commands.Context):
+    @property
+    def secret(self):
+        return 'my secret here'
+
+    async def confirm(self):
+        await self.send('hey guys vsauce here')
+
 
 class Help(commands.MinimalHelpCommand):
     def get_command_signature(self, command, ctx=None):
