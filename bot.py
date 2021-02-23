@@ -13,7 +13,7 @@ import collections
 from discord.ext import commands
 from collections import Counter
 
-from utils.context import CustomContext
+from cogs.useful import CustomContext
 
 
 class SYSTEM32(commands.Bot):
@@ -38,6 +38,8 @@ class SYSTEM32(commands.Bot):
         self.command_list = []
         self.default_prefix = 'c//'
         self.deleted_messages = collections.defaultdict(list)
+        self.edited_messages = collections.defaultdict(list)
+        self.edited_messages_after = collections.defaultdict(list)
         self.socket_receive = 0
         self.alex = alexflipnote.Client(self.get_config('alex_api_key'))
         self.timetime = time.time()
@@ -87,7 +89,7 @@ class SYSTEM32(commands.Bot):
             print("Connecting to Discord ...")
             self.uptime = datetime.datetime.utcnow()
             self.db = pool_pg
-            extensions = ['jishaku', 'cogs.useful', 'cogs.owner', 'cogs.prefixes', 'cogs.economy', 'cogs.errorhandler', 'cogs.fun', 'cogs.utilities']
+            extensions = ['jishaku', 'cogs.useful', 'cogs.owner', 'cogs.prefixes', 'cogs.economy', 'cogs.errorhandler', 'cogs.fun', 'cogs.utilities', 'cogs.commandchart']
             for extension in extensions:
                 self.load_extension(extension)
 
@@ -135,7 +137,7 @@ class SYSTEM32(commands.Bot):
 
     async def close(self):
         await self.alex.close()
-        self.session.close()
+        await self.session.close()
         await super().close()
 
     async def get_context(self, message: discord.Message, *, cls=None):

@@ -12,9 +12,38 @@ import discord
 import datetime
 import humanize
 import psutil
+import asyncio
 from discord.ext import commands
 
 from utils.default import plural, qembed
+
+class CustomContext(commands.Context):
+    @property
+    def secret(self):
+        return 'my secret here'
+
+    async def confirm(self, text: str = 'Are you sure you want to do this?'):
+        e = discord.Embed(title='Confirm before doing this', description=text, color=self.bot.embed_color)
+        e.set_footer(text='React to this message with ✅ to confirm and ❌ to cancel')
+        message = await self.send(embed=e)
+        await message.add_reaction('✅')
+        await message.add_reaction('❌')
+        def terms(reaction, user):
+            return user == self.author and str(reaction.emoji) == '✅' or user == self.author and str(reaction.emoji) == '❌'
+
+        try:
+            reaction, user = await self.bot.wait_for('reaction_add',
+                                                    timeout=15,
+                                                    check=terms)
+        except asyncio.TimeoutError:
+                    await qembed(self, 'You did not react in time.')
+        else:
+            if reaction.emoji == '✅':
+                await message.delete()
+                return True
+            if reaction.emoji == '❌':
+                await message.delete()
+                return False
 
 
 class Help(commands.MinimalHelpCommand):
@@ -24,30 +53,14 @@ class Help(commands.MinimalHelpCommand):
             sig = command.usage
         else:
             sig = command.signature
-        if not ctx:
-            if not command.signature and not command.parent:
-                return f'`{self.clean_prefix}{command.name}`'
-            if command.signature and not command.parent:
-                return f'`{self.clean_prefix}{command.name}` `{sig}`'
-            if not command.signature and command.parent:
-                return f'`{self.clean_prefix}{command.parent}` `{sig}`'
-            else:
-                return f'`{self.clean_prefix}{command.parent}` `{command.name}` `{sig}`'
+        if not sig and not command.parent:
+            return f'`{self.clean_prefix}{command.name}`'
+        if sig and not command.parent:
+            return f'`{self.clean_prefix}{command.name}` `{sig}`'
+        if not sig and command.parent:
+            return f'`{self.clean_prefix}{command.parent}` `{command.name}`'
         else:
-            def get_invoke_with():
-                msg = ctx.message.content
-                escape = "\\"
-                prefix_match = re.match(f'{escape}{escape.join(ctx.prefix)}', msg).regs[0][1]
-                return msg[prefix_match:msg.rindex(ctx.invoked_with)]
-
-            if not command.signature and not command.parent:
-                return f'{ctx.prefix}{ctx.invoked_with}'
-            if command.signature and not command.parent:
-                return f'{ctx.prefix}{ctx.invoked_with} {sig}'
-            if not command.signature and command.parent:
-                return f'{ctx.prefix}{get_invoke_with()}{ctx.invoked_with}'
-            else:
-                return f'{ctx.prefix}{get_invoke_with()}{ctx.invoked_with} {sig}'
+            return f'`{self.clean_prefix}{command.parent}` `{command.name}` `{sig}`'
 
     async def send_error_message(self, error):
         ctx = self.context
@@ -409,7 +422,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(name='ping', help='only for cool kids')
     async def ping(self, ctx):
         start = time.perf_counter()
-        message = await ctx.send("Pinging ...", reply=False)
+        message = await ctx.send("Pinging ...")
         end = time.perf_counter()
         await message.delete()
         duration = (end - start) * 1000
