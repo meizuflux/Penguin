@@ -135,7 +135,7 @@ class SYSTEM32(commands.Bot):
 
     async def close(self):
         await self.alex.close()
-        self.session.close()
+        await self.session.close()
         await super().close()
 
     async def get_context(self, message: discord.Message, *, cls=None):
