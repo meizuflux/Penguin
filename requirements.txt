@@ -8,3 +8,4 @@ prettytable
 humanize
 alexflipnote.py
 discord-flags
+matplotlib
