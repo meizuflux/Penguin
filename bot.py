@@ -87,7 +87,7 @@ class SYSTEM32(commands.Bot):
             print("Connecting to Discord ...")
             self.uptime = datetime.datetime.utcnow()
             self.db = pool_pg
-            extensions = ['jishaku', 'cogs.useful', 'cogs.owner', 'cogs.prefixes', 'cogs.economy', 'cogs.errorhandler', 'cogs.fun', 'cogs.utilities']
+            extensions = ['jishaku', 'cogs.useful', 'cogs.owner', 'cogs.prefixes', 'cogs.economy', 'cogs.errorhandler', 'cogs.fun', 'cogs.utilities', 'cogs.commandchart']
             for extension in extensions:
                 self.load_extension(extension)
 
