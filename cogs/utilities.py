@@ -62,7 +62,7 @@ class Utilities(commands.Cog):
     async def on_message_edit(self, before, after):
         if before.channel.id == 381963689470984203:
             await ctx.send(before)
-    	self.bot.edits[before.channel.id].append(EditedMessage(before))
+        self.bot.edits[before.channel.id].append(EditedMessage(before))
 
     @commands.group(invoke_without_subcommand=True)
     async def snipe(self, ctx, index: int = 1, channel: discord.TextChannel = None):
