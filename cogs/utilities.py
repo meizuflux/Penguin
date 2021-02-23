@@ -21,7 +21,7 @@ class DeletedMessage:
 
 
 class EditedMessage:
-    __slots__ = ('author', 'before_content', 'channel', 'guild', 'created_at', 'edited_at', 'before_id')
+    __slots__ = ('author', 'before_content', 'channel', 'guild', 'created_at', 'edited_at', 'before_id', 'attachment')
 
     def __init__(self, message):
         self.author = message.author
@@ -120,7 +120,6 @@ class Utilities(commands.Cog):
             channel = ctx.channel
         try:
             msg = self.edited_message_for(index - 1, channel.id)
-            await ctx.send(msg.before_content)
         except IndexError:
             return await qembed(ctx, 'Nothing to snipe!')
         snipe = discord.Embed(title='Content:', description=msg.before_content, color=self.bot.embed_color,
