@@ -21,7 +21,7 @@ class DeletedMessage:
 
 
 class EditedMessage:
-    __slots__ = ('author', 'before', 'channel', 'guild', 'created_at', 'edited_at', 'id')
+    __slots__ = ('author', 'before', 'channel', 'guild', 'created_at', 'edited_at', 'before_id')
 
     def __init__(self, message):
         self.author = message.author
@@ -30,7 +30,7 @@ class EditedMessage:
         self.guild = message.guild
         self.created_at = message.created_at
         self.edited_at = datetime.datetime.utcnow()
-        self.id = message.id
+        self.before_id = message.id
 
 
 class Utilities(commands.Cog):
