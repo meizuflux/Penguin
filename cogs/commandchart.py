@@ -158,3 +158,6 @@ class CommandChart(commands.Cog):
         img = self.create_chart(top_ten, others, channel)
         await em.delete()
         await ctx.channel.send(file=discord.File(img, "chart.png"))
+
+def setup(bot):
+    bot.add_cog(CommandChart(bot))
