@@ -98,6 +98,8 @@ class CommandChart(commands.Cog):
 
     @commands.guild_only()
     @commands.command()
+    @commands.cooldown(1, 10, commands.BucketType.channel)
+    @commands.max_concurrency(1, commands.BucketType.channel)
     async def commandchart(
         self, ctx, channel: typing.Optional[discord.TextChannel] = None, number: int = 5000,
     ):
