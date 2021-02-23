@@ -52,10 +52,10 @@ class Utilities(commands.Cog):
         except KeyError:
             return None
 
-        if len(self.bot.deleted_messages[ctx.channel.id]) > 200:
-            dele = len(self.bot.deleted_messages[ctx.channel.id]) - 200
+        if len(self.bot.deleted_messages[channel_id]) > 200:
+            dele = len(self.bot.deleted_messages[channel_id]) - 200
             for number, thing in enumerate(range(dele)):
-                del self.bot.deleted_messages[ctx.channel.id][number]
+                del self.bot.deleted_messages[channel_id][number]
 
 
         readable_order = list(reversed(self.bot.deleted_messages[channel_id]))
@@ -73,10 +73,10 @@ class Utilities(commands.Cog):
         except KeyError:
             return None
         
-        if len(self.bot.edited_messages[ctx.channel.id]) > 200:
-            dele = len(self.bot.edited_messages[ctx.channel.id]) - 200
+        if len(self.bot.edited_messages[channel_id]) > 200:
+            dele = len(self.bot.edited_messages[channel_id]) - 200
             for number, thing in enumerate(range(dele)):
-                del self.bot.edited_messages[ctx.channel.id][number]
+                del self.bot.edited_messages[channel_id][number]
 
         readable_order = list(reversed(self.bot.edited_messages[channel_id]))
         try:
@@ -93,10 +93,10 @@ class Utilities(commands.Cog):
         except KeyError:
             return None
         
-        if len(self.bot.edited_messages_after[ctx.channel.id]) > 200:
-            dele = len(self.bot.edited_messages_after[ctx.channel.id]) - 200
+        if len(self.bot.edited_messages_after[channel_id]) > 200:
+            dele = len(self.bot.edited_messages_after[channel_id]) - 200
             for number, thing in enumerate(range(dele)):
-                del self.bot.edited_messages_after[ctx.channel.id][number]
+                del self.bot.edited_messages_after[channel_id][number]
 
         readable_order = list(reversed(self.bot.edited_messages_after[channel_id]))
         try:
