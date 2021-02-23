@@ -17,7 +17,7 @@ class DeletedMessage:
         if message.embeds:
             self.del_embed = message.embeds[0]
         if message.attachments:
-            self.attachment = message.attachments[0]
+            self.attachment = message.attachments[0].url
 
 
 class EditedMessage:
@@ -72,7 +72,7 @@ class Utilities(commands.Cog):
                 pass
                 content = msg.content
             try:
-                await ctx.send(msg.attachment['url'])
+                await ctx.send(msg.attachment)
             except:
                 pass
         except IndexError:
