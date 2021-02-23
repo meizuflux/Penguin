@@ -87,8 +87,12 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
     @dev.command()
     async def reboot(self, ctx):
         """Calls bot.close() and lets the systems service handler restart it."""
-        await qembed(ctx, "Goodbye. I'll be back soon.")
-        await self.bot.close()
+        this = await ctx.confirm('Click to confirm.')
+        if this:
+            await qembed(ctx, "Goodbye. I'll be back soon.")
+            await self.bot.close()
+        if not this:
+            return await qembed(ctx, "Cancelling")
 
     @dev.command(name="source", aliases=["src"])
     async def jsk_source(self, ctx, *, command_name: str):
