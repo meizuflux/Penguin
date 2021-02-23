@@ -264,7 +264,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                       value=f'```{str(sum([guild.member_count for guild in self.bot.guilds]))} members```', inline=True)
         emb.add_field(name='Average Member Count', value=f'```{average_members:.0f} members per guild```')
 
-        await msg.edit(content=None, embed=emb)
+        await msg.edit(content=None, embed=emb, reply=False)
 
     # https://github.com/Rapptz/RoboDanny/blob/1d0ddee9273338a13123117fbad6cac3493c8e7f/cogs/api.py from here till rtfm command
     def finder(self, text, collection, *, key=None, lazy=True):
