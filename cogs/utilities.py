@@ -67,7 +67,7 @@ class Utilities(commands.Cog):
         if len(self.bot.edited_messages[channel_id]) > 100:
             del self.bot.edited_messages[channel_id][0]
 
-        readable_order = list(reversed(self.bot.edited[channel_id]))
+        readable_order = list(reversed(self.bot.edited_messages[channel_id]))
         try:
             result = readable_order[index]
         except KeyError:
