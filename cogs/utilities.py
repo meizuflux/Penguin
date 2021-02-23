@@ -6,7 +6,7 @@ import humanize
 
 
 class DeletedMessage:
-    __slots__ = ('author', 'content', 'channel', 'guild', 'created_at', 'deleted_at', 'embed')
+    __slots__ = ('author', 'content', 'channel', 'guild', 'created_at', 'deleted_at')
 
     def __init__(self, message):
         self.author = message.author
@@ -14,8 +14,6 @@ class DeletedMessage:
         self.guild = message.guild
         self.created_at = message.created_at
         self.deleted_at = datetime.datetime.utcnow()
-        if message.embeds is not None:
-            self.embed = message.embeds[0]
 
 
 class EditedMessage:
@@ -50,15 +48,18 @@ class Utilities(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
-        self.bot.deleted_messages[message.channel.id].append(DeletedMessage(message))
         if message.embeds:
+            self.bot.deleted_messages[message.channel.id].append(message)
             self.bot.last_embed = message.embeds[0]
-            await message.channel.send('someone deleted an embed OOP')
+            return await message.channel.send('someone deleted an embed OOP')
+        self.bot.deleted_messages[message.channel.id].append(DeletedMessage(message))
+
 
     @commands.group(invoke_without_subcommand=True)
     async def snipe(self, ctx, index: int = 1, channel: discord.TextChannel = None):
         if not channel:
             channel = ctx.channel
+        await ctx.send(embed=self.bot.deleted_messages[channel.id][0].embed)
         try:
             msg = self.deleted_message_for(index - 1, channel.id)
         except IndexError:
