@@ -6,7 +6,7 @@ import humanize
 
 
 class DeletedMessage:
-    __slots__ = ('author', 'content', 'channel', 'guild', 'created_at', 'deleted_at')
+    __slots__ = ('author', 'content', 'channel', 'guild', 'created_at', 'deleted_at', 'del_embed')
 
     def __init__(self, message):
         self.author = message.author
@@ -14,6 +14,7 @@ class DeletedMessage:
         self.guild = message.guild
         self.created_at = message.created_at
         self.deleted_at = datetime.datetime.utcnow()
+        self.del_embed = message.embeds[0]
 
 
 class EditedMessage:
@@ -59,9 +60,10 @@ class Utilities(commands.Cog):
     async def snipe(self, ctx, index: int = 1, channel: discord.TextChannel = None):
         if not channel:
             channel = ctx.channel
-        await ctx.send(embed=self.bot.last_embed)
+
         try:
             msg = self.deleted_message_for(index - 1, channel.id)
+            await ctx.send(embed=msg.embed)
         except IndexError:
             return await qembed(ctx, 'Nothing to snipe!')
         snipe = discord.Embed(title='Content:', description=msg.content, color=self.bot.embed_color,
