@@ -59,7 +59,7 @@ class Utilities(commands.Cog):
     async def snipe(self, ctx, index: int = 1, channel: discord.TextChannel = None):
         if not channel:
             channel = ctx.channel
-        await ctx.send(embed=self.bot.deleted_messages[channel.id][0].embed)
+        await ctx.send(embed=self.bot.deleted_messages[channel.id][0])
         try:
             msg = self.deleted_message_for(index - 1, channel.id)
         except IndexError:
