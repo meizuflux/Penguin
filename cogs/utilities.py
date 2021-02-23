@@ -57,13 +57,13 @@ class Utilities(commands.Cog):
 
     def edited_message_for(self, index: int, channel_id: int):
         try:
-            if index > len(self.bot.edited_message[channel_id]):
+            if index > len(self.bot.edited_messages[channel_id]):
                 return None
         except KeyError:
             return None
         
         if len(self.bot.edited_messages[channel_id]) > 100:
-            del self.bot.edited_message[channel_id][0]
+            del self.bot.edited_messages[channel_id][0]
 
         readable_order = list(reversed(self.bot.edits[channel_id]))
         try:
@@ -79,7 +79,7 @@ class Utilities(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
-        self.bot.edited_message[before.channel.id].append(EditedMessage(before))
+        self.bot.edited_messages[before.channel.id].append(EditedMessage(before))
 
     @commands.group(invoke_without_subcommand=True)
     async def snipe(self, ctx, index: int = 1, channel: discord.TextChannel = None):
