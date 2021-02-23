@@ -24,30 +24,14 @@ class Help(commands.MinimalHelpCommand):
             sig = command.usage
         else:
             sig = command.signature
-        if not ctx:
-            if not command.signature and not command.parent:
-                return f'`{self.clean_prefix}{command.name}`'
-            if command.signature and not command.parent:
-                return f'`{self.clean_prefix}{command.name}` `{sig}`'
-            if not command.signature and command.parent:
-                return f'`{self.clean_prefix}{command.parent}` `{sig}`'
-            else:
-                return f'`{self.clean_prefix}{command.parent}` `{command.name}` `{sig}`'
+        if not sig and not command.parent:
+            return f'`{self.clean_prefix}{command.name}`'
+        if sig and not command.parent:
+            return f'`{self.clean_prefix}{command.name}` `{sig}`'
+        if not sig and command.parent:
+            return f'`{self.clean_prefix}{command.parent}` `{command.name}`'
         else:
-            def get_invoke_with():
-                msg = ctx.message.content
-                escape = "\\"
-                prefix_match = re.match(f'{escape}{escape.join(ctx.prefix)}', msg).regs[0][1]
-                return msg[prefix_match:msg.rindex(ctx.invoked_with)]
-
-            if not command.signature and not command.parent:
-                return f'{ctx.prefix}{ctx.invoked_with}'
-            if command.signature and not command.parent:
-                return f'{ctx.prefix}{ctx.invoked_with} {sig}'
-            if not command.signature and command.parent:
-                return f'{ctx.prefix}{get_invoke_with()}{ctx.invoked_with}'
-            else:
-                return f'{ctx.prefix}{get_invoke_with()}{ctx.invoked_with} {sig}'
+            return f'`{self.clean_prefix}{command.parent}` `{command.name}` `{sig}`'
 
     async def send_error_message(self, error):
         ctx = self.context
