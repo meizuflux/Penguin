@@ -40,17 +40,19 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         wallet = data[0]
         bank = data[1]
         e = discord.Embed(title=f'{user.name if user else ctx.author.name}\'s balance',
-                          description=f'<:green_arrow:811052039416447027> **Wallet**: ${humanize.intcomma(wallet)}\n<:green_arrow:811052039416447027> **Bank**: ${humanize.intcomma(bank)}\n<:green_arrow:811052039416447027> **Total**: ${humanize.intcomma(wallet + bank)}',
+                          description=f"<:green_arrow:811052039416447027> **Wallet**: ${humanize.intcomma(wallet)}"
+                          f"<:green_arrow:811052039416447027> **Bank**: ${humanize.intcomma(bank)}"
+                          f"<:green_arrow:811052039416447027> **Total**: ${humanize.intcomma(wallet + bank)}",
                           color=self.bot.embed_color, timestamp=ctx.message.created_at).set_footer(
             text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         e.set_thumbnail(url=user.avatar_url if user else ctx.author.avatar_url)
         await ctx.send(embed=e)
 
-    @commands.command(help='Gets the top 5 users.', aliases=['top', 'lb', 'top5'])
-    async def leaderboard(self, ctx):
-        stats = await self.bot.db.fetch("SELECT * FROM economy ORDER BY bank+wallet DESC LIMIT 5")
+    @commands.command(help='Gets the top 5 users.', aliases=['top', 'lb'])
+    async def leaderboard(self, ctx, number: int = 5):
+        stats = await self.bot.db.fetch("SELECT * FROM economy ORDER BY bank+wallet DESC LIMIT $1", number)
         lb = []
-        for number, i in enumerate(range(5)):
+        for number, i in enumerate(range(number)):
             lb.append(f'{number+1}) {await self.bot.try_user(stats[number]["userid"])} » ${stats[number]["wallet"]+stats[number]["bank"]}')
         leaderboard = discord.Embed(title='Leaderboard',
                                     color=self.bot.embed_color,
@@ -199,7 +201,8 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
                                   data[1], ctx.author.id)
         emoji = ['🐟', '🐠', '🐡']
         await qembed(ctx,
-                     f'You travel to the local lake and catch {fish} fish {random.choice(emoji)}. Then you sell them to the market at a price of ${price}, totaling in at ${cash} for a days work.')
+                     f'You travel to the local lake and catch {fish} fish {random.choice(emoji)}.' 
+                    'Then you sell them to the market at a price of ${price}, totaling in at ${cash} for a days work.')
 
     @commands.command(help='Beg in the street')
     @commands.cooldown(rate=1, per=200, type=commands.BucketType.user)
@@ -207,12 +210,14 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         async with self.bot.session.get('https://pipl.ir/v1/getPerson') as f:
             cities = await f.json()
         data = await self.get_stats(self, ctx.author.id)
-        gender = ['man', 'woman']
+
         cash = random.randint(0, 500)
         await self.bot.db.execute("UPDATE economy SET wallet = $1, bank = $2 WHERE userid = $3", data[0] + cash,
                                   data[1], ctx.author.id)
+        city = cities["person"]["personal"]["city"]
+        gender = ['man', 'woman']
         await qembed(ctx,
-                     f'You sit on the streets of {cities["person"]["personal"]["city"]} and a nice {random.choice(gender)} hands you ${cash}.')
+                     f'You sit on the streets of {city} and a nice {random.choice(gender)} hands you ${cash}.')
 
     @commands.command(help='Resets a cooldown on one command', aliases=['reset', 'resetcooldown', 'cooldownreset'])
     @commands.cooldown(rate=1, per=300, type=commands.BucketType.user)
