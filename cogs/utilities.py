@@ -21,11 +21,11 @@ class DeletedMessage:
 
 
 class EditedMessage:
-    __slots__ = ('author', 'before', 'channel', 'guild', 'created_at', 'edited_at', 'before_id')
+    __slots__ = ('author', 'before_content', 'channel', 'guild', 'created_at', 'edited_at', 'before_id')
 
     def __init__(self, message):
         self.author = message.author
-        self.before = message.content
+        self.before_content = message.content
         #self.after = message.content
         self.guild = message.guild
         self.created_at = message.created_at
