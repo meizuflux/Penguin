@@ -54,7 +54,7 @@ class Utilities(commands.Cog):
 
     @commands.group(invoke_without_subcommand=True)
     async def snipe(self, ctx, index: int = 1, channel: discord.TextChannel = None):
-        if channel and channel.is_nsfw:
+        if channel and channel.is_nsfw():
             return await qembed(ctx, 'no sorry')
         if not channel:
             channel = ctx.channel
