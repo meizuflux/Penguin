@@ -87,6 +87,7 @@ class Utilities(commands.Cog):
             return await qembed(ctx, 'no sorry')
         if not channel:
             channel = ctx.channel
+        await ctx.send(self.bot.edited_messages[channel.id][0].before_content)
         try:
             msg = self.deleted_message_for(index - 1, channel.id)
             try:
@@ -109,7 +110,7 @@ class Utilities(commands.Cog):
         snipe.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=snipe)
 
-    @snipe.command(help='yeah')
+    @commands.command(help='yeah')
     async def edit(self, ctx, index: int = 1, channel: discord.TextChannel = None):
         if channel and channel.is_nsfw():
             return await qembed(ctx, 'no sorry')
