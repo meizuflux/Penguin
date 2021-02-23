@@ -113,7 +113,7 @@ class Utilities(commands.Cog):
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
         self.bot.edited_messages[before.channel.id].append(EditedMessage(before))
-        self.bot.edited_messages[before.channel.id].append(after)
+        self.bot.edited_messages_after[after.channel.id].append(after)
 
     @commands.group(invoke_without_subcommand=True)
     async def snipe(self, ctx, index: int = 1, channel: discord.TextChannel = None):
