@@ -49,17 +49,15 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(help='Gets the top 5 users.', aliases=['top', 'lb', 'top5'])
     async def leaderboard(self, ctx):
         stats = await self.bot.db.fetch("SELECT * FROM economy ORDER BY bank+wallet DESC LIMIT 5")
-        await ctx.send(embed=discord.Embed(title='Leaderboard', description='**TOP 5 PLAYERS:**\n```py\n' + "\n".join([
-            f'{number}) {await self.bot.try_user(stats[number - 1]["userid"])} » ${stats[number - 1]["wallet"] + stats[number - 1]["bank"]}'
-            for
-            number, i
-            in
-            enumerate(
-                range(
-                    5),
-                start=1)]) + '```',
-                                           color=self.bot.embed_color, timestamp=ctx.message.created_at).set_footer(
-            text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url))
+        lb = []
+        for number, i in enumerate(range(5)):
+            lb.append(f'{number+1}) {await self.bot.try_user(stats[number]["userid"])} » ${stats[number]["wallet"]+stats[number]["bank"]}')
+        leaderboard = discord.Embed(title='Leaderboard',
+                                    color=self.bot.embed_color,
+                                    timestamp=ctx.message.created_at,
+                                    description='**TOP 5 PLAYERS:**```py\n' + "\n".join(lb))
+        leaderboard.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+        await ctx.send(embed=leaderboard)
 
     @commands.command(help='Deposits a set amount into your bank', aliases=['dep'])
     async def deposit(self, ctx, amount):
