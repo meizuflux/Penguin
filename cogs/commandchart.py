@@ -102,7 +102,7 @@ class CommandChart(commands.Cog):
         self, ctx, channel: typing.Optional[discord.TextChannel] = None, number: int = 5000,
     ):
         """See the used commands in a certain channel within a certain amount of messages."""
-        e = discord.Embed(description="Loading...", color=0x000099)
+        e = discord.Embed(description="Loading...", color=self.bot.embed_color)
         e.set_thumbnail(url="https://cdn.discordapp.com/emojis/544517783224975387.gif?v=1")
         em = await ctx.send(embed=e)
 
