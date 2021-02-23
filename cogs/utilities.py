@@ -21,14 +21,15 @@ class DeletedMessage:
 
 
 class EditedMessage:
-    __slots__ = ('author', 'content', 'channel', 'guild', 'created_at', 'deleted_at')
+    __slots__ = ('author', 'before', 'channel', 'guild', 'created_at', 'edited_at')
 
     def __init__(self, message):
         self.author = message.author
-        self.content = message.content
+        self.before = message.content
+        #self.after = message.content
         self.guild = message.guild
         self.created_at = message.created_at
-        self.deleted_at = datetime.datetime.utcnow()
+        self.edited_at = datetime.datetime.utcnow()
 
 
 class Utilities(commands.Cog):
@@ -57,6 +58,10 @@ class Utilities(commands.Cog):
     async def on_message_delete(self, message):
         self.bot.deleted_messages[message.channel.id].append(DeletedMessage(message))
 
+	@commands.Cog.listener()
+	async def on_message_edit(self, before, after):
+		self.bot.edits[before.channel.id].append(EditedMessage(before))
+
     @commands.group(invoke_without_subcommand=True)
     async def snipe(self, ctx, index: int = 1, channel: discord.TextChannel = None):
         if channel and channel.is_nsfw():
@@ -71,14 +76,12 @@ class Utilities(commands.Cog):
             except AttributeError:
                 pass
                 content = msg.content
-            try:
-                await ctx.send(msg.attachment)
-            except:
-                pass
         except IndexError:
             return await qembed(ctx, 'Nothing to snipe!')
         snipe = discord.Embed(title='Content:', description=content, color=self.bot.embed_color,
                               timestamp=ctx.message.created_at)
+        if msg.attachment:
+            snipe.add_field(name='Attachment', value=msg.attachment)
         snipe.add_field(name='Message Stats:', value=
                             f"**Created At:** {humanize.naturaldelta(msg.created_at - datetime.datetime.utcnow())} ago\n"
                             f"**Deleted At:** {humanize.naturaldelta(msg.deleted_at - datetime.datetime.utcnow())} ago\n"
