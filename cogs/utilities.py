@@ -71,6 +71,10 @@ class Utilities(commands.Cog):
             except AttributeError:
                 pass
                 content = msg.content
+            try:
+                await ctx.send(msg.attachment)
+            except:
+                pass
         except IndexError:
             return await qembed(ctx, 'Nothing to snipe!')
         snipe = discord.Embed(title='Content:', description=content, color=self.bot.embed_color,
