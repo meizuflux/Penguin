@@ -22,7 +22,6 @@ class CustomContext(commands.Context):
     def secret(self):
         return 'my secret here'
 
-
     async def confirm(self, text):
         e = discord.Embed(title='Confirm before doing this', description=text)
         e.set_footer(text='React to this message with ✅ to confirm and ❌ to cancel')
