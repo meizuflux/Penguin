@@ -213,7 +213,7 @@ class fun(commands.Cog):
                           description=joke['value'],
 						  color=self.bot.embed_color, timestamp=ctx.message.created_at).set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         e.set_thumbnail(url=joke['icon_url'])
-        await ctx.send(embed=e
+        await ctx.send(embed=e)
 
 
 def setup(bot):
