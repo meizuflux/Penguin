@@ -11,6 +11,7 @@ import zlib
 import discord
 import datetime
 import humanize
+from io import BytesIO
 import psutil
 import asyncio
 from discord.ext import commands
@@ -449,6 +450,17 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             timestamp=ctx.message.created_at).set_footer(text=f"Requested by {ctx.author}",
                                                          icon_url=ctx.author.avatar_url))
 
+    @commands.command(help='Shows the avatar of a user', aliases=['pfp'])
+    async def avatar(self, ctx, user: discord.Member=None):
+        if not user:
+            user = ctx.author
+        ext = 'gif' if user.is_avatar_animated() else 'png'
+        ava = discord.Embed(title=f'{user.name}\'s avatar:',
+                            color=self.bot.embed_color,
+                            timestamp=ctx.message.created_at)
+        ava.set_image(url=f"{user.id}.{ext}")
+        ava.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+        await ctx.send(file=discord.File(BytesIO(await user.avatar_url.read()), f"{user.id}.{ext}"))
 
 def setup(bot):
     bot.add_cog(Useful(bot))
