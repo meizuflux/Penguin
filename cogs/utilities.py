@@ -57,7 +57,7 @@ class Utilities(commands.Cog):
 
 
     @commands.guild_only()
-    @mng_msg()
+    @commands.is_owner()
     @commands.command(help='Views up to the last 500 deleted messages')
     async def snipe(self, ctx, index: int = 1, channel: discord.TextChannel = None):
         if channel and channel.is_nsfw():
