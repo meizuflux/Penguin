@@ -95,7 +95,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
             return await qembed(ctx, "Cancelling")
 
     @dev.command()
-    async def reboot(self, ctx, message: discord.Message):
+    async def del(self, ctx, message: discord.Message):
         """Deletes a message after having been provided one"""
         msg = ctx.fetch_message(message)
         await msg.delete()
