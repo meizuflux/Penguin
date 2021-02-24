@@ -13,10 +13,10 @@ import collections
 from discord.ext import commands
 from collections import Counter
 
-from cogs.useful import CustomContext
+from cogs.useful import ChuckContext
 
 
-class SYSTEM32(commands.Bot):
+class Chuck(commands.Bot):
     """Subclassed Bot"""
 
     def __init__(self):
@@ -163,7 +163,7 @@ class SYSTEM32(commands.Bot):
             await self.process_commands(after)
 
 
-bot = SYSTEM32()
+bot = Chuck()
 bot.loop.create_task(bot.create_tables())
 
 os.environ["JISHAKU_NO_UNDERSCORE"] = "True"
