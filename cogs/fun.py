@@ -23,7 +23,7 @@ class Fun(commands.Cog):
     @flags.add_flag("--dark", action='store_true', default=False)
     @flags.add_flag("--light", action='store_true', default=False)
     @flags.add_flag("--text", default="supreme")
-    @flags.command(usage='"supreme" [--dark|--light]')
+    @commands.command(usage='"supreme" [--dark|--light]', cls=flags.FlagCommand)
     async def supreme(self, ctx, **flags):
         """Makes a custom supreme logo
         example: supreme --text "hey guys" --dark"""
@@ -50,6 +50,45 @@ class Fun(commands.Cog):
     @commands.command(help='Reverses some text')
     async def reverse(self, ctx, *, text):
         await qembed(ctx, text.replace(' ', ''.join(reversed(text))))
+
+    @commands.command(help='Checks your speed.')
+    async def react(self, ctx, seconds: int=None):
+        if seconds and seconds > 31:
+            return await qembed(ctx, 'You cannot specify more than 30 seconds. Sorry.')
+        emg = str(random.choice(self.bot.emojis))
+        if not seconds:
+            seconds = 5
+        embed = discord.Embed(description=f'React to this message with {emg} in {seconds} seconds.', timestamp=ctx.message.created_at, color=self.bot.embed_color).set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+        msg = await ctx.send(embed=embed)
+        await msg.add_reaction(emg)
+        start = time.perf_counter()
+        def gcheck(reaction, user):
+            return user == ctx.author and str(reaction.emoji) == emg
+        try:
+            reaction, user = await self.bot.wait_for('reaction_add', timeout=seconds * 1.5, check=gcheck)
+        except asyncio.TimeoutError:
+            embed = discord.Embed(description='You did not react in time', timestamp=ctx.message.created_at, color=self.bot.embed_color).set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+            await msg.edit(embed=embed)
+        else:
+            end = time.perf_counter()
+            tim = end - start
+            embed = discord.Embed(description=f'You reacted in **{tim:.2f}** seconds, **{seconds - tim:.2f}** off.', timestamp=ctx.message.created_at, color=self.bot.embed_color).set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+            await msg.edit(embed=embed)
+                
+
+    @commands.command(name='chucknorris',
+                      aliases=['norris', 'chucknorrisjoke'],
+                      help='Gets a random Chuck Norris Joke')
+    async def norris(self, ctx):
+        data = await self.bot.session.get(
+            'https://api.chucknorris.io/jokes/random')
+        joke = await data.json()
+        e = discord.Embed(title='Chuck Norris Joke',
+                          url=joke['url'],
+                          description=joke['value'],
+						  color=self.bot.embed_color, timestamp=ctx.message.created_at).set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+        e.set_thumbnail(url=joke['icon_url'])
+        await ctx.send(embed=e)
 
 
 def setup(bot):
