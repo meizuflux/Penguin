@@ -473,6 +473,10 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             package = await f.json()
         embed = discord.Embed(title=package['info']['name'], url=package['info']['project_url'],
                               description=package['info']['summary'], color=self.bot.embed_color)
+        embed.set_thumbnail(url='https://images-ext-1.discordapp.net/external'
+                                '/adm9_1MmHvllv0c3GzzJiqPBFxfxhgveHHi9fiDaurI/https/images-ext-1.discordapp.net'
+                                '/external/Ko5_nvJz886Ep3Yd-Dn234gRBpnEZyvoyCQNxDX1OZ0/https/cdn-images-1.medium.com'
+                                '/max/1200/1%252A2FrV8q6rPdz6w2ShV6y7bw.png?width=529&height=465')
         await ctx.send(embed=embed)
 
 
