@@ -139,7 +139,7 @@ class Chuck(commands.Bot):
 
     async def get_context(self, message: discord.Message, *, cls=None):
         """Method to override "ctx" """
-        return await super().get_context(message, cls=cls or CustomContext)
+        return await super().get_context(message, cls=cls or ChuckContext)
 
     async def on_message(self, message: discord.Message):
         """Checking if someone pings the bot"""
