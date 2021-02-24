@@ -460,7 +460,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                             timestamp=ctx.message.created_at)
         ava.set_image(url=f"{user.id}.{ext}")
         ava.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
-        await ctx.send(file=discord.File(BytesIO(await user.avatar_url.read()), f"{user.id}.{ext}"))
+        await ctx.send(embed=ava, file=discord.File(BytesIO(await user.avatar_url.read()), f"{user.id}.{ext}"))
 
 def setup(bot):
     bot.add_cog(Useful(bot))
