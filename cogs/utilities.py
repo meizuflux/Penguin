@@ -3,6 +3,7 @@ from discord.ext import commands
 import datetime
 from utils.default import qembed
 import humanize
+from utils.permissions import mng_msg
 
 
 class DeletedMessage:
@@ -54,7 +55,10 @@ class Utilities(commands.Cog):
             return
         self.bot.deleted_messages[message.channel.id].append(DeletedMessage(message))
 
-    @commands.group(invoke_without_subcommand=True)
+
+    @commands.guild_only()
+    @mng_msg()
+    @commands.command(help='Views up to the last 500 deleted messages')
     async def snipe(self, ctx, index: int = 1, channel: discord.TextChannel = None):
         if channel and channel.is_nsfw():
             return await qembed(ctx, 'no sorry')
