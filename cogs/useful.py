@@ -10,6 +10,7 @@ import zlib
 
 import discord
 import datetime
+import aiohttp
 import humanize
 from io import BytesIO
 import psutil
@@ -19,7 +20,7 @@ from discord.ext import commands
 from utils.default import plural, qembed
 
 
-class CustomContext(commands.Context):
+class ChuckContext(commands.Context):
     @property
     def secret(self):
         return 'my secret here'
@@ -48,6 +49,14 @@ class CustomContext(commands.Context):
             if reaction.emoji == '❌':
                 await message.delete()
                 return False
+
+    async def mystbin(self, data):
+        data = bytes(data, 'utf-8')
+        async with aiohttp.ClientSession() as cs:
+            async with cs.post('https://mystb.in/documents', data=data) as r:
+                res = await r.json()
+                key = res["key"]
+                return f"https://mystb.in/{key}"
 
 
 class Help(commands.MinimalHelpCommand):
@@ -79,8 +88,8 @@ class Help(commands.MinimalHelpCommand):
 
     def add_bot_commands_formatting(self, commands, heading):
         if commands:
-            joined = '`\u2002•\u2002`'.join(c.name for c in commands)
-            self.paginator.add_line('**%s commands:**' % heading)
+            joined = '`\u2002,\u2002`'.join(c.name for c in commands)
+            self.paginator.add_line('**%s**' % heading)
             self.paginator.add_line(f'`{joined}`')
             self.paginator.add_line()
 
