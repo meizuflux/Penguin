@@ -3,6 +3,7 @@ from discord.ext import commands
 import datetime
 from utils.default import qembed
 import humanize
+from utils.permissions import mng_msg
 
 
 class DeletedMessage:
@@ -20,26 +21,7 @@ class DeletedMessage:
             self.attachment = message.attachments[0].proxy_url
         else:
             self.attachment = None
-
-
-class EditedMessage:
-    __slots__ = ('author', 'before_content', 'channel', 'guild', 'created_at', 'edited_at', 'before_id', 'attachment', 'edit_embed')
-
-    def __init__(self, message):
-        self.author = message.author
-        self.before_content = message.content
-        #self.after = message.content
-        self.guild = message.guild
-        self.created_at = message.created_at
-        self.edited_at = datetime.datetime.utcnow()
-        self.before_id = message.id
-        if message.embeds:
-            self.edit_embed = message.embeds[0]
-        if message.attachments:
-            self.attachment = message.attachments[0].proxy_url
-        else:
-            self.attachment = None
-
+            
 
 class Utilities(commands.Cog):
     def __init__(self, bot):
@@ -52,8 +34,8 @@ class Utilities(commands.Cog):
         except KeyError:
             return None
 
-        if len(self.bot.deleted_messages[channel_id]) > 200:
-            dele = len(self.bot.deleted_messages[channel_id]) - 200
+        if len(self.bot.deleted_messages[channel_id]) > 500:
+            dele = len(self.bot.deleted_messages[channel_id]) - 500
             for number in range(dele):
                 del self.bot.deleted_messages[channel_id][number]
 
@@ -66,56 +48,17 @@ class Utilities(commands.Cog):
         else:
             return result
 
-    def edited_message_for(self, index: int, channel_id: int):
-        try:
-            if index > len(self.bot.edited_messages[channel_id]):
-                return None
-        except KeyError:
-            return None
-        
-        if len(self.bot.edited_messages[channel_id]) > 200:
-            dele = len(self.bot.edited_messages[channel_id]) - 200
-            for number in range(dele):
-                del self.bot.edited_messages[channel_id][number]
-
-        readable_order = list(reversed(self.bot.edited_messages[channel_id]))
-        try:
-            result = readable_order[index]
-        except KeyError:
-            return None
-        else:
-            return result
-
-    def edited_message_for_after(self, index: int, channel_id: int):
-        try:
-            if index > len(self.bot.edited_messages_after[channel_id]):
-                return None
-        except KeyError:
-            return None
-        
-        if len(self.bot.edited_messages_after[channel_id]) > 200:
-            dele = len(self.bot.edited_messages_after[channel_id]) - 200
-            for number in range(dele):
-                del self.bot.edited_messages_after[channel_id][number]
-
-        readable_order = list(reversed(self.bot.edited_messages_after[channel_id]))
-        try:
-            result = readable_order[index]
-        except KeyError:
-            return None
-        else:
-            return result
-
     @commands.Cog.listener()
     async def on_message_delete(self, message):
+        b = [479359598730674186]
+        if message.author.id in b:
+            return
         self.bot.deleted_messages[message.channel.id].append(DeletedMessage(message))
 
-    @commands.Cog.listener()
-    async def on_message_edit(self, before, after):
-        self.bot.edited_messages[before.channel.id].append(EditedMessage(before))
-        self.bot.edited_messages_after[after.channel.id].append(after)
 
-    @commands.group(invoke_without_subcommand=True)
+    @commands.guild_only()
+    @commands.is_owner()
+    @commands.command(help='Views up to the last 500 deleted messages')
     async def snipe(self, ctx, index: int = 1, channel: discord.TextChannel = None):
         if channel and channel.is_nsfw():
             return await qembed(ctx, 'no sorry')
@@ -125,7 +68,7 @@ class Utilities(commands.Cog):
             msg = self.deleted_message_for(index - 1, channel.id)
             try:
                 await ctx.send(embed=msg.del_embed)
-                content = 'User deleted an embed which is above.' if not msg.content else msg.content
+                content = 'Bot deleted an embed which was sent above.' if not msg.content else msg.content
             except AttributeError:
                 pass
                 content = msg.content
@@ -139,30 +82,6 @@ class Utilities(commands.Cog):
                             f"**Created At:** {humanize.naturaldelta(msg.created_at - datetime.datetime.utcnow())} ago\n"
                             f"**Deleted At:** {humanize.naturaldelta(msg.deleted_at - datetime.datetime.utcnow())} ago\n"
                             f"**Index:** {index} / {len(self.bot.deleted_messages[channel.id])}", inline=False)
-        snipe.set_author(name=f'{str(msg.author)} said in #{channel.name}:', icon_url=str(msg.author.avatar_url))
-        snipe.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
-        await ctx.send(embed=snipe)
-
-    @commands.command(help='yeah')
-    async def snipeedit(self, ctx, index: int = 1, channel: discord.TextChannel = None):
-        if channel and channel.is_nsfw():
-            return await qembed(ctx, 'no sorry')
-        if not channel:
-            channel = ctx.channel
-        try:
-            msg = self.edited_message_for(index - 1, channel.id)
-            after = self.edited_message_for_after(index - 1, channel.id)
-        except IndexError:
-            return await qembed(ctx, 'Nothing to snipe!')
-        snipe = discord.Embed(title='Before:', description=msg.before_content, color=self.bot.embed_color,
-                              timestamp=ctx.message.created_at)
-        snipe.add_field(name='After:', value=after.content, inline=False)
-        if msg.attachment:
-            snipe.add_field(name='Attachment:', value=msg.attachment)
-        snipe.add_field(name='Message Stats:', value=
-                            f"**Created At:** {humanize.naturaldelta(msg.created_at - datetime.datetime.utcnow())} ago\n"
-                            f"**Edited At:** {humanize.naturaldelta(msg.edited_at - datetime.datetime.utcnow())} ago\n"
-                            f"**Index:** {index} / {len(self.bot.edited_messages[channel.id])}")
         snipe.set_author(name=f'{str(msg.author)} said in #{channel.name}:', icon_url=str(msg.author.avatar_url))
         snipe.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=snipe)

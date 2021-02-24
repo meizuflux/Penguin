@@ -36,11 +36,8 @@ class SYSTEM32(commands.Bot):
         self.embed_color = 0x9c5cb4  # 0x1E90FF
         self.prefixes = {}
         self.command_list = []
-        self.default_prefix = 'c//'
         self.deleted_messages = collections.defaultdict(list)
-        self.edited_messages = collections.defaultdict(list)
-        self.edited_messages_after = collections.defaultdict(list)
-        self.socket_receive = 0
+        self.default_prefix = 'c//'
         self.alex = alexflipnote.Client(self.get_config('alex_api_key'))
         self.timetime = time.time()
 
