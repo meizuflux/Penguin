@@ -97,9 +97,11 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
     @dev.command(name='del')
     async def _del(self, ctx, message: discord.PartialMessage):
         """Deletes a message after having been provided one"""
-        msg = await ctx.fetch_message(message)
-        await msg.delete()
-        await ctx.message.add_reaction('✅')
+        try:
+            await message.delete()
+            await ctx.message.add_reaction('✅')
+        except:
+            await ctx.message.add_reaction('❌')
 
     @dev.command(name="source", aliases=["src"])
     async def jsk_source(self, ctx, *, command_name: str):
