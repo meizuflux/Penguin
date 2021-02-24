@@ -2,6 +2,9 @@ import discord
 from discord.ext import commands, flags
 from io import BytesIO
 from utils.default import qembed
+import random
+import time
+import asyncio
 
 
 class Fun(commands.Cog):
@@ -36,8 +39,8 @@ class Fun(commands.Cog):
         file = discord.File(image_bytes, "supreme.png")
         embed = discord.Embed(colour=self.bot.embed_color,
                               timestamp=ctx.message.created_at).set_footer(
-                                                                            text=f"Requested by {ctx.author}",
-                                                                            icon_url=ctx.author.avatar_url)
+            text=f"Requested by {ctx.author}",
+            icon_url=ctx.author.avatar_url)
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         embed.set_image(url="attachment://supreme.png")
 
@@ -52,29 +55,36 @@ class Fun(commands.Cog):
         await qembed(ctx, text.replace(' ', ''.join(reversed(text))))
 
     @commands.command(help='Checks your speed.')
-    async def react(self, ctx, seconds: int=None):
+    async def react(self, ctx, seconds: int = None):
         if seconds and seconds > 31:
             return await qembed(ctx, 'You cannot specify more than 30 seconds. Sorry.')
         emg = str(random.choice(self.bot.emojis))
         if not seconds:
             seconds = 5
-        embed = discord.Embed(description=f'React to this message with {emg} in {seconds} seconds.', timestamp=ctx.message.created_at, color=self.bot.embed_color).set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+        embed = discord.Embed(description=f'React to this message with {emg} in {seconds} seconds.',
+                              timestamp=ctx.message.created_at, color=self.bot.embed_color).set_footer(
+            text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         msg = await ctx.send(embed=embed)
         await msg.add_reaction(emg)
         start = time.perf_counter()
+
         def gcheck(reaction, user):
             return user == ctx.author and str(reaction.emoji) == emg
+
         try:
             reaction, user = await self.bot.wait_for('reaction_add', timeout=seconds * 1.5, check=gcheck)
         except asyncio.TimeoutError:
-            embed = discord.Embed(description='You did not react in time', timestamp=ctx.message.created_at, color=self.bot.embed_color).set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+            embed = discord.Embed(description='You did not react in time', timestamp=ctx.message.created_at,
+                                  color=self.bot.embed_color).set_footer(text=f"Requested by {ctx.author}",
+                                                                         icon_url=ctx.author.avatar_url)
             await msg.edit(embed=embed)
         else:
             end = time.perf_counter()
             tim = end - start
-            embed = discord.Embed(description=f'You reacted in **{tim:.2f}** seconds, **{seconds - tim:.2f}** off.', timestamp=ctx.message.created_at, color=self.bot.embed_color).set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+            embed = discord.Embed(description=f'You reacted in **{tim:.2f}** seconds, **{seconds - tim:.2f}** off.',
+                                  timestamp=ctx.message.created_at, color=self.bot.embed_color).set_footer(
+                text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
             await msg.edit(embed=embed)
-                
 
     @commands.command(name='chucknorris',
                       aliases=['norris', 'chucknorrisjoke'],
@@ -86,7 +96,8 @@ class Fun(commands.Cog):
         e = discord.Embed(title='Chuck Norris Joke',
                           url=joke['url'],
                           description=joke['value'],
-						  color=self.bot.embed_color, timestamp=ctx.message.created_at).set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+                          color=self.bot.embed_color, timestamp=ctx.message.created_at).set_footer(
+            text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         e.set_thumbnail(url=joke['icon_url'])
         await ctx.send(embed=e)
 
