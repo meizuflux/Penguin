@@ -1,17 +1,16 @@
 """The actual bot that you run"""
+import collections
 import datetime
 import json
 import os
-import time
 import re
+import time
 
 import aiohttp
+import alexflipnote
 import asyncpg
 import discord
-import alexflipnote
-import collections
 from discord.ext import commands
-from collections import Counter
 
 from cogs.useful import ChuckContext
 
@@ -86,7 +85,8 @@ class Chuck(commands.Bot):
             print("Connecting to Discord ...")
             self.uptime = datetime.datetime.utcnow()
             self.db = pool_pg
-            extensions = ['jishaku', 'cogs.useful', 'cogs.owner', 'cogs.prefixes', 'cogs.economy', 'cogs.errorhandler', 'cogs.fun', 'cogs.utilities', 'cogs.commandchart']
+            extensions = ['jishaku', 'cogs.useful', 'cogs.owner', 'cogs.prefixes', 'cogs.economy', 'cogs.errorhandler',
+                          'cogs.fun', 'cogs.utilities', 'cogs.commandchart']
             for extension in extensions:
                 self.load_extension(extension)
 
@@ -174,8 +174,9 @@ os.environ["JISHAKU_HIDE"] = "True"
 @bot.event
 async def on_ready():
     """Lets you know that the bot has run"""
-    print(
-        f'{bot.user} has connected to Discord!\nGuilds: {len(bot.guilds)}\nMembers: {str(sum([guild.member_count for guild in bot.guilds]))}')
+    print(f'{bot.user} has connected to Discord!\n'
+          f'Guilds: {len(bot.guilds)}\n'
+          f'Members: {str(sum([guild.member_count for guild in bot.guilds]))}')
 
 
 if __name__ == "__main__":
