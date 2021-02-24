@@ -474,9 +474,9 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         embed = discord.Embed(title=f"{package['info']['name']} {package['info']['version']}", url=package['info']['project_url'],
                               description=package['info']['summary'], color=self.bot.embed_color)
         embed.set_thumbnail(url='https://cdn.discordapp.com/attachments/381963689470984203/814267252437942272/pypi.png')
-        email = package["info"]["author_email"] if package["info"]["author_email"] else "None Provided"
-        embed.add_field(name='Author Info:', value=f'Author Name: {package["info"]["author"]}\n'
-                                                   f'Author Email: {email}')
+        email = package["info"]["author_email"] if package["info"]["author_email"] else "None provided"
+        embed.add_field(name='Author Info:', value=f'**Author Name**: {package["info"]["author"]}\n'
+                                                   f'**Author Email**: {email}')
         await ctx.send(embed=embed)
 
 
