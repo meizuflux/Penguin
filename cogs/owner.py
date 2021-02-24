@@ -95,8 +95,10 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
             return await qembed(ctx, "Cancelling")
 
     @dev.command(aliases=['del'])
-    async def delete(self, ctx, message : discord.Message):
+    async def delete(self, ctx, message: discord.Message=None):
         """Deletes the given message"""
+        if ctx.message.reference:
+            message = ctx.message.reference
         try:
             await message.delete()
             await ctx.message.add_reaction("✅")
