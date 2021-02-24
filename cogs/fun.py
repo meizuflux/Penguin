@@ -23,7 +23,7 @@ class Fun(commands.Cog):
     @flags.add_flag("--dark", action='store_true', default=False)
     @flags.add_flag("--light", action='store_true', default=False)
     @flags.add_flag("--text", default="supreme")
-    @flags.command(usage='"supreme" [--dark|--light]')
+    @commands.command(usage='"supreme" [--dark|--light]', cls=flags.FlagCommand)
     async def supreme(self, ctx, **flags):
         """Makes a custom supreme logo
         example: supreme --text "hey guys" --dark"""
