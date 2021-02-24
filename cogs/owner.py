@@ -94,6 +94,13 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         if not this:
             return await qembed(ctx, "Cancelling")
 
+    @dev.command()
+    async def reboot(self, ctx, message: discord.Message):
+        """Deletes a message after having been provided one"""
+        msg = ctx.fetch_message(message)
+        await msg.delete()
+        await ctx.message.add_reaction('✅')
+
     @dev.command(name="source", aliases=["src"])
     async def jsk_source(self, ctx, *, command_name: str):
         """
