@@ -18,6 +18,7 @@ from discord.ext import commands
 
 from utils.default import plural, qembed
 
+
 class CustomContext(commands.Context):
     @property
     def secret(self):
@@ -29,15 +30,17 @@ class CustomContext(commands.Context):
         message = await self.send(embed=e)
         await message.add_reaction('✅')
         await message.add_reaction('❌')
+
         def terms(reaction, user):
-            return user == self.author and str(reaction.emoji) == '✅' or user == self.author and str(reaction.emoji) == '❌'
+            return user == self.author and str(reaction.emoji) == '✅' or user == self.author and str(
+                reaction.emoji) == '❌'
 
         try:
             reaction, user = await self.bot.wait_for('reaction_add',
-                                                    timeout=15,
-                                                    check=terms)
+                                                     timeout=15,
+                                                     check=terms)
         except asyncio.TimeoutError:
-                    await qembed(self, 'You did not react in time.')
+            await qembed(self, 'You did not react in time.')
         else:
             if reaction.emoji == '✅':
                 await message.delete()
@@ -451,7 +454,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                                                          icon_url=ctx.author.avatar_url))
 
     @commands.command(help='Shows the avatar of a user', aliases=['pfp'])
-    async def avatar(self, ctx, user: discord.Member=None):
+    async def avatar(self, ctx, user: discord.Member = None):
         if not user:
             user = ctx.author
         ext = 'gif' if user.is_avatar_animated() else 'png'
@@ -461,6 +464,15 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         ava.set_image(url=f"attachment://{user.id}.{ext}")
         ava.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=ava, file=discord.File(BytesIO(await user.avatar_url.read()), f"{user.id}.{ext}"))
+
+    @commands.command(help='Searches PyPI for a Python Package')
+    async def pypi(self, ctx, package: str):
+        async with self.bot.session.get(f'https://pypi.org/pypi/{package}/json') as f:
+            package = await f.json()
+        embed = discord.Embed(title=package['info']['name'], url=package['project_url'],
+                              description=package['summary'])
+        await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Useful(bot))
