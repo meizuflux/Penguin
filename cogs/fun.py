@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands, flags
 from io import BytesIO
 from utils.default import qembed
+from utils.bottom import from_bottom, to_bottom
 import random
 import time
 import asyncio
@@ -86,6 +87,13 @@ class Fun(commands.Cog):
                 text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
             await msg.edit(embed=embed)
 
+    @staticmethod
+    def bottoms(mode, text):
+        if mode == "to_bottom":
+            return to_bottom(text)
+        else:
+            return from_bottom(text)
+
     @commands.command(name='chucknorris',
                       aliases=['norris', 'chucknorrisjoke'],
                       help='Gets a random Chuck Norris Joke')
@@ -100,6 +108,22 @@ class Fun(commands.Cog):
             text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         e.set_thumbnail(url=joke['icon_url'])
         await ctx.send(embed=e)
+
+    @commands.command(aliases=['bottom_decode', 'decode'])
+    async def bottomdecode(self, ctx, *, text):
+        bottoms = self.bottoms("from_bottom", text)
+
+        if len(bottoms) > 500:
+            return await qembed(ctx, str(await ctx.mystbin(bottoms)))
+        await qembed(ctx, bottoms)
+
+    @commands.command(aliases=['bottom_encode', 'encode'])
+    async def bottomencode(self, ctx, *, text):
+        bottoms = self.bottoms("to_bottom", text)
+
+        if len(bottoms) > 500:
+            return await qembed(ctx, str(await ctx.mystbin(bottoms)))
+        await qembed(ctx, bottoms)
 
 
 def setup(bot):
