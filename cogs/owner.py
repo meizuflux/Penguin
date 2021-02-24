@@ -94,14 +94,14 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         if not this:
             return await qembed(ctx, "Cancelling")
 
-    @dev.command(name='del')
-    async def _del(self, ctx, message: discord.PartialMessage):
-        """Deletes a message after having been provided one"""
+    @dev.command()
+    async def delete(self, ctx, message : discord.PartialMessage):
+        """Deletes the given message"""
         try:
             await message.delete()
-            await ctx.message.add_reaction('✅')
+            await ctx.message.add_reaction("\U0001f44d")
         except:
-            await ctx.message.add_reaction('❌')
+            await ctx.message.add_reaction("\U0001f44e")
 
     @dev.command(name="source", aliases=["src"])
     async def jsk_source(self, ctx, *, command_name: str):
