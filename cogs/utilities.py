@@ -33,8 +33,8 @@ class Utilities(commands.Cog):
         except KeyError:
             return None
 
-        if len(self.bot.deleted_messages[channel_id]) > 200:
-            dele = len(self.bot.deleted_messages[channel_id]) - 200
+        if len(self.bot.deleted_messages[channel_id]) > 500:
+            dele = len(self.bot.deleted_messages[channel_id]) - 500
             for number in range(dele):
                 del self.bot.deleted_messages[channel_id][number]
 
@@ -61,7 +61,7 @@ class Utilities(commands.Cog):
             msg = self.deleted_message_for(index - 1, channel.id)
             try:
                 await ctx.send(embed=msg.del_embed)
-                content = 'User deleted an embed which is above.' if not msg.content else msg.content
+                content = 'Bot deleted an embed which was sent above.' if not msg.content else msg.content
             except AttributeError:
                 pass
                 content = msg.content
