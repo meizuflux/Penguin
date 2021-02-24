@@ -471,12 +471,25 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             if f.status == 404:
                 return await qembed(ctx, 'Package not found.')
             package = await f.json()
-        embed = discord.Embed(title=f"{package['info']['name']} {package['info']['version']}", url=package['info']['project_url'],
-                              description=package['info']['summary'], color=self.bot.embed_color)
+        embed = discord.Embed(title=f"{package['info']['name']} {package['info']['version']}",
+                              url=package['info']['project_url'],
+                              description=package['info']['summary'],
+                              color=self.bot.embed_color,
+                              timestamp=ctx.message.created_at)
         embed.set_thumbnail(url='https://cdn.discordapp.com/attachments/381963689470984203/814267252437942272/pypi.png')
         email = package["info"]["author_email"] if package["info"]["author_email"] else "None provided"
         embed.add_field(name='Author Info:', value=f'**Author Name**: {package["info"]["author"]}\n'
                                                    f'**Author Email**: {email}')
+        docs = package["info"]["project_urls"]['Homepage'] if package["info"]["project_urls"][
+            'Homepage'] else "None provided"
+        home_page = package["info"]["project_urls"]['Documentation'] if package["info"]["project_urls"][
+            'Documentation'] else "None provided"
+        keywords = package["info"]['keywords'] if package["info"]['keywords'] else "None provided"
+        embed.add_field(name='Package Info:', value=f'**Documentation URL**: {docs}'
+                                                    f'**Home Page**: {home_page}'
+                                                    f'**Keywords**: {keywords}'
+                                                    f'**License**: {package["info"]["license"]}')
+        embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
 
 
