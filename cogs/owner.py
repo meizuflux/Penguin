@@ -99,6 +99,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         """Deletes the given message"""
         if ctx.message.reference:
             message = ctx.message.reference
+            message = await ctx.fetch_message(message.message_id)
         try:
             await message.delete()
             await ctx.message.add_reaction("✅")
