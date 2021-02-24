@@ -95,7 +95,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
             return await qembed(ctx, "Cancelling")
 
     @dev.command(name='del')
-    async def _del(self, ctx, message: discord.Message):
+    async def _del(self, ctx, message: discord.PartialMessage):
         """Deletes a message after having been provided one"""
         msg = await ctx.fetch_message(message)
         await msg.delete()
