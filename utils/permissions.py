@@ -3,7 +3,7 @@ from discord.ext import commands
 
 def mng_msg():
     def predicate(ctx):
-        if ctx.author.id == 777893499471265802:
+        if ctx.author.id in ctx.bot.owner_ids:
             return True
         if ctx.guild:
             if ctx.author.guild_permissions.manage_messages:
