@@ -470,7 +470,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         async with self.bot.session.get(f'https://pypi.org/pypi/{package}/json') as f:
             package = await f.json()
         embed = discord.Embed(title=package['info']['name'], url=package['info']['project_url'],
-                              description=package['summary'])
+                              description=package['info']['summary'])
         await ctx.send(embed=embed)
 
 
