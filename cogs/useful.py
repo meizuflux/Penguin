@@ -486,10 +486,10 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             'Documentation'] else "None provided"
         keywords = package["info"]['keywords'] if package["info"]['keywords'] else "None provided"
         embed.add_field(name='Package Info:',
-                        value=f'**Documentation URL**: {docs}'
-                              f'**Home Page**: {home_page}'
-                              f'**Keywords**: {keywords}'
-                              f'**License**: {package["info"]["license"]}',
+                        value=f'**Documentation URL**: {docs}\n'
+                              f'**Home Page**: {home_page}\n'
+                              f'**Keywords**: {keywords}\n'
+                              f'**License**: {package["info"]["license"]}\n',
                         inline=False)
         embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
