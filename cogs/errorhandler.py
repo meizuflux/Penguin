@@ -44,7 +44,7 @@ class CommandErrorHandler(commands.Cog):
         elif isinstance(error, commands.CheckFailure):
             return await qembed(
                 ctx,
-                f'You do not have the correct permissions for `{ctx.command}`')
+                f'You do not have the correct permissions for `{ctx.invoked_with}`')
 
         if isinstance(error, discord.Forbidden):
             return await qembed(
