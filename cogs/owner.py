@@ -7,6 +7,7 @@ from prettytable import PrettyTable
 import discord
 from jishaku.functools import executor_function
 import os
+import functools
 import inspect
 import aiohttp
 from jishaku.paginators import PaginatorInterface, WrappedPaginator
@@ -56,12 +57,15 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
 
     @executor_function
     def git_pull(self):
-        return subprocess.check_output("git pull", shell=True)
+        out = subprocess.check_output("git pull", shell=True)
+        return out
 
     @dev.command(help='Syncs with GitHub and reloads all cogs')
     async def sync(self, ctx):
         await ctx.trigger_typing()
         out = await self.git_pull()
+        thing = functools.partial(subprocess.check_output, "git pull", shell=True)
+        out = await self.bot.loop.run_in_executor(None, thing)
         embed = discord.Embed(title="Pulling from GitHub",
                               description=f"```\nppotatoo@36vp:~/SYSTEM32$ git pull\n{out.decode('utf-8')}\n```",
                               color=self.bot.embed_color,
