@@ -39,6 +39,7 @@ class Chuck(commands.Bot):
         self.default_prefix = 'c//'
         self.alex = alexflipnote.Client(self.get_config('alex_api_key'))
         self.timetime = time.time()
+        self.case_insensitive = True
 
     @staticmethod
     def get_config(item: str):
