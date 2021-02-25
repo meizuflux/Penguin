@@ -90,6 +90,9 @@ class CommandErrorHandler(commands.Cog):
             await ctx.send(error_collection)
             output = "\n".join(
                 [f"```diff\n- {g[0]}```" for g in error_collection])
+            path = "C:\\Users\\me"
+            await ctx.send(f"Something has gone wrong while executing your command:"
+                       f"\n`\``py\n{''.join(traceback.format_tb(error.__traceback__)).replace(path, '.')}\n``\`")
             await qembed(ctx, f"{output}\n¯\_(ツ)_/¯")
 
 
