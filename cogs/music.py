@@ -343,6 +343,7 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
 
         await self.bot.wavelink.initiate_node(host='localhost',
                                               port=2334,
+                                              rest_uri='http://localhost:2334',
                                               password="youshallnotpass",
                                               identifier='TEST',
                                               region='us_central')
