@@ -23,15 +23,6 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
 
     @executor_function
     def image_manip(self, ctx, image: polaroid.Image, method: str, *args, **kwargs):
-            if ctx.message.attachments:
-                img = polaroid.Image(await ctx.message.attachments[0].read())
-            elif isinstance(image, discord.PartialEmoji):
-                img = polaroid.Image(await image.url.read())
-            else:
-                img = image or ctx.author
-                img = polaroid.Image(await
-                                     img.avatar_url_as(format="png").read())
-
             img.resize(500, 500, 1)
             method = getattr(img, method)
             method(*args, **kwargs)
