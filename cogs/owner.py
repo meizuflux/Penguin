@@ -5,7 +5,6 @@ import asyncpg
 from discord.ext import commands
 from prettytable import PrettyTable
 import discord
-from jishaku.functools import executor_function
 import os
 import functools
 import inspect
@@ -55,15 +54,9 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         else:
             await ctx.send(error)
 
-    @executor_function
-    def git_pull(self):
-        out = subprocess.check_output("git pull", shell=True)
-        return out
-
     @dev.command(help='Syncs with GitHub and reloads all cogs')
     async def sync(self, ctx):
         await ctx.trigger_typing()
-        out = await self.git_pull()
         thing = functools.partial(subprocess.check_output, "git pull", shell=True)
         out = await self.bot.loop.run_in_executor(None, thing)
         embed = discord.Embed(title="Pulling from GitHub",
@@ -115,8 +108,8 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         except:
             await ctx.message.add_reaction("❌")
 
-    @dev.command(name="source", aliases=["src"])
-    async def jsk_source(self, ctx, *, command_name: str):
+    @dev.command(aliases=["src"])
+    async def source(self, ctx, *, command_name: str):
         """
         Displays the source code for a command.
         """
