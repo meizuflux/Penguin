@@ -6,8 +6,8 @@ import typing
 
 
 class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
-	def __init__(self, bot):
-		self.bot = bot
+    def __init__(self, bot):
+        self.bot = bot
 
     @executor_function
     async def image_manip(self, ctx, image,*, method: str, *args: list = None, **kwargs):
@@ -40,4 +40,4 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         await self.manip(ctx, image, method='apply_gradient')
 
 def setup(bot):
-	bot.add_cog(Polaroid(bot))
+    bot.add_cog(Polaroid(bot))
