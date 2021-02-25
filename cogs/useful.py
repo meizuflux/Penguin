@@ -90,9 +90,18 @@ class Help(commands.MinimalHelpCommand):
         return "`<arg>`  means the argument is required\n`[arg]`  means the argument is optional"
 
     def add_bot_commands_formatting(self, commands, heading):
+        emoji_dict = {
+            'commandchart': "✅",
+            'economy': "✅",
+            'fun': "✅",
+            'polaroid': "✅",
+            'prefixes': "✅",
+            'useful': "✅",
+            'utilities': "✅",
+        }
         if commands:
             joined = '`,\u2002`'.join(c.name for c in commands)
-            self.paginator.add_line('__**%s**__' % heading)
+            self.paginator.add_line(f'{emoji_dict[heading.lower()]} **%s**' % heading)
             self.paginator.add_line(f'`{joined}`')
             #self.paginator.add_line()
 
