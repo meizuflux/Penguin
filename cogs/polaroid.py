@@ -11,15 +11,14 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         self.bot = bot
 
     async def get_image(self, ctx, image):
-        async with ctx.typing():
-            if ctx.message.attachments:
-                img = polaroid.Image(await ctx.message.attachments[0].read())
-            elif isinstance(image, discord.PartialEmoji):
-                img = polaroid.Image(await image.url.read())
-            else:
-                img = image or ctx.author
-                img = polaroid.Image(await img.avatar_url_as(format="png").read())
-            return img
+        if ctx.message.attachments:
+            img = polaroid.Image(await ctx.message.attachments[0].read())
+        elif isinstance(image, discord.PartialEmoji):
+            img = polaroid.Image(await image.url.read())
+        else:
+            img = image or ctx.author
+            img = polaroid.Image(await img.avatar_url_as(format="png").read())
+        return img
         
 
     @executor_function
@@ -38,7 +37,6 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
 
         embed = discord.Embed(colour=self.bot.embed_color,
                             timestamp=ctx.message.created_at)
-        embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         embed.set_image(url=f"attachment://{method}.png")
         embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed, file=file)
