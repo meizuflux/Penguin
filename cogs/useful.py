@@ -6,6 +6,8 @@ import pathlib
 import platform
 import re
 import time
+import random
+import string
 import zlib
 
 
@@ -507,6 +509,9 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                         inline=False)
         embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
+
+
+
 
 
 def setup(bot):

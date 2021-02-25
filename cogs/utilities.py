@@ -4,6 +4,8 @@ import datetime
 from utils.default import qembed
 import humanize
 import json
+import random
+import string
 from utils.permissions import mng_msg
 
 
@@ -114,6 +116,22 @@ class Utilities(commands.Cog):
             return await qembed(ctx, 'Sorry, the message was too long')
         await qembed(ctx, f"```json\n{raw}```")
 
+    @commands.command(help='Randomly generates a password')
+    async def password(self, ctx, length=16):
+        lower = string.ascii_lowercase
+        upper = string.ascii_uppercase
+        num = string.digits
+        symbols = string.punctuation
+
+        all = lower + upper + num + symbols
+
+        temp = random.sample(all,length)
+
+        password = "".join(temp)
+        embed = discord.Embed(description=f'{length} digit random password: `{password}`', color=self.bot.embed_color, timestamp=ctx.message.created_at)
+        embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+        await ctx.author.send(embed=embed)
+        await qembed(ctx, f'Messaged you with the password, {ctx.author.mention}')
 
 def setup(bot):
     bot.add_cog(Utilities(bot))
