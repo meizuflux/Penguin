@@ -342,8 +342,8 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
                 await node.destroy()
 
         await self.bot.wavelink.initiate_node(host='127.0.0.1',
-                                              port=2333,
-                                              rest_uri='http://127.0.0.1:2333',
+                                              port=4269,
+                                              rest_uri='http://127.0.0.1:4269',
                                               password="youshallnotpass",
                                               identifier='TEST',
                                               region='us_central')
