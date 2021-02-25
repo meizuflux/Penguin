@@ -91,13 +91,13 @@ class Help(commands.MinimalHelpCommand):
 
     def add_bot_commands_formatting(self, commands, heading):
         emoji_dict = {
-            'commandchart': "✅",
-            'economy': "✅",
-            'fun': "✅",
-            'polaroid': "✅",
-            'prefixes': "✅",
-            'useful': "✅",
-            'utilities': "✅",
+            'commandchart': "⚙️",
+            'economy': "💵",
+            'fun': "<:hahayes:739613910180692020>",
+            'polaroid': "📸",
+            'prefixes': "<:shrug:747680403778699304>",
+            'useful': "<:bruhkitty:739613862302711840>",
+            'utilities': "⚙️",
         }
         if commands:
             joined = '`,\u2002`'.join(c.name for c in commands)
