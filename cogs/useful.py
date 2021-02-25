@@ -92,7 +92,7 @@ class Help(commands.MinimalHelpCommand):
             joined = '`,\u2002`'.join(c.name for c in commands)
             self.paginator.add_line('**%s**' % heading)
             self.paginator.add_line(f'`{joined}`')
-            self.paginator.add_line()
+            #self.paginator.add_line()
 
     def get_ending_note(self):
         command_name = self.invoked_with
