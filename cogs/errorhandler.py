@@ -97,7 +97,7 @@ class CommandErrorHandler(commands.Cog):
             await ctx.send(f"Something has gone wrong while executing your command:"
                        f"\n```py\n{''.join(traceback.format_tb(error.__traceback__))}\n```")
             await ctx.send(f"Something has gone wrong while executing your command:"
-                       f"\n```py\n{formatted}\n```")
+            f"\n```py\n{''.join(formatted)}\n```")
             await qembed(ctx, f"```py\n{output}\n```¯\_(ツ)_/¯")
 
 
