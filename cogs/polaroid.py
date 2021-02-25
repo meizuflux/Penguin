@@ -36,9 +36,8 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         file = discord.File(BytesIO(img.save_bytes()),
                             filename=f"{method}.png")
 
-        embed = discord.Embed(description=text,
-                                colour=self.bot.embed_color,
-                                timestamp=ctx.message.created_at)
+        embed = discord.Embed(colour=self.bot.embed_color,
+                            timestamp=ctx.message.created_at)
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         embed.set_image(url=f"attachment://{method}.png")
         embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
