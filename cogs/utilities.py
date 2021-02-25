@@ -90,7 +90,29 @@ class Utilities(commands.Cog):
         await ctx.send(embed=snipe)
         
     @commands.command(help='Posts text to https://mystb.in', aliases=['paste'])
-    async def mystbin(self, ctx, *, text):
+    async def mystbin(self, ctx, *, text=None):
+        if ctx.message.reference:
+            if ctx.message.reference.cached_message:
+                if ctx.message.reference.cached_message.attachments:
+                    if ctx.message.reference.cached_message.attachments[0].filename.endswith((".txt", ".py", ".json", ".html", ".csv")):
+                        message = await ctx.message.reference.cached_message.attachments[0].read()
+                        message = message.decode("utf-8")
+                        return await ctx.send(await ctx.mystbin(text))
+            else:
+                message = await self.bot.get_channel(ctx.message.reference.channel_id).fetch_message(ctx.message.reference.message_id)
+                if message.attachments:
+                    if message.attachments.filename.endswith((".txt", ".py", ".json", ".html", ".csv")):
+                        message_ = await message.attachments[0].read()
+                        message_ = message_.decode("utf-8")
+                        return await ctx.send(await ctx.mystbin(text))
+
+        if text == None:
+            message = ctx.message.attachments[0]
+            if message:
+                if message.filename.endswith((".txt", ".py", ".json", ".html", ".csv")):
+                    message = await message.read()
+                    message = message.decode("utf-8")
+                    return await ctx.send(await ctx.mystbin(text))
         await qembed(ctx, await ctx.mystbin(text))
         
     # from pb https://github.com/PB4162/PB-Bot
