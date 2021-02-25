@@ -9,3 +9,4 @@ humanize
 alexflipnote.py
 discord-flags
 matplotlib
+polaroid
