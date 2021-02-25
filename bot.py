@@ -87,7 +87,7 @@ class Chuck(commands.Bot):
             self.uptime = datetime.datetime.utcnow()
             self.db = pool_pg
             extensions = ['jishaku', 'cogs.useful', 'cogs.owner', 'cogs.prefixes', 'cogs.economy', 'cogs.errorhandler',
-                          'cogs.fun', 'cogs.utilities', 'cogs.commandchart', 'cogs.polaroid']
+                          'cogs.fun', 'cogs.utilities', 'cogs.commandchart', 'cogs.polaroid', 'cogs.music']
             for extension in extensions:
                 self.load_extension(extension)
 

@@ -98,6 +98,7 @@ class Help(commands.MinimalHelpCommand):
             'prefixes': "<:shrug:747680403778699304>",
             'useful': "<:bruhkitty:739613862302711840>",
             'utilities': "⚙️",
+            "music": "<:bruhkitty:739613862302711840>"
         }
         if commands:
             joined = '`,\u2002`'.join(c.name for c in commands)
