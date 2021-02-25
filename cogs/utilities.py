@@ -89,6 +89,29 @@ class Utilities(commands.Cog):
     @commands.command(help='Posts text to https://mystb.in', aliases=['paste'])
     async def mystbin(self, ctx, *, text):
         await qembed(ctx, await ctx.mystbin(text))
+        
+    # from pb https://github.com/PB4162/PB-Bot
+    @commands.command(aliases=["rawmessage", "rawmsg"])
+    async def raw_message(self, ctx, *, message: discord.Message = None):
+        """
+        Get the raw info for a message.
+        `message` - The message.
+        """
+        if ctx.message.reference:
+            message = ctx.message.reference
+            message = await ctx.fetch_message(message.message_id)
+            
+        message = message or ctx.message
+
+        try:
+            msg = await self.bot.http.get_message(ctx.channel.id, message.id)
+        except discord.NotFound:
+            return await qembed(ctx, "Sorry, I couldn't find that message.")
+
+        raw = json.dumps(msg, indent=4)
+        if len(raw) > 1989:
+            return await qembed(ctx, 'Sorry, the message was too long')
+        await qembed(ctx, f"```json\n{raw}```")
 
 
 def setup(bot):
