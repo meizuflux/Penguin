@@ -10,7 +10,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         self.bot = bot
 
     @executor_function
-    async def image_manip(ctx, image, method: str, *args, **kwargs):
+    async def image_manip(self, ctx, image, method: str, *args, **kwargs):
         async with ctx.typing():
             if ctx.message.attachments:
                 img = polaroid.Image(await ctx.message.attachments[0].read())
@@ -37,7 +37,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Makes an image rainbowey')
     async def rainbow(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
-        await manip(ctx, image, method='apply_gradient')
+        await self.image_manip(ctx, image, method='apply_gradient')
 
 def setup(bot):
     bot.add_cog(Polaroid(bot))
