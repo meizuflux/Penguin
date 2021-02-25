@@ -62,7 +62,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
     @dev.command(help='Syncs with GitHub and reloads all cogs')
     async def sync(self, ctx):
         await ctx.trigger_typing()
-        out = await git_pull()
+        out = await self.git_pull()
         embed = discord.Embed(title="Pulling from GitHub",
                               description=f"```\nppotatoo@36vp:~/SYSTEM32$ git pull\n{out.decode('utf-8')}\n```",
                               color=self.bot.embed_color,
