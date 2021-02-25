@@ -85,6 +85,10 @@ class Utilities(commands.Cog):
         snipe.set_author(name=f'{str(msg.author)} said in #{channel.name}:', icon_url=str(msg.author.avatar_url))
         snipe.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=snipe)
+        
+    @commands.command(help='Posts text to https://mystb.in', aliases=['paste'])
+    async def mystbin(self, ctx, *, text):
+        await qembed(ctx, await ctx.mystbin(text))
 
 
 def setup(bot):
