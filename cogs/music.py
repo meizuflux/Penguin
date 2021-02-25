@@ -341,16 +341,14 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
             for node in previous.values():
                 await node.destroy()
 
-        nodes = {'MAIN': {'host': '127.0.0.1',
-                          'port': 2333,
-                          'rest_uri': 'http://127.0.0.1:2333',
-                          'password': 'yournodepassword',
-                          'identifier': 'MAIN',
-                          'region': 'us_east'
-                          }}
+        node = await self.bot.wavelink.initiate_node(host='0.0.0.0',
+                                                     port=2333,
+                                                     rest_uri='http://0.0.0.0:2333',
+                                                     password='youshallnotpass',
+                                                     identifier='TEST',
+                                                     region='us_west')
 
-        for n in nodes.values():
-            await self.bot.wavelink.initiate_node(**n)
+        node.set_hook(self.on_event_hook)
 
     @wavelink.WavelinkMixin.listener()
     async def on_node_ready(self, node: wavelink.Node):
