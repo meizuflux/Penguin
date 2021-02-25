@@ -96,7 +96,9 @@ class CommandErrorHandler(commands.Cog):
                 [f"```diff\n- {g[0]}```" for g in error_collection])
             await ctx.send(f"Something has gone wrong while executing your command:"
                        f"\n```py\n{''.join(traceback.format_tb(error.__traceback__))}\n```")
-            await qembed(ctx, f"```py\n{formatted}\n```¯\_(ツ)_/¯")
+            await ctx.send(f"Something has gone wrong while executing your command:"
+                       f"\n```py\n{formatted}\n```")
+            await qembed(ctx, f"```py\n{output}\n```¯\_(ツ)_/¯")
 
 
 def setup(bot):
