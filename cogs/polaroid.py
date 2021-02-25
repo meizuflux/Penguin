@@ -23,7 +23,6 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
 
     @executor_function
     def image_manip(self, ctx, image: polaroid.Image, method: str, *args, **kwargs):
-        async with ctx.typing():
             if ctx.message.attachments:
                 img = polaroid.Image(await ctx.message.attachments[0].read())
             elif isinstance(image, discord.PartialEmoji):
@@ -39,6 +38,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
             return img
 
     async def send_manip(self, ctx, image, method: str, *args, **kwargs):
+        await ctx.trigger_typing()
         image = await self.get_image(ctx, image)
         img = await self.image_manip(ctx, image, method='apply_gradient', *args, **kwargs)
         file = discord.File(BytesIO(img.save_bytes()),
