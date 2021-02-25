@@ -5,6 +5,7 @@ import asyncpg
 from discord.ext import commands
 from prettytable import PrettyTable
 import discord
+from jishaku.functools import executor_function
 import os
 import inspect
 import aiohttp
@@ -53,10 +54,15 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         else:
             await ctx.send(error)
 
+    @executor_function
+    def git_pull():
+        out = subprocess.check_output("git pull", shell=True)
+        return out
+
     @dev.command(help='Syncs with GitHub and reloads all cogs')
     async def sync(self, ctx):
         await ctx.trigger_typing()
-        out = subprocess.check_output("git pull", shell=True)
+        out = await git_pull()
         embed = discord.Embed(title="Pulling from GitHub",
                               description=f"```\nppotatoo@36vp:~/SYSTEM32$ git pull\n{out.decode('utf-8')}\n```",
                               color=self.bot.embed_color,
