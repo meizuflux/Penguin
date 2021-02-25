@@ -5,8 +5,13 @@ from utils.default import qembed
 from utils.bottom import from_bottom, to_bottom
 import random
 import time
+import re
+import json
 import asyncio
 
+mystbin_url = re.compile(
+    r"(?:(?:https?://)?mystb\.in/)?(?P<ID>[a-zA-Z]+)(?:\.(?P<syntax>[a-zA-Z0-9]+))?"
+) # Thanks to Umbra's mystbin wrapper repo for this.
 
 class Fun(commands.Cog):
     """For the fun commands"""
@@ -94,6 +99,15 @@ class Fun(commands.Cog):
         else:
             return from_bottom(text)
 
+    async def check_mystbin(self, text):
+        if match := mystbin_url.match(text):
+            paste_id = match.group("ID")
+            async with self.bot.session.get(f"https://mystb.in/api/pastes/{paste_id}") as resp:
+                if resp.status != 200:
+                    return text
+                data = await resp.json()
+                return data["data"]
+
     @commands.command(name='chucknorris',
                       aliases=['norris', 'chucknorrisjoke'],
                       help='Gets a random Chuck Norris Joke')
@@ -111,6 +125,7 @@ class Fun(commands.Cog):
 
     @commands.command(aliases=['bottom_decode', 'decode'])
     async def bottomdecode(self, ctx, *, text):
+        text = await self.check_mystbin(text)
         bottoms = self.bottoms("from_bottom", text)
 
         if len(bottoms) > 500:
@@ -119,6 +134,7 @@ class Fun(commands.Cog):
 
     @commands.command(aliases=['bottom_encode', 'encode'])
     async def bottomencode(self, ctx, *, text):
+        text = await self.check_mystbin(text)
         bottoms = self.bottoms("to_bottom", text)
 
         if len(bottoms) > 500:
