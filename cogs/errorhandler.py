@@ -87,6 +87,7 @@ class CommandErrorHandler(commands.Cog):
                                       error.__traceback__,
                                       file=sys.stderr)
             error_collection = [[default.traceback_maker(error, advance=False)]]
+            await ctx.send(error_collection)
             output = "\n".join(
                 [f"```diff\n- {g[0]}```" for g in error_collection])
             await qembed(ctx, f"{output}\n¯\_(ツ)_/¯")
