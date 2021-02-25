@@ -86,19 +86,9 @@ class CommandErrorHandler(commands.Cog):
                                       error,
                                       error.__traceback__,
                                       file=sys.stderr)
-            error_collection = [[default.traceback_maker(error, advance=False)]]
-            formatted = traceback.format_exception(
-                type(error),
-                error,
-                error.__traceback__
-            )
-            output = "\n".join(
-                [f"```diff\n- {g[0]}```" for g in error_collection])
-            await ctx.send(f"Something has gone wrong while executing your command:"
-                       f"\n```py\n{''.join(traceback.format_tb(error.__traceback__))}\n```")
-            await ctx.send(f"Something has gone wrong while executing your command:"
-            f"\n```py\n{''.join(formatted)}\n```")
-            await qembed(ctx, f"```py\n{output}\n```¯\_(ツ)_/¯")
+            formatted = traceback.format_exception(type(error), error, error.__traceback__)
+            await ctx.send(f"Something has gone wrong while executing `{ctx.invoked_with}`:\n"
+                            f"```py\n{''.join(formatted)}\n```")
 
 
 def setup(bot):
