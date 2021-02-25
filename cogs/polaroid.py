@@ -10,7 +10,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         self.bot = bot
 
     @executor_function
-    async def image_manip(self, ctx, image,*, method: str, *args: list = None, **kwargs):
+    async def image_manip(self, ctx, image, method: str, *args, **kwargs):
         async with ctx.typing():
             if ctx.message.attachments:
                 img = polaroid.Image(await ctx.message.attachments[0].read())
