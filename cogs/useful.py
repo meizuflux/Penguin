@@ -145,6 +145,7 @@ class Help(commands.MinimalHelpCommand):
             commands = sorted(commands, key=lambda c: c.name) if self.sort_commands else list(f'**{commands}**')
             self.add_bot_commands_formatting(commands, category)
 
+        self.paginator.add_line()
         self.paginator.add_line(self.get_ending_note())
 
         await self.send_pages()
