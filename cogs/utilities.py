@@ -97,7 +97,7 @@ class Utilities(commands.Cog):
                     if ctx.message.reference.cached_message.attachments[0].filename.endswith((".txt", ".py", ".json", ".html", ".csv")):
                         message = await ctx.message.reference.cached_message.attachments[0].read()
                         message = message.decode("utf-8")
-                        return await qembed(ctx, await ctx.mystbin(message) + "." + ctx.message.attachments[0].filename.split(".")[1])
+                        return await qembed(ctx, await ctx.mystbin(message) + "." + ctx.message.reference.cached_message.attachments[0].filename.split(".")[1])
             else:
                 message = await self.bot.get_channel(ctx.message.reference.channel_id).fetch_message(ctx.message.reference.message_id)
                 if message.attachments:
