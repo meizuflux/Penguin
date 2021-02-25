@@ -3,6 +3,7 @@ from discord.ext import commands
 from jishaku.functools import executor_function
 import polaroid
 import typing
+from io import BytesIO
 
 
 class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
