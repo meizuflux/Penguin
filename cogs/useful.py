@@ -493,8 +493,11 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                                                    f'**Author Email**: {email}')
         docs = package["info"]["project_urls"]['Homepage'] if package["info"]["project_urls"][
             'Homepage'] else "None provided"
-        home_page = package["info"]["project_urls"]['Documentation'] if package["info"]["project_urls"][
-            'Documentation'] else "None provided"
+        try:
+            home_page = package["info"]["project_urls"]['Documentation'] if package["info"]["project_urls"][
+                'Documentation'] else "None provided"
+        except KeyError:
+            home_page = "None provided"
         keywords = package["info"]['keywords'] if package["info"]['keywords'] else "None provided"
         embed.add_field(name='Package Info:',
                         value=f'**Documentation URL**: {docs}\n'
