@@ -99,7 +99,8 @@ class Utilities(commands.Cog):
                 continue
             e = e[0]
             print(e)
-            if e is None or emoji == []:
+            print(emoji)
+            if e is None:
                 return
             if e.is_usable() != False:
                 emoji.append(str(e))
