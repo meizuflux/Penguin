@@ -144,7 +144,7 @@ class Utilities(commands.Cog):
             return await qembed(ctx, 'Sorry, the message was too long')
         await qembed(ctx, f"```json\n{raw}```")
 
-    @commands.command(help='Randomly generates a password')
+    @commands.command(help='Randomly generates a password', aliases=['pw', 'pwd'])
     async def password(self, ctx, length=16):
         if length > 94:
             return await qembed(ctx, 'Sorry, 94 characters is the limit.')
