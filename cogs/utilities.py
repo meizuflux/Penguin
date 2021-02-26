@@ -146,6 +146,8 @@ class Utilities(commands.Cog):
 
     @commands.command(help='Randomly generates a password')
     async def password(self, ctx, length=16):
+        if length > 94:
+            return await qembed(ctx, 'Sorry, 94 characters is the limit.')
         lower = string.ascii_lowercase
         upper = string.ascii_uppercase
         num = string.digits
