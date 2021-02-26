@@ -105,7 +105,7 @@ class Utilities(commands.Cog):
         await message.channel.send(" ".join(emoji))
 
     @commands.command(help='Sends a list of the emojis that the bot can see.')
-    async def emoji_list(self, ctx, search=None):
+    async def emojis(self, ctx, search=None):
         emojis = []
         if search:
             result = self.finder(search,
@@ -119,10 +119,8 @@ class Utilities(commands.Cog):
             paginator = WrappedPaginator(prefix='', suffix='', max_size=1985)
             paginator.add_line('\n'.join(emojis))
         else:
-            for emoji in self.bot.emojis:
-                emojis.append(emoji.name)
-            paginator = WrappedPaginator(prefix='`', suffix='`', max_size=1985)
-            paginator.add_line('`, `'.join(emojis))
+            paginator = WrappedPaginator(prefix='```py', suffix='```', max_size=1985)
+            paginator.add_line('•'.join(emoji.name for emoji in self.bot.emojis))
         interface = PaginatorInterface(ctx.bot, paginator, owner=ctx.author)
         await interface.send_to(ctx)
 
