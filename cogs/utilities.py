@@ -158,7 +158,7 @@ class Utilities(commands.Cog):
         temp = random.sample(all,length)
 
         password = "".join(temp)
-        embed = discord.Embed(description=f'{length} digit random password: `{password.replace("`", random.choice(num))}`', color=self.bot.embed_color, timestamp=ctx.message.created_at)
+        embed = discord.Embed(description=f'{length} digit random password:\n`{password.replace("`", random.choice(num))}`', color=self.bot.embed_color, timestamp=ctx.message.created_at)
         embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.author.send(embed=embed)
         await qembed(ctx, f'Messaged you with the password, {ctx.author.mention}')
