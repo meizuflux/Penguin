@@ -87,24 +87,21 @@ class Utilities(commands.Cog):
         not_owner = not await self.bot.is_owner(message.author)
         if not_owner or message.author.bot:
             return
-        matches = self.match.findall(message.content)
 
+        matches = self.match.findall(message.content)
         if not matches:
             return
         emoji = []
         for match in matches:
             e = self.finder(match, self.bot.emojis, key=lambda emoji: emoji.name, lazy=False)
-            print(e)
             if e == []:
                 continue
             e = e[0]
-            print(e)
-            print(emoji)
             if e is None:
                 return
             if e.is_usable() != False:
                 emoji.append(str(e))
-        await message.channel.send("".join(emoji))
+        await message.channel.send(" ".join(emoji))
 
 
 
