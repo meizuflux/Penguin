@@ -6,8 +6,10 @@ import humanize
 import json
 import re
 from utils.fuzzy import finder
+from jishaku.functools import executor_function
 from jishaku.paginators import PaginatorInterface, WrappedPaginator
 import random
+import numpy as np
 import string
 from utils.permissions import mng_msg
 
@@ -102,6 +104,35 @@ class Utilities(commands.Cog):
             paginator.add_line('\n'.join(emojis))
         interface = PaginatorInterface(ctx.bot, paginator, owner=ctx.author)
         await interface.send_to(ctx)
+
+    @executor_function()
+    def levenshtein_match_calc(s, t):
+        rows = len(s)+1
+        cols = len(t)+1
+        distance = np.zeros((rows,cols),dtype = int)
+
+        for i in range(1, rows):
+            for k in range(1,cols):
+                distance[i][0] = i
+                distance[0][k] = k
+
+        for col in range(1, cols):
+            for row in range(1, rows):
+                if s[row-1] == t[col-1]:
+                    cost = 0
+                else:
+                    cost = 2
+                distance[row][col] = min(distance[row-1][col] + 1,      # Cost of deletions
+                                    distance[row][col-1] + 1,          # Cost of insertions
+                                    distance[row-1][col-1] + cost)     # Cost of substitutions
+        Ratio = ((len(s)+len(t)) - distance[row][col]) / (len(s)+len(t))
+        return int(Ratio*100)
+
+    @commands.command(help='Compares the similarity of two strings')
+    async def fuzzy(self, ctx, string1, string2):
+        result = await self.levenshtein_match_calc(string1, string2)
+        await qembed(ctx, f'`{string1}` and `{string2}` are `{result}%` similar.')
+
 
     @commands.guild_only()
     @commands.is_owner()
