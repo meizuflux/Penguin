@@ -92,21 +92,7 @@ class Fun(commands.Cog):
                 text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
             await msg.edit(embed=embed)
 
-    @staticmethod
-    def bottoms(mode, text):
-        if mode == "to_bottom":
-            return to_bottom(text)
-        else:
-            return from_bottom(text)
 
-    async def check_mystbin(self, text):
-        if match := mystbin_url.match(text):
-            paste_id = match.group("ID")
-            async with self.bot.session.get(f"https://mystb.in/api/pastes/{paste_id}") as resp:
-                if resp.status != 200:
-                    return text
-                data = await resp.json()
-                return data["data"]
 
     @commands.command(name='chucknorris',
                       aliases=['norris', 'chucknorrisjoke'],
@@ -122,6 +108,24 @@ class Fun(commands.Cog):
             text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         e.set_thumbnail(url=joke['icon_url'])
         await ctx.send(embed=e)
+
+    @staticmethod
+    def bottoms(mode, text):
+        if mode == "to_bottom":
+            return to_bottom(text)
+        else:
+            return from_bottom(text)
+
+    async def check_mystbin(self, text):
+        if match := mystbin_url.match(text):
+            paste_id = match.group("ID")
+            async with self.bot.session.get(f"https://mystb.in/api/pastes/{paste_id}") as resp:
+                if resp.status != 200:
+                    return text
+                data = await resp.json()
+                return data["data"]
+        else: 
+            return text
 
     @commands.command(aliases=['bottom_decode', 'decode'])
     async def bottomdecode(self, ctx, *, text):
