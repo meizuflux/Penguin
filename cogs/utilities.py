@@ -5,6 +5,7 @@ from utils.default import qembed
 import humanize
 import json
 import re
+from utils.fuzzy import finder
 from jishaku.paginators import PaginatorInterface, WrappedPaginator
 import random
 import string
@@ -61,27 +62,6 @@ class Utilities(commands.Cog):
             return
         self.bot.deleted_messages[message.channel.id].append(DeletedMessage(message))
 
-    # https://github.com/Rapptz/RoboDanny/blob/1d0ddee9273338a13123117fbad6cac3493c8e7f/cogs/api.py from here till rtfm command
-    def finder(self, text, collection, *, key=None, lazy=True):
-        suggestions = []
-        text = str(text)
-        pat = '.*?'.join(map(re.escape, text))
-        regex = re.compile(pat, flags=re.IGNORECASE)
-        for item in collection:
-            to_search = key(item) if key else item
-            r = regex.search(to_search)
-            if r:
-                suggestions.append((len(r.group()), r.start(), item))
-
-        def sort_key(tup):
-            if key:
-                return tup[0], tup[1], key(tup[2])
-            return tup
-
-        if lazy:
-            return (z for _, _, z in sorted(suggestions, key=sort_key))
-        else:
-            return [z for _, _, z in sorted(suggestions, key=sort_key)]
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -94,7 +74,7 @@ class Utilities(commands.Cog):
             return
         emoji = []
         for match in matches:
-            e = self.finder(match, self.bot.emojis, key=lambda emoji: emoji.name, lazy=False)
+            e = finder(match, self.bot.emojis, key=lambda emoji: emoji.name, lazy=False)
             if e == []:
                 continue
             e = e[0]
@@ -108,7 +88,7 @@ class Utilities(commands.Cog):
     async def emojis(self, ctx, search=None):
         emojis = []
         if search:
-            result = self.finder(search,
+            result = finder(search,
                             self.bot.emojis,
                             key=lambda emoji: emoji.name,
                             lazy=False)
