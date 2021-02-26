@@ -76,13 +76,14 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
                     )
 
         if error_collection:
-            output = "\n".join([f"**{g[0]}** ```diff\n- {g[1]}```" for g in error_collection])
+            output = "\n".join(
+                f"**{g[0]}** ```diff\n- {g[1]}```" for g in error_collection
+            )
+
             embed.add_field(name='Cog Reloading', value=f"Attempted to reload all extensions, was able to reload, "
                                                         f"however the following failed...\n\n{output}")
         else:
-            if len(out.decode('utf-8')) == 20:
-                pass
-            else:
+            if len(out.decode('utf-8')) != 20:
                 embed.add_field(name='Cog Reloading', value='```\nAll cogs were loaded successfully```')
         await ctx.send(embed=embed)
 
@@ -127,9 +128,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         source_lines = ''.join(source_lines).split('\n')
 
         paginator = WrappedPaginator(prefix='```py', suffix='```', max_size=1985)
-        num = 0
-        for line in source_lines:
-            num += 1
+        for num, line in enumerate(source_lines, start=1):
             paginator.add_line(str(num) + line.replace("`", "\u200b`"))
 
         interface = PaginatorInterface(ctx.bot, paginator, owner=ctx.author)

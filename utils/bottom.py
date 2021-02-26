@@ -30,16 +30,16 @@ def from_bottom(text: str) -> str:
     out = bytearray()
     text = text.strip().removesuffix(SECTION_SEPERATOR)
 
-    if not all(c in CHARACTER_VALUES.values() for c in text.replace(SECTION_SEPERATOR, '')):
+    if any(
+        c not in CHARACTER_VALUES.values()
+        for c in text.replace(SECTION_SEPERATOR, '')
+    ):
         raise TypeError(f'Invalid bottom text: {text}')
 
     for char in text.split(SECTION_SEPERATOR):
         rev_mapping = {v: k for k, v in CHARACTER_VALUES.items()}
 
-        sub = 0
-        for emoji in char:
-            sub += rev_mapping[emoji]
-
+        sub = sum(rev_mapping[emoji] for emoji in char)
         out += sub.to_bytes(1, 'big')
 
     return out.decode()
