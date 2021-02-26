@@ -58,13 +58,13 @@ class Chuck(commands.Bot):
             prefix = await self.db.fetchval("SELECT prefix FROM prefixes WHERE serverid = $1", message.guild.id)
             if prefix:
                 self.prefixes[message.guild.id] = prefix
-                return commands.when_mentioned_or(self.prefixes[message.guild.id])(self, message)
             else:
                 await self.db.execute(
                     "INSERT INTO prefixes(serverid,prefix) VALUES($1,$2) ON CONFLICT (serverid) DO UPDATE SET prefix = $2",
                     message.guild.id, self.default_prefix)
                 self.prefixes[message.guild.id] = self.default_prefix
-                return commands.when_mentioned_or(self.prefixes[message.guild.id])(self, message)
+
+            return commands.when_mentioned_or(self.prefixes[message.guild.id])(self, message)
 
     async def try_user(self, user_id: int) -> discord.User:
         """Method to try and fetch a user from cache then fetch from API"""
@@ -151,10 +151,7 @@ class Chuck(commands.Bot):
                 server_prefix = bot.prefixes[message.guild.id]
             except KeyError:
                 prefix = await bot.db.fetchval("SELECT prefix FROM prefixes WHERE serverid = $1", message.guild.id)
-                if prefix:
-                    server_prefix = prefix
-                else:
-                    server_prefix = bot.default_prefix
+                server_prefix = prefix or bot.default_prefix
             await message.channel.send("My prefix on `{}` is `{}`".format(message.guild.name, server_prefix))
         await self.process_commands(message)
 

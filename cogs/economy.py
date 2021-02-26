@@ -52,9 +52,11 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
     async def leaderboard(self, ctx, number: int = 5):
         if number > 10: return qembed(ctx, 'No more than 10 please!')
         stats = await self.bot.db.fetch("SELECT * FROM economy ORDER BY bank+wallet DESC LIMIT $1", number)
-        lb = []
-        for number, i in enumerate(range(number)):
-            lb.append(f'{number+1}) {await self.bot.try_user(stats[number]["userid"])} » ${stats[number]["wallet"]+stats[number]["bank"]}')
+        lb = [
+            f'{number+1}) {await self.bot.try_user(stats[number]["userid"])} » ${stats[number]["wallet"]+stats[number]["bank"]}'
+            for number, i in enumerate(range(number))
+        ]
+
         leaderboard = discord.Embed(title='Leaderboard',
                                     color=self.bot.embed_color,
                                     timestamp=ctx.message.created_at,
@@ -76,10 +78,9 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
                 return await qembed(ctx, 'You don\'t have that much money in your wallet.')
             if int(amount) < 0:
                 return await qembed(ctx, 'How exactly are you going to deposit a negative amount of money?')
-            else:
-                updated_wallet = wallet - int(amount)
-                bank += int(amount)
-                message = f'You deposited ${humanize.intcomma(amount)}'
+            updated_wallet = wallet - int(amount)
+            bank += int(amount)
+            message = f'You deposited ${humanize.intcomma(amount)}'
         await self.bot.db.execute("UPDATE economy SET wallet = $1, bank = $2 WHERE userid = $3", updated_wallet, bank,
                                   ctx.author.id)
         await qembed(ctx, message)
@@ -100,10 +101,9 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
                 return await qembed(ctx, 'You can\'t exactly withdraw a negative amount of money')
             if bank < int(amount):
                 return await qembed(ctx, 'You don\'t have that much money!')
-            else:
-                wallet += int(amount)
-                updated_bank = bank - int(amount)
-                message = f'You withdrew ${humanize.intcomma(amount)}'
+            wallet += int(amount)
+            updated_bank = bank - int(amount)
+            message = f'You withdrew ${humanize.intcomma(amount)}'
         await self.bot.db.execute("UPDATE economy SET wallet = $1, bank = $2 WHERE userid = $3", wallet, updated_bank,
                                   ctx.author.id)
         await qembed(ctx, message)

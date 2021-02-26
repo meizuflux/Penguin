@@ -69,7 +69,11 @@ async def prettyresults(ctx, filename: str = "Results", resultmsg: str = "Here's
     if not loop:
         return await ctx.send("The result was empty...")
 
-    pretty = "\r\n".join([f"[{str(num).zfill(2)}] {data}" for num, data in enumerate(loop, start=1)])
+    pretty = "\r\n".join(
+        f"[{str(num).zfill(2)}] {data}"
+        for num, data in enumerate(loop, start=1)
+    )
+
 
     if len(loop) < 15:
         return await ctx.send(f"{resultmsg}```ini\n{pretty}```")

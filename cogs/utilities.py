@@ -73,7 +73,6 @@ class Utilities(commands.Cog):
                 await ctx.send(embed=msg.del_embed)
                 content = 'Bot deleted an embed which was sent above.' if not msg.content else msg.content
             except AttributeError:
-                pass
                 content = msg.content
         except IndexError:
             return await qembed(ctx, 'Nothing to snipe!')
@@ -93,20 +92,25 @@ class Utilities(commands.Cog):
     async def mystbin(self, ctx, *, text=None):
         if ctx.message.reference:
             if ctx.message.reference.cached_message:
-                if ctx.message.reference.cached_message.attachments:
-                    if ctx.message.reference.cached_message.attachments[0].filename.endswith((".txt", ".py", ".json", ".html", ".csv")):
-                        message = await ctx.message.reference.cached_message.attachments[0].read()
-                        message = message.decode("utf-8")
-                        return await qembed(ctx, await ctx.mystbin(message) + "." + ctx.message.reference.cached_message.attachments[0].filename.split(".")[1])
+                if (
+                    ctx.message.reference.cached_message.attachments
+                    and ctx.message.reference.cached_message.attachments[
+                        0
+                    ].filename.endswith((".txt", ".py", ".json", ".html", ".csv"))
+                ):
+                    message = await ctx.message.reference.cached_message.attachments[0].read()
+                    message = message.decode("utf-8")
+                    return await qembed(ctx, await ctx.mystbin(message) + "." + ctx.message.reference.cached_message.attachments[0].filename.split(".")[1])
             else:
                 message = await self.bot.get_channel(ctx.message.reference.channel_id).fetch_message(ctx.message.reference.message_id)
-                if message.attachments:
-                    if message.attachments.filename.endswith((".txt", ".py", ".json", ".html", ".csv")):
-                        message_ = await message.attachments[0].read()
-                        message_ = message_.decode("utf-8")
-                        return await qembed(ctx, await ctx.mystbin(message_) + "." + message.attachments[0].filename.split(".")[1])
+                if message.attachments and message.attachments.filename.endswith(
+                    (".txt", ".py", ".json", ".html", ".csv")
+                ):
+                    message_ = await message.attachments[0].read()
+                    message_ = message_.decode("utf-8")
+                    return await qembed(ctx, await ctx.mystbin(message_) + "." + message.attachments[0].filename.split(".")[1])
 
-        if text == None:
+        if text is None:
             message = ctx.message.attachments[0]
             if message:
                 syntax = message.filename.split(".")[1]

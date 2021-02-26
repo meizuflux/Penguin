@@ -65,15 +65,12 @@ class ChuckContext(commands.Context):
 class Help(commands.MinimalHelpCommand):
     def get_command_signature(self, command, ctx=None):
         """Method to return a commands name and signature"""
-        if command.usage:
-            sig = command.usage
-        else:
-            sig = command.signature
+        sig = command.usage or command.signature
         if not sig and not command.parent:
             return f'`{self.clean_prefix}{command.name}`'
-        if sig and not command.parent:
+        if not command.parent:
             return f'`{self.clean_prefix}{command.name}` `{sig}`'
-        if not sig and command.parent:
+        if not sig:
             return f'`{self.clean_prefix}{command.parent}` `{command.name}`'
         else:
             return f'`{self.clean_prefix}{command.parent}` `{command.name}` `{sig}`'
@@ -90,18 +87,18 @@ class Help(commands.MinimalHelpCommand):
         return "`<arg>`  means the argument is required\n`[arg]`  means the argument is optional"
 
     def add_bot_commands_formatting(self, commands, heading):
-        emoji_dict = {
-            'commandchart': "⚙️",
-            'economy': "💵",
-            'fun': "<:hahayes:739613910180692020>",
-            'polaroid': "📸",
-            'prefixes': "<:shrug:747680403778699304>",
-            'useful': "<:bruhkitty:739613862302711840>",
-            'utilities': "⚙️",
-            "music": "<:bruhkitty:739613862302711840>"
-        }
         if commands:
             joined = '`,\u2002`'.join(c.name for c in commands)
+            emoji_dict = {
+                'commandchart': "⚙️",
+                'economy': "💵",
+                'fun': "<:hahayes:739613910180692020>",
+                'polaroid': "📸",
+                'prefixes': "<:shrug:747680403778699304>",
+                'useful': "<:bruhkitty:739613862302711840>",
+                'utilities': "⚙️",
+                "music": "<:bruhkitty:739613862302711840>"
+            }
             self.paginator.add_line(f'{emoji_dict[heading.lower()]}  **{heading}**')
             self.paginator.add_line(f'`{joined}`')
             #self.paginator.add_line()
@@ -500,17 +497,15 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                               color=self.bot.embed_color,
                               timestamp=ctx.message.created_at)
         embed.set_thumbnail(url='https://cdn.discordapp.com/attachments/381963689470984203/814267252437942272/pypi.png')
-        email = package["info"]["author_email"] if package["info"]["author_email"] else "None provided"
+        email = package["info"]["author_email"] or "None provided"
         embed.add_field(name='Author Info:', value=f'**Author Name**: {package["info"]["author"]}\n'
                                                    f'**Author Email**: {email}')
-        docs = package["info"]["project_urls"]['Homepage'] if package["info"]["project_urls"][
-            'Homepage'] else "None provided"
+        docs = package["info"]["project_urls"]['Homepage'] or "None provided"
         try:
-            home_page = package["info"]["project_urls"]['Documentation'] if package["info"]["project_urls"][
-                'Documentation'] else "None provided"
+            home_page = package["info"]["project_urls"]['Documentation'] or "None provided"
         except KeyError:
             home_page = "None provided"
-        keywords = package["info"]['keywords'] if package["info"]['keywords'] else "None provided"
+        keywords = package["info"]['keywords'] or "None provided"
         embed.add_field(name='Package Info:',
                         value=f'**Documentation URL**: {docs}\n'
                               f'**Home Page**: {home_page}\n'
