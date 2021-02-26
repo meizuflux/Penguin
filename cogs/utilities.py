@@ -105,7 +105,7 @@ class Utilities(commands.Cog):
         interface = PaginatorInterface(ctx.bot, paginator, owner=ctx.author)
         await interface.send_to(ctx)
 
-    @executor_function()
+    @executor_function
     def levenshtein_match_calc(s, t):
         rows = len(s)+1
         cols = len(t)+1
