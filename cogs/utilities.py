@@ -109,7 +109,7 @@ class Utilities(commands.Cog):
         emojis = []
         for emoji in self.bot.emojis:
             emojis.append(emoji.name)
-        paginator = WrappedPaginator(prefix='```py', suffix='```', max_size=1985)
+        paginator = WrappedPaginator(max_size=1985)
         #for emoji in emojis:
         paginator.add_line("`, `".join(emojis))
 
