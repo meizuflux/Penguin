@@ -43,7 +43,7 @@ class CommandErrorHandler(commands.Cog):
             if not matches:
                 return
             match = "\n".join(matches[:1])
-            return await qembed(ctx, f"No command called `{string}` found. Did you mean `{match}`?")
+            return await qembed(ctx, f"No command called `{ctx.invoked_with}` found. Did you mean `{match}`?")
 
         elif isinstance(error, commands.CheckFailure):
             return await qembed(
