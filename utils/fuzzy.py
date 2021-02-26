@@ -1,7 +1,7 @@
 import re
 
 # https://github.com/Rapptz/RoboDanny/blob/1d0ddee9273338a13123117fbad6cac3493c8e7f/cogs/api.py from here till rtfm command
-def finder(self, text, collection, *, key=None, lazy=True):
+def finder(text, collection, *, key=None, lazy=True):
     suggestions = []
     text = str(text)
     pat = '.*?'.join(map(re.escape, text))
