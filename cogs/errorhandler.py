@@ -41,8 +41,10 @@ class CommandErrorHandler(commands.Cog):
             await ctx.send('** **')
             matches = difflib.get_close_matches(ctx.invoked_with, self.context.bot.command_list)
             if not matches:
+                await ctx.send('o')
                 return
             match = "\n".join(matches[:1])
+            await ctx.send('gg')
             return await qembed(ctx, f"No command called `{ctx.invoked_with}` found. Did you mean `{match}`?")
 
         elif isinstance(error, commands.CheckFailure):
