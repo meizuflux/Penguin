@@ -88,7 +88,7 @@ class Utilities(commands.Cog):
     async def emojis(self, ctx, search=None):
         emojis = []
         if search:
-            result = finder(search, collection=self.bot.emojis, key=lambda emoji: emoji.name, lazy=False)
+            result = finder(text=   search, collection=self.bot.emojis, key=lambda emoji: emoji.name, lazy=False)
             if result == []:
                 return await ctx.send("Nothing found for your query.")
             for emoji in result:
