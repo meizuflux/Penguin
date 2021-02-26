@@ -121,7 +121,7 @@ class Utilities(commands.Cog):
         else:
             for emoji in self.bot.emojis:
                 emojis.append(emoji.name)
-            paginator = WrappedPaginator(prefix='', suffix='', max_size=1985)
+            paginator = WrappedPaginator(prefix='`', suffix='`', max_size=1985)
             paginator.add_line('`, `'.join(emojis))
         interface = PaginatorInterface(ctx.bot, paginator, owner=ctx.author)
         await interface.send_to(ctx)
