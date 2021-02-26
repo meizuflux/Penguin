@@ -38,6 +38,7 @@ class CommandErrorHandler(commands.Cog):
             return
 
         if isinstance(error, commands.CommandNotFound):
+            await ctx.send('** **')
             matches = difflib.get_close_matches(ctx.invoked_with, self.context.bot.command_list)
             if not matches:
                 return
