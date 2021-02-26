@@ -18,9 +18,6 @@ def mng_gld():
     def predicate(ctx):
         if ctx.author.id == ctx.bot.author_id:
             return True
-        if ctx.author.guild_permissions.manage_guild:
-            return True
-        else:
-            return False
+        return bool(ctx.author.guild_permissions.manage_guild)
 
     return commands.check(predicate)

@@ -47,8 +47,8 @@ class CommandChart(commands.Cog):
         sizes = [x[1] for x in top]
         labels = ["{} {:g}%".format(x[0], x[1]) for x in top]
         if len(top) >= 20:
-            sizes = sizes + [others]
-            labels = labels + ["Others {:g}%".format(others)]
+            sizes += [others]
+            labels += ["Others {:g}%".format(others)]
         if len(channel.name) >= 19:
             channel_name = "{}...".format(channel.name[:19])
         else:
@@ -110,7 +110,7 @@ class CommandChart(commands.Cog):
 
         if not channel:
             channel = ctx.channel
-        if not channel.permissions_for(ctx.message.author).read_messages == True:
+        if channel.permissions_for(ctx.message.author).read_messages != True:
             await em.delete()
             return await ctx.send("You do not have the proper permissions to access that channel.")
 
@@ -127,18 +127,12 @@ class CommandChart(commands.Cog):
         msg_data = {"total count": 0, "commands": {}}
 
         for msg in message_list:
-            if len(msg) >= 20:
-                short_name = "{}...".format(msg[:20])
-            else:
-                short_name = msg
+            short_name = "{}...".format(msg[:20]) if len(msg) >= 20 else msg
             if short_name in msg_data["commands"]:
                 msg_data["commands"][short_name]["count"] += 1
-                msg_data["total count"] += 1
             else:
-                msg_data["commands"][short_name] = {}
-                msg_data["commands"][short_name]["count"] = 1
-                msg_data["total count"] += 1
-
+                msg_data["commands"][short_name] = {"count": 1}
+            msg_data["total count"] += 1
         if msg_data["commands"] == {}:
             await em.delete()
             return await ctx.send("No commands have been run in that channel.")
