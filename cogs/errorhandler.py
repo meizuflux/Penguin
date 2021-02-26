@@ -26,8 +26,8 @@ class CommandErrorHandler(commands.Cog):
             if cog._get_overridden_method(cog.cog_command_error) is not None:
                 return
 
-        ignored = (commands.CommandNotFound,)  # if you want to not send error messages
-        # ignored = ()
+        #ignored = (commands.CommandNotFound,)  # if you want to not send error messages
+        ignored = ()
 
         # Allows us to check for original exceptions raised and sent to CommandInvokeError.
         # If nothing is found. We keep the exception passed to on_command_error.
@@ -38,8 +38,11 @@ class CommandErrorHandler(commands.Cog):
             return
 
         if isinstance(error, commands.CommandNotFound):
-            return await qembed(ctx, f'`{ctx.command}` was not found.')
-            pass
+            matches = difflib.get_close_matches(string, self.context.bot.command_list, cutoff=0.6)
+            if not matches:
+                return
+            match = "\n".join(matches[:1])
+            return await qembed(ctx, f"No command called `{string}` found. Did you mean `{match}`?")
 
         elif isinstance(error, commands.CheckFailure):
             return await qembed(
