@@ -30,7 +30,7 @@ class DeletedMessage:
 class Utilities(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.match = match = re.compile(r";(?P<name>[a-zA-Z0-9_]+);")
+        self.match = match = re.compile(r";(?P<name>[a-zA-Z0-9_]+)")
 
     def deleted_message_for(self, index: int, channel_id: int):
         try:
