@@ -93,7 +93,7 @@ class Utilities(commands.Cog):
             return
         emoji = []
         for match in matches:
-            e = self.finder(i, self.bot.emojis, key=lambda emoji: emoji.name, lazy=False)
+            e = self.finder(match, self.bot.emojis, key=lambda emoji: emoji.name, lazy=False)
             if e == []:
                 continue
             e = e[0]
