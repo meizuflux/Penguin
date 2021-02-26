@@ -3,6 +3,8 @@ import traceback
 
 import discord
 import humanize
+import re
+import difflib
 from discord.ext import commands
 
 from utils import default
@@ -38,13 +40,11 @@ class CommandErrorHandler(commands.Cog):
             return
 
         if isinstance(error, commands.CommandNotFound):
-            await ctx.send('** **')
-            matches = difflib.get_close_matches(ctx.invoked_with, self.context.bot.command_list)
+            failed_command = re.match(rf"^({ctx.prefix})\s*(.*)", ctx.message.content, flags=re.IGNORECASE).group(2)
+            matches = difflib.get_close_matches(failed_command, self.context.bot.command_list)
             if not matches:
-                await ctx.send('o')
                 return
             match = "\n".join(matches[:1])
-            await ctx.send('gg')
             return await qembed(ctx, f"No command called `{ctx.invoked_with}` found. Did you mean `{match}`?")
 
         elif isinstance(error, commands.CheckFailure):
