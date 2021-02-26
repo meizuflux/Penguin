@@ -5,6 +5,7 @@ from utils.default import qembed
 import humanize
 import json
 import re
+from jishaku.paginators import PaginatorInterface, WrappedPaginator
 import random
 import string
 from utils.permissions import mng_msg
@@ -105,7 +106,15 @@ class Utilities(commands.Cog):
 
     @commands.command(help='Sends a list of the emojis that the bot can see.')
     async def emoji_list(self, ctx):
-        await ctx.invoke(self.bot.get_command('jsk py'), argument="emojis = []\nfor emoji in bot.emojis:\n    emojis.append(emoji.name)\nemojis")
+        emojis = []
+        for emoji in self.bot.emojis:
+            emojis.append(emoji.name)
+        paginator = WrappedPaginator(prefix='```py', suffix='```', max_size=1985)
+        #for emoji in emojis:
+        paginator.add_line(emojis)
+
+        interface = PaginatorInterface(ctx.bot, paginator, owner=ctx.author)
+        await interface.send_to(ctx)
 
     @commands.guild_only()
     @commands.is_owner()
