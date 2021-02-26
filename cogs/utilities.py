@@ -94,11 +94,13 @@ class Utilities(commands.Cog):
         emoji = []
         for match in matches:
             e = self.finder(match, self.bot.emojis, key=lambda emoji: emoji.name, lazy=False)
+            print(e)
             if e == []:
                 continue
             e = e[0]
+            print(e)
             if e is None or emoji == []:
-                continue
+                return
             if e.is_usable() != False:
                 emoji.append(str(e))
         await message.channel.send("".join(emoji))
