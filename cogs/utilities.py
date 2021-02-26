@@ -120,7 +120,7 @@ class Utilities(commands.Cog):
             paginator.add_line('\n'.join(emojis))
         else:
             paginator = WrappedPaginator(prefix='```py', suffix='```', max_size=1985)
-            paginator.add_line(list(emoji.name for emoji in self.bot.emojis))
+            paginator.add_line(str(list(emoji.name for emoji in self.bot.emojis)))
         interface = PaginatorInterface(ctx.bot, paginator, owner=ctx.author)
         await interface.send_to(ctx)
 
