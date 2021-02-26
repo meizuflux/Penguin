@@ -5,8 +5,7 @@ from utils.default import qembed
 import humanize
 import json
 import re
-from jishaku.paginators import PaginatorInterface,
-                                WrappedPaginator
+from jishaku.paginators import PaginatorInterface, WrappedPaginator
 import random
 import string
 from utils.permissions import mng_msg
