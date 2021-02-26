@@ -41,7 +41,7 @@ class CommandErrorHandler(commands.Cog):
 
         if isinstance(error, commands.CommandNotFound):
             failed_command = re.match(rf"^({ctx.prefix})\s*(.*)", ctx.message.content, flags=re.IGNORECASE).group(2)
-            matches = difflib.get_close_matches(failed_command, self.context.bot.command_list)
+            matches = difflib.get_close_matches(failed_command, self.bot.command_list)
             if not matches:
                 return
             match = "\n".join(matches[:1])
