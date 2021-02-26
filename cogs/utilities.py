@@ -106,7 +106,7 @@ class Utilities(commands.Cog):
         await interface.send_to(ctx)
 
     @executor_function
-    def levenshtein_match_calc(s, t):
+    def levenshtein_match_calc(self, s, t):
         rows = len(s)+1
         cols = len(t)+1
         distance = np.zeros((rows,cols),dtype = int)
