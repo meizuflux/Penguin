@@ -4,6 +4,7 @@ import datetime
 from utils.default import qembed
 import humanize
 import json
+import re
 import random
 import string
 from utils.permissions import mng_msg
@@ -29,6 +30,7 @@ class DeletedMessage:
 class Utilities(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.match = match = re.compile(r";(?P<name>[a-zA-Z0-9_]+)")
 
     def deleted_message_for(self, index: int, channel_id: int):
         try:
@@ -57,6 +59,50 @@ class Utilities(commands.Cog):
         if message.author.id in b:
             return
         self.bot.deleted_messages[message.channel.id].append(DeletedMessage(message))
+
+    # https://github.com/Rapptz/RoboDanny/blob/1d0ddee9273338a13123117fbad6cac3493c8e7f/cogs/api.py from here till rtfm command
+    def finder(self, text, collection, *, key=None, lazy=True):
+        suggestions = []
+        text = str(text)
+        pat = '.*?'.join(map(re.escape, text))
+        regex = re.compile(pat, flags=re.IGNORECASE)
+        for item in collection:
+            to_search = key(item) if key else item
+            r = regex.search(to_search)
+            if r:
+                suggestions.append((len(r.group()), r.start(), item))
+
+        def sort_key(tup):
+            if key:
+                return tup[0], tup[1], key(tup[2])
+            return tup
+
+        if lazy:
+            return (z for _, _, z in sorted(suggestions, key=sort_key))
+        else:
+            return [z for _, _, z in sorted(suggestions, key=sort_key)]
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        not_owner = not await self.bot.is_owner(message.author)
+        if not_owner or message.author.bot:
+            return
+        matches = self.match.findall(message.content)
+
+        if not matches:
+            return
+        emoji = []
+        for match in matches:
+            e = finder(i, self.bot.emojis, key=lambda emoji: emoji.name, lazy=False)
+            if e == []:
+                continue
+            e = e[0]
+            if e is None or emojis == []:
+                continue
+            if e.is_usable() != False:
+                emoji.append(str(e))
+        await message.channel.send("".join(emoji))
+
 
 
     @commands.guild_only()
