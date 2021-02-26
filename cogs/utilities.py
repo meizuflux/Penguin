@@ -105,10 +105,7 @@ class Utilities(commands.Cog):
 
     @commands.command(help='Sends a list of the emojis that the bot can see.')
     async def emoji_list(self, ctx):
-        await ctx.invoke("jsk py", "emojis = []\n"
-                                    "for emoji in bot.emojis:\n"
-                                    "    emojis.append(emoji.name)\n"
-                                    "emojis")
+        await ctx.invoke("jsk py", "emojis = []\nfor emoji in bot.emojis:\n    emojis.append(emoji.name)\nemojis")
 
     @commands.guild_only()
     @commands.is_owner()
