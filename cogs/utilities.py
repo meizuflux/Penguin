@@ -5,7 +5,7 @@ from utils.default import qembed
 import humanize
 import json
 import re
-from jishaku.paginators import PaginatorEmbedInterface, PaginatorInterface,
+from jishaku.paginators import PaginatorInterface,
                                 WrappedPaginator
 import random
 import string
