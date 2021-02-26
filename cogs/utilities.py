@@ -5,7 +5,8 @@ from utils.default import qembed
 import humanize
 import json
 import re
-from jishaku.paginators import PaginatorInterface, WrappedPaginator
+from jishaku.paginators import PaginatorEmbedInterface, PaginatorInterface,
+                                WrappedPaginator
 import random
 import string
 from utils.permissions import mng_msg
@@ -116,10 +117,10 @@ class Utilities(commands.Cog):
                 return await ctx.send("Nothing found for your query.")
             for emoji in result:
                 emojis.append(f"{str(emoji)} `{emoji.name}`")
-            paginator = WrappedPaginator(prefix='', suffix='', max_size=1985)
+            paginator = WrappedPaginator(prefix='', suffix='', max_size=500)
             paginator.add_line('\n'.join(emojis))
         else:
-            paginator = WrappedPaginator(prefix='```py', suffix='```', max_size=1985)
+            paginator = WrappedPaginator(prefix='```py', suffix='```', max_size=1000)
             paginator.add_line(str(list(emoji.name for emoji in self.bot.emojis)))
         interface = PaginatorInterface(ctx.bot, paginator, owner=ctx.author)
         await interface.send_to(ctx)
