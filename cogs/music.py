@@ -439,7 +439,7 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
         """Check whether the user is an Admin or DJ."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
 
-        return player.dj == ctx.author or ctx.author.guild_permissions.kick_members or self.bot.try_user(self.bot.author_id)
+        return player.dj == ctx.author or ctx.author.guild_permissions.kick_members or await self.bot.try_user(self.bot.author_id)
 
     @commands.command()
     async def connect(self, ctx: commands.Context, *, channel: discord.VoiceChannel = None):
