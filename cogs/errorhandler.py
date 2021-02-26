@@ -38,7 +38,7 @@ class CommandErrorHandler(commands.Cog):
             return
 
         if isinstance(error, commands.CommandNotFound):
-            matches = difflib.get_close_matches(string, self.context.bot.command_list, cutoff=0.6)
+            matches = difflib.get_close_matches(string, self.context.bot.command_list)
             if not matches:
                 return
             match = "\n".join(matches[:1])
