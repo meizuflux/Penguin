@@ -97,7 +97,7 @@ class Utilities(commands.Cog):
             if e == []:
                 continue
             e = e[0]
-            if e is None or emojis == []:
+            if e is None or emoji == []:
                 continue
             if e.is_usable() != False:
                 emoji.append(str(e))
