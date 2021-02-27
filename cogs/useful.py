@@ -520,19 +520,17 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Checks if your message is toxic or not.')
     async def toxic(self, ctx, *, text):
-        k = f"https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key={self.bot.perspective}"
+        url = f"https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key={self.bot.perspective}"
 
-        headers = {
-            'Content-Type': 'application/json',
-        }
+        headers = {'Content-Type': 'application/json',}
 
         data = f'{{comment: {{text: "{text}"}}, ' \
                'languages: ["en"], ' \
                'requestedAttributes: {TOXICITY:{}} }'
 
-        res = await self.bot.session.post(k, headers=headers, data=data)
+        res = await self.bot.session.post(url, headers=headers, data=data)
         js = await res.json()
-        await ctx.send(js)
+
         level = js["attributeScores"]["TOXICITY"]["summaryScore"]["value"] * 100
         await ctx.send(f"`{text}` is `{level:.2f}%` likely to be toxic.")
 
