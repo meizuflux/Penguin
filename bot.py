@@ -145,7 +145,6 @@ class Chuck(commands.Bot):
 
     async def on_message(self, message: discord.Message):
         """Checking if someone pings the bot"""
-        ctx = await self.get_context(message)
         if message.author.bot:
             return
         if re.fullmatch(f"^(<@!?{self.user.id}>)\s*", message.content):
@@ -154,7 +153,7 @@ class Chuck(commands.Bot):
             except KeyError:
                 prefix = await bot.db.fetchval("SELECT prefix FROM prefixes WHERE serverid = $1", message.guild.id)
                 server_prefix = prefix or bot.default_prefix
-            await ctx.send("My prefix on `{}` is `{}`".format(message.guild.name, ctx.prefix))
+            await message.channel.send("My prefix on `{}` is `{}`".format(message.guild.name, server_prefix))
         await self.process_commands(message)
 
     async def on_message_edit(self, before, after):
