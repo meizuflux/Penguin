@@ -538,7 +538,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                                  headers=headers,
                                  params=params,
                                  data=data)
-        resp = response.content
+        resp = await response.content
         resp = resp.decode('utf-8')
         resp = ast.literal_eval(resp)
         level = resp["attributeScores"]["TOXICITY"]["summaryScore"]["value"]
