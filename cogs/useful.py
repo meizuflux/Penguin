@@ -534,7 +534,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         data = f'{{comment: {{text: "{text}"}}, ' \
                'languages: ["en"], ' \
                'requestedAttributes: {TOXICITY:{}} }'
-        response = requests.post('https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze',
+        response = await self.bot.session.post('https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze',
                                  headers=headers,
                                  params=params,
                                  data=data)
