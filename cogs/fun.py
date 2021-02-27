@@ -7,11 +7,12 @@ import random
 import time
 import re
 import json
-import asyncio  
+import asyncio
 
 mystbin_url = re.compile(
     r"(?:(?:https?://)?mystb\.in/)?(?P<ID>[a-zA-Z]+)(?:\.(?P<syntax>[a-zA-Z0-9]+))?"
-) # Thanks to Umbra's mystbin wrapper repo for this.
+)  # Thanks to Umbra's mystbin wrapper repo for this.
+
 
 class Fun(commands.Cog):
     """For the fun commands"""
@@ -92,8 +93,6 @@ class Fun(commands.Cog):
                 text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
             await msg.edit(embed=embed)
 
-
-
     @commands.command(name='chucknorris',
                       aliases=['norris', 'chucknorrisjoke'],
                       help='Gets a random Chuck Norris Joke')
@@ -124,7 +123,7 @@ class Fun(commands.Cog):
                     return text
                 data = await resp.json()
                 return data["data"]
-        else: 
+        else:
             return text
 
     @commands.command(aliases=['bottom_decode', 'decode'])
@@ -144,15 +143,19 @@ class Fun(commands.Cog):
         if len(bottoms) > 500:
             return await qembed(ctx, str(await ctx.mystbin(bottoms)))
         await qembed(ctx, bottoms)
-        
+
     @commands.command()
     async def spoiler(self, ctx, *, text):
         await ctx.send(''.join(char.replace(char, f'||{char}||') for char in text))
-        
+
+    @commands.command()
+    async def partyfrog(self, ctx, *, text):
+        await ctx.send(text.replace(" ", " <:a:815283360465289316> "))
+
     @commands.command()
     async def buildup(self, ctx, text):
         x = text
-        await ctx.send('\n'.join(x[:+y] for y in range(len(x)))+ '\n' +x+  '\n'.join(x[:-y] for y in range(len(x))))
+        await ctx.send('\n'.join(x[:+y] for y in range(len(x))) + '\n' + x + '\n'.join(x[:-y] for y in range(len(x))))
 
 
 def setup(bot):
