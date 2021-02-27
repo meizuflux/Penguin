@@ -4,7 +4,6 @@ import difflib
 import io
 import itertools
 import os
-import ast
 import pathlib
 import platform
 import json
@@ -521,26 +520,18 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Checks if your message is toxic or not.')
     async def toxic(self, ctx, *, text):
-        headers = {
-            'Content-Type': 'application/json',
-        }
+        k = f"https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key={self.bot.perspective}"
 
-        params = (
-            ('key', self.bot.perspective),
-        )
-
-        data = f'{{comment: {{text: "{text}"}}, ' \
-               'languages: ["en"], ' \
-               'requestedAttributes: {TOXICITY:{}} }'
-        response = await self.bot.session.post('https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze',
-                                 headers=headers,
-                                 params=params,
-                                 data=data)
-        resp = await response.read()
-        resp = resp.decode('utf-8')
-        resp = json.loads(resp)
-        level = resp["attributeScores"]["TOXICITY"]["summaryScore"]["value"]*100
+        res = await self.bot.session.post(k, json=f'{{comment: {{text: "{text}"}}, '
+                                                  'languages: ["en"], '
+                                                  'requestedAttributes: {TOXICITY:{}} })')
+        js = await res.json()
+        level = js["attributeScores"]["TOXICITY"]["summaryScore"]["value"] * 100
         await ctx.send(f"`{text}` is `{level:.2f}%` likely to be toxic.")
+
+    @commands.command(help='Invites the bot to your server')
+    async def invite(self, ctx):
+        await ctx.send(f"https://discordapp.com/oauth2/authorize?client_id={self.bot.user.id}&scope=bot&permissions=8")
 
 
 def setup(bot):
