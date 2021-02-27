@@ -538,7 +538,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                                  data=data)
         resp = await response.read()
         resp = resp.decode('utf-8')
-        #resp = ast.literal_eval(resp)
+        resp = ast.literal_eval(resp)
         level = resp["attributeScores"]["TOXICITY"]["summaryScore"]["value"]*100
         await ctx.send(f"`{text}` is `{level:.2f}%` toxic.")
 
