@@ -4,6 +4,8 @@ import difflib
 import io
 import itertools
 import os
+import ast
+import requests
 import pathlib
 import platform
 import json
@@ -529,16 +531,18 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             ('key', self.bot.perspective),
         )
 
-        data = '{comment: {text: "you all suck"}, ' \
+        data = f'{{comment: {{text: "{text}"}}, ' \
                'languages: ["en"], ' \
                'requestedAttributes: {TOXICITY:{}} }'
-
-        response = await self.bot.session.post('https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze',
-                                               headers=headers,
-                                               params=params,
-                                               data=data)
-
-        await ctx.send(json.dumps(response, indent=4))
+        response = requests.post('https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze',
+                                 headers=headers,
+                                 params=params,
+                                 data=data)
+        resp = response.content
+        resp = resp.decode('utf-8')
+        resp = ast.literal_eval(resp)
+        level = resp["attributeScores"]["TOXICITY"]["summaryScore"]["value"]
+        await ctx.send(f"{text} is {level:.2f}% toxic.")
 
 
 def setup(bot):
