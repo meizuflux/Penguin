@@ -6,6 +6,7 @@ import itertools
 import os
 import ast
 import requests
+import codecs
 import pathlib
 import platform
 import json
@@ -538,8 +539,10 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                                  headers=headers,
                                  params=params,
                                  data=data)
-        resp = await response.content
-        resp = resp.decode('utf-8')
+        resp = response.content
+        Utf8Decoder = codecs.getincrementaldecoder('utf-8')
+        decoder = Utf8Decoder(error='strict')
+        resp = decoder.decode(resp), end=''
         resp = ast.literal_eval(resp)
         level = resp["attributeScores"]["TOXICITY"]["summaryScore"]["value"]
         await ctx.send(f"{text} is {level:.2f}% toxic.")
