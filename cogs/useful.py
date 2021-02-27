@@ -526,6 +526,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                                                   'languages: ["en"], '
                                                   'requestedAttributes: {TOXICITY:{}} })')
         js = await res.json()
+        await ctx.send(js)
         level = js["attributeScores"]["TOXICITY"]["summaryScore"]["value"] * 100
         await ctx.send(f"`{text}` is `{level:.2f}%` likely to be toxic.")
 
