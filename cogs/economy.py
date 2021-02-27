@@ -40,8 +40,8 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         wallet = data[0]
         bank = data[1]
         e = discord.Embed(title=f'{user.name if user else ctx.author.name}\'s balance',
-                          description=f"<:green_arrow:811052039416447027> **Wallet**: ${humanize.intcomma(wallet)}"
-                          f"<:green_arrow:811052039416447027> **Bank**: ${humanize.intcomma(bank)}"
+                          description=f"<:green_arrow:811052039416447027> **Wallet**: ${humanize.intcomma(wallet)}\n"
+                          f"<:green_arrow:811052039416447027> **Bank**: ${humanize.intcomma(bank)}\n"
                           f"<:green_arrow:811052039416447027> **Total**: ${humanize.intcomma(wallet + bank)}",
                           color=self.bot.embed_color, timestamp=ctx.message.created_at).set_footer(
             text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
