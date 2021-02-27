@@ -522,7 +522,6 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         await ctx.send(embed=embed)
 
     @commands.command(help='Checks if your message is toxic or not.')
-    @commands.is_owner()
     async def toxic(self, ctx, *, text):
         headers = {
             'Content-Type': 'application/json',
@@ -543,7 +542,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         resp = resp.decode('utf-8')
         resp = ast.literal_eval(resp)
         level = resp["attributeScores"]["TOXICITY"]["summaryScore"]["value"]
-        await ctx.send(f"{text} is {level:.2f}% toxic.")
+        await ctx.send(f"`{text}` is `{level:.2f}%` toxic.")
 
 
 def setup(bot):
