@@ -520,6 +520,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
 
     @commands.command(help='Checks if your message is toxic or not.')
+    @commands.is_owner()
     async def toxic(self, ctx, text):
         headers = {
             'Content-Type': 'application/json',
