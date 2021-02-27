@@ -1,3 +1,5 @@
+import asyncio
+import datetime
 import difflib
 import io
 import itertools
@@ -6,19 +8,13 @@ import pathlib
 import platform
 import re
 import time
-import random
-import string
-from utils.fuzzy import finder
 import zlib
-
-
-import discord
-import datetime
-import aiohttp
-import humanize
 from io import BytesIO
+
+import aiohttp
+import discord
+import humanize
 import psutil
-import asyncio
 from discord.ext import commands
 
 from utils.default import plural, qembed
@@ -66,12 +62,15 @@ class ChuckContext(commands.Context):
 class Help(commands.MinimalHelpCommand):
     def get_command_signature(self, command, ctx=None):
         """Method to return a commands name and signature"""
-        sig = command.usage or command.signature
+        if command.usage:
+            sig = command.usage
+        else:
+            sig = command.signature
         if not sig and not command.parent:
             return f'`{self.clean_prefix}{command.name}`'
-        if not command.parent:
+        if sig and not command.parent:
             return f'`{self.clean_prefix}{command.name}` `{sig}`'
-        if not sig:
+        if not sig and command.parent:
             return f'`{self.clean_prefix}{command.parent}` `{command.name}`'
         else:
             return f'`{self.clean_prefix}{command.parent}` `{command.name}` `{sig}`'
@@ -88,18 +87,18 @@ class Help(commands.MinimalHelpCommand):
         return "`<arg>`  means the argument is required\n`[arg]`  means the argument is optional"
 
     def add_bot_commands_formatting(self, commands, heading):
+        emoji_dict = {
+            'commandchart': "⚙️",
+            'economy': "💵",
+            'fun': "<:hahayes:739613910180692020>",
+            'polaroid': "📸",
+            'prefixes': "<:shrug:747680403778699304>",
+            'useful': "<:bruhkitty:739613862302711840>",
+            'utilities': "⚙️",
+            "music": "<:bruhkitty:739613862302711840>"
+        }
         if commands:
             joined = '`,\u2002`'.join(c.name for c in commands)
-            emoji_dict = {
-                'commandchart': "⚙️",
-                'economy': "💵",
-                'fun': "<:hahayes:739613910180692020>",
-                'polaroid': "📸",
-                'prefixes': "<:shrug:747680403778699304>",
-                'useful': "<:bruhkitty:739613862302711840>",
-                'utilities': "⚙️",
-                "music": "<:bruhkitty:739613862302711840>"
-            }
             self.paginator.add_line(f'{emoji_dict[heading.lower()]}  **{heading}**')
             self.paginator.add_line(f'`{joined}`')
             #self.paginator.add_line()
@@ -304,6 +303,28 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
         await msg.edit(content=None, embed=emb)
 
+    # https://github.com/Rapptz/RoboDanny/blob/1d0ddee9273338a13123117fbad6cac3493c8e7f/cogs/api.py from here till rtfm command
+    def finder(self, text, collection, *, key=None, lazy=True):
+        suggestions = []
+        text = str(text)
+        pat = '.*?'.join(map(re.escape, text))
+        regex = re.compile(pat, flags=re.IGNORECASE)
+        for item in collection:
+            to_search = key(item) if key else item
+            r = regex.search(to_search)
+            if r:
+                suggestions.append((len(r.group()), r.start(), item))
+
+        def sort_key(tup):
+            if key:
+                return tup[0], tup[1], key(tup[2])
+            return tup
+
+        if lazy:
+            return (z for _, _, z in sorted(suggestions, key=sort_key))
+        else:
+            return [z for _, _, z in sorted(suggestions, key=sort_key)]
+
     def parse_object_inv(self, stream, url):
         # key: URL
         # n.b.: key doesn't have `discord` or `discord.ext.commands` namespaces
@@ -405,7 +426,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         def transform(tup):
             return tup[0]
 
-        matches = finder(obj, cache, key=lambda t: t[0], lazy=False)[:8]
+        matches = self.finder(obj, cache, key=lambda t: t[0], lazy=False)[:8]
 
         e = discord.Embed(colour=self.bot.embed_color)
         if len(matches) == 0:
@@ -476,15 +497,17 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                               color=self.bot.embed_color,
                               timestamp=ctx.message.created_at)
         embed.set_thumbnail(url='https://cdn.discordapp.com/attachments/381963689470984203/814267252437942272/pypi.png')
-        email = package["info"]["author_email"] or "None provided"
+        email = package["info"]["author_email"] if package["info"]["author_email"] else "None provided"
         embed.add_field(name='Author Info:', value=f'**Author Name**: {package["info"]["author"]}\n'
                                                    f'**Author Email**: {email}')
-        docs = package["info"]["project_urls"]['Homepage'] or "None provided"
+        docs = package["info"]["project_urls"]['Homepage'] if package["info"]["project_urls"][
+            'Homepage'] else "None provided"
         try:
-            home_page = package["info"]["project_urls"]['Documentation'] or "None provided"
+            home_page = package["info"]["project_urls"]['Documentation'] if package["info"]["project_urls"][
+                'Documentation'] else "None provided"
         except KeyError:
             home_page = "None provided"
-        keywords = package["info"]['keywords'] or "None provided"
+        keywords = package["info"]['keywords'] if package["info"]['keywords'] else "None provided"
         embed.add_field(name='Package Info:',
                         value=f'**Documentation URL**: {docs}\n'
                               f'**Home Page**: {home_page}\n'
@@ -496,7 +519,26 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
 
 
+    @commands.command(help='Checks if your message is toxic or not.')
+    async def toxic(self, ctx, text):
+        headers = {
+            'Content-Type': 'application/json',
+        }
 
+        params = (
+            ('key', self.bot.perspective),
+        )
+
+        data = '{comment: {text: "what kind of idiot name is foo?"}, ' \
+               'languages: ["en"], ' \
+               'requestedAttributes: {TOXICITY:{}} }'
+
+        response = await self.bot.session.post('https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze',
+                                         headers=headers,
+                                         params=params,
+                                         data=data)
+
+        await ctx.send(response)
 
 def setup(bot):
     bot.add_cog(Useful(bot))

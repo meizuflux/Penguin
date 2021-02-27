@@ -40,6 +40,7 @@ class Chuck(commands.Bot):
         self.alex = alexflipnote.Client(self.get_config('alex_api_key'))
         self.timetime = time.time()
         self.case_insensitive = True
+        self.perspective = self.get_config("perspective_key")
 
     @staticmethod
     def get_config(item: str):
