@@ -6,6 +6,7 @@ import itertools
 import os
 import pathlib
 import platform
+import json
 import re
 import time
 import zlib
@@ -519,7 +520,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Checks if your message is toxic or not.')
     @commands.is_owner()
-    async def toxic(self, ctx, text):
+    async def toxic(self, ctx, *, text):
         headers = {
             'Content-Type': 'application/json',
         }
@@ -537,7 +538,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                                                params=params,
                                                data=data)
 
-        await ctx.send(response.content)
+        await ctx.send(json.dumps(response, indent=4))
 
 
 def setup(bot):
