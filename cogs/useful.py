@@ -526,9 +526,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                'languages: ["en"], ' \
                'requestedAttributes: {TOXICITY:{}} }'
 
-        res = await self.bot.session.post(k, json=f'{{comment: {{text: "{text}"}}, ' \
-               'languages: ["en"], ' \
-               'requestedAttributes: {TOXICITY:{}} }')
+        res = await self.bot.session.post(k, json=data)
         js = await res.json()
         await ctx.send(js)
         level = js["attributeScores"]["TOXICITY"]["summaryScore"]["value"] * 100
