@@ -144,6 +144,13 @@ class Fun(commands.Cog):
         if len(bottoms) > 500:
             return await qembed(ctx, str(await ctx.mystbin(bottoms)))
         await qembed(ctx, bottoms)
+        
+ @commands.command()
+ async def spoiler(self ctx, *, text):
+     await ctx.send(''.join(text.replace('', '|| ||')))
+     text = text.split('')
+     await ctx.send(text)
+     await ctx.send(''.join(char.replace(char, f'||{char}||') for char in range(text)))
 
 
 def setup(bot):
