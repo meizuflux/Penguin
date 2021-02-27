@@ -203,7 +203,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         emoji = ['🐟', '🐠', '🐡']
         await qembed(ctx,
                      f'You travel to the local lake and catch {fish} fish {random.choice(emoji)}.' 
-                    'Then you sell them to the market at a price of ${price}, totaling in at ${cash} for a days work.')
+                    f'Then you sell them to the market at a price of ${price}, totaling in at ${cash} for a days work.')
 
     @commands.command(help='Beg in the street')
     @commands.cooldown(rate=1, per=200, type=commands.BucketType.user)
