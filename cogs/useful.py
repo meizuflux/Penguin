@@ -522,9 +522,13 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     async def toxic(self, ctx, *, text):
         k = f"https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key={self.bot.perspective}"
 
-        res = await self.bot.session.post(k, json=f'{{comment: {{text: "{text}"}}, '
-                                                  'languages: ["en"], '
-                                                  'requestedAttributes: {TOXICITY:{}} })')
+        data = f'{{comment: {{text: "{text}"}}, ' \
+               'languages: ["en"], ' \
+               'requestedAttributes: {TOXICITY:{}} }'
+
+        res = await self.bot.session.post(k, json=f'{{comment: {{text: "{text}"}}, ' \
+               'languages: ["en"], ' \
+               'requestedAttributes: {TOXICITY:{}} }')
         js = await res.json()
         await ctx.send(js)
         level = js["attributeScores"]["TOXICITY"]["summaryScore"]["value"] * 100
