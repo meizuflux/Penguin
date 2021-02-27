@@ -145,7 +145,7 @@ class Chuck(commands.Bot):
 
     async def on_message(self, message: discord.Message):
         """Checking if someone pings the bot"""
-        ctx = self.get_context(message)
+        ctx = await self.get_context(message)
         if message.author.bot:
             return
         if re.fullmatch(f"^(<@!?{self.user.id}>)\s*", message.content):
