@@ -146,11 +146,13 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def spoiler(self, ctx, *, text):
-        await ctx.send(''.join(char.replace(char, f'||{char}||') for char in text))
+        await ctx.send(''.join(char.replace(char, f'||{char}||') for char in text),
+                       allowed_mentions=discord.AllowedMentions().none())
 
     @commands.command()
     async def partyfrog(self, ctx, *, text):
-        await ctx.send(text.replace(" ", " <a:partyfrog:815283360465289316> "))
+        await ctx.send(text.replace(" ", " <a:partyfrog:815283360465289316> "),
+                       allowed_mentions=discord.AllowedMentions().none())
 
     @commands.command()
     async def clap(self, ctx, *, text):
@@ -160,7 +162,8 @@ class Fun(commands.Cog):
     @commands.command()
     async def buildup(self, ctx, text):
         x = text
-        await ctx.send('\n'.join(x[:+y] for y in range(len(x))) + '\n' + x + '\n'.join(x[:-y] for y in range(len(x))))
+        await ctx.send('\n'.join(x[:+y] for y in range(len(x))) + '\n' + x + '\n'.join(x[:-y] for y in range(len(x))),
+                       allowed_mentions=discord.AllowedMentions().none())
 
 
 def setup(bot):
