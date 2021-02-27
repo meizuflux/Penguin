@@ -6,7 +6,6 @@ import itertools
 import os
 import pathlib
 import platform
-import json
 import re
 import time
 import zlib
