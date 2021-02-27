@@ -147,8 +147,7 @@ class Fun(commands.Cog):
         
     @commands.command()
     async def spoiler(self, ctx, *, text):
-        await ctx.send(''.join(text.replace('', '|| ||')
-        await ctx.send(''.join(char.replace(char, f'||{char}||') for char in list(text)))
+        await ctx.send(''.join(char.replace(char, f'||{char}||') for char in text))
 
 
 def setup(bot):
