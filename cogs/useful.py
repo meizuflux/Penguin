@@ -5,8 +5,6 @@ import io
 import itertools
 import os
 import ast
-import requests
-import codecs
 import pathlib
 import platform
 import json
@@ -104,7 +102,7 @@ class Help(commands.MinimalHelpCommand):
         if commands:
             joined = '`,\u2002`'.join(c.name for c in commands)
             self.paginator.add_line(f'{emoji_dict[heading.lower()]}  **{heading}**')
-            self.paginator.add_line(f'`{joined}`')
+            self.paginator.add_line(f'`> {joined}`')
             # self.paginator.add_line()
 
     def get_ending_note(self):
