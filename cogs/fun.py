@@ -154,8 +154,7 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def clap(self, ctx, *, text):
-        mention = discord.AllowedMentions()
-        await ctx.send(text.replace(" ", " :clap: "), allowed_mentions=mention.none)
+        await ctx.send(text.replace(" ", " :clap: "), allowed_mentions=discord.AllowedMentions.none)
 
     @commands.command()
     async def buildup(self, ctx, text):
