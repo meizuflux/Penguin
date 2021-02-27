@@ -101,7 +101,7 @@ class Help(commands.MinimalHelpCommand):
             joined = '`,\u2002`'.join(c.name for c in commands)
             self.paginator.add_line(f'{emoji_dict[heading.lower()]}  **{heading}**')
             self.paginator.add_line(f'`{joined}`')
-            #self.paginator.add_line()
+            # self.paginator.add_line()
 
     def get_ending_note(self):
         command_name = self.invoked_with
@@ -258,7 +258,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         self.bot = bot
         self._original_help_command = bot.help_command
         bot.help_command = Help(command_attrs=dict(hidden=False, aliases=['halp', 'h', 'help_command'],
-                                help='Literally shows this message. Jesus, do you really need this?'))
+                                                   help='Literally shows this message. Jesus, do you really need this?'))
         bot.help_command.cog = self
 
     def cog_unload(self):
@@ -517,8 +517,6 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
 
-
-
     @commands.command(help='Checks if your message is toxic or not.')
     @commands.is_owner()
     async def toxic(self, ctx, text):
@@ -530,16 +528,17 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             ('key', self.bot.perspective),
         )
 
-        data = '{comment: {text: "what kind of idiot name is foo?"}, ' \
+        data = '{comment: {text: "you all suck"}, ' \
                'languages: ["en"], ' \
                'requestedAttributes: {TOXICITY:{}} }'
 
         response = await self.bot.session.post('https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze',
-                                         headers=headers,
-                                         params=params,
-                                         data=data)
+                                               headers=headers,
+                                               params=params,
+                                               data=data)
 
-        await ctx.send(response)
+        await ctx.send(response.content)
+
 
 def setup(bot):
     bot.add_cog(Useful(bot))
