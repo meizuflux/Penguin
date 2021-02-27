@@ -150,7 +150,7 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def partyfrog(self, ctx, *, text):
-        await ctx.send(text.replace(" ", " <:a:815283360465289316> "))
+        await ctx.send(text.replace(" ", " <:a:partyfrog:815283360465289316> "))
 
     @commands.command()
     async def buildup(self, ctx, text):
