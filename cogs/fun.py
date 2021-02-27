@@ -153,6 +153,10 @@ class Fun(commands.Cog):
         await ctx.send(text.replace(" ", " <a:partyfrog:815283360465289316> "))
 
     @commands.command()
+    async def clap(self, ctx, *, text):
+        await ctx.send(text.replace(" ", " :clap: "))
+
+    @commands.command()
     async def buildup(self, ctx, text):
         x = text
         await ctx.send('\n'.join(x[:+y] for y in range(len(x))) + '\n' + x + '\n'.join(x[:-y] for y in range(len(x))))
