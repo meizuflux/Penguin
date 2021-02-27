@@ -146,7 +146,7 @@ class Fun(commands.Cog):
         await qembed(ctx, bottoms)
         
     @commands.command()
-    async def spoiler(self ctx, *, text):
+    async def spoiler(self, ctx, *, text):
         await ctx.send(''.join(text.replace('', '|| ||')))
         text = text.split('')
         await ctx.send(text)
