@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 import datetime
 from utils.default import qembed
 import humanize
@@ -35,6 +35,21 @@ class Utilities(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.match = match = re.compile(r";(?P<name>[a-zA-Z0-9_]+)")
+        self.printer.start()
+
+    def cog_unload(self):
+        self.clear_message.cancel()
+    
+    @tasks.loop(hours=1)
+    async def clear_message(self):
+        for channel_id in self.bot.deleted_messages:
+
+            if len(self.bot.deleted_messages[channel_id]) > 250:
+
+                dele = len(self.bot.deleted_messages[channel_id]) - 250
+                for number in range(dele):
+
+                    del self.bot.deleted_messages[channel_id][number]
 
     def deleted_message_for(self, index: int, channel_id: int):
         try:
