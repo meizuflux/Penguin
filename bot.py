@@ -137,6 +137,7 @@ class Chuck(commands.Bot):
     async def close(self):
         await self.alex.close()
         await self.session.close()
+        await self.db.close()
         await super().close()
 
     async def get_context(self, message: discord.Message, *, cls=None):
