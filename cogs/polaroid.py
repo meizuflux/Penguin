@@ -88,9 +88,21 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     async def sideways(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
         await self.send_manip(ctx, image, method='rotate90')
 
-    @commands.command(help='Rotates an image upsidedown', example='upsidedown person')
+    @commands.command(help='Rotates an image upsidedown')
     async def upsidedown(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
         await self.send_manip(ctx, image, method='rotate180')
+
+    @commands.command(help='Makes an image monochrome.')
+    async def monochrome(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
+        await self.send_manip(ctx, image, method='monochrome')
+
+    @commands.command(help='Applies an emboss effect to an image.')
+    async def emboss(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
+        await self.send_manip(ctx, image, method='emboss')
+
+    @commands.command(help='Applies a rose filter to an image.')
+    async def rose(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
+        await self.send_manip(ctx, image, method='filter', args="rosetint")
 
 
 def setup(bot):
