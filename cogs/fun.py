@@ -1,13 +1,14 @@
+import asyncio
+import random
+import re
+import time
+from io import BytesIO
+
 import discord
 from discord.ext import commands, flags
-from io import BytesIO
-from utils.default import qembed
+
 from utils.bottom import from_bottom, to_bottom
-import random
-import time
-import re
-import json
-import asyncio
+from utils.default import qembed
 
 mystbin_url = re.compile(
     r"(?:(?:https?://)?mystb\.in/)?(?P<ID>[a-zA-Z]+)(?:\.(?P<syntax>[a-zA-Z0-9]+))?"
@@ -79,7 +80,7 @@ class Fun(commands.Cog):
             return user == ctx.author and str(reaction.emoji) == emg
 
         try:
-            reaction, user = await self.bot.wait_for('reaction_add', timeout=seconds * 1.5, check=gcheck)
+            reaction, _ = await self.bot.wait_for('reaction_add', timeout=seconds * 1.5, check=gcheck)
         except asyncio.TimeoutError:
             embed = discord.Embed(description='You did not react in time', timestamp=ctx.message.created_at,
                                   color=self.bot.embed_color).set_footer(text=f"Requested by {ctx.author}",
@@ -156,26 +157,35 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def clap(self, ctx, *, text):
-        mentions = discord.AllowedMentions()
+
         await ctx.send(text.replace(" ", " :clap: "), allowed_mentions=discord.AllowedMentions().none())
 
     @commands.command()
     async def buildup(self, ctx, text):
-        await ctx.send('\n'.join(text[:+char] for char in range(len(test))) + '\n' + text + '\n'.join(test[:-char] for char in range(len(test))),
+        await ctx.send('\n'.join(text[:+char] for char in range(len(text))) + '\n' + text + '\n'.join(
+            text[:-char] for char in range(len(text))),
                        allowed_mentions=discord.AllowedMentions().none())
 
     @commands.command()
     async def ship(self, ctx, user_1: discord.Member, user_2: discord.Member):
         random.seed(int(user_1.id) + int(user_2.id))
         love = random.randint(1, 100)
-        await qembed(ctx, f'I calculate that the love between {user_1.mention} and {user_2.mention} is {str(love)[:2]}%')
+        await qembed(ctx,
+                     f'I calculate that the love between {user_1.mention} and {user_2.mention} is {str(love)[:2]}%')
 
     @commands.command(aliases=['ppsize'])
-    async def pp(self, ctx, user: discord.Member=None):
+    async def pp(self, ctx, user: discord.Member = None):
         if not user:
             user = ctx.author
         random.seed(int(user.id))
         await qembed(ctx, f'8{"=" * random.randint(1, 25)}D')
+
+    @commands.command()
+    async def roo(self, ctx):
+        """Roo.
+        Sends a random "roo" emoji.
+        """
+        await ctx.send(random.choice([str(i) for i in bot.emojis if i.name.startswith("roo")]))
 
 
 def setup(bot):
