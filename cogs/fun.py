@@ -170,6 +170,13 @@ class Fun(commands.Cog):
         love = random.randint(1, 100)
         await qembed(ctx, f'I calculate that the love between {user_1.mention} and {user_2.mention} is {str(love)[:2]}%')
 
+    @commands.command(aliases=['ppsize'])
+    async def pp(self, ctx, user: discord.Member=None)
+        if not user:
+            user = ctx.author
+        random.seed(int(str(user.id))
+        await qembed(ctx, f'8{"="*random.randint(1, 34)}D')
+
 
 def setup(bot):
     bot.add_cog(Fun(bot))
