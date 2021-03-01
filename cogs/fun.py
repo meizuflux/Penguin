@@ -194,14 +194,14 @@ class Fun(commands.Cog):
             await ctx.send_help(str(ctx.command))
 
     @base64.command()
-    async def decode(self, ctx, string):
+    async def decode(self, ctx, *, string):
         """Decodes a base64 string"""
         decoded_string = base64.b64decode(string)
         decoded = decoded_string.decode('utf-8')
         await qembed(ctx, decoded)
 
     @base64.command()
-    async def encode(self, ctx, string):
+    async def encode(self, ctx, *, string):
         """Encodes a base64 string"""
         encoded_encoded_string = base64.b64encode(string.encode('utf-8'))
         decoded = encoded_encoded_string.decode('utf-8')
