@@ -171,7 +171,7 @@ class Fun(commands.Cog):
         await qembed(ctx, f'I calculate that the love between {user_1.mention} and {user_2.mention} is {str(love)[:2]}%')
 
     @commands.command(aliases=['ppsize'])
-    async def pp(self, ctx, user: discord.Member=None)
+    async def pp(self, ctx, user: discord.Member=None):
         if not user:
             user = ctx.author
         random.seed(int(str(user.id))
