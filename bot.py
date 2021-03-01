@@ -87,14 +87,18 @@ class Chuck(commands.Bot):
             print("Connecting to Discord ...")
             self.uptime = datetime.datetime.utcnow()
             self.db = pool_pg
+
             extensions = ['jishaku', 'cogs.useful', 'cogs.owner', 'cogs.prefixes', 'cogs.economy', 'cogs.errorhandler',
                           'cogs.fun', 'cogs.utilities', 'cogs.polaroid', 'cogs.music']
             for extension in extensions:
                 self.load_extension(extension)
 
-            # from pb https://github.com/PB4162/PB-Bot/blob/38f2f5f9944a7c5fc959eaade0faf0300a18d509/utils/classes.py
             self.create_command_list()
-            # token = os.environ['token'] or self.get_config('token')
+
+            guilds = await self.db.fetch("SELECT * FROM prefixes")
+            for guild in guilds:
+                self.prefixes[guild['serverid']] = guild['prefix']
+
             self.run(self.get_config('token'))
 
     async def create_tables(self):
