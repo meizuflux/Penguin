@@ -44,10 +44,6 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     async def rainbow(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
         await self.send_manip(ctx, image, method='apply_gradient')
 
-    @commands.command(help='like putin')
-    async def wide(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
-        await self.send_manip(ctx, image, method='resize', args={'width': 2000, 'height': 900, 'filter': 1})
-
     @commands.command(help='Inverts an image')
     async def invert(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
         await self.send_manip(ctx, image, method='invert')
