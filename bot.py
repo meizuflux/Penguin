@@ -93,25 +93,7 @@ class Chuck(commands.Bot):
                 self.load_extension(extension)
 
             # from pb https://github.com/PB4162/PB-Bot/blob/38f2f5f9944a7c5fc959eaade0faf0300a18d509/utils/classes.py
-            for command in self.commands:
-                self.command_list.append(str(command))
-                self.command_list.extend([alias for alias in command.aliases])
-                if isinstance(command, commands.Group):
-                    for subcommand in command.commands:
-                        self.command_list.append(str(subcommand))
-                        self.command_list.extend(
-                            [f"{command} {subcommand_alias}" for subcommand_alias in subcommand.aliases])
-                        if isinstance(subcommand, commands.Group):
-                            for subcommand2 in subcommand.commands:
-                                self.command_list.append(str(subcommand2))
-                                self.command_list.extend(
-                                    [f"{subcommand} {subcommand2_alias}" for subcommand2_alias in subcommand2.aliases])
-                                if isinstance(subcommand2, commands.Group):
-                                    for subcommand3 in subcommand2.commands:
-                                        self.command_list.append(str(subcommand3))
-                                        self.command_list.extend(
-                                            [f"{subcommand2} {subcommand3_alias}" for subcommand3_alias in
-                                             subcommand3.aliases])
+            self.create_command_list(self.commands)
             # token = os.environ['token'] or self.get_config('token')
             self.run(self.get_config('token'))
 
@@ -122,6 +104,13 @@ class Chuck(commands.Bot):
         await self.db.execute("CREATE TABLE IF NOT EXISTS scoresaber (userid BIGINT PRIMARY KEY,ssid BIGINT)")
         await self.db.execute(
             "CREATE TABLE IF NOT EXISTS economy (userid BIGINT PRIMARY KEY,wallet BIGINT,bank BIGINT)")
+
+    def create_command_list(self, command):
+        for command in command.commands:
+            self.command_list.append(str(command))
+            self.command_list.extend([alias for alias in command.aliases])
+            if isinstance(command, commands.Group)
+                self.command_list.extend(self.create_command_list(command))
 
     # https://github.com/InterStella0/stella_bot/blob/4636627b2f99b7f58260869f020e5adebb62e27d/main.py
     async def process_commands(self, message):
