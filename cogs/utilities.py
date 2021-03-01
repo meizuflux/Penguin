@@ -144,6 +144,10 @@ class Utilities(commands.Cog):
         result = await self.levenshtein_match_calc(string1, string2)
         await qembed(ctx, f'`{string1}` and `{string2}` are `{result}%` similar.')
 
+    @fuzzy.error
+    async def fuzzy_error(self, ctx, error):
+        await qembed(ctx, "Invalid string provided.")
+
 
     @commands.guild_only()
     @commands.is_owner()
