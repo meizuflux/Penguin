@@ -168,7 +168,7 @@ class Fun(commands.Cog):
     async def ship(self, ctx, user_1: discord.Member, user_2: discord.Member):
         love = len(user_1.name) + len(user_2.name) + 69
         await ctx.send(love)
-        random.seed(int(str(user_1.id) + str(user_2.id))
+        random.seed(int(str(user_1.id) + str(user_2.id)))
         consistent_number = random.randint(1, 100)
         await ctx.send(consistent_number)
         await qembed(ctx, f'I calculate that the love between {user_1.mention} and {user_2.mention} is {str(love)[:2]}%')
