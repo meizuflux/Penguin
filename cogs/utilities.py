@@ -257,7 +257,7 @@ class Utilities(commands.Cog):
     @commands.command(help='Checks where a URL redirects. WARNING NOT 100% ACCURATE', aliases=['redirectchecker', 'redirectcheck', 'redirect_check'])
     async def redirect_checker(self, ctx, url):
         async with self.bot.session.get(url) as redirect:
-            await qembed.send(ctx, f'`{str(redirect.real_url)}`')
+            await qembed(ctx, f'`{str(redirect.real_url)}`')
 
 
 def setup(bot):
