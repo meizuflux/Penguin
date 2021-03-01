@@ -188,14 +188,21 @@ class Fun(commands.Cog):
         """
         await ctx.send(random.choice([str(i) for i in self.bot.emojis if i.name.startswith("roo")]))
 
-    @commands.command()
-    async def base64_decode(self, ctx, string):
+    @commands.group(help='Some functions with base64', aliases=['b64'])
+    async def base64(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help(str(ctx.command))
+
+    @base64.command()
+    async def decode(self, ctx, string):
+        """Decodes a base64 string"""
         decoded_string = base64.b64decode(string)
         decoded = decoded_string.decode('utf-8')
         await qembed(ctx, decoded)
 
-    @commands.command()
-    async def base64_encode(self, ctx, string):
+    @base64.command()
+    async def encode(self, ctx, string):
+        """Encodes a base64 string"""
         encoded_encoded_string = base64.b64encode(string.encode('utf-8'))
         decoded = encoded_encoded_string.decode('utf-8')
         await qembed(ctx, decoded)
