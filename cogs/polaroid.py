@@ -100,9 +100,15 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     async def emboss(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
         await self.send_manip(ctx, image, method='emboss')
 
-    @commands.command(help='Applies a rose filter to an image.')
+    @commands.group(help='Some commands that apply simple filters.')
+    async def filter(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help(str(ctx.command))
+
+    @filter.command(help='Applies a rose filter on an image.')
     async def rose(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
         await self.send_manip(ctx, image, method='filter', args=["rosetint"])
+
 
 
 def setup(bot):
