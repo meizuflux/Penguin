@@ -35,7 +35,7 @@ class Utilities(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.match = match = re.compile(r";(?P<name>[a-zA-Z0-9_]+)")
-        self.printer.start()
+        self.clear_message.start()
 
     def cog_unload(self):
         self.clear_message.cancel()
