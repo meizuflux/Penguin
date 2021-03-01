@@ -112,7 +112,7 @@ class Chuck(commands.Bot):
             if isinstance(command, commands.Group):
                 self.command_list.extend(self.create_command_list(command))
 
-    def command_list_make(self)
+    def command_list_make(self):
         for command in self.commands:
             self.command_list.append(str(command))
             self.command_list.extend([alias for alias in command.aliases])
