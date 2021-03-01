@@ -102,7 +102,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Swaps the channels in the image')
     async def swap(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
-        await self.send_manip(ctx, image, method='swap_channel')
+        await self.send_manip(ctx, image, method='swap_channels')
 
     @commands.group(help='Some commands that apply simple filters.')
     async def filter(self, ctx):
