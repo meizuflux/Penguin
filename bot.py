@@ -93,7 +93,7 @@ class Chuck(commands.Bot):
                 self.load_extension(extension)
 
             # from pb https://github.com/PB4162/PB-Bot/blob/38f2f5f9944a7c5fc959eaade0faf0300a18d509/utils/classes.py
-            self.command_list_make()
+            self.create_command_list()
             # token = os.environ['token'] or self.get_config('token')
             self.run(self.get_config('token'))
 
