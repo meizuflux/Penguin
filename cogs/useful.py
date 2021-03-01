@@ -88,7 +88,6 @@ class Help(commands.MinimalHelpCommand):
         if commands:
             joined = '`,\u2002`'.join(c.name for c in commands)
             emoji_dict = {
-                'commandchart': "⚙️",
                 'economy': "💵",
                 'fun': "<:hahayes:739613910180692020>",
                 'polaroid': "📸",
@@ -104,8 +103,8 @@ class Help(commands.MinimalHelpCommand):
     def get_ending_note(self):
         command_name = self.invoked_with
         return (
-            "Type {0}{1} [command] for more info on a command.\n"
-            "You can also type {0}{1} [category] for more info on a category.".format(
+            "Type `{0}{1} [command]` for more info on a command.\n"
+            "You can also type `{0}{1} [category]` for more info on a category.".format(
                 self.clean_prefix, command_name
             )
         )
