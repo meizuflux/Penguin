@@ -44,6 +44,9 @@ class CommandErrorHandler(commands.Cog):
             if not matches:
                 return
             match = "\n".join(matches[:1])
+            cmd = self.bot.get_command(match)
+            if not await command.can_run(self.context):
+                return
             return await qembed(ctx, f"No command called `{ctx.invoked_with}` found. Did you mean `{match}`?")
 
         elif isinstance(error, commands.CheckFailure):
