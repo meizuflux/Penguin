@@ -10,7 +10,8 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     def __init__(self, bot):
         self.bot = bot
 
-    async def get_image(self, ctx, image):
+    @staticmethod
+    async def get_image(ctx, image):
         if ctx.message.attachments:
             img = polaroid.Image(await ctx.message.attachments[0].read())
         elif isinstance(image, discord.PartialEmoji):
@@ -21,7 +22,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         return img
 
     @executor_function
-    def image_manip(self, ctx, img: polaroid.Image, method: str, args: list = None, kwargs: dict = None):
+    def image_manip(self, img: polaroid.Image, method: str, args: list = None, kwargs: dict = None):
         img.resize(500, 500, 1)
         if args is None:
             args = []
@@ -34,7 +35,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     async def send_manip(self, ctx, image, method: str, *args, **kwargs):
         await ctx.trigger_typing()
         image = await self.get_image(ctx, image)
-        img = await self.image_manip(ctx, image, method, *args, **kwargs)
+        img = await self.image_manip(image, method, *args, **kwargs)
         file = discord.File(BytesIO(img.save_bytes()),
                             filename=f"{method}.png")
 
@@ -148,7 +149,6 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     @filter.command(help='Applies a ryo filter to the image.')
     async def ryo(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User] = None):
         await self.send_manip(ctx, image, method='filter', args=["ryo"])
-
 
 
 def setup(bot):
