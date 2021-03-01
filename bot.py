@@ -110,8 +110,8 @@ class Chuck(commands.Bot):
     async def create_cache(self):
         await self.wait_until_ready()
         guilds = await self.db.fetch("SELECT * FROM prefixes")
-            for guild in guilds:
-                self.prefixes[guild['serverid']] = guild['prefix']
+        for guild in guilds:
+            self.prefixes[guild['serverid']] = guild['prefix']
 
     def get_subcommands(self, command):
         gotten_subcommands = []
