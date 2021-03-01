@@ -106,11 +106,13 @@ class Chuck(commands.Bot):
             "CREATE TABLE IF NOT EXISTS economy (userid BIGINT PRIMARY KEY,wallet BIGINT,bank BIGINT)")
 
     def get_subcommands(self, command):
+        gotten_subcommands = []
         for command in command.commands:
-            self.command_list.append(str(command))
-            self.command_list.extend([f"{command} {alias}" for alias in command.aliases])
+            gotten_subcommands.append(str(command))
+            gotten_subcommands.extend([f"{command} {alias}" for alias in command.aliases])
             if isinstance(command, commands.Group):
-                self.command_list.extend(self.create_command_list(command))
+                gotten_subcommands.extend(self.create_command_list(command))
+        return gotten_subcommands
 
     def command_list_make(self):
         for command in self.commands:
