@@ -23,10 +23,10 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     @executor_function
     def image_manip(self, ctx, img: polaroid.Image, method: str, args: list = None, kwargs: dict = None):
         img.resize(500, 500, 1)
-		if args is None:
-			args = []
-		if kwargs is None:
-			kwargs = {}
+        if args is None:
+            args = []
+        if kwargs is None:
+            kwargs = {}
         method = getattr(img, method)
         method(*args, **kwargs)
         return img
@@ -48,9 +48,9 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     async def rainbow(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
         await self.send_manip(ctx, image, method='apply_gradient')
 
-	@commands.command(help='like putin')
-	async def wide(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
-		await self.send_manip(ctx, image, method='resize', args=(2000, 900, 1))
+    @commands.command(help='like putin')
+    async def wide(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
+        await self.send_manip(ctx, image, method='resize', args=(2000, 900, 1))
 
     @commands.command(help='Inverts an image')
     async def invert(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
