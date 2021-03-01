@@ -36,7 +36,7 @@ class Chuck(commands.Bot):
         self.prefixes = {}
         self.command_list = []
         self.deleted_messages = collections.defaultdict(list)
-        self.default_prefix = 'c//'
+        self.default_prefix = 'ch!'
         self.alex = alexflipnote.Client(self.get_config('alex_api_key'))
         self.timetime = time.time()
         self.case_insensitive = True
