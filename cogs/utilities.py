@@ -5,11 +5,14 @@ from utils.default import qembed
 import humanize
 import json
 import re
+from PIL import Image
 from utils.fuzzy import finder
+from io import BytesIO
 from jishaku.functools import executor_function
 from jishaku.paginators import PaginatorInterface, WrappedPaginator
 import random
 import numpy as np
+import pytesseract
 import string
 from utils.permissions import mng_msg
 
@@ -252,6 +255,21 @@ class Utilities(commands.Cog):
         embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.author.send(embed=embed)
         await qembed(ctx, f'Messaged you with the password, {ctx.author.mention}')
+
+    def read_img(self, img):
+        return pytesseract.image_to_string(Image.open(img))
+
+    @commands.command()
+    async def ocr(self, ctx):
+        """Reads text from image.
+        This can be HIGHLY inaccurate."""
+        if not ctx.message.attachments:
+            return await qembed(ctx, 'You need to provide an image.')
+        img = BytesIO(await ctx.message.attachments[0].read())
+        await ctx.send(await self.read_img(img))
+
+
+
 
 def setup(bot):
     bot.add_cog(Utilities(bot))

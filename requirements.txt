@@ -11,3 +11,5 @@ discord-flags
 wavelink
 git+https://github.com/Rapptz/discord-ext-menus
 polaroid
+pillow
+pytessaract
