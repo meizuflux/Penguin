@@ -31,7 +31,7 @@ class Chuck(commands.Bot):
             description='system 32 will be deleted')
         self._BotBase__cogs = commands.core._CaseInsensitiveDict()
         self.author_id = 809587169520910346
-        self.session = aiohttp.ClientSession()
+        self.session = aiohttp.ClientSession(headers={"User-Agent": f"yep im deleting your system32 https://github.com/ppotatoo/SYSTEM32"})
         self.embed_color = discord.Color.green() #0x9c5cb4
         self.prefixes = {}
         self.command_list = []
