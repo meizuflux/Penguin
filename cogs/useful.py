@@ -359,6 +359,12 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     async def invite(self, ctx):
         await ctx.send(f"https://discordapp.com/oauth2/authorize?client_id={self.bot.user.id}&scope=bot&permissions=8")
 
+    @commands.command(help='Sends the 5 most recent commits to the bot.')
+    async def recent_commits(self, ctx):
+        async with self.bot.session.get('https://api.github.com/repos/ppotatoo/SYSTEM32/commits') as f:
+            resp = await f.json()
+        embed = discord.Embed(description="\n".join(f"[`{commit['sha'][:6]}`]({commit['html_url']}) {commit['commit']['message']}" for commit in resp[:5]), color=self.bot.embed_color)
+        await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Useful(bot))
