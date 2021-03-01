@@ -184,14 +184,16 @@ class Utilities(commands.Cog):
                     syntax = attachment.filename.split(".")[1]
                     message = await attachment.read()
                     decoded_message = message.decode("utf-8")
-                    return await qembed(ctx, await ctx.mystbin(decoded_message) + "." + syntax)
+                    text = f'{await ctx.mystbin(decoded_message)}.{syntax}'
+                    #return await qembed(ctx, await ctx.mystbin(decoded_message) + "." + syntax)
             else:
                 message = await self.bot.get_channel(ctx.message.reference.channel_id).fetch_message(syntax)
                 if message.attachments and message.attachments.filename.endswith(filenames):
                     syntax = message.attachments[0].filename.split(".")[1]
                     message_ = await message.attachments[0].read()
                     decoded_message = message_.decode("utf-8")
-                    return await qembed(ctx, await ctx.mystbin(decoded_message) + "." + syntax)
+                    text = f'{await ctx.mystbin(decoded_message)}.{syntax}'
+                    #return await qembed(ctx, await ctx.mystbin(decoded_message) + "." + syntax)
 
         if text is None:
             attachment = ctx.message.attachments[0]
@@ -200,9 +202,10 @@ class Utilities(commands.Cog):
                 if attachment.filename.endswith(filenames):
                     message = await message.read()
                     decoded_message = message.decode("utf-8")
-                    return await qembed(ctx, await ctx.mystbin(decoded_message) + "." + syntax)
+                    text = f'{await ctx.mystbin(decoded_message)}.{syntax}'
+                    #return await qembed(ctx, await ctx.mystbin(decoded_message) + "." + syntax)
 
-        await qembed(ctx, await ctx.mystbin(text))
+        await qembed(ctx, text)
         
     # from pb https://github.com/PB4162/PB-Bot
     @commands.command(aliases=["rawmessage", "rawmsg"])
