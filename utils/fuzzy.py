@@ -1,6 +1,6 @@
 import re
 
-# https://github.com/Rapptz/RoboDanny/blob/1d0ddee9273338a13123117fbad6cac3493c8e7f/cogs/api.py from here till rtfm command
+# https://github.com/Rapptz/RoboDanny/blob/1d0ddee9273338a13123117fbad6cac3493c8e7f/cogs/api.py 
 def finder(text, collection, *, key=None, lazy=True):
     suggestions = []
     text = str(text)
