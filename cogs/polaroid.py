@@ -102,7 +102,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Swaps the channels in the image')
     async def swap(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
-        await self.send_manip(ctx, image, method='swap_channels')
+        await self.send_manip(ctx, image, method='swap_channels', args=(100, 100))
 
     @commands.group(help='Some commands that apply simple filters.')
     async def filter(self, ctx):
@@ -120,6 +120,34 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     @filter.command(help='Applies a liquid filter to the image.')
     async def liquid(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
         await self.send_manip(ctx, image, method='filter', args=["liquid"])
+
+    @filter.command(help='Applies a dramatic filter to the image.')
+    async def dramatic(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
+        await self.send_manip(ctx, image, method='filter', args=["dramatic"])
+
+    @filter.command(help='Applies a firenze filter to the image.')
+    async def firenze(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
+        await self.send_manip(ctx, image, method='filter', args=["firenze"])
+
+    @filter.command(help='Applies a golden filter to the image.')
+    async def golden(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
+        await self.send_manip(ctx, image, method='filter', args=["golden"])
+
+    @filter.command(help='Applies a lix filter to the image.')
+    async def lix(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
+        await self.send_manip(ctx, image, method='filter', args=["lix"])
+
+    @filter.command(help='Applies a neue filter to the image.')
+    async def neue(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
+        await self.send_manip(ctx, image, method='filter', args=["neue"])
+
+    @filter.command(help='Applies an obsidian filter to the image.')
+    async def obsidian(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
+        await self.send_manip(ctx, image, method='filter', args=["obsidian"])
+
+    @filter.command(help='Applies a ryo filter to the image.')
+    async def ryo(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
+        await self.send_manip(ctx, image, method='filter', args=["ryo"])
 
 
 
