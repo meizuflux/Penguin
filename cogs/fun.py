@@ -166,7 +166,7 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def ship(self, ctx, user_1: discord.Member, user_2: discord.Member):
-        random.seed(int(str(user_1.id) + str(user_2.id)))
+        random.seed(int(user_1.id) + int(user_2.id))
         love = random.randint(1, 100)
         await qembed(ctx, f'I calculate that the love between {user_1.mention} and {user_2.mention} is {str(love)[:2]}%')
 
@@ -175,7 +175,7 @@ class Fun(commands.Cog):
         if not user:
             user = ctx.author
         random.seed(int(user.id))
-        await qembed(ctx, f'8{"=" * random.randint(1, 34)}D')
+        await qembed(ctx, f'8{"=" * random.randint(1, 25)}D')
 
 
 def setup(bot):
