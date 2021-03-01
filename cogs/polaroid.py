@@ -28,7 +28,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
             args = []
         if kwargs is None:
             kwargs = {}
-        method((2000), (900), **kwargs)
+        method((2000), (900), (1), **kwargs)
         return img
 
     async def send_manip(self, ctx, image, method: str, *args, **kwargs):
