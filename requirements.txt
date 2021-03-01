@@ -8,7 +8,6 @@ prettytable
 humanize
 alexflipnote.py
 discord-flags
-matplotlib
 wavelink
 git+https://github.com/Rapptz/discord-ext-menus
 polaroid
