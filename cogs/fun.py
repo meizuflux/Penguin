@@ -175,7 +175,7 @@ class Fun(commands.Cog):
         if not user:
             user = ctx.author
         random.seed(int(str(user.id))
-        shaft = "="*random.randint(1, 34)
+        shaft = "=" * random!.randint(1, 34)
         await qembed(ctx, f'8{shaft}D')
 
 
