@@ -1,6 +1,7 @@
 import asyncio
 import random
 import re
+import base64
 import time
 from io import BytesIO
 
@@ -127,7 +128,7 @@ class Fun(commands.Cog):
         else:
             return text
 
-    @commands.command(aliases=['bottom_decode', 'decode'])
+    @commands.command(aliases=['bottom_decode'])
     async def bottomdecode(self, ctx, *, text):
         text = await self.check_mystbin(text)
         bottoms = self.bottoms("from_bottom", text)
@@ -136,7 +137,7 @@ class Fun(commands.Cog):
             return await qembed(ctx, str(await ctx.mystbin(bottoms)))
         await qembed(ctx, bottoms)
 
-    @commands.command(aliases=['bottom_encode', 'encode'])
+    @commands.command(aliases=['bottom_encode'])
     async def bottomencode(self, ctx, *, text):
         text = await self.check_mystbin(text)
         bottoms = self.bottoms("to_bottom", text)
@@ -185,7 +186,20 @@ class Fun(commands.Cog):
         """Roo.
         Sends a random "roo" emoji.
         """
-        await ctx.send(random.choice([str(i) for i in bot.emojis if i.name.startswith("roo")]))
+        await ctx.send(random.choice([str(i) for i in self.bot.emojis if i.name.startswith("roo")]))
+
+    @commands.command()
+    async def base64_decode(self, ctx, string):
+        decoded_string = base64.b64decode(string)
+        decoded = decoded_string.decode('utf-8')
+        await qembed(ctx, decoded)
+
+    @commands.command()
+    async def base64_encode(self, ctx, string):
+        encoded_encoded_string = base64.b64encode(string.encode('utf-8'))
+        decoded = encoded_encoded_string.decode('utf-8')
+        await qembed(ctx, decoded)
+
 
 
 def setup(bot):
