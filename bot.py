@@ -111,7 +111,7 @@ class Chuck(commands.Bot):
             gotten_subcommands.append(str(command))
             gotten_subcommands.extend([f"{command} {alias}" for alias in command.aliases])
             if isinstance(command, commands.Group):
-                gotten_subcommands.extend(self.create_command_list(command))
+                gotten_subcommands.extend(self.get_subcommands(command))
         return gotten_subcommands
 
     def create_command_list(self):
