@@ -161,8 +161,7 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def buildup(self, ctx, text):
-        x = text
-        await ctx.send('\n'.join(x[:+y] for y in range(len(x))) + '\n' + x + '\n'.join(x[:-y] for y in range(len(x))),
+        await ctx.send('\n'.join(text[:+char] for char in range(len(test))) + '\n' + text + '\n'.join(test[:-char] for char in range(len(test))),
                        allowed_mentions=discord.AllowedMentions().none())
 
     @commands.command()
