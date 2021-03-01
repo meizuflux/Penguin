@@ -174,9 +174,8 @@ class Fun(commands.Cog):
     async def pp(self, ctx, user: discord.Member=None):
         if not user:
             user = ctx.author
-        random.seed(int(str(user.id))
-        shaft = "=" * random!.randint(1, 34)
-        await qembed(ctx, f'8{shaft}D')
+        random.seed(int(user.id))
+        await qembed(ctx, f'8{"=" * random.randint(1, 34)}D')
 
 
 def setup(bot):
