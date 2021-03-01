@@ -109,7 +109,7 @@ class Chuck(commands.Bot):
         for command in command.commands:
             self.command_list.append(str(command))
             self.command_list.extend([alias for alias in command.aliases])
-            if isinstance(command, commands.Group)
+            if isinstance(command, commands.Group):
                 self.command_list.extend(self.create_command_list(command))
 
     # https://github.com/InterStella0/stella_bot/blob/4636627b2f99b7f58260869f020e5adebb62e27d/main.py
