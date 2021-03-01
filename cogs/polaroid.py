@@ -21,8 +21,12 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         return img
 
     @executor_function
-    def image_manip(self, ctx, img: polaroid.Image, method: str, *args, **kwargs):
+    def image_manip(self, ctx, img: polaroid.Image, method: str, args: list = None, kwargs: dict = None):
         img.resize(500, 500, 1)
+		if args is None:
+			args = []
+		if kwargs is None:
+			kwargs = {}
         method = getattr(img, method)
         method(*args, **kwargs)
         return img
