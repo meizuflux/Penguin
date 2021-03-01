@@ -109,6 +109,14 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     async def rose(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
         await self.send_manip(ctx, image, method='filter', args=["rosetint"])
 
+    @filter.command(help='Applies a pink filter to the image.')
+    async def pink(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
+        await self.send_manip(ctx, image, method='filter', args=["pastel_pink"])
+
+    @filter.command(help='Applies a liquid filter to the image.')
+    async def liquid(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
+        await self.send_manip(ctx, image, method='filter', args=["liquid"])
+
 
 
 def setup(bot):
