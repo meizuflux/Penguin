@@ -165,6 +165,11 @@ class Fun(commands.Cog):
         await ctx.send('\n'.join(x[:+y] for y in range(len(x))) + '\n' + x + '\n'.join(x[:-y] for y in range(len(x))),
                        allowed_mentions=discord.AllowedMentions().none())
 
+    @commands.command()
+    async def ship(self, ctx, user_1: discord.Member, user_2: discord.Member):
+        love = user_1.id + user_2.id / 5 + 100000 - 30**10 * 50
+        await qembed(ctx, f'I calculate that the love between {user_1.mention} and {user_2.mention} is {str(love)[:2]}%')
+
 
 def setup(bot):
     bot.add_cog(Fun(bot))
