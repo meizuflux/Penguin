@@ -102,7 +102,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Applies a rose filter to an image.')
     async def rose(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
-        await self.send_manip(ctx, image, method='filter', args="rosetint")
+        await self.send_manip(ctx, image, method='filter', kwargs="rosetint")
 
 
 def setup(bot):
