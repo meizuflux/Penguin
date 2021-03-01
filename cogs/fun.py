@@ -59,7 +59,7 @@ class Fun(commands.Cog):
 
     @commands.command(help='Reverses some text')
     async def reverse(self, ctx, *, text):
-        await qembed(ctx, text.replace(' ', ''.join(reversed(text))))
+        await qembed(ctx, text[::-1])
 
     @commands.command(help='Checks your speed.')
     async def react(self, ctx, seconds: int = None):
