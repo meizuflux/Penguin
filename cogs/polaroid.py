@@ -24,17 +24,13 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     def image_manip(self, ctx, img: polaroid.Image, method: str, *args, **kwargs):
         img.resize(500, 500, 1)
         method = getattr(img, method)
-        if args is None:
-            args = []
-        if kwargs is None:
-            kwargs = {}
         method(*args, **kwargs)
         return img
 
     async def send_manip(self, ctx, image, method: str, *args, **kwargs):
         await ctx.trigger_typing()
         image = await self.get_image(ctx, image)
-        img = await self.image_manip(ctx, image, method=method, *args, **kwargs)
+        img = await self.image_manip(ctx, image, method, *args, **kwargs)
         file = discord.File(BytesIO(img.save_bytes()),
                             filename=f"{method}.png")
 
@@ -50,7 +46,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='like putin')
     async def wide(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
-        await self.send_manip(ctx, image, method='resize', args=[(2000), (900), (1)])
+        await self.send_manip(ctx, image, method='resize', args=(2000))
 
     @commands.command(help='Inverts an image')
     async def invert(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
