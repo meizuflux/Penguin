@@ -254,6 +254,11 @@ class Utilities(commands.Cog):
         await ctx.author.send(embed=embed)
         await qembed(ctx, f'Messaged you with the password, {ctx.author.mention}')
 
+    @commands.command(help='Checks where a URL redirects. WARNING NOT 100% ACCURATE', aliases=['redirectchecker', 'redirectcheck', 'redirect_check'])
+    async def redirect_checker(self, ctx, url):
+        async with self.bot.session.get(url) as redirect:
+            await qembed.send(ctx, f'`{str(redirect.real_url)}`')
+
 
 def setup(bot):
     bot.add_cog(Utilities(bot))
