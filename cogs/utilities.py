@@ -58,8 +58,8 @@ class Utilities(commands.Cog):
         except KeyError:
             return None
 
-        if len(self.bot.deleted_messages[channel_id]) > 500:
-            dele = len(self.bot.deleted_messages[channel_id]) - 500
+        if len(self.bot.deleted_messages[channel_id]) > 250:
+            dele = len(self.bot.deleted_messages[channel_id]) - 250
             for number in range(dele):
                 del self.bot.deleted_messages[channel_id][number]
 
