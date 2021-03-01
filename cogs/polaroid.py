@@ -100,9 +100,9 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     async def emboss(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
         await self.send_manip(ctx, image, method='emboss')
 
-    @commands.command(help='Swaps the channels in the image')
-    async def swap(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
-        await self.send_manip(ctx, image, method='swap_channels', args=(100, 100))
+    @commands.command(help='Applies an edges effect to an image.')
+    async def edges(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member] = None):
+        await self.send_manip(ctx, image, method='edge_detection')
 
     @commands.group(help='Some commands that apply simple filters.')
     async def filter(self, ctx):
