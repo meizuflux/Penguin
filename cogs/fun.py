@@ -166,7 +166,7 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def ship(self, ctx, user_1: discord.Member, user_2: discord.Member):
-        love = user_1.id + user_2.id / 5 * 50 + 6969696969 + 420 * 2
+        love = user_1.id + user_2.id 5 * 50 + 6969696969 + 420 * 2
         await ctx.send(love)
         await qembed(ctx, f'I calculate that the love between {user_1.mention} and {user_2.mention} is {str(love)[:2]}%')
 
