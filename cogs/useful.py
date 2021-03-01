@@ -22,9 +22,6 @@ from utils.default import plural, qembed
 
 class ChuckContext(commands.Context):
 
-    def __repr__(self):
-        return "idk just some context"
-
     @property
     def secret(self):
         return 'my secret here'
