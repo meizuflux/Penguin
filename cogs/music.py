@@ -345,7 +345,7 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
                                               port=2334,
                                               rest_uri='http://localhost:2334',
                                               password="youshallnotpass",
-                                              identifier='TEST',
+                                              identifier='CINAMIN TOAST CRUCH',
                                               region='us_central')
 
     @wavelink.WavelinkMixin.listener()
