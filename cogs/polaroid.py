@@ -30,7 +30,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     async def send_manip(self, ctx, image, method: str, *args, **kwargs):
         await ctx.trigger_typing()
         image = await self.get_image(ctx, image)
-        img = await self.image_manip(ctx, image, method='apply_gradient', *args, **kwargs)
+        img = await self.image_manip(ctx, image, method=method, *args, **kwargs)
         file = discord.File(BytesIO(img.save_bytes()),
                             filename=f"{method}.png")
 
