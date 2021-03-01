@@ -95,9 +95,7 @@ class Chuck(commands.Bot):
 
             self.create_command_list()
 
-            guilds = await self.db.fetch("SELECT * FROM prefixes")
-            for guild in guilds:
-                self.prefixes[guild['serverid']] = guild['prefix']
+
 
             self.run(self.get_config('token'))
 
@@ -108,6 +106,12 @@ class Chuck(commands.Bot):
         await self.db.execute("CREATE TABLE IF NOT EXISTS scoresaber (userid BIGINT PRIMARY KEY,ssid BIGINT)")
         await self.db.execute(
             "CREATE TABLE IF NOT EXISTS economy (userid BIGINT PRIMARY KEY,wallet BIGINT,bank BIGINT)")
+
+    async def create_cache(self):
+        await self.wait_until_ready()
+        guilds = await self.db.fetch("SELECT * FROM prefixes")
+            for guild in guilds:
+                self.prefixes[guild['serverid']] = guild['prefix']
 
     def get_subcommands(self, command):
         gotten_subcommands = []
@@ -167,6 +171,7 @@ class Chuck(commands.Bot):
 
 bot = Chuck()
 bot.loop.create_task(bot.create_tables())
+bot.loop.create_task(bot.create_cache())
 
 os.environ["JISHAKU_NO_UNDERSCORE"] = "True"
 os.environ["JISHAKU_NO_DM_TRACEBACK"] = "True"
