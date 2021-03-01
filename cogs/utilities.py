@@ -111,12 +111,11 @@ class Utilities(commands.Cog):
             for emoji in result:
                 emojis.append(f"{str(emoji)} `{emoji.name}`")
             paginator = WrappedPaginator(prefix='', suffix='', max_size=500)
-            paginator.add_line('\n'.join(emojis))
         else:
             for emoji in self.bot.emojis:
                 emojis.append(f"{str(emoji)} `{emoji.name}`")
             paginator = WrappedPaginator(prefix='', suffix='', max_size=1000)
-            paginator.add_line('\n'.join(emojis))
+        paginator.add_line('\n'.join(emojis))
         interface = PaginatorInterface(ctx.bot, paginator, owner=ctx.author)
         await interface.send_to(ctx)
 
@@ -133,10 +132,7 @@ class Utilities(commands.Cog):
 
         for col in range(1, cols):
             for row in range(1, rows):
-                if s[row-1] == t[col-1]:
-                    cost = 0
-                else:
-                    cost = 2
+                cost = 0 if s[row-1] == t[col-1] else 2
                 distance[row][col] = min(distance[row-1][col] + 1,      # Cost of deletions
                                     distance[row][col-1] + 1,          # Cost of insertions
                                     distance[row-1][col-1] + cost)     # Cost of substitutions
