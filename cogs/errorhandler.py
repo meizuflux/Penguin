@@ -43,6 +43,7 @@ class CommandErrorHandler(commands.Cog):
             matches = finder(failed_command, self.bot.command_list, lazy=False)
             if not matches:
                 return
+            await ctx.send(matches)
             match = "\n".join(matches[0])
             cmd = self.bot.get_command(match)
             if not await cmd.can_run(ctx):
