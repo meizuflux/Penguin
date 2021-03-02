@@ -40,10 +40,10 @@ class CommandErrorHandler(commands.Cog):
 
         if isinstance(error, commands.CommandNotFound):
             failed_command = re.match(rf"^({ctx.prefix})\s*(.*)", ctx.message.content, flags=re.IGNORECASE).group(2)
-            matches = finder(failed_command, self.bot.command_list)
+            matches = finder(failed_command, self.bot.command_list, lazy=False)
             if not matches:
                 return
-            match = "\n".join(matches[:1])
+            match = "\n".join(matches[0])
             cmd = self.bot.get_command(match)
             if not await cmd.can_run(ctx):
                 return
