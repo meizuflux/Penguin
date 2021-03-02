@@ -79,7 +79,7 @@ class CommandErrorHandler(commands.Cog):
 
         elif isinstance(error, commands.BadArgument):
 
-            print(f'Ignoring exception in command {ctx.invoked_with}:'file=sys.stderr)
+            print(f'Ignoring exception in command {ctx.invoked_with}:', file=sys.stderr)
 
             traceback.print_exception(type(error),
                                       error,
