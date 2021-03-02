@@ -168,7 +168,8 @@ class Fun(commands.Cog):
                        allowed_mentions=discord.AllowedMentions().none())
 
     @commands.command()
-    async def ship(self, ctx, user_1: discord.Member, user_2: discord.Member):
+    async def ship(self, ctx, user_1: discord.Member, user_2: discord.Member=None):
+        if not user_2: user_2 = ctx.author
         random.seed(int(user_1.id) + int(user_2.id))
         love = random.randint(1, 100)
         await qembed(ctx,
