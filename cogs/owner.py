@@ -67,8 +67,6 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         if stderr:
             shell = f'[stderr]\n{stderr.decode()}'
 
-        thing = functools.partial(subprocess.check_output, "git pull", shell=True)
-        out = await self.bot.loop.run_in_executor(None, thing)
         embed = discord.Embed(title="Pulling from GitHub",
                               description=f"```\nppotatoo@36vp:~/SYSTEM32$ git pull\n{shell}\n```",
                               color=self.bot.embed_color,
@@ -94,7 +92,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
                                                         f"however the following failed...\n\n{output}")
         else:
             embed.add_field(name='Cog Reloading', value='```\nAll cogs were loaded successfully```')
-            
+
         await ctx.send(embed=embed)
 
     @dev.command()
