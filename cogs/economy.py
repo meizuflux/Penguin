@@ -26,7 +26,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             data = dict(await self.bot.db.fetchrow('SELECT wallet, bank FROM economy WHERE userid = $1', user_id))
             wallet = data["wallet"]
             bank = data["bank"]
-            
+
         return wallet, bank
 
     @commands.command(help='Registers you into the database')
@@ -79,7 +79,8 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         if amount.lower() == 'all':
             bank = bank + wallet
             updated_wallet = 0
-            message = f'You deposited your entire wallet of ${humanize.intcomma(wallet)}'
+            int_comma = humanize.intcomma(wallet)
+            message = f"You deposited your entire wallet of ${int_comma}"
 
         else:
             if int(amount) > wallet:
