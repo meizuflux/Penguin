@@ -19,6 +19,7 @@ class CommandErrorHandler(commands.Cog):
     async def on_command_error(self, ctx, error):
 
         # This prevents any commands with local handlers being handled here in on_command_error.
+        global match
         if hasattr(ctx.command, 'on_error'):
             return
 
@@ -43,11 +44,14 @@ class CommandErrorHandler(commands.Cog):
             matches = finder(failed_command, self.bot.command_list, lazy=False)
             if not matches:
                 return
-            await ctx.send(matches)
-            match = "\n".join(matches[0])
-            cmd = self.bot.get_command(match)
-            if not await cmd.can_run(ctx):
-                return
+            match = None
+            for command in matches:
+                cmd = self.bot.get_command(command)
+                if not await cmd.can_run(ctx):
+                    return
+                else:
+                    match = command
+                    break
             return await qembed(ctx, f"No command called `{ctx.invoked_with}` found. Did you mean `{match}`?")
 
         elif isinstance(error, commands.CheckFailure):
