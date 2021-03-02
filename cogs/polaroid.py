@@ -11,11 +11,17 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         self.bot = bot
 
     @staticmethod
-    async def get_image(ctx, image):
+    async def get_image(self, ctx, image):
         if ctx.message.attachments:
             img = polaroid.Image(await ctx.message.attachments[0].read())
         elif isinstance(image, discord.PartialEmoji):
             img = polaroid.Image(await image.url.read())
+        if isinstance(image, str):
+            if str(image).strip("<>").startswith(('http', 'https')):
+                async with self.bot.session.get(str(image)) as resp:
+                    img = await resp.read()
+            else:
+                pass
         else:
             img = image or ctx.author
             img = polaroid.Image(await img.avatar_url_as(format="png").read())
@@ -34,7 +40,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
 
     async def send_manip(self, ctx, image, method: str, *args, **kwargs):
         await ctx.trigger_typing()
-        image = await self.get_image(ctx, image)
+        image = await self.get_image(self, ctx, image)
         img = await self.image_manip(image, method, *args, **kwargs)
         file = discord.File(BytesIO(img.save_bytes()),
                             filename=f"{method}.png")
