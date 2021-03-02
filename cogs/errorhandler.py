@@ -7,7 +7,7 @@ import re
 import difflib
 from discord.ext import commands
 
-from utils import default
+from utils.fuzzy import finder
 from utils.default import qembed
 
 
@@ -40,7 +40,7 @@ class CommandErrorHandler(commands.Cog):
 
         if isinstance(error, commands.CommandNotFound):
             failed_command = re.match(rf"^({ctx.prefix})\s*(.*)", ctx.message.content, flags=re.IGNORECASE).group(2)
-            matches = difflib.get_close_matches(failed_command, self.bot.command_list)
+            matches = finder(failed_command, self.bot.command_list)
             if not matches:
                 return
             match = "\n".join(matches[:1])
