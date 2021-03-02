@@ -94,6 +94,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
                                                         f"however the following failed...\n\n{output}")
         else:
             embed.add_field(name='Cog Reloading', value='```\nAll cogs were loaded successfully```')
+            
         await ctx.send(embed=embed)
 
     @dev.command()
