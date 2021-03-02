@@ -63,9 +63,9 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         stdout, stderr = await proc.communicate()
 
         if stdout:
-            shell = f'[stdout]\n{stdout.decode()}')
+            shell = f'[stdout]\n{stdout.decode()}'
         if stderr:
-            shell = f'[stderr]\n{stderr.decode()}')
+            shell = f'[stderr]\n{stderr.decode()}'
 
         thing = functools.partial(subprocess.check_output, "git pull", shell=True)
         out = await self.bot.loop.run_in_executor(None, thing)
