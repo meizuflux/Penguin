@@ -232,7 +232,7 @@ class Utilities(commands.Cog):
 
         raw = json.dumps(msg, indent=4)
         if len(raw) > 1989:
-            return await qembed(ctx, 'Sorry, the message was too long')
+            return await qembed(ctx, await ctx.mystbin(raw))
         await qembed(ctx, f"```json\n{escape(raw)}```")
 
     @commands.command(help='Randomly generates a password', aliases=['pw', 'pwd'])
