@@ -6,6 +6,37 @@ import typing
 from io import BytesIO
 from utils.default import qembed
 
+class Image(commands.Converter):
+    async def convert(self, ctx, thing: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str])
+        if ctx.message.attachments:
+            img = await ctx.message.attachments[0].read()
+
+        elif isinstance(image, discord.PartialEmoji):
+            img = await image.url.read()
+
+        elif isinstance(image, (discord.Member, discord.User)):
+            img = await image.avatar_url_as(format="png").read()
+            
+        elif image is None:
+            img = await ctx.author.avatar_url_as(format="png").read()
+            
+        else:
+            stripped_url = str(image).strip("<>")
+            if stripped_url.startswith(('http', 'https', 'www')):
+                async with ctx.bot.session.get(stripped_url) as resp:
+                    if resp.headers["Content-type"].startswith("image"):
+                        img = await resp.read()
+                        
+                    else:
+                        img = None
+            else:
+                img = None
+                
+        if not img:
+            img = await ctx.author.avatar_url_as(format="png").read()
+            
+        return img
+
 
 class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     def __init__(self, bot):
@@ -55,10 +86,10 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
 
     async def send_manip(self, ctx, image, method: str, *args, **kwargs):
         await ctx.trigger_typing()
-        try:
-            image = await self.get_image(ctx, image)
-        except:
-            await qembed(ctx, 'Invalid URL provided.')
+        #try:
+         #   image = await self.get_image(ctx, image)
+        #except:
+         #   await qembed(ctx, 'Invalid URL provided.')
         img = await self.image_manip(image, method, *args, **kwargs)
         file = discord.File(BytesIO(img.save_bytes()),
                             filename=f"{method}.png")
