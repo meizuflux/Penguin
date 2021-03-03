@@ -1,2 +1,2 @@
-why would you wwant to make this seriously
+why would you want to make this seriously
 
