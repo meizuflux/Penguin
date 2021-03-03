@@ -6,6 +6,13 @@ import typing
 from io import BytesIO
 from utils.default import qembed
 
+class NullConverter(commands.Converter):
+    async def convert(self, ctx, argument):
+        try:
+            return "null byte sucks big {}".format(argument)
+        except Exception as E:
+            raise BadArgument("IDK what would raise an error in this example but I need to put one here so here it is") 
+
 class Image(commands.Converter):
     async def convert(self, ctx, argument: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str]=None):
         if ctx.message.attachments:
@@ -99,6 +106,11 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         embed.set_image(url=f"attachment://{method}.png")
         embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed, file=file)
+
+    @commands.command(help='testing converters', hidden=True)
+    async def mock(ctx, person: NullConverter):
+        await ctx.send(f"haha {person}")
+
 
     @commands.command(help='Makes an image rainbowey')
     async def rainbow(self, ctx, *, image: Image = None):
