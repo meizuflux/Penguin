@@ -6,6 +6,17 @@ import discord
 import timeago as timesince
 from discord.ext import commands
 
+def escape(text: str):
+    mark = [
+        '`',
+        '_',
+        '*'
+    ]
+    text = text
+    for item in mark:
+        text = text.replace(item, f'\u200b{item}')
+    return text
+
 
 def traceback_maker(err, advance: bool = True):
     """ A way to debug your code anywhere """
