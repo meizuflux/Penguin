@@ -1,6 +1,9 @@
 # Config
 config.json
 
+# pycharm
+.idea/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 /cogs/__pycache__/
