@@ -90,7 +90,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
          #   image = await self.get_image(ctx, image)
         #except:
          #   await qembed(ctx, 'Invalid URL provided.')
-        img = await self.image_manip(img=image, method, *args, **kwargs)
+        img = await self.image_manip(image, method, *args, **kwargs)
         file = discord.File(BytesIO(img.save_bytes()),
                             filename=f"{method}.png")
 
