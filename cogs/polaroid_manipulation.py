@@ -105,7 +105,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         img = polaroid.Image(person)
         img.resize((2000, 900, 1))
         file = discord.File(BytesIO(img.save_bytes()),
-                            filename=f"{method}.png")
+                            filename=f"resize.png")
         await ctx.send(type(person), file=file)
 
     @commands.command(help='Makes an image rainbowey')
