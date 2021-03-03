@@ -138,8 +138,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     @executor_function
     def liquid_rescale(self, ctx, image):
         img = polaroid.Image(image)
-        dunno = random.randint(100, 500)
-        img.liquid_rescale(img.width - dunno, img.height - dunno)
+        img.liquid_rescale(img.width - 250, img.height - 250)
         return img
 
     @commands.command(help='Makes an image magiked', aliases=['magic'])
@@ -151,7 +150,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
 
         embed = discord.Embed(colour=self.bot.embed_color,
                               timestamp=ctx.message.created_at)
-        embed.set_image(url=f"attachment://magik.png.png")
+        embed.set_image(url=f"attachment://magik.png")
         embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed, file=file)
 
