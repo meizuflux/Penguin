@@ -360,14 +360,13 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         await ctx.send(embed=embed)
 
     @commands.command(help='Pretty-Prints some JSON')
-    async def pprint(self, ctx, json: json.loads):
-        json.replace("'", '"')
-        await ctx.send(json.dumps(json, indent=4))
-        lines = json.dumps(json, indent=4).split('\n')
+    async def pprint(self, ctx, hmm: json.loads):
+        hmm.replace("'", '"')
+        await ctx.send(json.dumps(hmm, indent=4))
+        lines = json.dumps(hmm, indent=4).split('\n')
         paginator = WrappedPaginator(prefix='```py', suffix='```', max_size=1985)
         for num, line in enumerate(lines, start=1):
             paginator.add_line(escape(line))
-        await ctx.send(json.dumps(json, indent=4))
         interface = PaginatorInterface(ctx.bot, paginator, owner=ctx.author)
         await interface.send_to(ctx)
 
