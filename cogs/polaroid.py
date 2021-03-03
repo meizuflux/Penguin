@@ -28,7 +28,6 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
             stripped_url = str(image).strip("<>")
             if stripped_url.startswith(('http', 'https', 'www')):
                 async with ctx.bot.session.get(stripped_url) as resp:
-                    await ctx.send(type(await resp.read()))
                     img = polaroid.Image(await resp.read())
             else:
                 img = None
@@ -47,7 +46,10 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
 
     async def send_manip(self, ctx, image, method: str, *args, **kwargs):
         await ctx.trigger_typing()
-        image = await self.get_image(ctx, image)
+        try:
+            image = await self.get_image(ctx, image)
+        except:
+            await qembed(ctx, 'Invalid URL provided.')
         img = await self.image_manip(image, method, *args, **kwargs)
         file = discord.File(BytesIO(img.save_bytes()),
                             filename=f"{method}.png")
