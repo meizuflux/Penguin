@@ -362,6 +362,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Pretty-Prints some JSON')
     async def pprint(self, ctx, json: json.loads):
+        await ctx.send(json.dumps(json, indent=4))
         lines = json.dumps(json, indent=4).split('\n')
         paginator = WrappedPaginator(prefix='```py', suffix='```', max_size=1985)
         for num, line in enumerate(lines, start=1):
