@@ -103,7 +103,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(help='testing converters', hidden=True)
     async def mock(self, ctx, person: Image):
         img = polaroid.Image(person)
-        img.resize((2000, 900, 1))
+        img.filter('dramatic')
         file = discord.File(BytesIO(img.save_bytes()),
                             filename=f"resize.png")
         await ctx.send(type(person), file=file)
