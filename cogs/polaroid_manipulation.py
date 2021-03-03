@@ -54,7 +54,6 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         return img
 
     async def send_manip(self, ctx, image, method: str, *args, **kwargs):
-        await ctx.trigger_typing()
         try:
             image = await self.get_image(ctx, image)
         except:
