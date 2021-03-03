@@ -344,6 +344,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
         res = await self.bot.session.post(url, headers=headers, data=data)
         js = await res.json()
+        await ctx.send(js)
 
         level = js["attributeScores"]["TOXICITY"]["summaryScore"]["value"] * 100
         await ctx.send(f"`{text}` is `{level:.2f}%` likely to be toxic.")
@@ -363,12 +364,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     async def pprint(self, ctx, hmm: json.loads):
         hmm.replace("'", '"')
         await ctx.send(json.dumps(hmm, indent=4))
-        lines = json.dumps(hmm, indent=4).split('\n')
-        paginator = WrappedPaginator(prefix='```py', suffix='```', max_size=1985)
-        for num, line in enumerate(lines, start=1):
-            paginator.add_line(escape(line))
-        interface = PaginatorInterface(ctx.bot, paginator, owner=ctx.author)
-        await interface.send_to(ctx)
+
 
 
 def setup(bot):
