@@ -75,7 +75,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Makes an image magiked', aliases=['magic'])
     async def magik(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
-        thing = random.randint(400, 500)
+        thing = random.randint(200, 500)
         await self.send_polaroid(ctx, image, method='liquid_rescale', args=[thing, thing - 50])
 
     @commands.command(help='like putin')
