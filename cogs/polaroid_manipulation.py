@@ -138,7 +138,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     @executor_function
     def liquid_rescale(self, ctx, image):
         img = polaroid.Image(image)
-        img.liquid_rescale(img.width - 250, img.height - 250)
+        img.liquid_rescale(img.width / 2, img.height / 2)
         return img
 
     @commands.command(help='Makes an image magiked', aliases=['magic'])
