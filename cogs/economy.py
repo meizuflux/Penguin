@@ -54,20 +54,20 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Gets the top 5 users.', aliases=['top', 'lb'])
     async def leaderboard(self, ctx, number: int = 5):
-        if number > 10: 
+        if number > 10:
             return await qembed(ctx, 'No more than 10 please!')
 
         stats = await self.bot.db.fetch("SELECT * FROM economy ORDER BY bank+wallet DESC LIMIT $1", number)
 
         lb = [
-            f'{number+1}) {await self.bot.try_user(stats[number]["userid"])} » ${stats[number]["wallet"]+stats[number]["bank"]}'
+            f'{number + 1}) {await self.bot.try_user(stats[number]["userid"])} » ${stats[number]["wallet"] + stats[number]["bank"]}'
             for number, i in enumerate(range(number))
         ]
 
         lb = discord.Embed(title='Leaderboard',
-                                    color=self.bot.embed_color,
-                                    timestamp=ctx.message.created_at,
-                                    description='**TOP 5 PLAYERS:**\n```py\n' + "\n".join(lb) + '```')
+                           color=self.bot.embed_color,
+                           timestamp=ctx.message.created_at,
+                           description='**TOP 5 PLAYERS:**\n```py\n' + "\n".join(lb) + '```')
 
         lb.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=lb)
@@ -216,8 +216,8 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
         emoji = ['🐟', '🐠', '🐡']
         await qembed(ctx,
-                     f'You travel to the local lake and catch {fish} fish {random.choice(emoji)}.' 
-                    f'Then you sell them to the market at a price of ${price}, totaling in at ${cash} for a days work.')
+                     f'You travel to the local lake and catch {fish} fish {random.choice(emoji)}.'
+                     f'Then you sell them to the market at a price of ${price}, totaling in at ${cash} for a days work.')
 
     @commands.command(help='Beg in the street')
     @commands.cooldown(rate=1, per=200, type=commands.BucketType.user)
@@ -239,17 +239,29 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         eco = self.bot.get_cog("Economy")
         data = await self.get_stats(self, ctx.author.id)
         if self.bot.get_command(command) not in eco.walk_commands():
-            return await qembed(ctx, f'You can only reset the cooldown for commands in this category. You can do `{ctx.prefix}help Economy` to see all the commands.')
+            return await qembed(ctx,
+                                f'You can only reset the cooldown for commands in this category. You can do `{ctx.prefix}help Economy` to see all the commands.')
 
         if command == 'daily':
-            return await qembed(ctx, 'You can\'t reset the daily command, sorry. The whole point is that, well, it\'s meant to be once a day.')
+            return await qembed(ctx,
+                                'You can\'t reset the daily command, sorry. The whole point is that, well, it\'s meant to be once a day.')
 
         if data[0] < 400:
             return await qembed(ctx, 'You need at least 400 dollars.')
 
         self.bot.get_command(command).reset_cooldown(ctx)
         await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE userid = $2", data[0] - 400, ctx.author.id)
-        await qembed(ctx, f'Reset the command cooldown for the command `{command}` and subtracted $400 from your account.')
+        await qembed(ctx,
+                     f'Reset the command cooldown for the command `{command}` and subtracted $400 from your account.')
+
+    @commands.command(help='Buys a stock. BETA')
+    async def buy(self, ctx, amount: int = 1, ticker: str = 'MSFT'):
+        ticker.upper()
+        async with self.bot.session.get(f'https://ws-api.iextrading.com/1.0/tops/last?symbols={ticker}') as resp:
+            data = await resp.read()
+        if not data:
+            return await qembed(ctx, 'Yeah so thats not a valid stock lmao')
+
 
 
 def setup(bot):
