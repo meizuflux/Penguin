@@ -119,6 +119,10 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(help='Applies an edges effect to an image.')
     async def edges(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         await self.send_manip(ctx, image, method='edge_detection')
+        
+    @commands.command(help='Applies an oil effect to an image.')
+    async def oil(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
+        await self.send_manip(ctx, image, method='oil', args=[4, 55])
 
     @commands.group(help='Some commands that apply simple filters.')
     async def filter(self, ctx):
