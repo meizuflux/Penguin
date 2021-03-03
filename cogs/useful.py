@@ -7,8 +7,6 @@ import pathlib
 import platform
 import time
 from io import BytesIO
-from ast import literal_eval
-import typing
 import aiohttp
 import discord
 import humanize
@@ -362,7 +360,8 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         await ctx.send(embed=embed)
 
     @commands.command(help='Pretty-Prints some JSON')
-    async def pprint(self, ctx, json: literal_eval):
+    async def pprint(self, ctx, json: json.loads):
+        json.replace("'", '"')
         await ctx.send(json.dumps(json, indent=4))
         lines = json.dumps(json, indent=4).split('\n')
         paginator = WrappedPaginator(prefix='```py', suffix='```', max_size=1985)
