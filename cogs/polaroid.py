@@ -14,28 +14,28 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     @staticmethod
     async def get_image(ctx, image):
         if ctx.message.attachments:
-            img = polaroid.Image(await ctx.message.attachments[0].read())
+            img = await ctx.message.attachments[0].read()
 
         elif isinstance(image, discord.PartialEmoji):
-            img = polaroid.Image(await image.url.read())
+            img = await image.url.read()
 
         elif isinstance(image, (discord.Member, discord.User)):
-            img = polaroid.Image(await image.avatar_url_as(format="png").read())
+            img = await image.avatar_url_as(format="png").read()
 
         elif image is None:
-            img = polaroid.Image(await ctx.author.avatar_url_as(format="png").read())
+            img = await ctx.author.avatar_url_as(format="png").read()
         else:
             stripped_url = str(image).strip("<>")
             if stripped_url.startswith(('http', 'https', 'www')):
                 async with ctx.bot.session.get(stripped_url) as resp:
-                    img = polaroid.Image(await resp.read())
+                    img = await resp.read()
             else:
                 img = None
         return img
 
     @executor_function
     def image_manip(self, img: polaroid.Image, method: str, args: list = None, kwargs: dict = None):
-        # img.resize(500, 500, 1)
+        img = polaroid.Image(img)
         if args is None:
             args = []
         if kwargs is None:
