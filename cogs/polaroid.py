@@ -21,20 +21,25 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
 
         elif isinstance(image, (discord.Member, discord.User)):
             img = await image.avatar_url_as(format="png").read()
+            
         elif image is None:
             img = await ctx.author.avatar_url_as(format="png").read()
+            
         else:
             stripped_url = str(image).strip("<>")
             if stripped_url.startswith(('http', 'https', 'www')):
                 async with ctx.bot.session.get(stripped_url) as resp:
                     if resp.headers["Content-type"].startswith("image"):
                         img = await resp.read()
+                        
                     else:
                         img = None
             else:
                 img = None
+                
         if not img:
             img = await ctx.author.avatar_url_as(format="png").read()
+            
         return img
 
     @executor_function
