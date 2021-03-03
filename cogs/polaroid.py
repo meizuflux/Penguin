@@ -6,7 +6,7 @@ import typing
 from io import BytesIO
 from utils.default import qembed
 
-class NullConverter(commands.Converter):
+class Image(commands.Converter):
     async def convert(self, ctx, argument: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str]=None):
         if ctx.message.attachments:
             img = await ctx.message.attachments[0].read()
