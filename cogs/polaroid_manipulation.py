@@ -144,8 +144,8 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Makes an image magiked', aliases=['magic'])
     async def magik(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
-        img = await self.get_image(ctx, image)
-        image = await self.liquid_rescale(ctx, img)
+        image = await self.get_image(ctx, image)
+        img = await self.liquid_rescale(ctx, image)
         file = discord.File(BytesIO(img.save_bytes()),
                             filename="magik.png")
 
