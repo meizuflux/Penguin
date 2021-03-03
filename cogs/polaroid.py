@@ -13,7 +13,6 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     @staticmethod
     async def get_image(ctx, image):
         if ctx.message.attachments:
-            await ctx.send('ooh attachment')
             img = polaroid.Image(await ctx.message.attachments[0].read())
         elif isinstance(image, discord.PartialEmoji):
             img = polaroid.Image(await image.url.read())
@@ -55,7 +54,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         await ctx.send(embed=embed, file=file)
 
     @commands.command(help='Makes an image rainbowey')
-    async def rainbow(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User] = None):
+    async def rainbow(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         await self.send_manip(ctx, image, method='apply_gradient')
 
     @commands.command(help='like putin')
