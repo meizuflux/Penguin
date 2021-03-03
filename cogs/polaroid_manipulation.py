@@ -108,9 +108,8 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         await ctx.send(embed=embed, file=file)
 
     @commands.command(help='testing converters', hidden=True)
-    async def mock(self, ctx, person: NullConverter):
-        await ctx.send(f"haha {person}")
-
+    async def mock(self, ctx, person: Image):
+        await ctx.send(person)
 
     @commands.command(help='Makes an image rainbowey')
     async def rainbow(self, ctx, *, image: Image = None):
