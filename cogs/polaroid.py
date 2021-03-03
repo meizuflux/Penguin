@@ -12,18 +12,20 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
 
     @staticmethod
     async def get_image(ctx, image):
-        if ctx.message.attachments:
+        if image is None:
+            img = polaroid.Image(await ctx.author.avatar_url_as(format="png").read())
+        elif ctx.message.attachments:
             img = polaroid.Image(await ctx.message.attachments[0].read())
         elif isinstance(image, discord.PartialEmoji):
             img = polaroid.Image(await image.url.read())
+        elif isinstance(image, (discord.Member, discord.User)):
+            img = polaroid.Image(image.avatar_url_as(format="png"))
         else:
-            if str(image).strip("<>").startswith(('http', 'https')):
+            if str(image).strip("<>").startswith(('http', 'https', 'www')):
                 async with ctx.bot.session.get(str(image)) as resp:
                     img = await resp.read()
             else:
-                pass
-            img = image or ctx.author
-            img = polaroid.Image(await img.avatar_url_as(format="png").read())
+                return None
         return img
 
     @executor_function
