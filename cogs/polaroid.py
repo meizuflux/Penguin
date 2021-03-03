@@ -84,12 +84,13 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         method(*args, **kwargs)
         return img
 
-    async def send_manip(self, ctx, image, method: str, *args, **kwargs):
+    async def send_manip(self, ctx, image: Image, method: str, *args, **kwargs):
         await ctx.trigger_typing()
         #try:
          #   image = await self.get_image(ctx, image)
         #except:
          #   await qembed(ctx, 'Invalid URL provided.')
+        image = Image(image)
         img = await self.image_manip(image, method, *args, **kwargs)
         file = discord.File(BytesIO(img.save_bytes()),
                             filename=f"{method}.png")
