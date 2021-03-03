@@ -102,8 +102,11 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='testing converters', hidden=True)
     async def mock(self, ctx, person: Image):
-        
-        await ctx.send(type(person))
+        img = polaroid.Image(img)
+        img.resize((2000, 900, 1))
+        file = discord.File(BytesIO(img.save_bytes()),
+                            filename=f"{method}.png")
+        await ctx.send(type(person), file=file)
 
     @commands.command(help='Makes an image rainbowey')
     async def rainbow(self, ctx, *, image: Image = None):
