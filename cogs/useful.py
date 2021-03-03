@@ -27,9 +27,7 @@ class ChuckContext(commands.Context):
         return 'my secret here'
 
     async def confirm(self, text: str = 'Are you sure you want to do this?'):
-        e = discord.Embed(title='Confirm before doing this', description=text, color=self.bot.embed_color)
-        e.set_footer(text='React to this message with ✅ to confirm and ❌ to cancel')
-        message = await self.send(embed=e)
+        message = await self.send(text)
         await message.add_reaction('✅')
         await message.add_reaction('❌')
 
@@ -45,11 +43,9 @@ class ChuckContext(commands.Context):
             await qembed(self, 'You did not react in time.')
         else:
             if reaction.emoji == '✅':
-                await message.delete()
-                return True
+                return True, message
             if reaction.emoji == '❌':
-                await message.delete()
-                return False
+                return False, message
 
     async def mystbin(self, data):
         data = bytes(data, 'utf-8')
