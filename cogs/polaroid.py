@@ -4,6 +4,7 @@ from jishaku.functools import executor_function
 import polaroid
 import typing
 from io import BytesIO
+from utils.default import qembed
 
 
 class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
@@ -14,16 +15,20 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     async def get_image(ctx, image):
         if ctx.message.attachments:
             img = polaroid.Image(await ctx.message.attachments[0].read())
+
         elif isinstance(image, discord.PartialEmoji):
             img = polaroid.Image(await image.url.read())
+
         elif isinstance(image, (discord.Member, discord.User)):
             img = polaroid.Image(await image.avatar_url_as(format="png").read())
+
         elif image is None:
             img = polaroid.Image(await ctx.author.avatar_url_as(format="png").read())
         else:
             stripped_url = str(image).strip("<>")
             if stripped_url.startswith(('http', 'https', 'www')):
                 async with ctx.bot.session.get(stripped_url) as resp:
+                    await ctx.send(type(await resp.read()))
                     img = polaroid.Image(await resp.read())
             else:
                 img = None
