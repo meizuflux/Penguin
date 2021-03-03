@@ -259,7 +259,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         ticker.upper()
         async with self.bot.session.get(f'https://ws-api.iextrading.com/1.0/tops/last?symbols={ticker}') as resp:
             data = await resp.read()
-        if not data:
+        if data == []:
             return await qembed(ctx, 'Yeah so thats not a valid stock lmao')
 
 
