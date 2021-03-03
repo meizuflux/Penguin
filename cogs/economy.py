@@ -268,7 +268,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         answer, message = await ctx.confirm(f'Confirm to buy {amount} share of {ticker} at {stock["price"]}'
                                             f' per share for a total of ${amount * stock["price"]}.')
         if answer:
-            await message.edit(f'Purchased {amount} share of {ticker} for ${amount * stock["price"]}.')
+            await message.edit(content=f'Purchased {amount} share of {ticker} for ${amount * stock["price"]}.')
 
 
 
