@@ -21,6 +21,8 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
 
         elif isinstance(image, (discord.Member, discord.User)):
             img = await image.avatar_url_as(format="png").read()
+        elif image is None:
+            img = await ctx.author.avatar_url_as(format="png").read()
         else:
             stripped_url = str(image).strip("<>")
             if stripped_url.startswith(('http', 'https', 'www')):
@@ -31,7 +33,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
                         img = None
             else:
                 img = None
-        elif image is None:
+        if not img:
             img = await ctx.author.avatar_url_as(format="png").read()
         return img
 
