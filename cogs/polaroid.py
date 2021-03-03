@@ -12,6 +12,9 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
 
     @staticmethod
     async def get_image(ctx, image):
+        if str(image).strip("<>").startswith(('http', 'https', 'www')):
+            async with ctx.bot.session.get(str(image)) as resp:
+                img = await resp.read()
         if image is None:
             img = polaroid.Image(await ctx.author.avatar_url_as(format="png").read())
         elif ctx.message.attachments:
@@ -21,11 +24,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         elif isinstance(image, (discord.Member, discord.User)):
             img = polaroid.Image(image.avatar_url_as(format="png"))
         else:
-            if str(image).strip("<>").startswith(('http', 'https', 'www')):
-                async with ctx.bot.session.get(str(image)) as resp:
-                    img = await resp.read()
-            else:
-                return None
+            return None
         return img
 
     @executor_function
