@@ -4,6 +4,7 @@ import typing
 import discord
 import humanize
 from asyncpg import DataError
+import json
 from discord.ext import commands
 
 from utils.default import qembed
@@ -258,8 +259,9 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
     async def buy(self, ctx, amount: int = 1, ticker: str = 'MSFT'):
         ticker.upper()
         async with self.bot.session.get(f'https://ws-api.iextrading.com/1.0/tops/last?symbols={ticker}') as resp:
-            data = await resp.read()
-        if data == []:
+            data = await resp.json()
+        await ctx.send(json.dumps(data, indent=4))
+        if not data:
             return await qembed(ctx, 'Yeah so thats not a valid stock lmao')
 
 
