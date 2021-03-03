@@ -73,10 +73,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     async def rainbow(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         await self.send_polaroid(ctx, image, method='apply_gradient')
 
-    @commands.command(help='Makes an image magiked', aliases=['magic'])
-    async def magik(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
-        thing = random.randint(200, 500)
-        await self.send_polaroid(ctx, image, method='liquid_rescale', args=[thing, thing - 50])
+
 
     @commands.command(help='like putin')
     async def wide(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
@@ -137,6 +134,26 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(help='Applies an oil effect to an image.')
     async def oil(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         await self.send_polaroid(ctx, image, method='oil', args=[4, 55])
+
+    @executor_function
+    def liquid_rescale(self, ctx, image):
+        img = polaroid.Image(image)
+        dunno = random.randint(100, 500)
+        img.liquid_rescale(img.width - dunno, img.height - dunno)
+        return img
+
+    @commands.command(help='Makes an image magiked', aliases=['magic'])
+    async def magik(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
+        img = await self.get_image(ctx, image)
+        image = await self.liquid_rescale(ctx, img)
+        file = discord.File(BytesIO(img.save_bytes()),
+                            filename="magik.png")
+
+        embed = discord.Embed(colour=self.bot.embed_color,
+                              timestamp=ctx.message.created_at)
+        embed.set_image(url=f"attachment://magik.png.png")
+        embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+        await ctx.send(embed=embed, file=file)
 
     @commands.group(help='Some commands that apply simple filters.')
     async def filter(self, ctx):
