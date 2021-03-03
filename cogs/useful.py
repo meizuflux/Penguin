@@ -7,7 +7,7 @@ import pathlib
 import platform
 import time
 from io import BytesIO
-
+import typing
 import aiohttp
 import discord
 import humanize
@@ -361,7 +361,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         await ctx.send(embed=embed)
 
     @commands.command(help='Pretty-Prints some JSON')
-    async def pprint(self, ctx, json: json.loads):
+    async def pprint(self, ctx, json: typing.Union[str, json.loads]):
         stripped_url = str(json).strip("<>")
         if stripped_url.startswith(('http', 'https', 'www')):
             async with ctx.bot.session.get(stripped_url) as resp:
