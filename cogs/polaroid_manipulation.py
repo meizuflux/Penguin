@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from jishaku.functools import executor_function
 import polaroid
+import random
 import typing
 from io import BytesIO
 from utils.default import qembed
@@ -74,7 +75,8 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Makes an image magiked', aliases=['magic'])
     async def magik(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
-        await self.send_polaroid(ctx, image, method='liquid_rescale', args=[500, 500])
+        thing = random.randint(400, 500)
+        await self.send_polaroid(ctx, image, method='liquid_rescale', args=[thing, thing - 50])
 
     @commands.command(help='like putin')
     async def wide(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
