@@ -14,7 +14,7 @@ class NullConverter(commands.Converter):
             raise BadArgument("IDK what would raise an error in this example but I need to put one here so here it is") 
 
 class Image(commands.Converter):
-    async def convert(self, ctx, argument: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str]=None):
+    async def convert(self, ctx, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str]=None):
         if ctx.message.attachments:
             img = await ctx.message.attachments[0].read()
 
