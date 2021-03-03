@@ -245,7 +245,8 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
         if command == 'daily':
             return await qembed(ctx,
-                                'You can\'t reset the daily command, sorry. The whole point is that, well, it\'s meant to be once a day.')
+                                'You can\'t reset the daily command, sorry. '
+                                'The whole point is that, well, it\'s meant to be once a day.')
 
         if data[0] < 400:
             return await qembed(ctx, 'You need at least 400 dollars.')
@@ -262,7 +263,12 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             data = await resp.json()
         await ctx.send(json.dumps(data, indent=4))
         if not data:
-            return await qembed(ctx, 'Yeah so thats not a valid stock lmao')
+            return await ctx.send('Yeah so thats not a valid stock lmao')
+        stock = data[0]
+        answer, message = await ctx.confirm(f'Confirm to buy {amount} share of {ticker} at {stock["price"]}'
+                                            f' per share for a total of ${amount * stock["price"]}.')
+        if answer:
+            await message.edit(f'Purchased {amount} share of {ticker} for ${amount * stock["price"]}.')
 
 
 

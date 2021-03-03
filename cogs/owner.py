@@ -100,10 +100,10 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
     async def reboot(self, ctx):
         """Calls bot.close() and lets the systems service handler restart it."""
         this = await ctx.confirm('Click to confirm.')
-        if this:
-            await qembed(ctx, "Goodbye. I'll be back soon.")
+        if this[0] is True:
+            await this[1].edit(content='Shutting down.')
             await self.bot.close()
-        if not this:
+        else:
             return await qembed(ctx, "Cancelling")
 
     @dev.command(aliases=['del'])
