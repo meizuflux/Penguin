@@ -45,7 +45,6 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     @executor_function
     def do_polaroid(self, img, method: str, args: list = None, kwargs: dict = None):
         img = polaroid.Image(img)
-        args[0].strip("''")
         if args is None:
             args = []
         if kwargs is None:
@@ -75,7 +74,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Makes an image magiked', aliases=['magic'])
     async def magik(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
-        await self.send_polaroid(ctx, image, method='liquid_rescale', args=['img.width - 100, img.height - 100'])
+        await self.send_polaroid(ctx, image, method='liquid_rescale', args=[500, 500])
 
     @commands.command(help='like putin')
     async def wide(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
