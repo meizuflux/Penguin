@@ -15,12 +15,12 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         if ctx.message.attachments:
             await ctx.send('ooh attachment')
             img = polaroid.Image(await ctx.message.attachments[0].read())
-        if image is None:
-            img = polaroid.Image(await ctx.author.avatar_url_as(format="png").read())
         elif isinstance(image, discord.PartialEmoji):
             img = polaroid.Image(await image.url.read())
         elif isinstance(image, (discord.Member, discord.User)):
             img = polaroid.Image(await image.avatar_url_as(format="png").read())
+        elif image is None:
+            img = polaroid.Image(await ctx.author.avatar_url_as(format="png").read())
         else:
             url = str(image)
             if url.strip("<>").startswith(('http', 'https', 'www')):
