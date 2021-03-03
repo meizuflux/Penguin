@@ -5,7 +5,9 @@ import io
 import itertools
 import os
 import pathlib
+from jishaku.paginators import PaginatorInterface, WrappedPaginator
 import platform
+import json
 import re
 import time
 import zlib
@@ -361,6 +363,11 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             resp = await f.json()
         embed = discord.Embed(description="\n".join(f"[`{commit['sha'][:6]}`]({commit['html_url']}) {commit['commit']['message']}" for commit in resp[:5]), color=self.bot.embed_color)
         await ctx.send(embed=embed)
+
+    @commands.command(help='Pretty-Prints some JSON')
+    async def pprint(self, ctx, json: json.loads):
+        await ctx.send(json.dumps(json, indent=4))
+
 
 def setup(bot):
     bot.add_cog(Useful(bot))
