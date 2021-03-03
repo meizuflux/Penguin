@@ -15,7 +15,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         if ctx.message.attachments:
             img = polaroid.Image(await ctx.message.attachments[0].read())
         if image is None:
-            img = polaroid.Image(await ctx.author.avatar_url_as(format="png"))
+            img = polaroid.Image(await ctx.author.avatar_url_as(format="png").read())
         elif isinstance(image, discord.PartialEmoji):
             img = polaroid.Image(await image.url.read())
         elif isinstance(image, (discord.Member, discord.User)):
