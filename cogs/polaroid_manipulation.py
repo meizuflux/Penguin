@@ -108,7 +108,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         await ctx.send(embed=embed, file=file)
 
     @commands.command(help='testing converters', hidden=True)
-    async def mock(ctx, person: NullConverter):
+    async def mock(self, ctx, person: NullConverter):
         await ctx.send(f"haha {person}")
 
 
