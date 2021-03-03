@@ -361,11 +361,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         await ctx.send(embed=embed)
 
     @commands.command(help='Pretty-Prints some JSON')
-    async def pprint(self, ctx, json: typing.Union[str, json.loads]):
-        stripped_url = str(json).strip("<>")
-        if stripped_url.startswith(('http', 'https', 'www')):
-            async with ctx.bot.session.get(stripped_url) as resp:
-                json = await resp.json()
+    async def pprint(self, ctx, json: json.loads):
         lines = json.dumps(json, indent=4).split('\n')
         paginator = WrappedPaginator(prefix='```py', suffix='```', max_size=1985)
         for num, line in enumerate(lines, start=1):
