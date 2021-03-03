@@ -72,7 +72,7 @@ class CommandErrorHandler(commands.Cog):
                 pass
 
         elif isinstance(error, commands.MissingRequiredArgument):
-            return await qembed(ctx, f'{error}')
+            return await qembed(ctx, f'{error}\nYou can view the help for this command with `{ctx.prefix}help {ctx.invoked_with}`')
 
         elif isinstance(error, commands.DisabledCommand):
             return await qembed(ctx, f'`{ctx.command}` has been disabled.')
