@@ -101,7 +101,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         await ctx.send(embed=embed, file=file)
 
     @commands.command(help='Makes an image rainbowey')
-    async def rainbow(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
+    async def rainbow(self, ctx, *, image: Image = None):
         await self.send_manip(ctx, image, method='apply_gradient')
 
     @commands.command(help='like putin')
