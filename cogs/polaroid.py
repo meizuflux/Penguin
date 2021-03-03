@@ -22,7 +22,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
             img = polaroid.Image(await ctx.author.avatar_url_as(format="png").read())
         else:
             url = str(image)
-            await ctx.send(url)
+            await ctx.send(url.strip("<>"))
             if url.strip("<>").startswith(('http', 'https', 'www')):
                 async with ctx.bot.session.get(str(image)) as resp:
                     img = polaroid.Image(await resp.read())
