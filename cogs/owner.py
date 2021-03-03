@@ -9,6 +9,7 @@ import os
 import functools
 import asyncio
 import inspect
+from utils.default import escape
 import aiohttp
 from jishaku.paginators import PaginatorInterface, WrappedPaginator
 
@@ -137,7 +138,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
 
         paginator = WrappedPaginator(prefix='```py', suffix='```', max_size=1985)
         for num, line in enumerate(source_lines, start=1):
-            paginator.add_line(str(num) + line.replace("`", "\u200b`"))
+            paginator.add_line(str(num) + escape(line))
 
         interface = PaginatorInterface(ctx.bot, paginator, owner=ctx.author)
         await interface.send_to(ctx)
