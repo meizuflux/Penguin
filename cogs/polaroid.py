@@ -13,6 +13,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     @staticmethod
     async def get_image(ctx, image):
         if ctx.message.attachments:
+            await ctx.send('ooh attachment')
             img = polaroid.Image(await ctx.message.attachments[0].read())
         if image is None:
             img = polaroid.Image(await ctx.author.avatar_url_as(format="png").read())
