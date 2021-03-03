@@ -74,7 +74,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         return img
 
     @executor_function
-    def image_manip(self, img: polaroid.Image, method: str, args: list = None, kwargs: dict = None):
+    def image_manip(self, img, method: str, args: list = None, kwargs: dict = None):
         img = polaroid.Image(img)
         if args is None:
             args = []
