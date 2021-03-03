@@ -31,7 +31,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
 
     @executor_function
     def image_manip(self, img: polaroid.Image, method: str, args: list = None, kwargs: dict = None):
-        img.resize(500, 500, 1)
+        # img.resize(500, 500, 1)
         if args is None:
             args = []
         if kwargs is None:
