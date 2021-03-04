@@ -318,18 +318,15 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         res = await self.bot.db.fetch("SELECT ticker, amount FROM stocks WHERE user_id = $1", user.id)
         if len(res) == 0:
             return await ctx.send(f'{user} has no stocks', allowed_mentions=discord.AllowedMentions().none())
-        price = [res["ticker"] for res in res]
-        async with self.bot.session.get(f'https://ws-api.iextrading.com/1.0/tops/last?symbols={",".join(price)}') as resp:
+        async with self.bot.session.get(f'https://ws-api.iextrading.com/1.0/tops/last?symbols={",".join([stock["ticker"] for stock in res])}') as resp:
             data: list = await resp.json()
-        await ctx.send(data)
-        price = [data['price'] for data in data]
-        headers = list(res[0].keys())
+        price = [math.floor(data['price']) for data in data]
         table = PrettyTable()
-        table.field_names = headers
+        table.field_names = list(res[0].keys())
         for record in res:
             lst = list(record)
             table.add_row(lst)
-        table.add_column("Price", price)
+        table.add_column("Current Price", price)
         msg = table.get_string()
         await ctx.send(f"{user}\'s stocks:```\n{msg}\n```", allowed_mentions=discord.AllowedMentions().none())
 
