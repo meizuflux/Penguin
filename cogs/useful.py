@@ -87,7 +87,8 @@ class Help(commands.MinimalHelpCommand):
                 'prefixes': "<:shrug:747680403778699304>",
                 'useful': "<:bruhkitty:739613862302711840>",
                 'utilities': "⚙️",
-                "music": "<:bruhkitty:739613862302711840>"
+                "music": "<:bruhkitty:739613862302711840>",
+                "jishaku": "<:verycool:739613733474795520>"
             }
             self.paginator.add_line(f'{emoji_dict[heading.lower()]}  **{heading}**')
             self.paginator.add_line(f'> `{joined}`')
