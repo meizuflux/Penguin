@@ -164,11 +164,11 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         async with self.bot.session.get(f'{FINNHUB_URL}/quote?symbol={ticker}&token={self.finnhub}') as r:
             data: dict = await r.json()
         stats = f"""```yaml
-        Current: {data["c"]}
-        Daily High: {data["h"]}
-        Daily Low: {data["l"]}
-        Opening: {data["o"]}
-        Previous Close: {data["pc"]}```
+Current: {data["c"]}
+Daily High: {data["h"]}
+Daily Low: {data["l"]}
+Opening: {data["o"]}
+Previous Close: {data["pc"]}```
         """
 
         await ctx.send(stats)
