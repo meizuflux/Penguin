@@ -325,6 +325,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         for record in res:
             lst = list(record)
             table.add_row(lst)
+        table.add_column("Price", [res["ticker"] for res in res])
         msg = table.get_string()
         await ctx.send(f"{user}\'s stocks:```\n{msg}\n```", allowed_mentions=discord.AllowedMentions().none())
 
