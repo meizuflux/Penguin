@@ -259,6 +259,13 @@ class Utilities(commands.Cog):
         async with self.bot.session.get(url) as redirect:
             await qembed(ctx, f'`{str(redirect.real_url)}`')
 
+    @commands.command(aliases=['ip', 'iplookup'])
+    async def ipcheck(self, ctx, ip):
+        async with self.bot.session.get(f'http://ip-api.com/json/{ip}') as resp:
+            ip = await resp.json()
+        if ip["status"] == 'fail'
+            return await ctx.send('Invalid IP.')
+        await ctx.send(f'```json\n{json.dumps(ip, indent=4)}```')
 
 def setup(bot):
     bot.add_cog(Utilities(bot))
