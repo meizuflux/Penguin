@@ -262,7 +262,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(help='Buys a stock. BETA')
     async def buy(self, ctx, ticker: str = 'MSFT', amount = '1'):
         match = re.match(r'^[0-9]*$', amount)
-        await ctx.send(match["match"])
+        await ctx.send(match["1"])
         wallet, bank = await self.get_stats(self, ctx.author.id)
         ticker = ticker.upper()
         async with self.bot.session.get(f'https://ws-api.iextrading.com/1.0/tops/last?symbols={ticker}') as resp:
