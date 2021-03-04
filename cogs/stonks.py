@@ -171,7 +171,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         Previous Close: {data["pc"]}
         """
 
-        await ctx.send()
+        await ctx.send(stats)
 
 
 def setup(bot):
