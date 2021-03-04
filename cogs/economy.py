@@ -282,6 +282,8 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             if match and match[0] == 'max':
                 await ctx.send('maximum power')
                 amount = math.floor(wallet / price)
+                if amount = 0:
+                    return await ctx.send('You don\'t have enough money to buy a share.')
             else:
                 amount = 1
 
