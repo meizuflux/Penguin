@@ -7,14 +7,12 @@ import pathlib
 import platform
 import time
 from io import BytesIO
+
 import aiohttp
-import datetime
 import discord
-import asyncio
 import humanize
 import psutil
 from discord.ext import commands
-from discord.ext.commands.cooldowns import BucketType
 
 from utils.default import plural, qembed
 
@@ -90,7 +88,8 @@ class Help(commands.MinimalHelpCommand):
                 'useful': "<:bruhkitty:739613862302711840>",
                 'utilities': "⚙️",
                 "music": "<:bruhkitty:739613862302711840>",
-                "jishaku": "<:verycool:739613733474795520>"
+                "jishaku": "<:verycool:739613733474795520>",
+                "stocks": "<:stonks:817178220213567509>"
             }
             self.paginator.add_line(f'{emoji_dict[heading.lower()]}  **{heading}**')
             self.paginator.add_line(f'> `{joined}`')
