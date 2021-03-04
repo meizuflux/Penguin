@@ -5,6 +5,7 @@ import discord
 import humanize
 from asyncpg import DataError
 import humanize
+from prettytable import PrettyTable
 from discord.ext import commands
 
 from utils.default import qembed, plural
@@ -258,6 +259,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Buys a stock. BETA')
     async def buy(self, ctx, ticker: str = 'MSFT', amount: int = 1, ):
+        wallet, bank = await self.get_stats(self, ctx.author.id)
         ticker.upper()
         async with self.bot.session.get(f'https://ws-api.iextrading.com/1.0/tops/last?symbols={ticker}') as resp:
             data: list = await resp.json()
@@ -272,14 +274,42 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         total: int = amount * price
         humanized_total: str = humanize.intcomma(total)
 
+        if total > wallet:
+            return await ctx.send(f'You need **${amount - wallet}** more in order to purchase this stock.')
+
         share: str = plural("share(s)", amount)
         answer, message = await ctx.confirm(
             f'Confirm to buy **{amount}** {share} of **{ticker}** at **${humanized_price}**'
             f' per share for a total of **${humanized_total}**.')
         if answer:
+            if total > wallet:
+                return await message.edit(content=f'You need **${amount - wallet}** more in order to purchase this stock.')
+            sql = (
+                "INSERT INTO stocks (user_id, ticker, amount) VALUES ($1, $2, $3) "
+                "ON CONFLICT (ticker) "
+                "DO UPDATE SET amount = stocks.amount + $3"
+            )
+            values = (ctx.author.id, ticker, amount)
+            await bot.db.execute(sql, *values)
             await message.edit(content=f'Purchased **{amount}** {share} of **{ticker}** for **${humanized_total}**.')
         if not answer:
             await message.edit(content='Cancelled the transaction.')
+    
+    @commands.command(help='Views your stock portfolio')
+    async def portfolio(self, ctx, user: discord.Member=None):
+        if not user:
+            user = ctx.author
+        res = await self.bot.db.fetch("SELECT ticker, amount FROM stocks WHERE user_id = $1", user.id)
+        if len(res) == 0:
+            return await ctx.send(f'{user} has no stocks', allowed_mentions=discord.AllowedMentions().none())
+        headers = list(res[0].keys())
+        table = PrettyTable()
+        table.field_names = headers
+        for record in res:
+            lst = list(record)
+            table.add_row(lst)
+        msg = table.get_string()
+        await ctx.send(f"{user}\'s stocks:```\n{msg}\n```", allowed_mentions=discord.AllowedMentions().none())
 
 
 def setup(bot):
