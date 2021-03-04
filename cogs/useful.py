@@ -371,13 +371,13 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.max_concurrency(1, per=BucketType.guild, wait=False)
     @commands.cooldown(1, 60, commands.BucketType.guild)
     async def speedtest(self, ctx):
-        result = await asyncio.create_subprocess_shell("speedtest --format json",stdout=asyncio.subprocess.PIPE,stderr=asyncio.subprocess.PIPE)
+        results = await asyncio.create_subprocess_shell("speedtest --format json",stdout=asyncio.subprocess.PIPE,stderr=asyncio.subprocess.PIPE)
 
         em = discord.Embed(
             color=ctx.bot.embed_color, title="Running speedtest ... This may take a while! ⏱",
         )
         msg = await ctx.send(embed=em)
-        results = await self.bot.loop.run_in_executor(None, self._speedtest)
+
         if results[1]:
             em.color = discord.Color.dark_red()
             em.title = "Failed to get a speedtest result."
