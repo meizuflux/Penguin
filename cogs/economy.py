@@ -344,7 +344,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
                 query = await ctx.bot.db.execute("UPDATE stocks SET amount = stocks.amount - $3 WHERE user_id = $1 AND ticker = $2", ctx.author.id, ticker, amount)
                 if query == 'UPDATE 0':
                     return await message.edit(content="You don't any stock.")
-                await ctx.bot.execute('DELETE FROM stocks WHERE amount = 0')
+                await ctx.bot.db.execute('DELETE FROM stocks WHERE amount = 0')
                 await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE userid = $2", wallet + total, ctx.author.id)
                 return await message.edit(content=f'Sold **{amount}** {share} of **{ticker}** for **${humanized_total}**.')
             except CheckViolationError:
