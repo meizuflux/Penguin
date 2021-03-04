@@ -274,9 +274,6 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         total: int = amount * price
         humanized_total: str = humanize.intcomma(total)
 
-        if total > wallet:
-            return await ctx.send(f'You need **${amount - wallet}** more in order to purchase this stock.')
-
         share: str = plural("share(s)", amount)
         answer, message = await ctx.confirm(
             f'Confirm to buy **{amount}** {share} of **{ticker}** at **${humanized_price}**'
