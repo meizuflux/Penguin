@@ -288,7 +288,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
                 "DO UPDATE SET amount = stocks.amount + $3"
             )
             values = (ctx.author.id, ticker, amount)
-            await bot.db.execute(sql, *values)
+            await self.bot.db.execute(sql, *values)
             await message.edit(content=f'Purchased **{amount}** {share} of **{ticker}** for **${humanized_total}**.')
         if not answer:
             await message.edit(content='Cancelled the transaction.')
