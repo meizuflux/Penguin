@@ -311,6 +311,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         if not user:
             user = ctx.author
         res = await self.bot.db.fetch("SELECT ticker, amount FROM stocks WHERE user_id = $1", user.id)
+        await ctx.send(res)
         if len(res) == 0:
             return await ctx.send(f'{user} has no stocks', allowed_mentions=discord.AllowedMentions().none())
         async with self.bot.session.get(f'https://ws-api.iextrading.com/1.0/tops/last?symbols={",".join([stock["ticker"] for stock in res])}') as resp:
