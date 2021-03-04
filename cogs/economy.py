@@ -263,7 +263,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
     async def buy(self, ctx, ticker: str = 'MSFT', amount = '1'):
         match = re.search(r'^[0-9]*$', amount)
         match = re.search(r'^[a-zA-Z]*$', amount)
-        if match[0] = 'max':
+        if match[0] == 'max':
             await ctx.send('maximum power')
         wallet, bank = await self.get_stats(self, ctx.author.id)
         ticker = ticker.upper()
