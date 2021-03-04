@@ -368,8 +368,8 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         await ctx.send(json.dumps(hmm, indent=4))
 
     @commands.command()
-    @commands.max_concurrency(number, per=BucketType.guild, wait=False)
-    @commands.cooldown(1, 60, commands.BucketType.user)
+    @commands.max_concurrency(1, per=BucketType.guild, wait=False)
+    @commands.cooldown(1, 60, commands.BucketType.guild)
     async def speedtest(self, ctx):
         result = await asyncio.create_subprocess_shell("speedtest --format json",stdout=asyncio.subprocess.PIPE,stderr=asyncio.subprocess.PIPE)
 
