@@ -32,7 +32,7 @@ class Chuck(commands.Bot):
         self._BotBase__cogs = commands.core._CaseInsensitiveDict()
         self.author_id = 809587169520910346
         self.session = aiohttp.ClientSession()
-        self.embed_color = discord.Color.green() #0x9c5cb4
+        self.embed_color = discord.Color.green()  # 0x9c5cb4
         self.prefixes = {}
         self.command_list = []
         self.deleted_messages = collections.defaultdict(list)
@@ -89,13 +89,11 @@ class Chuck(commands.Bot):
             self.db = pool_pg
 
             extensions = ['jishaku', 'cogs.useful', 'cogs.owner', 'cogs.prefixes', 'cogs.economy', 'cogs.errorhandler',
-                          'cogs.fun', 'cogs.utilities', 'cogs.polaroid_manipulation', 'cogs.music',]
+                          'cogs.fun', 'cogs.utilities', 'cogs.polaroid_manipulation', 'cogs.music', ]
             for extension in extensions:
                 self.load_extension(extension)
 
             self.create_command_list()
-
-
 
             self.run(self.get_config('token'))
 
@@ -136,7 +134,7 @@ class Chuck(commands.Bot):
         """Override process_commands to call typing every invoke"""
         if message.author.bot:
             return
-            
+
         ctx = await self.get_context(message)
         if ctx.valid:
             await ctx.trigger_typing()
@@ -175,9 +173,9 @@ bot = Chuck()
 bot.loop.create_task(bot.create_tables())
 bot.loop.create_task(bot.create_cache())
 
-os.environ["JISHAKU_NO_UNDERSCORE"] = "True"
-os.environ["JISHAKU_NO_DM_TRACEBACK"] = "True"
-os.environ["JISHAKU_HIDE"] = "True"
+os.environ['JISHAKU_NO_UNDERSCORE'] = 'True'
+os.environ['JISHAKU_NO_DM_TRACEBACK'] = 'True'
+os.environ['JISHAKU_HIDE'] = 'True'
 
 
 @bot.event
