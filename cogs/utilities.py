@@ -261,7 +261,7 @@ class Utilities(commands.Cog):
 
     @commands.command(aliases=['ip', 'iplookup'])
     async def ipcheck(self, ctx, ip):
-        async with self.bot.session.get(f'http://ip-api.com/json/{ip}') as resp:
+        async with self.bot.session.get(f'http://ip-api.com/json/{ip}?fields=16969727') as resp:
             ip = await resp.json()
         if ip["status"] == 'fail':
             return await ctx.send(f'Invalid IP. Error message:\n`{ip["message"]}`')
