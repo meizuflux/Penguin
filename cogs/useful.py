@@ -371,8 +371,8 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.max_concurrency(1, per=BucketType.guild, wait=False)
     @commands.cooldown(1, 60, commands.BucketType.guild)
     async def speedtest(self, ctx):
-        results = await asyncio.create_subprocess_shell("speedtest --format json",stdout=asyncio.subprocess.PIPE,stderr=asyncio.subprocess.PIPE)
-
+        resp = await asyncio.create_subprocess_shell("speedtest --format json",stdout=asyncio.subprocess.PIPE,stderr=asyncio.subprocess.PIPE)
+        results = resp.communicate()
         em = discord.Embed(
             color=ctx.bot.embed_color, title="Running speedtest ... This may take a while! ⏱",
         )
