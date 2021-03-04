@@ -261,10 +261,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Buys a stock. BETA')
     async def buy(self, ctx, ticker: str = 'MSFT', amount = '1'):
-        match = re.search(r'^[0-9]*$', amount)
-        match = re.search(r'^[a-zA-Z]*$', amount)
-        if match[0] == 'max':
-            await ctx.send('maximum power')
+
         wallet, bank = await self.get_stats(self, ctx.author.id)
         ticker = ticker.upper()
         async with self.bot.session.get(f'https://ws-api.iextrading.com/1.0/tops/last?symbols={ticker}') as resp:
@@ -276,6 +273,15 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         stock: dict = data[0]
         price: int = math.floor(stock["price"])
         humanized_price: str = humanize.intcomma(price)
+
+        match = re.search(r'^[a-zA-Z]*$', amount)
+        if match[0].lower() == 'max':
+            await ctx.send('maximum power')
+            amount = math.floor(wallet / price)
+    
+        match = re.search(r'^[0-9]*$', amount)
+        if match:
+            amount = int(match[0])
 
         total: int = amount * price
         humanized_total: str = humanize.intcomma(total)
