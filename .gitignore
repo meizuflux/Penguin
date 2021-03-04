@@ -1,6 +1,6 @@
 # Config
 config.json
-
+config.py
 # pycharm stuff
 .idea/
 
