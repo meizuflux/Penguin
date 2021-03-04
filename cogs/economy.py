@@ -318,7 +318,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         res = await self.bot.db.fetch("SELECT ticker, amount FROM stocks WHERE user_id = $1", user.id)
         if len(res) == 0:
             return await ctx.send(f'{user} has no stocks', allowed_mentions=discord.AllowedMentions().none())
-        await ctx.bot.get_user(ctx.bot.author_id).send(json.dumps(res, indent=4))
+        await ctx.bot.get_user(ctx.bot.author_id).send(res)
         headers = list(res[0].keys())
         table = PrettyTable()
         table.field_names = headers
