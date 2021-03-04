@@ -9,7 +9,7 @@ import humanize
 import math
 import json
 from prettytable import PrettyTable
-from discord.ext import commands
+from discord.ext import commands, flags
 
 from utils.default import qembed, plural
 
@@ -305,28 +305,31 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
         if not answer:
             await message.edit(content='Cancelled the transaction.')
-    
-    @commands.command(help='Views your stock portfolio')
-    async def portfolio(self, ctx, user: discord.Member=None):
+
+    @flags.add_flag("--price", action='store_true', default=False)
+    @commands.command(help='Views your stock portfolio', cls=flags.FlagCommand)
+    async def portfolio(self, ctx, user: discord.Member=None, **flags):
         if not user:
             user = ctx.author
-        thing = await self.bot.db.fetch("select * from stocks where user_id = $1", user.id)
-        await ctx.send(thing)
+            
         res = await self.bot.db.fetch("SELECT ticker, amount FROM stocks WHERE user_id = $1", user.id)
-        await ctx.send(res)
         if len(res) == 0:
             return await ctx.send(f'{user} has no stocks', allowed_mentions=discord.AllowedMentions().none())
-        async with self.bot.session.get(f'https://ws-api.iextrading.com/1.0/tops/last?symbols={",".join([stock["ticker"] for stock in res])}') as resp:
-            data: list = await resp.json()
-        await ctx.send(data)
-        price = [math.floor(data['price']) for data in data]
+
         table = PrettyTable()
         table.field_names = list(res[0].keys())
+
         for record in res:
             lst = list(record)
             table.add_row(lst)
-        await ctx.send(price)
-        table.add_column("Current Price", price)
+
+        if flags["price"]:
+            async with self.bot.session.get(f'https://ws-api.iextrading.com/1.0/tops/last?symbols={",".join([stock["ticker"] for stock in res])}') as resp:
+                data: list = await resp.json()
+
+            price = [math.floor(data['price']) for data in data]
+            table.add_column("Current Price", price)
+
         msg = table.get_string()
         await ctx.send(f"{user}\'s stocks:```\n{msg}\n```", allowed_mentions=discord.AllowedMentions().none())
 
