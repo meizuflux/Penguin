@@ -299,7 +299,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             if total > wallet:
                 return await message.edit(content=f'You need **${total - wallet}** more in order to purchase this stock.')
             values = (ctx.author.id, ticker, amount)
-            await bot.db.execute("INSERT INTO stocks (user_id, ticker, amount) VALUES ($1, $2, $3) ON CONFLICT (ticker) DO UPDATE SET amount = stocks.amount + $3", *values)
+            await ctx.bot.db.execute("INSERT INTO stocks (user_id, ticker, amount) VALUES ($1, $2, $3) ON CONFLICT (ticker) DO UPDATE SET amount = stocks.amount + $3", *values)
             await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE userid = $2", wallet - total, ctx.author.id)
             await message.edit(content=f'Purchased **{amount}** {share} of **{ticker}** for **${humanized_total}**.')
 
