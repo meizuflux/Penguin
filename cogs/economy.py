@@ -272,7 +272,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         humanized_price: str = humanize.intcomma(price)
 
         total: int = amount * price
-        await ctx.send(str(total) + str(wallet))
+        await ctx.send(f'{str(total)} + {str(wallet)}')
         humanized_total: str = humanize.intcomma(total)
 
         share: str = plural("share(s)", amount)
