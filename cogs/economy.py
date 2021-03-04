@@ -306,9 +306,8 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         if not answer:
             await message.edit(content='Cancelled the transaction.')
 
-    @flags.add_flag("--price", action='store_true', default=False)
-    @commands.command(help='Views your stock portfolio', cls=flags.FlagCommand)
-    async def portfolio(self, ctx, user: discord.Member=None, **flags):
+    @commands.command(help='Views your stock portfolio')
+    async def portfolio(self, ctx, user: discord.Member=None):
         if not user:
             user = ctx.author
             
