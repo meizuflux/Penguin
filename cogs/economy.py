@@ -311,14 +311,15 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         wallet, bank = await self.get_stats(self, ctx.author.id)
         ticker = ticker.upper()
 
-        async with self.bot.session.get(f'https://ws-api.iextrading.com/1.0/tops/last?symbols={ticker}') as resp:
-            data: list = await resp.json()
+        async with self.bot.session.get(f'https://finnhub.io/api/v1/quote?symbol={ticker}&token={self.bot.config.finnhub}') as resp:
+            data: dict = await resp.json()
 
         if not data:
             return await ctx.send('Yeah so thats not a valid stock lmao')
 
-        stock: dict = data[0]
-        price: int = math.floor(stock["price"])
+        await ctx.send(data)
+        stock: dict = data
+        price: int = math.floor(stock["c"])
         humanized_price: str = humanize.intcomma(price)
 
         match = re.search(r'^[0-9]*$', str(amount))
