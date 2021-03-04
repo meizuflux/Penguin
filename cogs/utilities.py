@@ -263,7 +263,7 @@ class Utilities(commands.Cog):
     async def ipcheck(self, ctx, ip):
         async with self.bot.session.get(f'http://ip-api.com/json/{ip}') as resp:
             ip = await resp.json()
-        if ip["status"] == 'fail'
+        if ip["status"] == 'fail':
             return await ctx.send('Invalid IP.')
         await ctx.send(f'```json\n{json.dumps(ip, indent=4)}```')
 
