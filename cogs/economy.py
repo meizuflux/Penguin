@@ -319,7 +319,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         if len(res) == 0:
             return await ctx.send(f'{user} has no stocks', allowed_mentions=discord.AllowedMentions().none())
         price = [res["ticker"] for res in res]
-        async with self.bot.session.get(f'https://ws-api.iextrading.com/1.0/tops/last?symbols={",".join[price]}') as resp:
+        async with self.bot.session.get(f'https://ws-api.iextrading.com/1.0/tops/last?symbols={",".join(price)}') as resp:
             data: list = await resp.json()
         await ctx.send(data)
         price = [data['price'] for data in data]
