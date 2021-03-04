@@ -279,6 +279,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         answer, message = await ctx.confirm(
             f'Confirm to buy **{amount}** {share} of **{ticker}** at **${humanized_price}**'
             f' per share for a total of **${humanized_total}**.')
+
         if answer:
             if total > wallet:
                 return await message.edit(content=f'You need **${total - wallet}** more in order to purchase this stock.')
@@ -289,7 +290,9 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             )
             values = (ctx.author.id, ticker, amount)
             await self.bot.db.execute(sql, *values)
+            await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE userid = $2", wallet - total, ctx.author.id)
             await message.edit(content=f'Purchased **{amount}** {share} of **{ticker}** for **${humanized_total}**.')
+
         if not answer:
             await message.edit(content='Cancelled the transaction.')
     
