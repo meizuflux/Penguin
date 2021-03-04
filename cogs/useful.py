@@ -37,7 +37,7 @@ class ChuckContext(commands.Context):
                                                      timeout=15,
                                                      check=terms)
         except asyncio.TimeoutError:
-            await qembed(self, 'You did not react in time.')
+            return False, message
         else:
             if reaction.emoji == '✅':
                 return True, message
