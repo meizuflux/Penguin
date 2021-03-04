@@ -3,7 +3,7 @@ import typing
 
 import discord
 import humanize
-from asyncpg import DataError
+from asyncpg import DataError, CheckViolationError
 import re
 import humanize
 import math
@@ -327,9 +327,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         else:
             match = re.search(r'^[a-zA-Z]*$', amount)
             if match and match[0] == 'max':
-                amount = math.floor(wallet / price)
-                if amount == 0:
-                    return await ctx.send('You don\'t have enough money to buy a share.')
+                amount = wait ctx.bot.fetchval("SELECT amount FROM stocks WHERE user_id = $1 AND ticker = $2", ctx.author.id, ticker)
             else:
                 amount = 1
 
@@ -338,19 +336,21 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
         share: str = plural("share(s)", amount)
         answer, message = await ctx.confirm(
-            f'Confirm to buy **{amount}** {share} of **{ticker}** at **${humanized_price}**'
+            f'Confirm to sell **{amount}** {share} of **{ticker}** at **${humanized_price}**'
             f' per share for a total of **${humanized_total}**.')
 
         if answer:
-            if total > wallet:
-                return await message.edit(content=f'You need **${total - wallet}** more in order to purchase this stock.')
-            values = (ctx.author.id, ticker, amount)
-            await ctx.bot.db.execute("INSERT INTO stocks(user_id, ticker, amount) VALUES($1, $2, $3) ON CONFLICT (user_id, ticker) DO UPDATE SET amount = stocks.amount + $3", *values)
-            await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE userid = $2", wallet - total, ctx.author.id)
-            await message.edit(content=f'Purchased **{amount}** {share} of **{ticker}** for **${humanized_total}**.')
-
-        if not answer:
+            try:
+                query = await ctx.bot.db.execute("UPDATE stocks SET amount = stocks.amount - $3 WHERE user_id = $1 AND ticker = $2", ctx.author.id, ticker, amount)
+                if query == 'UPDATE 0':
+                    return await message.edit(content="You don't any stock.")
+                await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE userid = $2", wallet + total, ctx.author.id)
+                return await message.edit(content=f'Sold **{amount}** {share} of **{ticker}** for **${humanized_total}**.')
+            except CheckViolationError:
+                return await message.edit("You don't have that much stock")
+        else:
             await message.edit(content='Cancelled the transaction.')
+        
 
     @commands.command(help='Views your stock portfolio')
     async def portfolio(self, ctx, user: discord.Member=None):
