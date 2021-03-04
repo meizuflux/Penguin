@@ -306,6 +306,52 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         if not answer:
             await message.edit(content='Cancelled the transaction.')
 
+    @commands.is_owner()
+    @commands.command(help='Sells a stock. BETA', hidden=True)
+    async def sell(self, ctx, ticker: str = 'MSFT', amount = '1'):
+        wallet, bank = await self.get_stats(self, ctx.author.id)
+        ticker = ticker.upper()
+        async with self.bot.session.get(f'https://ws-api.iextrading.com/1.0/tops/last?symbols={ticker}') as resp:
+            data: list = await resp.json()
+
+        if not data:
+            return await ctx.send('Yeah so thats not a valid stock lmao')
+
+        stock: dict = data[0]
+        price: int = math.floor(stock["price"])
+        humanized_price: str = humanize.intcomma(price)
+
+        match = re.search(r'^[0-9]*$', str(amount))
+        if match:
+            amount = int(match[0])
+        else:
+            match = re.search(r'^[a-zA-Z]*$', amount)
+            if match and match[0] == 'max':
+                amount = math.floor(wallet / price)
+                if amount == 0:
+                    return await ctx.send('You don\'t have enough money to buy a share.')
+            else:
+                amount = 1
+
+        total: int = amount * price
+        humanized_total: str = humanize.intcomma(total)
+
+        share: str = plural("share(s)", amount)
+        answer, message = await ctx.confirm(
+            f'Confirm to buy **{amount}** {share} of **{ticker}** at **${humanized_price}**'
+            f' per share for a total of **${humanized_total}**.')
+
+        if answer:
+            if total > wallet:
+                return await message.edit(content=f'You need **${total - wallet}** more in order to purchase this stock.')
+            values = (ctx.author.id, ticker, amount)
+            await ctx.bot.db.execute("INSERT INTO stocks(user_id, ticker, amount) VALUES($1, $2, $3) ON CONFLICT (user_id, ticker) DO UPDATE SET amount = stocks.amount + $3", *values)
+            await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE userid = $2", wallet - total, ctx.author.id)
+            await message.edit(content=f'Purchased **{amount}** {share} of **{ticker}** for **${humanized_total}**.')
+
+        if not answer:
+            await message.edit(content='Cancelled the transaction.')
+
     @commands.command(help='Views your stock portfolio')
     async def portfolio(self, ctx, user: discord.Member=None):
         if not user:
@@ -321,7 +367,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         for record in res:
             lst = list(record)
             table.add_row(lst)
-            
+
         msg = table.get_string()
         await ctx.send(f"{user}\'s stocks:```\n{msg}\n```", allowed_mentions=discord.AllowedMentions().none())
 
