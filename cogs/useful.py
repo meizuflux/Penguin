@@ -217,6 +217,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         bot.help_command = Help(command_attrs=dict(hidden=False, aliases=['halp', 'h', 'help_command'],
                                                    help='Literally shows this message. Jesus, do you really need this?'))
         bot.help_command.cog = self
+        self.chuck_context = ChuckContext
 
     def cog_unload(self):
         self.bot.help_command = self._original_help_command
