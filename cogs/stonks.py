@@ -157,6 +157,22 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         msg = table.get_string()
         await ctx.send(f"{user}\'s stocks:```\n{msg}\n```", allowed_mentions=discord.AllowedMentions().none())
 
+    @commands.command(help='Looks up a stocks price.', aliases=['stock_lookup', 'check'])
+    async def lookup(self, ctx, ticker: str):
+        ticker = ticker.upper()
+
+        async with self.bot.session.get(f'{FINNHUB_URL}/quote?symbol={ticker}&token={self.finnhub}') as r:
+            data: dict = await r.json()
+        stats = f"""```yaml
+        Current: {data["c"]}
+        Daily High: {data["h"]}
+        Daily Low: {data["l"]}
+        Opening: {data["o"]}
+        Previous Close: {data["pc"]}
+        """
+
+        await ctx.send()
+
 
 def setup(bot):
     bot.add_cog(Stocks(bot))
