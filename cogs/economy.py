@@ -4,10 +4,10 @@ import typing
 import discord
 import humanize
 from asyncpg import DataError
-import json
+import humanize
 from discord.ext import commands
 
-from utils.default import qembed
+from utils.default import qembed, plural
 
 
 class Economy(commands.Cog, command_attrs=dict(hidden=False)):
@@ -264,10 +264,17 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         if not data:
             return await ctx.send('Yeah so thats not a valid stock lmao')
         stock = data[0]
-        answer, message = await ctx.confirm(f'Confirm to buy {amount} share of {ticker} at {stock["price"]}'
-                                            f' per share for a total of ${amount * stock["price"]}.')
+        price = stock["price"]
+        humanized_price = humanize.intcomma(price)
+        total = amount * price
+        humanized_total = humanize.intcomma(total)
+        share = plural("share(s)", amount)
+        answer, message = await ctx.confirm(f'Confirm to buy **{amount}** {share} of **{ticker}** at **{humanized_price}**'
+                                            f' per share for a total of **${humanized_total}**.')
         if answer:
-            await message.edit(content=f'Purchased {amount} share of {ticker} for ${amount * stock["price"]}.')
+            await message.edit(content=f'Purchased **{amount}** {share} of **{ticker}** for **${humanized_total}**.')
+        if not answer:
+            await message.edit(content='Cancelled the transaction.')
 
 
 
