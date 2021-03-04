@@ -90,7 +90,7 @@ class Chuck(commands.Bot):
             self.db = pool_pg
 
             extensions = ['jishaku', 'cogs.useful', 'cogs.owner', 'cogs.prefixes', 'cogs.economy', 'cogs.errorhandler',
-                          'cogs.fun', 'cogs.utilities', 'cogs.polaroid_manipulation', 'cogs.music', ]
+                          'cogs.fun', 'cogs.utilities', 'cogs.polaroid_manipulation', 'cogs.music', 'cogs.stonks']
             for extension in extensions:
                 self.load_extension(extension)
 
