@@ -8,10 +8,13 @@ import platform
 import time
 from io import BytesIO
 import aiohttp
+import datetime
 import discord
+import asyncio
 import humanize
 import psutil
 from discord.ext import commands
+from discord.ext.commands.cooldowns import BucketType
 
 from utils.default import plural, qembed
 
@@ -364,6 +367,41 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         hmm.replace("'", '"')
         await ctx.send(json.dumps(hmm, indent=4))
 
+    @commands.command()
+    @commands.max_concurrency(number, per=BucketType.guild, *, wait=False)
+    @commands.cooldown(1, 60, commands.BucketType.user)
+    async def speedtest(self, ctx):
+        result = await asyncio.create_subprocess_shell("speedtest --format json",stdout=asyncio.subprocess.PIPE,stderr=asyncio.subprocess.PIPE)
+
+        em = discord.Embed(
+            color=await ctx.embed_colour(), title="Running speedtest ... This may take a while! ⏱",
+        )
+        msg = await ctx.send(embed=em)
+        results = await self.bot.loop.run_in_executor(None, self._speedtest)
+        if results[1]:
+            em.color = discord.Color.dark_red()
+            em.title = "Failed to get a speedtest result."
+            em.description = (
+                "Please make sure to follow the installation instructions at: https://www.speedtest.net/apps/cli\n"
+                "Don't forget to uninstall old speedtest-cli package by using `sudo apt-get remove speedtest-cli` and `pip uninstall speedtest-cli`.\n"
+                "After this done, you will have to run a first speedtest in console by using `speedtest --accept-license --accept-gdpr` command, to agreed their terms."
+            )
+            return await msg.edit(embed=em)
+        result = json.loads(results[0])
+        embed = discord.Embed(
+            color=0x10A714,
+            title="Your speedtest results are:",
+            description=
+                    f"Server   : {result['server']['name']} - {result['server']['location']}\n"
+                    f"ISP      : {result.get('isp', 'Unknown')}\n"
+                    f"Latency  : {round(result['ping']['latency'], 2)}ms ({round(result['ping']['jitter'], 2)}ms jitter)\n"
+                    f"Download : {naturalsize(result['download']['bandwidth'] * 8)}ps ({naturalsize(result['download']['bytes'])} used)\n"
+                    f"Upload   : {naturalsize(result['upload']['bandwidth'] * 8)}ps ({naturalsize(result['upload']['bytes'])} used)\n"
+                    f"Packet loss: {round(float(result.get('packetLoss', 0)), 2)}%",
+            )
+        embed.set_image(url=f"{result['result']['url']}.png")
+        embed.set_footer(text=datetime.now().strftime("Server time: %d-%m-%Y  %H:%M:%S"))
+        await msg.edit(embed=embed)
 
 
 def setup(bot):
