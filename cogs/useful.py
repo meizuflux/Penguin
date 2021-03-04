@@ -12,9 +12,8 @@ import discord
 import humanize
 import psutil
 from discord.ext import commands
-from jishaku.paginators import PaginatorInterface, WrappedPaginator
 
-from utils.default import escape, plural, qembed
+from utils.default import plural, qembed
 
 
 class ChuckContext(commands.Context):
