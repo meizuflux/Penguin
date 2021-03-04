@@ -6,6 +6,7 @@ import humanize
 from asyncpg import DataError, CheckViolationError
 import re
 import humanize
+import time
 import math
 import json
 from prettytable import PrettyTable
@@ -306,13 +307,15 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         if not answer:
             await message.edit(content='Cancelled the transaction.')
 
-    @commands.is_owner()
     @commands.command(help='Sells a stock. BETA', hidden=True)
     async def sell(self, ctx, ticker: str = 'MSFT', amount = '1'):
         wallet, bank = await self.get_stats(self, ctx.author.id)
         ticker = ticker.upper()
+        import time
+        start = time.perf_count
         async with self.bot.session.get(f'https://ws-api.iextrading.com/1.0/tops/last?symbols={ticker}') as resp:
             data: list = await resp.json()
+        return time.perf_counter() - start
 
         if not data:
             return await ctx.send('Yeah so thats not a valid stock lmao')
