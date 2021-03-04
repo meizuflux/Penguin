@@ -310,6 +310,8 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
     async def portfolio(self, ctx, user: discord.Member=None):
         if not user:
             user = ctx.author
+        thing = await self.bot.db.fetchrow("select * from stocks where user_id = $1", user.id)
+        await ctx.send(thing)
         res = await self.bot.db.fetch("SELECT ticker, amount FROM stocks WHERE user_id = $1", user.id)
         await ctx.send(res)
         if len(res) == 0:
