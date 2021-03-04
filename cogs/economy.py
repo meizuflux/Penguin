@@ -327,7 +327,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         else:
             match = re.search(r'^[a-zA-Z]*$', amount)
             if match and match[0] == 'max':
-                amount = await ctx.bot.fetchval("SELECT amount FROM stocks WHERE user_id = $1 AND ticker = $2", ctx.author.id, ticker)
+                amount = await ctx.bot.db.fetchval("SELECT amount FROM stocks WHERE user_id = $1 AND ticker = $2", ctx.author.id, ticker)
             else:
                 amount = 1
 
