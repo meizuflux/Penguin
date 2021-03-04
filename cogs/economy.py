@@ -275,7 +275,8 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         humanized_price: str = humanize.intcomma(price)
 
         match = re.search(r'^[a-zA-Z]*$', amount)
-        if match[0].lower() == 'max':
+
+        if match and match[0].lower() == 'max':
             await ctx.send('maximum power')
             amount = math.floor(wallet / price)
     
