@@ -5,6 +5,7 @@ import discord
 import humanize
 from asyncpg import DataError
 import humanize
+import math
 from prettytable import PrettyTable
 from discord.ext import commands
 
@@ -268,11 +269,10 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             return await ctx.send('Yeah so thats not a valid stock lmao')
 
         stock: dict = data[0]
-        price: int = stock["price"]
+        price: int = math.floor(stock["price"])
         humanized_price: str = humanize.intcomma(price)
 
         total: int = amount * price
-        await ctx.send(f'{str(total)} + {str(wallet)}')
         humanized_total: str = humanize.intcomma(total)
 
         share: str = plural("share(s)", amount)
@@ -281,7 +281,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             f' per share for a total of **${humanized_total}**.')
         if answer:
             if total > wallet:
-                return await message.edit(content=f'You need **${amount - wallet}** more in order to purchase this stock.')
+                return await message.edit(content=f'You need **${total - wallet}** more in order to purchase this stock.')
             sql = (
                 "INSERT INTO stocks (user_id, ticker, amount) VALUES ($1, $2, $3) "
                 "ON CONFLICT (ticker) "
