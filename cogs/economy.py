@@ -257,25 +257,29 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
                      f'Reset the command cooldown for the command `{command}` and subtracted $400 from your account.')
 
     @commands.command(help='Buys a stock. BETA')
-    async def buy(self, ctx,  ticker: str = 'MSFT', amount: int = 1,):
+    async def buy(self, ctx, ticker: str = 'MSFT', amount: int = 1, ):
         ticker.upper()
         async with self.bot.session.get(f'https://ws-api.iextrading.com/1.0/tops/last?symbols={ticker}') as resp:
-            data = await resp.json()
+            data: list = await resp.json()
+
         if not data:
             return await ctx.send('Yeah so thats not a valid stock lmao')
-        stock = data[0]
-        price = stock["price"]
-        humanized_price = humanize.intcomma(price)
-        total = amount * price
-        humanized_total = humanize.intcomma(total)
-        share = plural("share(s)", amount)
-        answer, message = await ctx.confirm(f'Confirm to buy **{amount}** {share} of **{ticker}** at **{humanized_price}**'
-                                            f' per share for a total of **${humanized_total}**.')
+
+        stock: dict = data[0]
+        price: int = stock["price"]
+        humanized_price: str = humanize.intcomma(price)
+
+        total: int = amount * price
+        humanized_total: str = humanize.intcomma(total)
+
+        share: str = plural("share(s)", amount)
+        answer, message = await ctx.confirm(
+            f'Confirm to buy **{amount}** {share} of **{ticker}** at **${humanized_price}**'
+            f' per share for a total of **${humanized_total}**.')
         if answer:
             await message.edit(content=f'Purchased **{amount}** {share} of **{ticker}** for **${humanized_total}**.')
         if not answer:
             await message.edit(content='Cancelled the transaction.')
-
 
 
 def setup(bot):
