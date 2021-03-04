@@ -344,7 +344,6 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
         res = await self.bot.session.post(url, headers=headers, data=data)
         js = await res.json()
-        await ctx.send(js)
 
         level = js["attributeScores"]["TOXICITY"]["summaryScore"]["value"] * 100
         await ctx.send(f"`{text}` is `{level:.2f}%` likely to be toxic.")
