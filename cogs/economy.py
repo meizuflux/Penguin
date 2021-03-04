@@ -259,7 +259,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
                      f'Reset the command cooldown for the command `{command}` and subtracted $400 from your account.')
 
     @commands.command(help='Buys a stock. BETA')
-    async def buy(self, ctx, ticker: str = 'MSFT', amount = 1, ):
+    async def buy(self, ctx, ticker: str = 'MSFT', amount):
         await ctx.author.send(type(amount))
         wallet, bank = await self.get_stats(self, ctx.author.id)
         ticker = ticker.upper()
