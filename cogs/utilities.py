@@ -264,7 +264,7 @@ class Utilities(commands.Cog):
         async with self.bot.session.get(f'http://ip-api.com/json/{ip}') as resp:
             ip = await resp.json()
         if ip["status"] == 'fail':
-            return await ctx.send('Invalid IP.')
+            return await ctx.send(f'Invalid IP. Error message:\n`{ip["message"]}`')
         await ctx.send(f'```json\n{json.dumps(ip, indent=4)}```')
 
 def setup(bot):
