@@ -10,7 +10,7 @@ from prettytable import PrettyTable
 FINNHUB_URL = "https://finnhub.io/api/v1/"
 
 
-class Stocks(commands.Cog, command_attrs=dict(hidden=False, aliases=['Stonks'])):
+class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
     def __init__(self, bot):
         self.bot = bot
         self.finnhub = self.bot.config.finnhub
