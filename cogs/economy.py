@@ -274,15 +274,14 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         price: int = math.floor(stock["price"])
         humanized_price: str = humanize.intcomma(price)
 
-        match = re.search(r'^[a-zA-Z]*$', amount)
+        match = re.search(r'^[0-9]*$', str(amount))
+        if match:
+            amount = int(match[0])
 
+        match = re.search(r'^[a-zA-Z]*$', amount)
         if match and match[0] == 'max':
             await ctx.send('maximum power')
             amount = math.floor(wallet / price)
-    
-        match = re.search(r'^[0-9]*$', amount)
-        if match:
-            amount = int(match[0])
 
         total: int = amount * price
         humanized_total: str = humanize.intcomma(total)
