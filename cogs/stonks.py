@@ -168,7 +168,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         Daily High: {data["h"]}
         Daily Low: {data["l"]}
         Opening: {data["o"]}
-        Previous Close: {data["pc"]}
+        Previous Close: {data["pc"]}```
         """
 
         await ctx.send(stats)
