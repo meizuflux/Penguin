@@ -321,14 +321,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         for record in res:
             lst = list(record)
             table.add_row(lst)
-
-        if flags["price"]:
-            async with self.bot.session.get(f'https://ws-api.iextrading.com/1.0/tops/last?symbols={",".join([stock["ticker"] for stock in res])}') as resp:
-                data: list = await resp.json()
-
-            price = [math.floor(data['price']) for data in data]
-            table.add_column("Current Price", price)
-
+            
         msg = table.get_string()
         await ctx.send(f"{user}\'s stocks:```\n{msg}\n```", allowed_mentions=discord.AllowedMentions().none())
 
