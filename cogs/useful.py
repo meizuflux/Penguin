@@ -374,7 +374,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         result = await asyncio.create_subprocess_shell("speedtest --format json",stdout=asyncio.subprocess.PIPE,stderr=asyncio.subprocess.PIPE)
 
         em = discord.Embed(
-            color=await ctx.bot.embed_colour, title="Running speedtest ... This may take a while! ⏱",
+            color=await ctx.bot.embed_color, title="Running speedtest ... This may take a while! ⏱",
         )
         msg = await ctx.send(embed=em)
         results = await self.bot.loop.run_in_executor(None, self._speedtest)
