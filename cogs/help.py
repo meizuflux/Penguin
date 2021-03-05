@@ -100,8 +100,8 @@ class CustomHelp(commands.MinimalHelpCommand):
         to_iterate = itertools.groupby(filtered, key=get_category)
 
         for category, commands in to_iterate:
-            commands = sorted(commands, key=lambda c: c.name)
-            self.add_bot_commands_formatting(commands, category)
+            #commands = sorted(commands, key=lambda c: c.name)
+            self.add_bot_commands_formatting(list(commands), category)
 
         self.paginator.add_line()
         self.paginator.add_line(self.get_ending_note())
