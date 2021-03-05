@@ -63,7 +63,7 @@ class ChuckContext(commands.Context):
         except asyncio.TimeoutError:
             pass
 
-    async def embed(self, *args, **kwargs):
+    def embed(self, *args, **kwargs):
         embed = discord.Embed(*args, **kwargs)
         embed.color = discord.Color.dark_theme
         return embed
