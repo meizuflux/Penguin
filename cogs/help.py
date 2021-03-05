@@ -121,7 +121,7 @@ class CustomHelp(commands.MinimalHelpCommand):
             self.paginator.add_line(note, empty=True)
 
         filtered = await self.filter_commands(cog.get_commands(), sort=False)
-        await self.content.send(filtered)
+        await self.context.send(filtered)
         if filtered:
             self.paginator.add_line('**%s %s**' % (cog.qualified_name, self.commands_heading))
             if cog.description:
