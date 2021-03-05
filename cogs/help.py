@@ -43,7 +43,8 @@ class CustomHelp(commands.MinimalHelpCommand):
                 'utilities': "⚙️",
                 "music": "<:bruhkitty:739613862302711840>",
                 "jishaku": "<:verycool:739613733474795520>",
-                "stocks": "<:stonks:817178220213567509>"
+                "stocks": "<:stonks:817178220213567509>",
+                "helpful": "idk"
             }
             self.paginator.add_line(f'{emoji_dict[heading.lower()]}  **{heading}**')
             self.paginator.add_line(f'> `{joined}`')
