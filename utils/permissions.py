@@ -16,7 +16,7 @@ def mng_msg():
 
 def mng_gld():
     def predicate(ctx):
-        if ctx.author.id == ctx.bot.author_id:
+        if ctx.author.id in ctx.bot.owner_ids:
             return True
         return bool(ctx.author.guild_permissions.manage_guild)
 

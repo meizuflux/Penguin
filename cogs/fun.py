@@ -1,7 +1,7 @@
 import asyncio
+import base64
 import random
 import re
-import base64
 import time
 from io import BytesIO
 
@@ -168,7 +168,7 @@ class Fun(commands.Cog):
                        allowed_mentions=discord.AllowedMentions().none())
 
     @commands.command()
-    async def ship(self, ctx, user_1: discord.Member, user_2: discord.Member=None):
+    async def ship(self, ctx, user_1: discord.Member, user_2: discord.Member = None):
         if not user_2: user_2 = ctx.author
         random.seed(int(user_1.id) + int(user_2.id))
         love = random.randint(1, 100)
@@ -207,7 +207,6 @@ class Fun(commands.Cog):
         encoded_encoded_string = base64.b64encode(string.encode('utf-8'))
         decoded = encoded_encoded_string.decode('utf-8')
         await qembed(ctx, decoded)
-
 
 
 def setup(bot):

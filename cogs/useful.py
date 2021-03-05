@@ -1,22 +1,21 @@
 import asyncio
 import datetime
-import difflib
-import itertools
 import json
 import pathlib
 import platform
+import random
 import time
+from collections import Counter
 from io import BytesIO
 
 import aiohttp
 import discord
 import humanize
 import psutil
-import random
-from collections import Counter
 from discord.ext import commands
 
-from utils.default import plural, qembed
+from utils.default import qembed
+from utils.help import CustomHelp
 
 
 class ChuckContext(commands.Context):
@@ -58,177 +57,20 @@ class ChuckContext(commands.Context):
         m = await self.send(*args, **kwargs)
         await m.add_reaction("❌")
         try:
-            await self.bot.wait_for('reaction_add', check=lambda r, u: u.id == self.author.id and r.message.id == m.id and str(r.emoji) == str("❌"))
+            await self.bot.wait_for('reaction_add',
+                                    check=lambda r, u: u.id == self.author.id and r.message.id == m.id and str(
+                                        r.emoji) == str("❌"))
             await m.delete()
         except asyncio.TimeoutError:
             pass
-
-
-class Help(commands.MinimalHelpCommand):
-    def get_command_signature(self, command, ctx=None):
-        """Method to return a commands name and signature"""
-        sig = command.usage or command.signature
-        if not sig and not command.parent:
-            return f'`{self.clean_prefix}{command.name}`'
-        if not command.parent:
-            return f'`{self.clean_prefix}{command.name}` `{sig}`'
-        if not sig:
-            return f'`{self.clean_prefix}{command.parent}` `{command.name}`'
-        else:
-            return f'`{self.clean_prefix}{command.parent}` `{command.name}` `{sig}`'
-
-    async def send_error_message(self, error):
-        ctx = self.context
-        destination = self.get_destination()
-        embed = discord.Embed(description=error, color=ctx.bot.embed_color,
-                              timestamp=ctx.message.created_at).set_footer(
-            text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
-        await destination.send(embed=embed)
-
-    def get_opening_note(self):
-        return "`<arg>`  means the argument is required\n`[arg]`  means the argument is optional"
-
-    def add_bot_commands_formatting(self, commands, heading):
-        if commands:
-            joined = '`,\u2002`'.join(c.name for c in commands)
-            emoji_dict = {
-                'economy': "💵",
-                'fun': "<:hahayes:739613910180692020>",
-                'polaroid': "📸",
-                'prefixes': "<:shrug:747680403778699304>",
-                'useful': "<:bruhkitty:739613862302711840>",
-                'utilities': "⚙️",
-                "music": "<:bruhkitty:739613862302711840>",
-                "jishaku": "<:verycool:739613733474795520>",
-                "stocks": "<:stonks:817178220213567509>"
-            }
-            self.paginator.add_line(f'{emoji_dict[heading.lower()]}  **{heading}**')
-            self.paginator.add_line(f'> `{joined}`')
-            # self.paginator.add_line()
-
-    def get_ending_note(self):
-        command_name = self.invoked_with
-        return (
-            "Type `{0}{1} [command]` for more info on a command.\n"
-            "You can also type `{0}{1} [category]` for more info on a category.".format(
-                self.clean_prefix, command_name
-            )
-        )
-
-    async def send_pages(self):
-        ctx = self.context
-        destination = self.get_destination()
-        for page in self.paginator.pages:
-            embed = discord.Embed(description=page, color=0x9c5cb4, timestamp=ctx.message.created_at).set_footer(
-                text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
-            await destination.send(embed=embed)
-
-    def add_subcommand_formatting(self, command):
-        fmt = '{0} \N{EN DASH} {1}' if command.short_doc else '{0} \N{EN DASH} This command is not documented'
-        self.paginator.add_line(fmt.format(self.get_command_signature(command), command.short_doc))
-
-    async def on_help_command_error(self, ctx, error):
-        if isinstance(error, commands.BadArgument):
-            embed = discord.Embed(title="Error", description=str(error))
-            await ctx.send(embed=embed)
-        if isinstance(error, commands.CommandNotFound):
-            embed = discord.Embed(title="Error", description=str(error))
-            await ctx.send(embed=embed)
-        else:
-            raise error
-
-    async def send_bot_help(self, mapping):
-        ctx = self.context
-        bot = ctx.bot
-
-        if bot.description:
-            self.paginator.add_line(bot.description, empty=True)
-
-        no_category = '\u200b{0.no_category}'.format(self)
-
-        def get_category(command, *, no_category=no_category):
-            cog = command.cog
-            return cog.qualified_name if cog is not None else no_category
-
-        filtered = await self.filter_commands(bot.commands, sort=True, key=get_category)
-        to_iterate = itertools.groupby(filtered, key=get_category)
-
-        for category, commands in to_iterate:
-            commands = sorted(commands, key=lambda c: c.name) if self.sort_commands else list(f'**{commands}**')
-            self.add_bot_commands_formatting(commands, category)
-
-        self.paginator.add_line()
-        self.paginator.add_line(self.get_ending_note())
-
-        await self.send_pages()
-
-    @staticmethod
-    def get_help(command, brief=True):
-        real_help = command.help or "This command is not documented."
-        return real_help if not brief else command.short_doc or real_help
-
-    async def send_cog_help(self, cog):
-        bot = self.context.bot
-        if bot.description:
-            self.paginator.add_line(bot.description)
-
-        note = self.get_opening_note()
-        if note:
-            self.paginator.add_line(note, empty=True)
-
-        filtered = await self.filter_commands(cog.get_commands(), sort=self.sort_commands)
-        if filtered:
-            self.paginator.add_line('**%s %s**' % (cog.qualified_name, self.commands_heading))
-            if cog.description:
-                self.paginator.add_line(cog.description, empty=True)
-            for command in filtered:
-                self.add_subcommand_formatting(command)
-
-        await self.send_pages()
-
-    def get_command_help(self, command):
-        ctx = self.context
-        embed = discord.Embed(title=self.get_command_signature(command),
-                              description=f'```{self.get_help(command, brief=False)}```', color=0x9c5cb4,
-                              timestamp=ctx.message.created_at).set_footer(text=f"Requested by {ctx.author}",
-                                                                           icon_url=ctx.author.avatar_url)
-        if alias := command.aliases:
-            embed.add_field(name="Aliases", value=f"```{', '.join(alias)}```", inline=False)
-        if isinstance(command, commands.Group):
-            subcommand = command.commands
-            value = "\n".join(f'{self.get_command_signature(c)} \N{EN DASH} {c.short_doc}' for c in subcommand)
-            if len(value) > 1024:
-                value = "\n".join(f'{self.get_command_signature(c)}' for c in subcommand)
-            embed.add_field(name=plural("Subcommand(s)", len(subcommand)), value=value)
-
-        return embed
-
-    async def handle_help(self, command):
-        if not await command.can_run(self.context):
-            return await qembed(self.context, f'You don\'t have enough permissions to see the help for `{command}`')
-        return await self.context.send(embed=self.get_command_help(command))
-
-    async def send_group_help(self, group):
-        await self.handle_help(group)
-
-    async def send_command_help(self, command):
-        await self.handle_help(command)
-
-    # from pb https://github.com/PB4162/PB-Bot/blob/master/cogs/Help.py#L11-L102
-    async def command_not_found(self, string: str):
-        matches = difflib.get_close_matches(string, self.context.bot.command_list)
-        if not matches:
-            return f"No command called `{string}` found."
-        match = "\n".join(matches[:1])
-        return f"No command called `{string}` found. Did you mean `{match}`?"
 
 
 class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     def __init__(self, bot):
         self.bot = bot
         self._original_help_command = bot.help_command
-        bot.help_command = Help(command_attrs=dict(hidden=False, aliases=['halp', 'h', 'help_command'],
-                                                   help='Literally shows this message. Jesus, do you really need this?'))
+        bot.help_command = CustomHelp(command_attrs=dict(hidden=False, aliases=['halp', 'h', 'help_command'],
+                                                         help='Literally shows this message. Jesus, do you really need this?'))
         bot.help_command.cog = self
 
     def cog_unload(self):
@@ -346,7 +188,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     async def toxic(self, ctx, *, text):
         url = f"https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key={self.bot.perspective}"
 
-        headers = {'Content-Type': 'application/json',}
+        headers = {'Content-Type': 'application/json', }
 
         data = f'{{comment: {{text: "{text}"}}, ' \
                'languages: ["en"], ' \
@@ -366,7 +208,9 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     async def recent_commits(self, ctx):
         async with self.bot.session.get('https://api.github.com/repos/ppotatoo/SYSTEM32/commits') as f:
             resp = await f.json()
-        embed = discord.Embed(description="\n".join(f"[`{commit['sha'][:6]}`]({commit['html_url']}) {commit['commit']['message']}" for commit in resp[:5]), color=self.bot.embed_color)
+        embed = discord.Embed(description="\n".join(
+            f"[`{commit['sha'][:6]}`]({commit['html_url']}) {commit['commit']['message']}" for commit in resp[:5]),
+            color=self.bot.embed_color)
         await ctx.send(embed=embed)
 
     @commands.command(help='Pretty-Prints some JSON')
@@ -379,7 +223,8 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         choice = Counter(random.choice([choice_1, choice_2]) for _ in range(1500))
         answer = max(choice[choice_1], choice[choice_2])
         result = sorted(choice, key=lambda e: e == answer)
-        await ctx.send(f'{result[0]} won with {answer} votes and {answer/1500:.2f}% of the votes')
+        await ctx.send(f'{result[0]} won with {answer} votes and {answer / 1500:.2f}% of the votes')
+
 
 def setup(bot):
     bot.add_cog(Useful(bot))

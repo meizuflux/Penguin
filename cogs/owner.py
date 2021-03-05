@@ -1,20 +1,17 @@
 # credit here goes to DeltaWing#0700 for the sql command its kinda cool
-import subprocess
 
-import asyncpg
-from discord.ext import commands
-from prettytable import PrettyTable
-import discord
-import os
-import functools
 import asyncio
 import inspect
-import re
-from utils.default import escape
-import aiohttp
-from jishaku.paginators import PaginatorInterface, WrappedPaginator
+import os
 
-from utils.default import qembed, traceback_maker
+import aiohttp
+import asyncpg
+import discord
+from discord.ext import commands
+from jishaku.paginators import PaginatorInterface, WrappedPaginator
+from prettytable import PrettyTable
+
+from utils.default import escape, qembed, traceback_maker
 
 
 class Owner(commands.Cog, command_attrs=dict(hidden=True)):
@@ -60,7 +57,8 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
     @dev.command(help='Syncs with GitHub and reloads all cogs')
     async def sync(self, ctx):
         await ctx.trigger_typing()
-        proc = await asyncio.create_subprocess_shell("git pull",stdout=asyncio.subprocess.PIPE,stderr=asyncio.subprocess.PIPE)
+        proc = await asyncio.create_subprocess_shell("git pull", stdout=asyncio.subprocess.PIPE,
+                                                     stderr=asyncio.subprocess.PIPE)
 
         stdout, stderr = await proc.communicate()
 
@@ -108,7 +106,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         await self.bot.close()
 
     @dev.command(aliases=['del'])
-    async def delete(self, ctx, message: discord.Message=None):
+    async def delete(self, ctx, message: discord.Message = None):
         """Deletes the given message"""
         if ctx.message.reference:
             message = ctx.message.reference
@@ -196,6 +194,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
             await qembed(ctx, err)
         except TypeError:
             await qembed(ctx, "You need to either provide an image URL or upload one with the command")
+
 
 def setup(bot):
     bot.add_cog(Owner(bot))

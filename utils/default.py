@@ -6,6 +6,7 @@ import discord
 import timeago as timesince
 from discord.ext import commands
 
+
 def escape(text: str):
     mark = [
         '`',
@@ -84,7 +85,6 @@ async def prettyresults(ctx, filename: str = "Results", resultmsg: str = "Here's
         f"[{str(num).zfill(2)}] {data}"
         for num, data in enumerate(loop, start=1)
     )
-
 
     if len(loop) < 15:
         return await ctx.send(f"{resultmsg}```ini\n{pretty}```")

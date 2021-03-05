@@ -3,15 +3,10 @@ import typing
 
 import discord
 import humanize
-from asyncpg import DataError, CheckViolationError
-import re
-import humanize
-import math
-import json
-from prettytable import PrettyTable
-from discord.ext import commands, flags
+from asyncpg import DataError
+from discord.ext import commands
 
-from utils.default import qembed, plural
+from utils.default import qembed
 
 
 class Economy(commands.Cog, command_attrs=dict(hidden=False)):
@@ -259,8 +254,6 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE userid = $2", data[0] - 400, ctx.author.id)
         await qembed(ctx,
                      f'Reset the command cooldown for the command `{command}` and subtracted $400 from your account.')
-
-
 
 
 def setup(bot):
