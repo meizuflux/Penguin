@@ -155,7 +155,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         msg = table.get_string()
         await ctx.send(f"{user.mention}\'s stocks:```\n{msg}\n```", allowed_mentions=discord.AllowedMentions().none())
 
-    @commands.command(help='Looks up a stocks price.', aliases=['stock_lookup', 'check'])
+    @commands.command(help='Looks up a stocks price.', aliases=['stock_lookup'])
     async def lookup(self, ctx, ticker: str):
         ticker = ticker.upper()
 
@@ -176,13 +176,18 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
 
 
     @commands.command(help='Search to see if a stock ticker exists.')
-    async def search(self, ctx, search):
+    async def check(self, ctx, search):
+        search = search.upper()
         async with self.bot.session.get(f'{FINNHUB_URL}/search?q={search}&token={self.finnhub}') as r:
             data: dict = await r.json()
-        thing = "\n".join(
-            [f"{num+1}) {ticker['description']} - {ticker['displaySymbol']}" for num, ticker in enumerate(data['result'][:5])]
-        )
-        await ctx.send(f"```yaml\n{thing}```")
+
+        if not data["result"]:
+            await ctx.message.add_reaction("❌")
+        if data["result"][0]["symbol"] == search:
+            await ctx.message.add_reaction("✅")
+            await ctx.invoke(ctx.bot.get_command('lookup'), search)
+        else:
+            await ctx.message.add_reaction("❌")
 
 
 def setup(bot):
