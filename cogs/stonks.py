@@ -37,8 +37,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         ticker = ticker.upper()
         async with self.bot.session.get(f'{FINNHUB_URL}/quote?symbol={ticker}&token={self.finnhub}') as r:
             data: dict = await r.json()
-        await ctx.send(data)
-        if not data:
+        if data["c"] == 0:
             return await ctx.send('Yeah so thats not a valid stock lmao')
 
         stock: dict = data
@@ -92,7 +91,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         async with self.bot.session.get(f'{FINNHUB_URL}/quote?symbol={ticker}&token={self.finnhub}') as r:
             data: dict = await r.json()
 
-        if not data:
+        if data["c"] == 0:
             return await ctx.send('Yeah so thats not a valid stock lmao')
 
         stock: dict = data
@@ -162,6 +161,9 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
 
         async with self.bot.session.get(f'{FINNHUB_URL}/quote?symbol={ticker}&token={self.finnhub}') as r:
             data: dict = await r.json()
+
+        if data["c"] == 0:
+            return await ctx.send('Yeah so thats not a valid stock lmao')
 
         stats = f'```yaml\n'\
                 f'Current: {data["c"]}\n'\
