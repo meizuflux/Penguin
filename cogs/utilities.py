@@ -80,7 +80,6 @@ class Utilities(commands.Cog):
             return
         self.bot.deleted_messages[message.channel.id].append(DeletedMessage(message))
 
-
     @commands.Cog.listener()
     async def on_message(self, message):
         not_owner = not await self.bot.is_owner(message.author)

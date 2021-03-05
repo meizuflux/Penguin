@@ -169,9 +169,6 @@ class Chuck(commands.Bot):
         if before.author.id in self.owner_ids and not before.embeds and not after.embeds:
             await self.process_commands(after)
 
-    @commands.command(hidden=True)
-    async def stocks(self, ctx):
-        await ctx.invoke(self.bot.get_command(help), 'Stocks')
 
 bot = Chuck()
 bot.loop.create_task(bot.create_tables())
