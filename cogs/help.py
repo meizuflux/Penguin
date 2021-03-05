@@ -96,8 +96,8 @@ class CustomHelp(commands.MinimalHelpCommand):
 
         filtered = await self.filter_commands(bot.commands, sort=False)
         to_iterate = itertools.groupby(filtered, key=get_category)
-        await ctx.send(to_iterate)
         for category, commands in to_iterate:
+            await ctx.send(commands)
             commands = commands if self.sort_commands else list(f'**{commands}**')
             self.add_bot_commands_formatting(commands, category)
 
@@ -121,7 +121,6 @@ class CustomHelp(commands.MinimalHelpCommand):
             self.paginator.add_line(note, empty=True)
 
         filtered = await self.filter_commands(cog.get_commands(), sort=False)
-        await self.context.send(filtered)
         if filtered:
             self.paginator.add_line('**%s %s**' % (cog.qualified_name, self.commands_heading))
             if cog.description:
