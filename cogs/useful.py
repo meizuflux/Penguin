@@ -52,6 +52,15 @@ class ChuckContext(commands.Context):
                 key = res["key"]
                 return f"https://mystb.in/{key}"
 
+    async def remove(self, *args, **kwargs):
+        m = await self.send(*args, **kwargs)
+        await m.add_reaction("❌")
+        try:
+            await self.bot.wait_for('reaction_add', check=lambda r, u: u.id == self.author.id and r.message.id == m.id and str(r.emoji) == str("❌"))
+            await m.delete()
+        except asyncio.TimeoutError:
+            pass
+
 
 class Help(commands.MinimalHelpCommand):
     def get_command_signature(self, command, ctx=None):

@@ -95,7 +95,6 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         if not data:
             return await ctx.send('Yeah so thats not a valid stock lmao')
 
-        await ctx.send(data)
         stock: dict = data
         price: int = math.floor(stock["c"])
         humanized_price: str = humanize.intcomma(price)
