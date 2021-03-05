@@ -67,7 +67,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         lb = discord.Embed(title='Leaderboard',
                            color=self.bot.embed_color,
                            timestamp=ctx.message.created_at,
-                           description='**TOP 5 PLAYERS:**\n```py\n' + "\n".join(lb) + '```')
+                           description='**TOP {} PLAYERS:**\n```py\n'.format(number) + "\n".join(lb) + '```')
 
         lb.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=lb)
