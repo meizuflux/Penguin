@@ -85,7 +85,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Sells a stock. BETA')
     async def sell(self, ctx, ticker: str = 'MSFT', amount='1'):
-        wallet, bank = await self.get_stats(self, ctx.author.id)
+
         ticker = ticker.upper()
         sql = (
             "SELECT amount FROM stocks WHERE user_id = $1 AND ticker = $2"
@@ -131,6 +131,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
                     ctx.author.id, ticker, amount)
                 if query == 'UPDATE 0':
                     return await message.edit(content="You don't have any stock.")
+                wallet, bank = await self.get_stats(self, ctx.author.id)
                 await ctx.bot.db.execute('DELETE FROM stocks WHERE amount = 0')
                 await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE userid = $2", wallet + total,
                                           ctx.author.id)
