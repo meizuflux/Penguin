@@ -41,7 +41,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
             return await ctx.send('Yeah so thats not a valid stock lmao')
 
         stock: dict = data
-        price: int = math.floor(stock["c"])
+        price: int = round(stock["c"])
         humanized_price: str = humanize.intcomma(price)
 
         match = re.search(r'^[0-9]*$', str(amount))
@@ -95,7 +95,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
             return await ctx.send('Yeah so thats not a valid stock lmao')
 
         stock: dict = data
-        price: int = math.floor(stock["c"])
+        price: int = round(stock["c"])
         humanized_price: str = humanize.intcomma(price)
 
         match = re.search(r'^[0-9]*$', str(amount))
@@ -153,7 +153,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
             table.add_row(lst)
 
         msg = table.get_string()
-        await ctx.send(f"{user}\'s stocks:```\n{msg}\n```", allowed_mentions=discord.AllowedMentions().none())
+        await ctx.send(f"{user.mention}\'s stocks:```\n{msg}\n```", allowed_mentions=discord.AllowedMentions().none())
 
     @commands.command(help='Looks up a stocks price.', aliases=['stock_lookup', 'check'])
     async def lookup(self, ctx, ticker: str):
