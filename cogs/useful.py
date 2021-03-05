@@ -63,6 +63,10 @@ class ChuckContext(commands.Context):
         except asyncio.TimeoutError:
             pass
 
+    async def embed(self, *args, **kwargs):
+        embed = discord.Embed(*args, **kwargs)
+        embed.color = discord.Color.dark_theme
+
 
 class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     def __init__(self, bot):
