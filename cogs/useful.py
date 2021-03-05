@@ -382,7 +382,8 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         choice = Counter(random.choice([choice_1, choice_2]) for _ in range(1500))
         await ctx.send(choice)
         answer = max(choice[choice_1], choice[choice_2])
-        await ctx.send(f'{answer} won with {choice[answer]} votes and {choice[answer]/1500:.2f}%')
+        result = sorted(choice, key=lambda e: e == answer)
+        await ctx.send(f'{result} won with {answer} votes and {answer/1500:.2f}%')
 
 def setup(bot):
     bot.add_cog(Useful(bot))
