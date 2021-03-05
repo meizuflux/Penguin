@@ -35,9 +35,9 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
 
         wallet, bank = await self.get_stats(self, ctx.author.id)
         ticker = ticker.upper()
-        async with self.bot.session.get(f'{FINNHUB_URL}v1/quote?symbol={ticker}&token={self.finnhub}') as r:
+        async with self.bot.session.get(f'{FINNHUB_URL}/quote?symbol={ticker}&token={self.finnhub}') as r:
             data: dict = await r.json()
-
+        await ctx.send(data)
         if not data:
             return await ctx.send('Yeah so thats not a valid stock lmao')
 
