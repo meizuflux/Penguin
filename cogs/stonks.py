@@ -178,7 +178,6 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
     async def search(self, ctx, search):
         async with self.bot.session.get(f'{FINNHUB_URL}/search?q={search}&token={self.finnhub}') as r:
             data: dict = await r.json()
-        await ctx.send(data)
         thing = "\n".join(
             [f"{num+1}) {ticker['description']} - {ticker['displaySymbol']}" for num, ticker in enumerate(data['result'][:5])]
         )
