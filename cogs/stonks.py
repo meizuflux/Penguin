@@ -38,7 +38,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         async with self.bot.session.get(f'{FINNHUB_URL}/quote?symbol={ticker}&token={self.finnhub}') as r:
             data: dict = await r.json()
         if data["c"] == 0:
-            return await ctx.send('Yeah so thats not a valid stock lmao')
+            return await ctx.send('Yeah so that\'s not a valid stock lmao')
 
         stock: dict = data
         price: int = round(stock["c"])
@@ -100,7 +100,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
             data: dict = await r.json()
 
         if data["c"] == 0:
-            return await ctx.send('Yeah so thats not a valid stock lmao')
+            return await ctx.send('Yeah so that\'s not a valid stock lmao')
 
         stock: dict = data
         price: int = round(stock["c"])
@@ -169,7 +169,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
             data: dict = await r.json()
 
         if data["c"] == 0:
-            return await ctx.send('Yeah so thats not a valid stock lmao')
+            return await ctx.send('Yeah so that\'s not a valid stock lmao')
 
         stats = f'```yaml\n'\
                 f'Current: {data["c"]}\n'\
@@ -179,7 +179,6 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
                 f'Previous Close: {data["pc"]}```'
 
         await ctx.send(stats)
-
 
     @commands.command(help='Search to see if a stock ticker exists.')
     async def check(self, ctx, search):

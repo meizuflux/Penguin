@@ -29,14 +29,15 @@ This example uses the following whihch must be installed prior to running:
 --------------------------------------------------------------------------------
 """
 import asyncio
-import async_timeout
 import copy
 import datetime
-import discord
 import math
 import random
 import re
 import typing
+
+import async_timeout
+import discord
 import wavelink
 from discord.ext import commands, menus
 
@@ -57,7 +58,7 @@ class IncorrectChannelError(commands.CommandError):
 class Track(wavelink.Track):
     """Wavelink Track object with a requester attribute."""
 
-    __slots__ = ('requester', )
+    __slots__ = ('requester',)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args)
@@ -359,7 +360,8 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
         await payload.player.do_next()
 
     @commands.Cog.listener()
-    async def on_voice_state_update(self, member: discord.Member, before: discord.VoiceState, after: discord.VoiceState):
+    async def on_voice_state_update(self, member: discord.Member, before: discord.VoiceState,
+                                    after: discord.VoiceState):
         if member.bot:
             return
 

@@ -1,14 +1,13 @@
+import re
 import sys
 import traceback
 
 import discord
 import humanize
-import re
-import difflib
 from discord.ext import commands
 
-from utils.fuzzy import finder
 from utils.default import qembed
+from utils.fuzzy import finder
 
 
 class CommandErrorHandler(commands.Cog):
@@ -93,8 +92,7 @@ class CommandErrorHandler(commands.Cog):
 
         else:
             # All other Errors not returned come here. And we can just print the default TraceBack.
-            print('Ignoring exception in command {}:'.format(ctx.command),
-                  file=sys.stderr)
+            print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
             traceback.print_exception(type(error),
                                       error,
                                       error.__traceback__,
