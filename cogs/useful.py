@@ -64,8 +64,9 @@ class ChuckContext(commands.Context):
             pass
 
     def embed(self, *args, **kwargs):
-        embed = discord.Embed(*args, **kwargs)
-        embed.color = discord.Color.dark_theme()
+        embed = discord.Embed(*args, **kwargs, color=self.bot.embed_color)
+        embed.timestamp = self.message.created_at
+        embed.set_footer(text=f"Requested by {self.author}", icon_url=self.author.avatar_url)
         return embed
 
 
