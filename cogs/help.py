@@ -94,9 +94,9 @@ class CustomHelp(commands.MinimalHelpCommand):
             cog = command.cog
             return cog.qualified_name if cog is not None else no_category
 
-        filtered = await self.filter_commands(bot.commands, sort=False, key=get_category)
-        to_iterate = itertools.groupby(filtered, key=get_category)
         self.sort_commands = False
+        filtered = await self.filter_commands(bot.commands, sort=False, key=self.sort_commands)
+        to_iterate = itertools.groupby(filtered, key=get_category)
         for category, commands in to_iterate:
             # commands = sorted(commands, key=lambda c: c.name) if self.sort_commands else list(f'**{commands}**')
             self.add_bot_commands_formatting(commands, category)
