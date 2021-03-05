@@ -183,7 +183,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
 
         if not data["result"]:
             await ctx.message.add_reaction("❌")
-        if data["result"][0]["symbol"] == search:
+        if data["result"][0] and data["result"][0]["symbol"]== search:
             await ctx.message.add_reaction("✅")
             await ctx.invoke(ctx.bot.get_command('lookup'), search)
         else:
