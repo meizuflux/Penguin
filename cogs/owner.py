@@ -100,7 +100,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         """Calls bot.close() and lets the systems service handler restart it."""
         this = await ctx.confirm('Click to confirm.')
         if this[0] is not True:
-            return await qembed(ctx, "Cancelling")
+            return await this[1].edit(content='Cancelled.')
 
         await this[1].edit(content='Shutting down.')
         await self.bot.close()
