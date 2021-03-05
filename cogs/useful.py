@@ -277,13 +277,10 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     async def ping(self, ctx):
         start = time.perf_counter()
         message = await ctx.send("Pinging ...")
-        end = time.perf_counter()
-        await message.delete()
-        duration = (end - start) * 1000
+        duration = (time.perf_counter() - start) * 1000
         poststart = time.perf_counter()
         await self.bot.db.fetch("SELECT 1")
-        postend = time.perf_counter()
-        postduration = (postend - poststart) * 1000
+        postduration = (time.perf_counter() - poststart) * 1000
         pong = discord.Embed(title='Ping', color=self.bot.embed_color, timestamp=ctx.message.created_at).set_footer(
             text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         pong.add_field(name='Typing Latency',
@@ -293,7 +290,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             value=f'```python\n{round(self.bot.latency * 1000)} ms```', inline=False)
         pong.add_field(name='SQL Latency',
                        value=f'```python\n{round(postduration)} ms```', inline=False)
-        await ctx.send(content=None, embed=pong)
+        await message.edit(content=None, embed=pong)
 
     @commands.command(help='Shows how long the bot has been online for')
     async def uptime(self, ctx):
