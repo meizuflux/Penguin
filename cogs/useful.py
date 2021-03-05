@@ -15,7 +15,6 @@ import psutil
 from discord.ext import commands
 
 from utils.default import qembed
-from utils.help import CustomHelp
 
 
 class ChuckContext(commands.Context):
@@ -68,13 +67,6 @@ class ChuckContext(commands.Context):
 class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     def __init__(self, bot):
         self.bot = bot
-        self._original_help_command = bot.help_command
-        bot.help_command = CustomHelp(command_attrs=dict(hidden=False, aliases=['halp', 'h', 'help_command'],
-                                                         help='Literally shows this message. Jesus, do you really need this?'))
-        bot.help_command.cog = self
-
-    def cog_unload(self):
-        self.bot.help_command = self._original_help_command
 
     @commands.command(aliases=['information', 'botinfo'],
                       help='Gets info about the bot')
