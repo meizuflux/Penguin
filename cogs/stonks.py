@@ -87,6 +87,14 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
     async def sell(self, ctx, ticker: str = 'MSFT', amount='1'):
         wallet, bank = await self.get_stats(self, ctx.author.id)
         ticker = ticker.upper()
+        sql = (
+            "SELECT amount FROM stocks WHERE user_id = $1 AND ticker = $2"
+        )
+        check = await ctx.bot.db.fetchval(sql, ctx.author.id, ticker)
+        if not check:
+            return await ctx.send(f'You don\'t have any shares of {ticker}')
+        if amount > check:
+            return await ctx.send(f"You only have {check} {plural('share(s)', check)} of {ticker}")
 
         async with self.bot.session.get(f'{FINNHUB_URL}/quote?symbol={ticker}&token={self.finnhub}') as r:
             data: dict = await r.json()
@@ -104,12 +112,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         else:
             match = re.search(r'^[a-zA-Z]*$', amount)
             if match and match[0] == 'max':
-                sql = (
-                    "SELECT amount FROM stocks WHERE user_id = $1 AND ticker = $2"
-                )
-
-                amount = await ctx.bot.db.fetchval(sql, ctx.author.id, ticker)
-                await ctx.send(amount)
+                amount = check
             else:
                 amount = 1
 
@@ -127,7 +130,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
                     "UPDATE stocks SET amount = stocks.amount - $3 WHERE user_id = $1 AND ticker = $2",
                     ctx.author.id, ticker, amount)
                 if query == 'UPDATE 0':
-                    return await message.edit(content="You don't any stock.")
+                    return await message.edit(content="You don't have any stock.")
                 await ctx.bot.db.execute('DELETE FROM stocks WHERE amount = 0')
                 await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE userid = $2", wallet + total,
                                           ctx.author.id)
