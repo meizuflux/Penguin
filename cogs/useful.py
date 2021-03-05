@@ -12,6 +12,8 @@ import aiohttp
 import discord
 import humanize
 import psutil
+import random
+from collections import Counter
 from discord.ext import commands
 
 from utils.default import plural, qembed
@@ -375,6 +377,12 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         hmm.replace("'", '"')
         await ctx.send(json.dumps(hmm, indent=4))
 
+    @commands.command(help='Chooses the best choice.')
+    async def choose(self, ctx, choice_1, choice_2):
+        choice = Counter(random.choice([choice_1, choice_2]) for _ in range(1500))
+        await ctx.send(choice)
+        answer = max(choice_1, choice_2)
+        await ctx.send(f'{answer} won with {answer} votes and {answer/1500}%')
 
 def setup(bot):
     bot.add_cog(Useful(bot))
