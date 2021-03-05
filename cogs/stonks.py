@@ -107,7 +107,9 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
                 sql = (
                     "SELECT amount FROM stocks WHERE user_id = $1 AND ticker = $2"
                 )
+
                 amount = await ctx.bot.db.fetchval(sql, ctx.author.id, ticker)
+                await ctx.send(amount)
             else:
                 amount = 1
 
