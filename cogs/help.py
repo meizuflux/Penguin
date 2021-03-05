@@ -95,9 +95,9 @@ class CustomHelp(commands.MinimalHelpCommand):
 
         filtered = await self.filter_commands(bot.commands, sort=False, key=get_category)
         to_iterate = itertools.groupby(filtered, key=get_category)
-
+        self.sort_commands = False
         for category, commands in to_iterate:
-            commands = list(f'**{commands}**')
+            commands = sorted(commands, key=lambda c: c.name) if self.sort_commands else list(f'**{commands}**')
             self.add_bot_commands_formatting(commands, category)
 
         self.paginator.add_line()
@@ -164,3 +164,18 @@ class CustomHelp(commands.MinimalHelpCommand):
             return f"No command called `{string}` found."
         match = "\n".join(matches[:1])
         return f"No command called `{string}` found. Did you mean `{match}`?"
+
+
+class Helpful(commands.Cog, command_attrs=dict(hidden=True)):
+    def __init__(self, bot):
+        self.bot = bot
+        self._original_help_command = bot.help_command
+        bot.help_command = CustomHelp(command_attrs=dict(hidden=False, aliases=['halp', 'h', 'help_command'],
+                                                         help='Literally shows this message. Jesus, do you really need this?'))
+        bot.help_command.cog = self
+
+    def cog_unload(self):
+        self.bot.help_command = self._original_help_command
+
+def setup(bot):
+    bot.add_cog(Helpful(bot))
