@@ -105,6 +105,7 @@ class CustomHelp(commands.MinimalHelpCommand):
 
         for category, commands in to_iterate:
             await ctx.send(ctx.bot.get_command('commands'))
+            break
 
         self.paginator.add_line()
         self.paginator.add_line(self.get_ending_note())
