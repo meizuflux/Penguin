@@ -99,7 +99,7 @@ class CustomHelp(commands.MinimalHelpCommand):
         filtered = await self.filter_commands(bot.commands, sort=False)
         to_iterate = itertools.groupby(filtered, key=get_category)
         for category, commands in to_iterate:
-            commands = sorted(commands, key=lambda c: c.name) if self.sort_commands else list(f'**{commands}**')
+            commands = sorted(commands, key=lambda c: c.name)
             self.add_bot_commands_formatting(commands, category)
 
         for category, commands in to_iterate:
