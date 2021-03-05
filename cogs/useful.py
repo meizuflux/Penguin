@@ -66,6 +66,7 @@ class ChuckContext(commands.Context):
     async def embed(self, *args, **kwargs):
         embed = discord.Embed(*args, **kwargs)
         embed.color = discord.Color.dark_theme
+        return embed
 
 
 class Useful(commands.Cog, command_attrs=dict(hidden=False)):
