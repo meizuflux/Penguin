@@ -139,7 +139,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
 
         paginator = WrappedPaginator(prefix='```py', suffix='```', max_size=1985)
         for num, line in enumerate(source_lines, start=1):
-            if len(num) == 1:
+            if len(str(num)) == 1:
                 dad = line
             else:
                 dad = re.sub(line[0], '', line, count=1)
