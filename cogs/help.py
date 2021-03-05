@@ -46,7 +46,9 @@ class CustomHelp(commands.MinimalHelpCommand):
                 "stocks": "<:stonks:817178220213567509>",
                 "helpful": "idk"
             }
-            self.paginator.add_line(f'{emoji_dict[heading.lower()]}  **{heading}**')
+            emoji = emoji_dict[heading.lower()]
+            self.paginator.add_line(f'{emoji if emoji else None}  **{heading}**')
+
             self.paginator.add_line(f'> `{joined}`')
             # self.paginator.add_line()
 
@@ -97,9 +99,12 @@ class CustomHelp(commands.MinimalHelpCommand):
         filtered = await self.filter_commands(bot.commands, sort=False)
         to_iterate = itertools.groupby(filtered, key=get_category)
         for category, commands in to_iterate:
-            await ctx.send(commands)
             commands = commands if self.sort_commands else list(f'**{commands}**')
             self.add_bot_commands_formatting(commands, category)
+
+        for category, commands in to_iterate:
+            await ctx.send(commands)
+            break
 
         self.paginator.add_line()
         self.paginator.add_line(self.get_ending_note())
