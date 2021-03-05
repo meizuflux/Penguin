@@ -42,7 +42,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
             return await ctx.send('Yeah so thats not a valid stock lmao')
 
         stock: dict = data
-        price: int = math.floor(stock["price"])
+        price: int = math.floor(stock["c"])
         humanized_price: str = humanize.intcomma(price)
 
         match = re.search(r'^[0-9]*$', str(amount))
