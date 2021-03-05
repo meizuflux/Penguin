@@ -380,9 +380,8 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(help='Chooses the best choice.')
     async def choose(self, ctx, choice_1, choice_2):
         choice = Counter(random.choice([choice_1, choice_2]) for _ in range(1500))
-        await ctx.send(choice)
-        answer = max(choice_1, choice_2)
-        await ctx.send(f'{answer} won with {choice[answer]} votes and {choice[answer]/1500}%')
+        answer = max(choice[choice_1], choice[choice_2])
+        await ctx.send(f'{answer} won with {choice[answer]} votes and {choice[answer]/1500:.2f}%')
 
 def setup(bot):
     bot.add_cog(Useful(bot))
