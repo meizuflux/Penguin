@@ -30,9 +30,11 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
 
         return wallet, bank
 
-    @commands.command(help='Buys a stock. BETA')
+    @commands.command()
     async def buy(self, ctx, ticker: str = 'MSFT', amount='1'):
-
+        """Buys a stock
+        You can view a list of all stocks at https://stockanalysis.com/stocks/
+        """
         wallet, bank = await self.get_stats(self, ctx.author.id)
         ticker = ticker.upper()
         async with self.bot.session.get(f'{FINNHUB_URL}/quote?symbol={ticker}&token={self.finnhub}') as r:
