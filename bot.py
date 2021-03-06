@@ -108,7 +108,7 @@ class Chuck(commands.Bot):
         await self.db.execute(
             "CREATE TABLE IF NOT EXISTS economy (userid BIGINT PRIMARY KEY,wallet BIGINT,bank BIGINT)")
         await self.db.execute(
-            "CREATE TABLE IF NOT EXISTS stocks (user_id BIGINT,ticker VARCHAR,amount BIGINT, PRIMARY KEY (user_id, ticker), CONSTRAINT stock_amount CHECK ( amount >= 0 ))")
+            "CREATE TABLE IF NOT EXISTS stocks (user_id BIGINT,ticker VARCHAR,amount BIGINT, PRIMARY KEY (user_id, ticker))")
 
     async def create_cache(self):
         await self.wait_until_ready()
