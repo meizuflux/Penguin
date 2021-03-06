@@ -48,17 +48,13 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         price: int = round(stock["c"])
         humanized_price: str = humanize.intcomma(price)
 
-        if str(amount) and not int(amount):
-            if amount == 'max':
-                amount = math.floor(wallet / price)
-                if amount == 0:
-                    return await ctx.send(f'You don\'t have enough money to buy a share of {ticker}. '
-                                          f'**${price - wallet}** more in order to purchase a share of {ticker}')
+        if amount == 'max':
+            amount = math.floor(wallet / price)
+            if amount == 0:
+                return await ctx.send(f'You don\'t have enough money to buy a share of {ticker}. '
+                                      f'**${price - wallet}** more in order to purchase a share of {ticker}')
 
-            else:
-                amount = 1
-
-        if int(amount):
+        elif int(amount):
             amount = int(amount)
 
         total: int = amount * price
