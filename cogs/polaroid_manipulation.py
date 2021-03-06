@@ -3,6 +3,7 @@ from io import BytesIO
 
 import discord
 import polaroid
+import re
 from discord.ext import commands
 from jishaku.functools import executor_function
 
@@ -28,9 +29,9 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
             img = await ctx.author.avatar_url_as(format="png").read()
             
         else:
-            stripped_url = str(image).strip("<>")
-            if stripped_url.startswith(('http', 'https', 'www')):
-                async with ctx.bot.session.get(stripped_url) as resp:
+            url = str(image).strip("<>")
+            if re.match(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", url):
+                async with ctx.bot.session.get(url) as resp:
                     if resp.headers["Content-type"].startswith("image"):
                         img = await resp.read()
                         
