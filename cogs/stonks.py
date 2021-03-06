@@ -106,7 +106,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         )
         check = await ctx.bot.db.fetchval(sql, ctx.author.id, ticker)
         if not check:
-            return await ctx.send(f'You don\'t have any shares of {ticker}')
+            return await ctx.send(f'You don\'t have any shares of **{ticker}**')
 
         try:
             if amount != 'max' and int(amount) > check:
