@@ -52,7 +52,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
             amount = math.floor(wallet / price)
             if amount == 0:
                 return await ctx.send(f'You don\'t have enough money to buy a share of {ticker}. '
-                                      f'**${price - wallet}** more in order to purchase a share of {ticker}')
+                                      f'You need **${price - wallet}** more in order to purchase a share of {ticker}')
 
         elif int(amount):
             amount = int(amount)
