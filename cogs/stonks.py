@@ -1,11 +1,11 @@
-from discord.ext import commands
+import math
+
 import discord
 import humanize
-import math
-from asyncpg import CheckViolationError
-from utils.default import plural
-import re
+from discord.ext import commands
 from prettytable import PrettyTable
+
+from utils.default import plural
 
 FINNHUB_URL = "https://finnhub.io/api/v1/"
 
@@ -75,80 +75,84 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         )
 
         if answer:
-            sql = (
+            stock_sql = (
                 "INSERT INTO stocks(user_id, ticker, amount) VALUES($1, $2, $3) "
                 "ON CONFLICT (user_id, ticker) "
                 "DO UPDATE SET amount = stocks.amount + $3"
             )
-            values = (ctx.author.id, ticker, amount)
-            await self.bot.db.execute(sql, *values)
-            eco = (
+            stock_values = (ctx.author.id, ticker, amount)
+
+            eco_sql = (
                 "UPDATE economy "
                 "SET wallet = $1 "
                 "WHERE userid = $2"
             )
-            await self.bot.db.execute(eco, wallet - total, ctx.author.id)
+            eco_values = (wallet - total, ctx.author.id)
+
+            await self.bot.db.execute(stock_sql, *stock_values)
+            await self.bot.db.execute(eco_sql, *eco_values)
+
             await message.edit(content=f'Purchased **{amount}** {share} of **{ticker}** for **${humanized_total}**.')
 
         if not answer:
             await message.edit(content='Cancelled the transaction.')
 
-    @commands.command(help='Sells a stock. BETA')
+    @commands.command(help='Sells a stock')
     async def sell(self, ctx, ticker: str = 'MSFT', amount='1'):
-
         ticker = ticker.upper()
+
         sql = (
             "SELECT amount FROM stocks WHERE user_id = $1 AND ticker = $2"
         )
         check = await ctx.bot.db.fetchval(sql, ctx.author.id, ticker)
         if not check:
             return await ctx.send(f'You don\'t have any shares of {ticker}')
-        if amount != 'max' and int(amount) > check:
-            return await ctx.send(f"You only have {check} {plural('share(s)', check)} of {ticker}")
+
+        try:
+            if amount != 'max' and int(amount) > check:
+                return await ctx.send(f"You only have {check} {plural('share(s)', check)} of {ticker}")
+        except ValueError:
+            return await ctx.send("Invalid amount provided.")
+
+        if amount == 'max':
+            amount = check
+        amount = int(amount)
 
         async with self.bot.session.get(f'{FINNHUB_URL}/quote?symbol={ticker}&token={self.finnhub}') as r:
             data: dict = await r.json()
 
         if data["c"] == 0:
-            return await ctx.send('Yeah so that\'s not a valid stock lmao')
+            return await ctx.send('Invalid stock provided.')
 
         stock: dict = data
+
         price: int = round(stock["c"])
-        humanized_price: str = humanize.intcomma(price)
-
-        match = re.search(r'^[0-9]*$', str(amount))
-        if match:
-            amount = int(match[0])
-        else:
-            match = re.search(r'^[a-zA-Z]*$', amount)
-            if match and match[0] == 'max':
-                amount = check
-            else:
-                amount = 1
-
         total: int = amount * price
+
+        humanized_price: str = humanize.intcomma(price)
         humanized_total: str = humanize.intcomma(total)
 
         share: str = plural("share(s)", amount)
         answer, message = await ctx.confirm(
             f'Confirm to sell **{amount}** {share} of **{ticker}** at **${humanized_price}**'
-            f' per share for a total of **${humanized_total}**.')
+            f' per share for a total of **${humanized_total}**.'
+        )
 
         if answer:
-            try:
-                query = await ctx.bot.db.execute(
-                    "UPDATE stocks SET amount = stocks.amount - $3 WHERE user_id = $1 AND ticker = $2",
-                    ctx.author.id, ticker, amount)
-                if query == 'UPDATE 0':
-                    return await message.edit(content="You don't have any stock.")
-                wallet, bank = await self.get_stats(self, ctx.author.id)
-                await ctx.bot.db.execute('DELETE FROM stocks WHERE amount = 0')
-                await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE userid = $2", wallet + total,
-                                          ctx.author.id)
-                return await message.edit(
-                    content=f'Sold **{amount}** {share} of **{ticker}** for **${humanized_total}**.')
-            except CheckViolationError:
-                return await message.edit("You don't have that much stock")
+            stock_sql = (
+                "UPDATE stocks "
+                "SET amount = stocks.amount - $3 "
+                "WHERE user_id = $1 AND ticker = $2"
+            )
+            stock_values = (ctx.author.id, ticker, amount)
+
+            wallet, bank = await self.get_stats(self, ctx.author.id)
+            eco_values = (wallet + total, ctx.author.id)
+
+            await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE userid = $2", *eco_values)
+            await self.bot.db.execute(stock_sql, *stock_values)
+
+            await message.edit(content=f'Sold **{amount}** {share} of **{ticker}** for **${humanized_total}**.')
         else:
             await message.edit(content='Cancelled the transaction.')
 
