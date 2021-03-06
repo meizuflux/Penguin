@@ -64,7 +64,6 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
 
         total: int = amount * price
         humanized_total: str = humanize.intcomma(total)
-        humanized_amount = humanize
 
         share: str = plural("share(s)", amount)
 
