@@ -68,7 +68,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         share: str = plural("share(s)", amount)
 
         if total > wallet:
-            return await ctx.send(f'You need **${price - wallet}** more in order to purchase'
+            return await ctx.send(f'You need **${humanize.intcomma(total - wallet)}** more in order to purchase'
                                   f' **{amount}** {share} of **{ticker}**')
 
         answer, message = await ctx.confirm(
