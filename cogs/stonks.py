@@ -54,7 +54,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
             amount = math.floor(wallet / price)
             if amount == 0:
                 return await ctx.send(f'You don\'t have enough money to buy a share of {ticker}. '
-                                      f'You need **${price - wallet}** more in order to purchase a share of {ticker}.')
+                                      f'You need **${humanize.intcomma(price - wallet)}** more in order to purchase a share of {ticker}.')
 
         try:
             if int(amount):
@@ -68,7 +68,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         share: str = plural("share(s)", amount)
 
         if total > wallet:
-            return await ctx.send(f'You need **${total - wallet}** more in order to purchase'
+            return await ctx.send(f'You need **${humanize.intcomma(price - wallet)}** more in order to purchase'
                                   f' **{amount}** {share} of **{ticker}**')
 
         answer, message = await ctx.confirm(
