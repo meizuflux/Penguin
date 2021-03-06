@@ -19,7 +19,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         self.finnhub = self.bot.config.finnhub
         self.del_none.start()
 
-    @tasks.loop(hours=4)
+    @tasks.loop(hours=12)
     async def del_none(self):
         await self.bot.db.execute('DELETE FROM stocks WHERE amount = 0')
 
