@@ -171,9 +171,12 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         table = PrettyTable()
         table.field_names = list(res[0].keys())
 
+        testing = []
+
         for record in res:
             lst = list(record)
             table.add_row(lst)
+            testing.append(record)
 
         msg = table.get_string()
         await ctx.send(f"{user.mention}\'s stocks:```\n{msg}\n```", allowed_mentions=discord.AllowedMentions().none())
