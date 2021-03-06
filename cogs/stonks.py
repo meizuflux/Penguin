@@ -37,50 +37,59 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         """
         wallet, bank = await self.get_stats(self, ctx.author.id)
         ticker = ticker.upper()
-        async with self.bot.session.get(f'{FINNHUB_URL}/quote?symbol={ticker}&token={self.finnhub}') as r:
-            data: dict = await r.json()
+
+        async with self.bot.session.get(f'{FINNHUB_URL}/quote?symbol={ticker}&token={self.finnhub}') as data:
+            data: dict = await data.json()
+
         if data["c"] == 0:
-            return await ctx.send('Yeah so that\'s not a valid stock lmao')
+            return await ctx.send('Invalid stock provided.')
 
         stock: dict = data
         price: int = round(stock["c"])
         humanized_price: str = humanize.intcomma(price)
 
-        match = re.search(r'^[0-9]*$', str(amount))
-        if match:
-            amount = int(match[0])
-        else:
-            match = re.search(r'^[a-zA-Z]*$', amount)
-            if match and match[0] == 'max':
+        if str(amount) and not int(amount):
+            if amount == 'max':
                 amount = math.floor(wallet / price)
                 if amount == 0:
-                    return await ctx.send('You don\'t have enough money to buy a share.')
+                    return await ctx.send(f'You don\'t have enough money to buy a share of {ticker}. '
+                                          f'**${price - wallet}** more in order to purchase a share of {ticker}')
+
             else:
                 amount = 1
 
+        if int(amount):
+            amount = int(amount)
+
         total: int = amount * price
+        share: str = plural("share(s)", amount)
+
+        if total > wallet:
+            return await ctx.send(f'You need **${total - wallet}** more in order to purchase'
+                                  f' **{amount}** {share} of **{ticker}**')
+
         humanized_total: str = humanize.intcomma(total)
 
-        share: str = plural("share(s)", amount)
         answer, message = await ctx.confirm(
             f'Confirm to buy **{amount}** {share} of **{ticker}** at **${humanized_price}**'
-            f' per share for a total of **${humanized_total}**.')
+            f' per share for a total of **${humanized_total}**.'
+        )
 
         if answer:
-            if total > wallet:
-                return await message.edit(
-                    content=f'You need **${total - wallet}** more in order to purchase this stock.')
             sql = (
                 "INSERT INTO stocks(user_id, ticker, amount) VALUES($1, $2, $3) "
                 "ON CONFLICT (user_id, ticker) "
                 "DO UPDATE SET amount = stocks.amount + $3"
             )
             values = (ctx.author.id, ticker, amount)
-            await ctx.bot.db.execute(sql, *values)
-            await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE userid = $2", wallet - total,
-                                      ctx.author.id)
-            await message.edit(
-                content=f'Purchased **{amount}** {share} of **{ticker}** for **${humanized_total}**.')
+            await self.bot.db.execute(sql, *values)
+            eco = (
+                "UPDATE economy "
+                "SET wallet = $1 "
+                "WHERE userid = $2"
+            )
+            await self.bot.db.execute(eco, wallet - total, ctx.author.id)
+            await message.edit(content=f'Purchased **{amount}** {share} of **{ticker}** for **${humanized_total}**.')
 
         if not answer:
             await message.edit(content='Cancelled the transaction.')
@@ -173,11 +182,11 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         if data["c"] == 0:
             return await ctx.send('Yeah so that\'s not a valid stock lmao')
 
-        stats = f'```yaml\n'\
-                f'Current: {data["c"]}\n'\
-                f'Daily High: {data["h"]}\n'\
-                f'Daily Low: {data["l"]}\n'\
-                f'Opening: {data["o"]}\n'\
+        stats = f'```yaml\n' \
+                f'Current: {data["c"]}\n' \
+                f'Daily High: {data["h"]}\n' \
+                f'Daily Low: {data["l"]}\n' \
+                f'Opening: {data["o"]}\n' \
                 f'Previous Close: {data["pc"]}```'
 
         await ctx.send(stats)
