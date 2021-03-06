@@ -78,8 +78,9 @@ class CommandErrorHandler(commands.Cog):
                 pass
 
         elif isinstance(error, commands.MissingRequiredArgument):
+            errors = error.split(" ", maxsplit=1)
             return await qembed(ctx,
-                                f'{error}\n'
+                                f'`{errors[0]}` {errors[1]}\n'
                                 f'You can view the help for this command with `{ctx.prefix}help {ctx.invoked_with}`')
 
         elif isinstance(error, commands.DisabledCommand):

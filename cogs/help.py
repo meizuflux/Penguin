@@ -179,5 +179,6 @@ class Helpful(commands.Cog, command_attrs=dict(hidden=True)):
     def cog_unload(self):
         self.bot.help_command = self._original_help_command
 
+
 def setup(bot):
     bot.add_cog(Helpful(bot))
