@@ -39,7 +39,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         ticker = ticker.upper()
 
         async with self.bot.session.get(f'{FINNHUB_URL}/quote?symbol={ticker}&token={self.finnhub}') as data:
-            data: dict = await data.json()
+            data = await data.json()
 
         if data["c"] == 0:
             return await ctx.send('Invalid stock provided.')
@@ -47,7 +47,6 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         stock: dict = data
         price: int = round(stock["c"])
         humanized_price: str = humanize.intcomma(price)
-
 
         if amount == 'max':
             amount = math.floor(wallet / price)
@@ -62,13 +61,13 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
             return await ctx.send("Invalid amount provided.")
 
         total: int = amount * price
+        humanized_total: str = humanize.intcomma(total)
+
         share: str = plural("share(s)", amount)
 
         if total > wallet:
             return await ctx.send(f'You need **${total - wallet}** more in order to purchase'
                                   f' **{amount}** {share} of **{ticker}**')
-
-        humanized_total: str = humanize.intcomma(total)
 
         answer, message = await ctx.confirm(
             f'Confirm to buy **{amount}** {share} of **{ticker}** at **${humanized_price}**'
