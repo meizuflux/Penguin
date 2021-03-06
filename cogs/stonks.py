@@ -153,6 +153,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
 
             await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE userid = $2", *eco_values)
             await self.bot.db.execute(stock_sql, *stock_values)
+            await self.bot.db.execute('DELETE FROM stocks WHERE amount = 0')
 
             await message.edit(content=f'Sold **{amount}** {share} of **{ticker}** for **${humanized_total}**.')
         else:
