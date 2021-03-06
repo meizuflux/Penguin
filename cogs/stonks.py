@@ -2,7 +2,7 @@ import math
 
 import discord
 import humanize
-from discord.ext import commands
+from discord.ext import commands, tasks
 from prettytable import PrettyTable
 
 from utils.default import plural
@@ -13,9 +13,15 @@ FINNHUB_URL = "https://finnhub.io/api/v1/"
 class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
     """Buy and sell stocks. Prices are directly related to real life prices
     This works with the Economy commands."""
+
     def __init__(self, bot):
         self.bot = bot
         self.finnhub = self.bot.config.finnhub
+        self.del_none.start()
+
+    @tasks.loop(hours=4)
+    async def del_none(self):
+        await self.bot.db.execute('DELETE FROM stocks WHERE amount = 0')
 
     @staticmethod
     async def get_stats(self, user_id: int):
@@ -153,7 +159,6 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
 
             await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE userid = $2", *eco_values)
             await self.bot.db.execute(stock_sql, *stock_values)
-            # await self.bot.db.execute('DELETE FROM stocks WHERE amount = 0')
 
             await message.edit(content=f'Sold **{amount}** {share} of **{ticker}** for **${humanized_total}**.')
         else:
@@ -171,14 +176,10 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         table = PrettyTable()
         table.field_names = list(res[0].keys())
 
-        testing = []
-
         for record in res:
             lst = list(record)
             if record["amount"] != 0:
                 table.add_row(lst)
-            testing.append(lst)
-
 
         msg = table.get_string()
         await ctx.send(f"{user.mention}\'s stocks:```\n{msg}\n```", allowed_mentions=discord.AllowedMentions().none())
