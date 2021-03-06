@@ -176,7 +176,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         for record in res:
             lst = list(record)
             table.add_row(lst)
-            testing.append(record)
+            testing.append(lst)
 
         await ctx.send(testing)
         msg = table.get_string()
