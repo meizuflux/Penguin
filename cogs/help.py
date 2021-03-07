@@ -65,7 +65,7 @@ class CustomHelp(commands.MinimalHelpCommand):
         ctx = self.context
         destination = self.get_destination()
         for page in self.paginator.pages:
-            embed = discord.Embed(description=page, color=0x9c5cb4, timestamp=ctx.message.created_at).set_footer(
+            embed = discord.Embed(description=page, color=ctx.bot.embed_color, timestamp=ctx.message.created_at).set_footer(
                 text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
             await destination.send(embed=embed)
 
