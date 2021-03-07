@@ -70,6 +70,17 @@ class ChuckContext(commands.Context):
         embed.set_footer(text=f"Requested by {self.author}", icon_url=self.author.avatar_url)
         return embed
 
+    def escape(text: str):
+        mark = [
+            '`',
+            '_',
+            '*'
+        ]
+        text = text
+        for item in mark:
+            text = text.replace(item, f'\u200b{item}')
+        return text
+
 
 class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     def __init__(self, bot):
@@ -215,6 +226,12 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             f"[`{commit['sha'][:6]}`]({commit['html_url']}) {commit['commit']['message']}" for commit in resp[:5]),
             color=self.bot.embed_color)
         await ctx.send(embed=embed)
+
+    @commands.command(help='Suggests a feature to the developers!')
+    async def suggest(self, ctx, *, suggestion):
+        support = self.bot.get_channel(818246475867488316)
+        await support.send(embed=ctx.embed(title='New Suggestion:', description=f"```\n{ctx.escape(suggestion)}```"))
+        await ctx.send(embed=ctx.embed(description='Your suggestion has been sent! '))
 
     @commands.command(help='Pretty-Prints some JSON')
     async def pprint(self, ctx, hmm: json.loads):
