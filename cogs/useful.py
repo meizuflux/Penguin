@@ -157,10 +157,9 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     async def pypi(self, ctx, package: str):
         async with self.bot.session.get(f'https://pypi.org/pypi/{package}/json') as f:
             if f.status == 404:
-                return await qembed(ctx, 'Package not found.')
+                return await ctx.send(embed=ctx.embed(description='Package not found.'))
             package = await f.json()
         data = package.get("info", "test")
-        await ctx.send(data.get("author"))
         embed = ctx.embed(title=f"{data.get('name', 'None provided')} {data.get('version', 'None provided')}",
                               url=data.get('project_url', 'None provided'),
                               description=data.get('summary', 'None provided'))
