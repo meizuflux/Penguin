@@ -166,10 +166,10 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         embed.set_thumbnail(url='https://cdn.discordapp.com/attachments/381963689470984203/814267252437942272/pypi.png')
         embed.add_field(name='Author Info:', value=f'**Author Name**: {data.get("author", "None provided")}\n'
                                                    f'**Author Email**: {data.get("author_email", "None provided")}')
-
+        await ctx.send(data.get("author_email", "None provided"))
         urls = data.get("project_urls", "None provided")
         embed.add_field(name='Package Info:',
-                        value=f'**Documentation URL**: {urls.get("Documentation", "None")}\n'
+                        value=f'**Documentation URL**: {urls.get("Documentation", "None provided")}\n'
                               f'**Home Page**: {urls.get("Homepage", "None provided")}\n'
                               f'**Keywords**: {data.get("keywords", "None provided")}\n'
                               f'**License**: {data.get("license", "None provided")}\n',
