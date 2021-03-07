@@ -198,9 +198,14 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         except:
             await qembed.send(ctx, 'You clearly don\'t know what this is')
 
+
     @commands.command(help='Invites the bot to your server')
     async def invite(self, ctx):
         await ctx.send(f"https://discordapp.com/oauth2/authorize?client_id={self.bot.user.id}&scope=bot&permissions=8")
+
+    @commands.command(help='An invite link to the bot support server.')
+    async def support(self, ctx):
+        await ctx.send(embed=ctx.embed(title='Support server invite:', description='https://discord.gg/NTNgvHkjSp'))
 
     @commands.command(help='Sends the 5 most recent commits to the bot.')
     async def recent_commits(self, ctx):
