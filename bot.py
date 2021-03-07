@@ -33,11 +33,11 @@ class Chuck(commands.Bot):
         self._BotBase__cogs = commands.core._CaseInsensitiveDict()
         self.author_id = 809587169520910346
         self.session = aiohttp.ClientSession()
-        self.embed_color = discord.Color.green()  # 0x9c5cb4
+        self.embed_color = 0xb2e4ff# discord.Color.green()  # 0x9c5cb4
         self.prefixes = {}
         self.command_list = []
         self.deleted_messages = collections.defaultdict(list)
-        self.default_prefix = 'ch!'
+        self.default_prefix = 'p!'
         self.config = config
         self.alex = alexflipnote.Client(self.get_config('alex_api_key'))
         self.timetime = time.time()
