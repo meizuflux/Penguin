@@ -159,28 +159,21 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             if f.status == 404:
                 return await qembed(ctx, 'Package not found.')
             package = await f.json()
-        embed = discord.Embed(title=f"{package['info']['name']} {package['info']['version']}",
-                              url=package['info']['project_url'],
-                              description=package['info']['summary'],
-                              color=self.bot.embed_color,
-                              timestamp=ctx.message.created_at)
+        data = package['info']
+        embed = ctx.embed(title=f"{data.get('name', 'None')} {data.get('version', 'None')}",
+                              url=data.get('project_url', 'None'),
+                              description=data.get('summary', 'None'))
         embed.set_thumbnail(url='https://cdn.discordapp.com/attachments/381963689470984203/814267252437942272/pypi.png')
-        email = package["info"]["author_email"] or "None provided"
-        embed.add_field(name='Author Info:', value=f'**Author Name**: {package["info"]["author"]}\n'
-                                                   f'**Author Email**: {email}')
-        docs = package["info"]["project_urls"]['Homepage'] or "None provided"
-        try:
-            home_page = package["info"]["project_urls"]['Documentation'] or "None provided"
-        except KeyError:
-            home_page = "None provided"
-        keywords = package["info"]['keywords'] or "None provided"
+        embed.add_field(name='Author Info:', value=f'**Author Name**: {data.get("author", "None")}\n'
+                                                   f'**Author Email**: {data.get("author_email", "None")}')
+
+        urls = data.get("project_urls", "None")
         embed.add_field(name='Package Info:',
-                        value=f'**Documentation URL**: {docs}\n'
-                              f'**Home Page**: {home_page}\n'
-                              f'**Keywords**: {keywords}\n'
-                              f'**License**: {package["info"]["license"]}\n',
+                        value=f'**Documentation URL**: {urls.get("Documentation", "None")}\n'
+                              f'**Home Page**: {urls.get("Homepage", "None")}\n'
+                              f'**Keywords**: {data.get("keywords", "None")}\n'
+                              f'**License**: {data.get("license", "None")}\n',
                         inline=False)
-        embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
 
     @commands.command(help='Checks if your message is toxic or not.')
