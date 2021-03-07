@@ -65,7 +65,7 @@ class CustomHelp(commands.MinimalHelpCommand):
         ctx = self.context
         destination = self.get_destination()
         for page in self.paginator.pages:
-            await destination.send(embed=ctx.embed(description=page))
+            await destination.send(await ctx.remove(embed=ctx.embed(description=page)))
 
     def add_subcommand_formatting(self, command):
         fmt = '{0} \N{EN DASH} {1}' if command.short_doc else '{0} \N{EN DASH} This command is not documented'
