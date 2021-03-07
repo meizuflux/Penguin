@@ -65,9 +65,7 @@ class CustomHelp(commands.MinimalHelpCommand):
         ctx = self.context
         destination = self.get_destination()
         for page in self.paginator.pages:
-            embed = discord.Embed(description=page, color=ctx.bot.embed_color, timestamp=ctx.message.created_at).set_footer(
-                text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
-            await destination.send(embed=embed)
+            await destination.send(embed=ctx.embed(description=page))
 
     def add_subcommand_formatting(self, command):
         fmt = '{0} \N{EN DASH} {1}' if command.short_doc else '{0} \N{EN DASH} This command is not documented'
@@ -133,10 +131,8 @@ class CustomHelp(commands.MinimalHelpCommand):
 
     def get_command_help(self, command):
         ctx = self.context
-        embed = discord.Embed(title=self.get_command_signature(command),
-                              description=f'```{self.get_help(command, brief=False)}```', color=0x9c5cb4,
-                              timestamp=ctx.message.created_at).set_footer(text=f"Requested by {ctx.author}",
-                                                                           icon_url=ctx.author.avatar_url)
+        embed = ctx.embed(title=self.get_command_signature(command),
+                              description=f'```{self.get_help(command, brief=False)}```')
         if alias := command.aliases:
             embed.add_field(name="Aliases", value=f"```{', '.join(alias)}```", inline=False)
         if isinstance(command, commands.Group):
