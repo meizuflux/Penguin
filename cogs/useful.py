@@ -156,7 +156,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(help='Searches PyPI for a Python Package')
     async def pypi(self, ctx, package: str):
         async with self.bot.session.get(f'https://pypi.org/pypi/{package}/json') as f:
-            if not f or f.stats != 200:
+            if not f or f.status != 200:
                 return await ctx.send(embed=ctx.embed(description='Package not found.'))
             package = await f.json()
         data = package.get("info")
