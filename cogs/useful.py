@@ -70,7 +70,7 @@ class ChuckContext(commands.Context):
         embed.set_footer(text=f"Requested by {self.author}", icon_url=self.author.avatar_url)
         return embed
 
-    def escape(text: str):
+    def escape(self, text: str):
         mark = [
             '`',
             '_',
