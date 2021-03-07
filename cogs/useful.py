@@ -160,7 +160,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                 return await qembed(ctx, 'Package not found.')
             package = await f.json()
         data = package.get("info", "test")
-        await ctx.send(data)
+        await ctx.send(data[:2000])
         embed = ctx.embed(title=f"{data.get('name', 'None provided')} {data.get('version', 'None provided')}",
                               url=data.get('project_url', 'None provided'),
                               description=data.get('summary', 'None provided'))
