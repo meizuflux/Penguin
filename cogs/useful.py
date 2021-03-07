@@ -191,6 +191,13 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         level = js["attributeScores"]["TOXICITY"]["summaryScore"]["value"] * 100
         await ctx.send(f"`{text}` is `{level:.2f}%` likely to be toxic.")
 
+    @commands.command(help='Builds an embed from a dict. You can use https://eb.nadeko.bot/ to get one', brief='Builds an embed', aliases=['make_embed', 'embed_builder'])
+    async def embedbuilder(self, ctx, *, embed: json.loads):
+        try:
+            await ctx.send(embed=discord.Embed().from_dict(embed))
+        except:
+            await qembed.send(ctx, 'You clearly don\'t know what this is')
+
     @commands.command(help='Invites the bot to your server')
     async def invite(self, ctx):
         await ctx.send(f"https://discordapp.com/oauth2/authorize?client_id={self.bot.user.id}&scope=bot&permissions=8")
