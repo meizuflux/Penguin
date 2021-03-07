@@ -168,7 +168,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                                                    f'**Author Email**: `{data["author_email"] or "None provided"}`')
         urls = data.get("project_urls", "None provided")
         embed.add_field(name='Package Info:',
-                        value=f'**Documentation URL**: `{urls.get("Documentation", "None provided")}`\n'
+                        value=f'**Documentation**: `{urls.get("Documentation", "None provided")}`\n'
                               f'**Homepage**: `{urls.get("Homepage", "None provided")}`\n'
                               f'**Keywords**: `{data["keywords"] or "None provided"}`\n'
                               f'**License**: `{data["license"] or "None provided"}`',
