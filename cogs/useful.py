@@ -160,13 +160,13 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                 return await qembed(ctx, 'Package not found.')
             package = await f.json()
         data = package.get("info", "test")
+        await ctx.send(data)
         embed = ctx.embed(title=f"{data.get('name', 'None provided')} {data.get('version', 'None provided')}",
                               url=data.get('project_url', 'None provided'),
                               description=data.get('summary', 'None provided'))
         embed.set_thumbnail(url='https://cdn.discordapp.com/attachments/381963689470984203/814267252437942272/pypi.png')
         embed.add_field(name='Author Info:', value=f'**Author Name**: {data.get("author", "None provided")}\n'
                                                    f'**Author Email**: {data.get("author_email", "None provided")}')
-        await ctx.send(data.get("author_email", "None provided"))
         urls = data.get("project_urls", "None provided")
         embed.add_field(name='Package Info:',
                         value=f'**Documentation URL**: {urls.get("Documentation", "None provided")}\n'
