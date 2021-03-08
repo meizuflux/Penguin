@@ -210,13 +210,13 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def waifu(self, ctx):
-        async with self.bot.session.get('https://waifu.pics/api/sfw/waifu') as f
+        async with self.bot.session.get('https://waifu.pics/api/sfw/waifu') as f:
             waifu = await f.json()
         await ctx.send(embed=ctx.embed().set_image(url=waifu.get('url')))
 
     @commands.command()
     async def neko(self, ctx):
-        async with self.bot.session.get('https://waifu.pics/api/sfw/neko') as f
+        async with self.bot.session.get('https://waifu.pics/api/sfw/neko') as f:
             waifu = await f.json()
         await ctx.send(embed=ctx.embed().set_image(url=waifu.get('url')))
 
