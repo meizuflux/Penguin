@@ -37,5 +37,17 @@ class AnimePics(commands.Cog):
         """Sends a bully"""
         await self.send_waifu(ctx, "bully")
 
+    @commands.command()
+    async def cuddle(self, ctx):
+        """Sends a cuddle"""
+        await self.send_waifu(ctx, "cuddle")
+
+    @commands.command()
+    async def cry(self, ctx):
+        await self.send_waifu(ctx, "cry")
+
+
 def setup(bot):
     bot.add_cog(AnimePics(bot))
+    for command in bot.get_cog('AnimePics'):
+        command.short_doc = f"Sends a {command.name}"
