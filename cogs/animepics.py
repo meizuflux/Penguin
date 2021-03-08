@@ -49,5 +49,6 @@ class AnimePics(commands.Cog):
 
 def setup(bot):
     bot.add_cog(AnimePics(bot))
-    for command in bot.get_cog('AnimePics'):
+    cog = bot.get_cog('AnimePics')
+    for command in cog.commands:
         command.short_doc = f"Sends a {command.name}"
