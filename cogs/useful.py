@@ -238,8 +238,9 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(help='Pretty-Prints some JSON')
     async def pprint(self, ctx, *, data: str):
         try:
-            await ctx.send(f"```json\n{ctx.escape(json.dumps(json.loads(data.replace("'", '"')), indent=4))}```")
-        except JSONDecodeError:
+            data = data.replace("'", '"')
+            await ctx.send(f"```json\n{ctx.escape(json.dumps(json.loads(data), indent=4))}```")
+        except json.JSONDecodeError:
             await ctx.send('Nice, you provided invalid JSON. Good work.')
 
     @commands.command(help='Chooses the best choice.')
