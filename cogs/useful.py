@@ -236,8 +236,9 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         await ctx.send(embed=ctx.embed(description='Your suggestion has been sent! '))
 
     @commands.command(help='Pretty-Prints some JSON')
-    async def pprint(self, ctx, *, data: json.loads):
+    async def pprint(self, ctx, *, data):
         data = data.replace("'", '"')
+        data = json.loads(data)
         await ctx.send(f"```json\n{ctx.escape(json.dumps(data, indent=4))}```")
 
     @commands.command(help='Chooses the best choice.')
