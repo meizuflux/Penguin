@@ -47,12 +47,11 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         ticker = ticker.upper()
 
         async with self.bot.session.get(f'{FINNHUB_URL}/quote?symbol={ticker}&token={self.finnhub}') as data:
-            data = await data.json()
+            stock = await data.json()
 
-        if data["c"] == 0:
+        if stock["c"] == 0:
             return await ctx.send('Invalid stock provided.')
 
-        stock: dict = data
         price: int = round(stock["c"])
         humanized_price: str = humanize.intcomma(price)
 

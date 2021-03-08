@@ -176,7 +176,7 @@ class Fun(commands.Cog):
                      f'I calculate that the love between {user_1.mention} and {user_2.mention} is {str(love)[:2]}%')
 
     @commands.command(aliases=['ppsize'])
-    async def pp(self, ctx, user: discord.Member = None):
+    async def pp(self, ctx, user: discord.Member = None): # [p]pp
         if not user:
             user = ctx.author
         random.seed(int(user.id))
