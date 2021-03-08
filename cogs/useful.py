@@ -225,9 +225,8 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     async def recent_commits(self, ctx):
         async with self.bot.session.get('https://api.github.com/repos/ppotatoo/SYSTEM32/commits') as f:
             resp = await f.json()
-        embed = discord.Embed(description="\n".join(
-            f"[`{commit['sha'][:6]}`]({commit['html_url']}) {commit['commit']['message']}" for commit in resp[:5]),
-            color=self.bot.embed_color)
+        embed = ctx.embed(description="\n".join(
+            f"[`{commit['sha'][:6]}`]({commit['html_url']}) {commit['commit']['message']}" for commit in resp[:5]))
         await ctx.send(embed=embed)
 
     @commands.command(help='Suggests a feature to the developers!')
@@ -237,9 +236,9 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         await ctx.send(embed=ctx.embed(description='Your suggestion has been sent! '))
 
     @commands.command(help='Pretty-Prints some JSON')
-    async def pprint(self, ctx, hmm: json.loads):
-        hmm.replace("'", '"')
-        await ctx.send(json.dumps(hmm, indent=4))
+    async def pprint(self, ctx, hmm):
+        tet = json.loads(hmm)
+        await ctx.send(json.dumps(tet, indent=4))
 
     @commands.command(help='Chooses the best choice.')
     async def choose(self, ctx, choice_1, choice_2):
