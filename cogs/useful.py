@@ -237,6 +237,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Pretty-Prints some JSON')
     async def pprint(self, ctx, hmm):
+        await ctx.send(hmm)
         tet = json.loads(hmm)
         await ctx.send(json.dumps(tet, indent=4))
 
