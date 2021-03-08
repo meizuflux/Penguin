@@ -208,17 +208,7 @@ class Fun(commands.Cog):
         decoded = encoded_encoded_string.decode('utf-8')
         await qembed(ctx, decoded)
 
-    @commands.command()
-    async def waifu(self, ctx):
-        async with self.bot.session.get('https://waifu.pics/api/sfw/waifu') as f:
-            waifu = await f.json()
-        await ctx.send(embed=ctx.embed().set_image(url=waifu.get('url')))
 
-    @commands.command()
-    async def neko(self, ctx):
-        async with self.bot.session.get('https://waifu.pics/api/sfw/neko') as f:
-            waifu = await f.json()
-        await ctx.send(embed=ctx.embed().set_image(url=waifu.get('url')))
 
 
 def setup(bot):

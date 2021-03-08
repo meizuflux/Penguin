@@ -44,7 +44,7 @@ class CustomHelp(commands.MinimalHelpCommand):
                 "music": "<:bruhkitty:739613862302711840>",
                 "jishaku": "<:verycool:739613733474795520>",
                 "stocks": "<:stonks:817178220213567509>",
-                "helpful": "idk"
+                "animepics": "<:prettythumbsup:806390638044119050>"
             }
             emoji = emoji_dict[heading.lower()]
             self.paginator.add_line(f'{emoji if emoji else None}  **{heading}**')
