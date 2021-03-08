@@ -237,6 +237,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Pretty-Prints some JSON')
     async def pprint(self, ctx, *, data: json.loads):
+        data = data.replace("'", '"')
         await ctx.send(f"```json\n{ctx.escape(json.dumps(data, indent=4))}```")
 
     @commands.command(help='Chooses the best choice.')
