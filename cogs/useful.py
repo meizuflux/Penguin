@@ -57,6 +57,7 @@ class ChuckContext(commands.Context):
         await m.add_reaction("❌")
         try:
             await self.bot.wait_for('reaction_add',
+                                    timeout=120,
                                     check=lambda r, u: u.id == self.author.id and r.message.id == m.id and str(
                                         r.emoji) == str("❌"))
             await m.delete()
