@@ -232,7 +232,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(help='Suggests a feature to the developers!')
     async def suggest(self, ctx, *, suggestion):
         support = self.bot.get_channel(818246475867488316)
-        await support.send(embed=ctx.embed(title='New Suggestion:', description=f"```\n{ctx.escape(suggestion)}```"))
+        await support.send(embed=ctx.embed(title='New Suggestion:', description=f"```\n{ctx.escape(suggestion)}```[JUMP URL]({ctx.message.jump_url})"))
         await ctx.send(embed=ctx.embed(description='Your suggestion has been sent! '))
 
     @commands.command(help='Pretty-Prints some JSON')
