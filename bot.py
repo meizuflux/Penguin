@@ -23,7 +23,6 @@ class Chuck(commands.Bot):
         self.bot = None
         intents = discord.Intents.default()
         intents.members = True
-        intents.presences = True
         super().__init__(
             command_prefix=self.get_prefix,
             case_insensitive=True,
