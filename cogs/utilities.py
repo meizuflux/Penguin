@@ -197,7 +197,10 @@ class Utilities(commands.Cog):
                     text = f'{await ctx.mystbin(decoded_message)}.{syntax}'
 
         if text is None:
-            attachment = ctx.message.attachments[0]
+            try:
+                attachment = ctx.message.attachments[0]
+            except IndexError:
+                return await ctx.send('You need to provide text or an attachment.')
             if attachment:
                 syntax = attachment.filename.split(".")[1]
                 if attachment.filename.endswith(filenames):
