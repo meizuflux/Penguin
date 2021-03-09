@@ -252,9 +252,9 @@ class Fun(commands.Cog):
     def do_ahb(self, text):
         img = Image.open('assets/ahb.jpeg')
         draw = ImageDraw.Draw(img)
-        font = ImageFont.truetype('assets/Helvetica Bold.ttf', 35)
+        font = ImageFont.truetype('assets/Helvetica Bold.ttf', 20)
         wrapped = textwrap.wrap(text, width=24)
-        draw.text((100, 100), '\n'.join(wrapped), (255,255,255), font=font)
+        draw.text((150, 100), '\n'.join(wrapped), (255,255,255), font=font)
         byte = BytesIO()
         img.save(byte, 'PNG')
         byte.seek(0)
@@ -262,9 +262,10 @@ class Fun(commands.Cog):
 
     @commands.cooldown(1,10,BucketType.user) 
     @commands.command(aliases=['alwayshasbeen', 'ahb'], usage='[text]')
-    async def always_has_been(self, ctx, text='It\'s all Ohio?'):
+    async def always_has_been(self, ctx, *, text='It\'s all Ohio?'):
         """It's all Ohio?"""
-
+        if len(text) > 100:
+            return await ctx.send("Sorry, please keep the text under 100 characters.")
         embed = ctx.embed().set_image(url="attachment://always_has_been.jpeg")
         await ctx.send(embed=embed, file=discord.File(await self.do_ahb(text), "always_has_been.jpeg"))
 
