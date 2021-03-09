@@ -96,7 +96,7 @@ class Utilities(commands.Cog):
             e = e[0]
             if e is None:
                 return
-            if e.is_usable() != False:
+            if e.is_usable():
                 emoji.append(str(e))
         await message.channel.send(" ".join(emoji))
 
