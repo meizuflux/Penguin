@@ -252,7 +252,7 @@ class Fun(commands.Cog):
     def do_ahb(self, text):
         img = Image.open('assets/ahb.jpeg')
         draw = ImageDraw.Draw(img)
-        font = ImageFont.truetype('assets/Montserrat-Regular.ttf', 50)
+        font = ImageFont.truetype('assets/Helvetica Bold.ttf', 35)
         wrapped = textwrap.wrap(text, width=24)
         draw.text((100, 100), '\n'.join(wrapped), (255,255,255), font=font)
         byte = BytesIO()
