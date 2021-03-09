@@ -253,9 +253,9 @@ class Fun(commands.Cog):
         img = Image.open('assets/ahb.jpeg')
         draw = ImageDraw.Draw(img)
         font = ImageFont.truetype('assets/Helvetica Bold.ttf', 20)
-        wrapped = textwrap.wrap(text, width=17)
+        wrapped = textwrap.wrap(text, width=20)
         down = 110
-        down -= len(wrapped) * 11
+        down -= len(wrapped) * 12
         draw.text((180, down), '\n'.join(wrapped), (255,255,255), font=font)
         byte = BytesIO()
         img.save(byte, 'PNG')
