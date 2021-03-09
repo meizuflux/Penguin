@@ -255,7 +255,7 @@ class Fun(commands.Cog):
         font = ImageFont.truetype('assets/Helvetica Bold.ttf', 20)
         wrapped = textwrap.wrap(text, width=20)
         down = 110
-        down -= len(wrapped) * 12
+        down -= len(wrapped) * 15
         draw.text((162, down), '\n'.join(wrapped), (255,255,255), font=font)
         byte = BytesIO()
         img.save(byte, 'PNG')
