@@ -211,10 +211,12 @@ class Fun(commands.Cog):
     @executor_function
     def do_typerace(self, text):
         img = Image.open('assets/black.jpeg')
+        width, height = img.size
         draw = ImageDraw.Draw(img)
         font = ImageFont.truetype('assets/Montserrat-Regular.ttf', 125)
         wrapped = textwrap.wrap(text, width=24)
-        draw.text((40, 40), '\n'.join(wrapped), (255,255,255), font=font)
+        w, h = draw.textsize(text)
+        draw.text(((width-w)/2,(height-h)/2), '\n'.join(wrapped), (255,255,255), font=font)
         byte = BytesIO()
         img.save(byte, 'PNG')
         byte.seek(0)
@@ -256,7 +258,7 @@ class Fun(commands.Cog):
         wrapped = textwrap.wrap(text, width=20)
         down = 110
         down -= len(wrapped) * 17
-        draw.text((162, down), '\n'.join(wrapped), (255,255,255), font=font, align="center")
+        draw.text((160, down), '\n'.join(wrapped), (255,255,255), font=font, align="center")
         byte = BytesIO()
         img.save(byte, 'PNG')
         byte.seek(0)
