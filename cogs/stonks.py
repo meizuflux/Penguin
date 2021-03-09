@@ -7,14 +7,17 @@ from prettytable import PrettyTable
 
 from utils.default import plural
 
+from cogs.economy import get_stats
+
 FINNHUB_URL = "https://finnhub.io/api/v1/"
 
 
 class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
-    """Buy and sell stocks. Prices are directly related to real life prices
-    This works with the Economy commands."""
 
+    """Buy and sell stocks. Prices are directly related to real life prices.
+    This works with the Economy commands."""
     def __init__(self, bot):
+        """Creates the cog."""
         self.bot = bot
         self.finnhub = self.bot.config.finnhub
         self.del_none.start()
@@ -23,27 +26,12 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
     async def del_none(self):
         await self.bot.db.execute('DELETE FROM stocks WHERE amount = 0')
 
-    @staticmethod
-    async def get_stats(self, user_id: int):
-        try:
-            data = dict(await self.bot.db.fetchrow('SELECT wallet, bank FROM economy WHERE userid = $1', user_id))
-            wallet = data["wallet"]
-            bank = data["bank"]
-
-        except TypeError:
-            await self.bot.db.execute("INSERT INTO public.economy(userid, wallet, bank) VALUES($1, 100, 100)", user_id)
-            data = dict(await self.bot.db.fetchrow('SELECT wallet, bank FROM economy WHERE userid = $1', user_id))
-            wallet = data["wallet"]
-            bank = data["bank"]
-
-        return wallet, bank
-
     @commands.command()
     async def buy(self, ctx, ticker: str = 'MSFT', amount='1'):
         """Buys a stock
         You can view a list of all stocks at https://stockanalysis.com/stocks/
         """
-        wallet, bank = await self.get_stats(self, ctx.author.id)
+        wallet, bank = await get_stats(ctx, ctx.author.id)
         ticker = ticker.upper()
 
         async with self.bot.session.get(f'{FINNHUB_URL}/quote?symbol={ticker}&token={self.finnhub}') as data:
@@ -153,7 +141,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
             )
             stock_values = (ctx.author.id, ticker, amount)
 
-            wallet, bank = await self.get_stats(self, ctx.author.id)
+            wallet, bank = await get_stats(ctx, ctx.author.id)
             eco_values = (wallet + total, ctx.author.id)
 
             await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE userid = $2", *eco_values)

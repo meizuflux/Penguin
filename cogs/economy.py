@@ -8,26 +8,25 @@ from discord.ext import commands
 
 from utils.default import qembed
 
+async def get_stats(ctx, user_id: int):
+    try:
+        data = dict(await ctx.bot.db.fetchrow('SELECT wallet, bank FROM economy WHERE userid = $1', user_id))
+    except TypeError:
+        await ctx.bot.db.execute("INSERT INTO public.economy(userid, wallet, bank) VALUES($1, 100, 100)", user_id)
+        data = dict(await ctx.bot.db.fetchrow('SELECT wallet, bank FROM economy WHERE userid = $1', user_id))
+
+    wallet = data["wallet"]
+    bank = data["bank"]
+
+    return wallet, bank
+
 
 class Economy(commands.Cog, command_attrs=dict(hidden=False)):
+
+    """Earn some money. This ties in directly to the stock category."""
     def __init__(self, bot):
+        """Creates the bot."""
         self.bot = bot
-
-    @staticmethod
-    async def get_stats(self, user_id: int):
-        try:
-            data = dict(await self.bot.db.fetchrow('SELECT wallet, bank FROM economy WHERE userid = $1', user_id))
-
-            wallet = data["wallet"]
-            bank = data["bank"]
-        except TypeError:
-            await self.bot.db.execute("INSERT INTO public.economy(userid, wallet, bank) VALUES($1, 100, 100)", user_id)
-
-            data = dict(await self.bot.db.fetchrow('SELECT wallet, bank FROM economy WHERE userid = $1', user_id))
-            wallet = data["wallet"]
-            bank = data["bank"]
-
-        return wallet, bank
 
     @commands.command(help='Registers you into the database')
     async def register(self, ctx):
@@ -39,7 +38,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='View yours or someone else\'s balance', aliases=['bal'])
     async def balance(self, ctx, user: discord.Member = None):
-        wallet, bank = await self.get_stats(self, user.id if user else ctx.author.id)
+        wallet, bank = await get_stats(ctx, user.id if user else ctx.author.id)
 
         e = discord.Embed(title=f'{user.name if user else ctx.author.name}\'s balance',
                           description=
@@ -74,7 +73,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Deposits a set amount into your bank', aliases=['dep'])
     async def deposit(self, ctx, amount):
-        wallet, bank = await self.get_stats(self, ctx.author.id)
+        wallet, bank = await get_stats(ctx, ctx.author.id)
 
         if amount.lower() == 'all':
             bank = bank + wallet
@@ -100,7 +99,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Deposits a set amount into your bank', aliases=['wd', 'with'])
     async def withdraw(self, ctx, amount):
-        wallet, bank = await self.get_stats(self, ctx.author.id)
+        wallet, bank = await get_stats(ctx, ctx.author.id)
 
         if amount.lower() == 'all':
             wallet = bank + wallet
@@ -126,8 +125,8 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Lets you send money over to another user', alises=['send'])
     async def transfer(self, ctx, user: discord.Member, amount: typing.Union[str, int]):
-        author_wallet, author_bank = await self.get_stats(self, ctx.author.id)
-        target_wallet, target_bank = await self.get_stats(self, user.id)
+        author_wallet, author_bank = await get_stats(ctx, ctx.author.id)
+        target_wallet, target_bank = await get_stats(ctx, user.id)
 
         if isinstance(amount, int):
             if amount > author_wallet:
@@ -154,8 +153,8 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Takes a random amount of $ from someone', alises=['mug', 'steal'])
     async def rob(self, ctx, user: discord.Member):
-        author_wallet, author_bank = await self.get_stats(self, ctx.author.id)
-        target_wallet, target_bank = await self.get_stats(self, user.id)
+        author_wallet, author_bank = await get_stats(ctx, ctx.author.id)
+        target_wallet, target_bank = await get_stats(ctx, user.id)
 
         if target_wallet == 0:
             return await qembed(ctx, 'That user has no money in their wallet. Shame on you for trying to rob them.')
@@ -176,7 +175,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(help='Work for some $$$')
     @commands.cooldown(rate=1, per=7200, type=commands.BucketType.user)
     async def work(self, ctx):
-        author_wallet, author_bank = await self.get_stats(self, ctx.author.id)
+        author_wallet, author_bank = await get_stats(ctx, ctx.author.id)
 
         cash = random.randint(100, 500)
 
@@ -193,7 +192,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(help='Daily reward')
     @commands.cooldown(rate=1, per=86400, type=commands.BucketType.user)
     async def daily(self, ctx):
-        data = await self.get_stats(self, ctx.author.id)
+        data = await get_stats(ctx, ctx.author.id)
 
         cash = random.randint(500, 700)
 
@@ -205,7 +204,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(help='Fish in order to get some money.')
     @commands.cooldown(rate=1, per=7200, type=commands.BucketType.user)
     async def fish(self, ctx):
-        data = await self.get_stats(self, ctx.author.id)
+        data = await get_stats(ctx, ctx.author.id)
 
         price = random.randint(20, 35)
         fish = random.randint(5, 20)
@@ -228,7 +227,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             return await ctx.send('You sit all day on the street, but collect no money.')
         async with self.bot.session.get('https://pipl.ir/v1/getPerson') as f:
             cities = await f.json()
-        data = await self.get_stats(self, ctx.author.id)
+        data = await get_stats(ctx, ctx.author.id)
 
         cash = random.randint(0, 500)
         await self.bot.db.execute("UPDATE economy SET wallet = $1, bank = $2 WHERE userid = $3", data[0] + cash,
@@ -241,7 +240,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.cooldown(rate=1, per=300, type=commands.BucketType.user)
     async def resetcooldown(self, ctx, command):
         eco = self.bot.get_cog("Economy")
-        data = await self.get_stats(self, ctx.author.id)
+        data = await get_stats(ctx, ctx.author.id)
         if self.bot.get_command(command) not in eco.walk_commands():
             return await qembed(ctx,
                                 f'You can only reset the cooldown for commands in this category. You can do `{ctx.prefix}help Economy` to see all the commands.')
