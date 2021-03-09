@@ -220,9 +220,10 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(help='Beg in the street')
     @commands.cooldown(rate=1, per=200, type=commands.BucketType.user)
     async def beg(self, ctx):
-        """Beg in the street.
-
-        33% chance to not get anything."""
+        """
+        Beg in the street.
+        33% chance to not get anything.
+        """
         if random.randint(1, 3) == 1:
             return await ctx.send('You sit all day on the street, but collect no money.')
         async with self.bot.session.get('https://pipl.ir/v1/getPerson') as f:
