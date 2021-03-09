@@ -233,7 +233,7 @@ class Fun(commands.Cog):
         except asyncio.TimeoutError:
         	await msg.reply("Nobody got it.")
         else:
-            winn = ctx.embed(description=f"{message.author} got it in {time.perf_counter() - start:.2f} seconds!")
+            winn = ctx.embed(description=f"**{message.author}** got it in **{time.perf_counter() - start:.2f}** seconds!")
             await msg.reply(embed=winn)
 
 
