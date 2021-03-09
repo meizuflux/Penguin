@@ -264,8 +264,8 @@ class Fun(commands.Cog):
 
     @commands.cooldown(1,10,BucketType.user) 
     @commands.command(aliases=['alwayshasbeen', 'ahb'], usage='[text]')
-    async def always_has_been(self, ctx, *, text='It\'s all Ohio?'):
-        """It's all Ohio?"""
+    async def always_has_been(self, ctx, *, text='Wait, it\'s all Ohio?'):
+        """Wait, it's all Ohio?"""
         if len(text) > 100:
             return await ctx.send("Sorry, please keep the text under 100 characters.")
         embed = ctx.embed().set_image(url="attachment://always_has_been.jpeg")
