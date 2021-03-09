@@ -39,7 +39,6 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
                 img = None
         if not img:
             img = await ctx.author.avatar_url_as(format="png").read()
-            
         return img
 
     @executor_function
