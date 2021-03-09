@@ -155,7 +155,7 @@ class Chuck(commands.Bot):
         """Checking if someone pings the bot."""
         if message.author.bot:
             return
-        if re.fullmatch(f"^(<@!?{self.user.id}>)\s*", message.content):
+        if re.fullmatch(r"^(<@!?{self.user.id}>)\s*", message.content):
             try:
                 server_prefix = bot.prefixes[message.guild.id]
             except KeyError:

@@ -8,7 +8,7 @@ from utils.default import plural, qembed
 
 
 class CustomHelp(commands.MinimalHelpCommand):
-    def get_command_signature(self, command, ctx=None):
+    def get_command_signature(self, command):
         """Method to return a commands name and signature."""
         sig = command.usage or command.signature
         if not sig and not command.parent:
@@ -88,9 +88,7 @@ class CustomHelp(commands.MinimalHelpCommand):
         if bot.description:
             self.paginator.add_line(bot.description, empty=True)
 
-        no_category = '\u200bNo Category'
-
-        def get_category(command, *, no_category=no_category):
+        def get_category(command, *, no_category='\u200bNo Category'):
             cog = command.cog
             return cog.qualified_name if cog is not None else no_category
 
