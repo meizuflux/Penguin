@@ -107,7 +107,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
 
     @dev.command(aliases=['del'])
     async def delete(self, ctx, message: discord.Message = None):
-        """Deletes the given message"""
+        """Deletes the given message."""
         if ctx.message.reference:
             message = ctx.message.reference
             message = await ctx.fetch_message(message.message_id)
@@ -145,14 +145,14 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
     @commands.group()
     @commands.is_owner()
     async def change(self, ctx):
-        """Change things about the bot without the developer portal"""
+        """Change things about the bot without the developer portal."""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(str(ctx.command))
 
     @change.command(name="username")
     @commands.is_owner()
     async def change_username(self, ctx, *, name: str):
-        """ Change username. """
+        """ Change username."""
         try:
             await self.bot.user.edit(username=name)
             await qembed(ctx, f"Successfully changed username to **{name}**")
@@ -162,7 +162,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
     @change.command(name="nickname")
     @commands.is_owner()
     async def change_nickname(self, ctx, *, name: str = None):
-        """ Change nickname. """
+        """Change nickname."""
         try:
             await ctx.guild.me.edit(nick=name)
             if name:
@@ -175,7 +175,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
     @change.command(name="avatar")
     @commands.is_owner()
     async def change_avatar(self, ctx, url: str = None):
-        """Changes the bot's avatar"""
+        """Changes the bot's avatar."""
         cs = aiohttp.ClientSession()
         if url is None and len(ctx.message.attachments) == 1:
             url = ctx.message.attachments[0].url

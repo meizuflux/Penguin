@@ -9,7 +9,7 @@ from utils.default import plural, qembed
 
 class CustomHelp(commands.MinimalHelpCommand):
     def get_command_signature(self, command, ctx=None):
-        """Method to return a commands name and signature"""
+        """Method to return a commands name and signature."""
         sig = command.usage or command.signature
         if not sig and not command.parent:
             return f'`{self.clean_prefix}{command.name}`'
@@ -88,7 +88,7 @@ class CustomHelp(commands.MinimalHelpCommand):
         if bot.description:
             self.paginator.add_line(bot.description, empty=True)
 
-        no_category = '\u200b{0.no_category}'.format(self)
+        no_category = '\u200bNo Category'
 
         def get_category(command, *, no_category=no_category):
             cog = command.cog
@@ -97,8 +97,8 @@ class CustomHelp(commands.MinimalHelpCommand):
         filtered = await self.filter_commands(bot.commands, sort=True, key=get_category)
         to_iterate = itertools.groupby(filtered, key=get_category)
 
-        for category, commands in to_iterate:
-            self.add_bot_commands_formatting(list(commands), category)
+        for category, actual_commands in to_iterate:
+            self.add_bot_commands_formatting(list(actual_commands), category)
 
         self.paginator.add_line()
         self.paginator.add_line(self.get_ending_note())

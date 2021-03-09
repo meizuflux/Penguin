@@ -17,7 +17,7 @@ from cogs.useful import ChuckContext
 
 
 class Chuck(commands.Bot):
-    """Subclassed Bot"""
+    """Subclassed Bot."""
 
     def __init__(self):
         self.bot = None
@@ -44,13 +44,13 @@ class Chuck(commands.Bot):
 
     @staticmethod
     def get_config(item: str):
-        """Gets an item from the config"""
+        """Gets an item from the config."""
         with open('config.json', 'r') as f:
             f = json.load(f)
         return f[item]
 
     async def get_prefix(self, message):
-        """Function for getting the command prefix"""
+        """Function for getting the command prefix."""
         if message.guild is None:
             return commands.when_mentioned_or(self.default_prefix)(self, message)
         try:
@@ -68,14 +68,14 @@ class Chuck(commands.Bot):
             return commands.when_mentioned_or(self.prefixes[message.guild.id])(self, message)
 
     async def try_user(self, user_id: int) -> discord.User:
-        """Method to try and fetch a user from cache then fetch from API"""
+        """Method to try and fetch a user from cache then fetch from API."""
         user = self.get_user(user_id)
         if not user:
             user = await self.fetch_user(user_id)
         return user.name
 
     def starter(self):
-        """Runs the bot"""
+        """Runs the bot."""
         try:
             # dsn = os.environ['dsn'] or self.get_config('DSN')
             print("Connecting to database ...")
@@ -99,7 +99,7 @@ class Chuck(commands.Bot):
             self.run(self.get_config('token'))
 
     async def create_tables(self):
-        """Creates the needed SQL tables for this bot"""
+        """Creates the needed SQL tables for this bot."""
         await self.wait_until_ready()
         await self.db.execute("CREATE TABLE IF NOT EXISTS prefixes (serverid BIGINT PRIMARY KEY,prefix VARCHAR(50))")
         await self.db.execute("CREATE TABLE IF NOT EXISTS scoresaber (userid BIGINT PRIMARY KEY,ssid BIGINT)")
@@ -148,11 +148,11 @@ class Chuck(commands.Bot):
         await super().close()
 
     async def get_context(self, message: discord.Message, *, cls=None):
-        """Method to override "ctx" """
+        """Method to override "ctx"."""
         return await super().get_context(message, cls=cls or ChuckContext)
 
     async def on_message(self, message: discord.Message):
-        """Checking if someone pings the bot"""
+        """Checking if someone pings the bot."""
         if message.author.bot:
             return
         if re.fullmatch(f"^(<@!?{self.user.id}>)\s*", message.content):
@@ -165,7 +165,7 @@ class Chuck(commands.Bot):
         await self.process_commands(message)
 
     async def on_message_edit(self, before, after):
-        """Check on command edit so that you don't have to retype your command"""
+        """Check on command edit so that you don't have to retype your command."""
         if before.author.id in self.owner_ids and not before.embeds and not after.embeds:
             await self.process_commands(after)
 
@@ -181,7 +181,7 @@ os.environ['JISHAKU_HIDE'] = 'True'
 
 @bot.event
 async def on_ready():
-    """Lets you know that the bot has run"""
+    """Lets you know that the bot has run."""
     print(f'{bot.user} has connected to Discord!\n'
           f'Guilds: {len(bot.guilds)}\n'
           f'Members: {str(sum([guild.member_count for guild in bot.guilds]))}')
