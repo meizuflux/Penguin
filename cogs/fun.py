@@ -2,7 +2,9 @@ import asyncio
 import base64
 import random
 import re
+from PIL import Image, ImageDraw, ImageFont
 import time
+import textwrap
 from io import BytesIO
 
 import discord
@@ -204,7 +206,22 @@ class Fun(commands.Cog):
         decoded = encoded_encoded_string.decode('utf-8')
         await qembed(ctx, decoded)
 
+    @commands.command()
+    async def typeracer(self, ctx):
+        """Who's the fastest typer?"""
+        async with self.bot.session.get("https://api.quotable.io/random") as f:
+            data = await f.json()
+        text = data["content"]
 
+        img = Image.open('/assets/black.jpeg')
+        draw = ImageDraw.Draw(img)
+        font = ImageFont.truetype('/assets/COMICATE.ttf', 47)
+        wrapped = textwrap.wrap(text, width=34)
+        draw.text((40, 40), '\n'.join(wrapped), (255,255,255), font=font)
+        obj = BytesIO()
+		img.save(obj, 'PNG')
+		obj.seek(0)
+        await ctx.send(file=discord.File(obj, "typeracer.png"))
 
 
 def setup(bot):
