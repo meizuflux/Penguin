@@ -3,6 +3,7 @@ import json
 import random
 import re
 import string
+import secrets
 
 import discord
 import humanize
@@ -241,14 +242,10 @@ class Utilities(commands.Cog):
         num = string.digits
         symbols = string.punctuation
 
-        all = lower + upper + num + symbols
+        total = lower + upper + num + symbols
 
-        temp = random.sample(all, length)
-
-        password = "".join(temp)
-        embed = discord.Embed(description=f'{length} digit random password:```\n{escape(password)}```',
-                              color=self.bot.embed_color, timestamp=ctx.message.created_at)
-        embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+        password = ''.join(secrets.choice(total) for i in range(length))
+        embed = ctx.embed(description=f'{length} digit random password:```\n{escape(password)}```')
         await ctx.author.send(embed=embed)
         await qembed(ctx, f'Messaged you with the password, {ctx.author.mention}')
 

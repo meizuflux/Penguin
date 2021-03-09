@@ -140,7 +140,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
             )
             stock_values = (ctx.author.id, ticker, amount)
 
-            wallet, bank = await get_stats(ctx, ctx.author.id)
+            wallet, _ = await get_stats(ctx, ctx.author.id)
             eco_values = (wallet + total, ctx.author.id)
 
             await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE userid = $2", *eco_values)

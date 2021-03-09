@@ -81,18 +81,14 @@ class Fun(commands.Cog):
             return user == ctx.author and str(reaction.emoji) == emg
 
         try:
-            reaction, _ = await self.bot.wait_for('reaction_add', timeout=seconds * 1.5, check=gcheck)
+            _, _ = await self.bot.wait_for('reaction_add', timeout=seconds * 1.5, check=gcheck)
         except asyncio.TimeoutError:
-            embed = discord.Embed(description='You did not react in time', timestamp=ctx.message.created_at,
-                                  color=self.bot.embed_color).set_footer(text=f"Requested by {ctx.author}",
-                                                                         icon_url=ctx.author.avatar_url)
+            embed = ctx.embed(description='You did not react in time')
             await msg.edit(embed=embed)
         else:
             end = time.perf_counter()
             tim = end - start
-            embed = discord.Embed(description=f'You reacted in **{tim:.2f}** seconds, **{seconds - tim:.2f}** off.',
-                                  timestamp=ctx.message.created_at, color=self.bot.embed_color).set_footer(
-                text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+            embed = discord.Embed(description=f'You reacted in **{tim:.2f}** seconds, **{seconds - tim:.2f}** off.')
             await msg.edit(embed=embed)
 
     @commands.command(name='chucknorris',
