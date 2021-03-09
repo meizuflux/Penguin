@@ -13,7 +13,6 @@ FINNHUB_URL = "https://finnhub.io/api/v1/"
 
 
 class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
-
     """Buy and sell stocks. Prices are directly related to real life prices.
     This works with the Economy commands."""
     def __init__(self, bot):
@@ -31,7 +30,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         """Buys a stock
         You can view a list of all stocks at https://stockanalysis.com/stocks/
         """
-        wallet, bank = await get_stats(ctx, ctx.author.id)
+        wallet, _ = await get_stats(ctx, ctx.author.id)
         ticker = ticker.upper()
 
         async with self.bot.session.get(f'{FINNHUB_URL}/quote?symbol={ticker}&token={self.finnhub}') as data:
