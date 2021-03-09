@@ -216,12 +216,19 @@ class Fun(commands.Cog):
         img = Image.open('assets/black.jpeg')
         draw = ImageDraw.Draw(img)
         font = ImageFont.truetype('assets/Montserrat-Bold.ttf', 130)
-        wrapped = textwrap.wrap(text, width=34)
+        wrapped = textwrap.wrap(text, width=30)
         draw.text((40, 40), '\n'.join(wrapped), (255,255,255), font=font)
         byte = BytesIO()
         img.save(byte, 'PNG')
         byte.seek(0)
         await ctx.send(file=discord.File(byte, "typeracer.png"))
+
+        try:
+            message = await self.bot.wait_for("message", timeout=60, check=lambda m: m.content == text and m.channel == ctx.channel)
+        except asyncio.TimeoutError:
+        	await ctx.send("All of you lost lmao")
+        else:
+            await ctx.send("yes")
 
 
 def setup(bot):
