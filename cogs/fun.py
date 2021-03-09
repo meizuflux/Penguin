@@ -254,7 +254,10 @@ class Fun(commands.Cog):
         draw = ImageDraw.Draw(img)
         font = ImageFont.truetype('assets/Helvetica Bold.ttf', 20)
         wrapped = textwrap.wrap(text, width=17)
-        draw.text((200, 100), '\n'.join(wrapped), (255,255,255), font=font)
+        down = 100
+        if len(wrapped) > 1:
+            down -= len(wrapped) * 10
+        draw.text((180, 100), '\n'.join(wrapped), (255,255,255), font=font)
         byte = BytesIO()
         img.save(byte, 'PNG')
         byte.seek(0)
