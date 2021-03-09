@@ -3,13 +3,14 @@
 import asyncio
 import inspect
 import os
+import tabulate
 
 import aiohttp
 import asyncpg
 import discord
-from discord.ext import commands
+from discord.ext import commands, flags
 from jishaku.paginators import PaginatorInterface, WrappedPaginator
-from prettytable import PrettyTable
+#from prettytable import PrettyTable
 
 from utils.default import qembed, traceback_maker
 
@@ -26,27 +27,24 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(str(ctx.command))
 
-    @dev.command()
-    async def sql(self, ctx, *, query):
+    @flags.add_flag("--style", default="github")
+    @dev.command(cls=flags.FlagCommand)
+    async def sql(self, ctx, *, query, **flags):
         """Execute SQL commands"""
-        res = await self.bot.db.fetch(query)
-        if len(res) == 0:
+        response = await self.bot.db.fetch(query)
+        if len(response) == 0:
             return await ctx.message.add_reaction('✅')
-        headers = list(res[0].keys())
-        table = PrettyTable()
-        table.field_names = headers
-        for record in res:
-            lst = list(record)
-            table.add_row(lst)
-        msg = table.get_string()
-        await ctx.send(f"```\n{msg}\n```")
+        table = tabulate.tabulate((dict(item) for item in response if item["amount"] != 0),
+                                headers="keys",
+                                tablefmt=flags["style"])
+        await ctx.send(embed=ctx.embed(description=f'```py\n{table}```'))
 
     @sql.error
     async def sql_error_handling(self, ctx, error):
         if isinstance(error, commands.CommandInvokeError):
             error = error.original
             if isinstance(error, asyncpg.exceptions.UndefinedTableError):
-                return await qembed(ctx, "This table does not exist.")
+                return await qembed(ctx, "That table does not exist.")
             elif isinstance(error, asyncpg.exceptions.PostgresSyntaxError):
                 return await qembed(ctx, f"There was a syntax error:```\n {error} ```")
             else:
