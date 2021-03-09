@@ -212,8 +212,8 @@ class Fun(commands.Cog):
     def do_typerace(self, text):
         img = Image.open('assets/black.jpeg')
         draw = ImageDraw.Draw(img)
-        font = ImageFont.truetype('assets/Montserrat-Bold.ttf', 125)
-        wrapped = textwrap.wrap(text, width=25)
+        font = ImageFont.truetype('assets/Montserrat-Regular.ttf', 125)
+        wrapped = textwrap.wrap(text, width=30)
         draw.text((40, 40), '\n'.join(wrapped), (255,255,255), font=font)
         byte = BytesIO()
         img.save(byte, 'PNG')
