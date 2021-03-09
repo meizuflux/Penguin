@@ -93,7 +93,7 @@ class Fun(commands.Cog):
             await msg.edit(embed=embed)
 
     @commands.command(name='chucknorris',aliases=['norris', 'chucknorrisjoke'])
-    async def norris(self, ctx): 
+    async def norris(self, ctx):
         """Tells a random Chuck Norris joke."""
         data = await self.bot.session.get(
             'https://api.chucknorris.io/jokes/random')
