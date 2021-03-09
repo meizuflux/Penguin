@@ -47,7 +47,7 @@ class CustomHelp(commands.MinimalHelpCommand):
                 "animepics": "<:prettythumbsup:806390638044119050>"
             }
             emoji = emoji_dict[heading.lower()]
-            self.paginator.add_line(f'{emoji if emoji else None}  **{heading}**')
+            self.paginator.add_line(f'{emoji if emoji else ""}  **{heading}**')
 
             self.paginator.add_line(f'> `{joined}`')
             # self.paginator.add_line()

@@ -11,7 +11,7 @@ from discord.ext import commands, tasks
 from jishaku.functools import executor_function
 from jishaku.paginators import PaginatorInterface, WrappedPaginator
 
-from utils.default import escape, qembed
+from utils.default import qembed
 from utils.fuzzy import finder
 
 
@@ -223,7 +223,7 @@ class Utilities(commands.Cog):
         raw = json.dumps(msg, indent=4)
         if len(raw) > 1989:
             return await qembed(ctx, f'{await ctx.mystbin(raw)}.json')
-        await qembed(ctx, f"```json\n{escape(raw)}```")
+        await qembed(ctx, f"```json\n{ctx.escape(raw)}```")
 
     @commands.command(help='Randomly generates a password', aliases=['pw', 'pwd'])
     async def password(self, ctx, length=16):
@@ -237,7 +237,7 @@ class Utilities(commands.Cog):
         total = lower + upper + num + symbols
 
         password = ''.join(secrets.choice(total) for i in range(length))
-        embed = ctx.embed(description=f'{length} digit random password:```\n{escape(password)}```')
+        embed = ctx.embed(description=f'{length} digit random password:```\n{ctx.escape(password)}```')
         await ctx.author.send(embed=embed)
         await qembed(ctx, f'Messaged you with the password, {ctx.author.mention}')
 

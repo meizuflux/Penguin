@@ -2,18 +2,6 @@ import traceback
 
 import discord
 
-
-def escape(text: str):
-    mark = [
-        '`',
-        '_',
-        '*'
-    ]
-    text = text
-    for item in mark:
-        text = text.replace(item, f'\u200b{item}')
-    return text
-
 def traceback_maker(err, advance: bool = True):
     """A way to debug your code anywhere"""
     _traceback = ''.join(traceback.format_tb(err.__traceback__))
