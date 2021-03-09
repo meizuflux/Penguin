@@ -221,14 +221,20 @@ class Fun(commands.Cog):
         byte = BytesIO()
         img.save(byte, 'PNG')
         byte.seek(0)
-        await ctx.send(file=discord.File(byte, "typeracer.png"))
+
+        embed = ctx.embed(title='You have 60 seconds to type this:')
+        embed.set_image(url="attachment://typeracer.png")
+
+        msg = await ctx.send(embed=embed, file=discord.File(byte, "typeracer.png"))
+        start = time.perf_counter()
 
         try:
             message = await self.bot.wait_for("message", timeout=60, check=lambda m: m.content == text and m.channel == ctx.channel)
         except asyncio.TimeoutError:
-        	await ctx.send("All of you lost lmao")
+        	await msg.reply("Nobody got it.")
         else:
-            await ctx.send("yes")
+            winn = ctx.embed(description=f"{message.author} got it in {time.perf_counter() - start:.2f} seconds!")
+            await msg.reply(embed=winn)
 
 
 def setup(bot):
