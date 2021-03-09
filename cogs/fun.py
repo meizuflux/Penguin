@@ -256,7 +256,7 @@ class Fun(commands.Cog):
         wrapped = textwrap.wrap(text, width=20)
         down = 110
         down -= len(wrapped) * 12
-        draw.text((165, down), '\n'.join(wrapped), (255,255,255), font=font)
+        draw.text((162, down), '\n'.join(wrapped), (255,255,255), font=font)
         byte = BytesIO()
         img.save(byte, 'PNG')
         byte.seek(0)
