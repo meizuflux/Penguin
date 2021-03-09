@@ -248,6 +248,28 @@ class Fun(commands.Cog):
         if isinstance(error, commands.MaxConcurrencyReached):
             return await ctx.send("There is already an ongoing session of typeracer in this channel.")
 
+    @executor_function
+    def do_ahb(self, text):
+        img = Image.open('assets/ahb.jpeg')
+        draw = ImageDraw.Draw(img)
+        font = ImageFont.truetype('assets/Montserrat-Regular.ttf', 50)
+        wrapped = textwrap.wrap(text, width=24)
+        draw.text((100, 100), '\n'.join(wrapped), (255,255,255), font=font)
+        byte = BytesIO()
+        img.save(byte, 'PNG')
+        byte.seek(0)
+        return byte
+
+    @commands.cooldown(1,10,BucketType.user) 
+    @commands.command(aliases=['alwayshasbeen', 'ahb'], usage='[text]')
+    async def always_has_been(self, ctx, text='It\'s all Ohio?'):
+        """It's all Ohio?"""
+
+        embed = ctx.embed().set_image(url="attachment://always_has_been.jpeg")
+        await ctx.send(embed=embed, file=discord.File(await self.do_ahb(text), "always_has_been.jpeg"))
+
+
+
 
 def setup(bot):
     bot.add_cog(Fun(bot))
