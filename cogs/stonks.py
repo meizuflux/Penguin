@@ -162,7 +162,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         if len(stuff) == 0:
             return await ctx.send(f'{user.mention} has no stocks', allowed_mentions=discord.AllowedMentions().none())
         table = tabulate.tabulate((dict(thing) for thing in stuff if thing["amount"] != 0), headers="keys", tablefmt="github")
-        embed = ctx.embed(title=f"{user.mention}\'s stocks:", description=f'```py\n{table}```')
+        embed = ctx.embed(title=f"{user}\'s stocks:", description=f'```py\n{table}```')
         await ctx.send(embed=embed)
 
     @commands.command(help='Looks up a stocks price.', aliases=['stock_lookup'])

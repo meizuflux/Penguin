@@ -27,16 +27,15 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(str(ctx.command))
 
-    @flags.add_flag("--style", default="github")
-    @dev.command(cls=flags.FlagCommand)
-    async def sql(self, ctx, *, query, **flags):
-        """Execute SQL commands"""
+    @dev.command()
+    async def sql(self, ctx, *, query):
+        """Execute SQL commands."""
         response = await self.bot.db.fetch(query)
         if len(response) == 0:
             return await ctx.message.add_reaction('✅')
         table = tabulate.tabulate((dict(item) for item in response),
                                 headers="keys",
-                                tablefmt=flags["style"])
+                                tablefmt="github")
         await ctx.send(embed=ctx.embed(description=f'```py\n{table}```'))
 
     @sql.error
