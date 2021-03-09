@@ -22,7 +22,6 @@ async def get_stats(ctx, user_id: int):
 
 
 class Economy(commands.Cog, command_attrs=dict(hidden=False)):
-
     """Earn some money. This ties in directly to the stock category."""
     def __init__(self, bot):
         """Creates the bot."""
