@@ -257,7 +257,7 @@ class Fun(commands.Cog):
         down = 100
         if len(wrapped) > 1:
             down -= len(wrapped) * 10
-        draw.text((180, 100), '\n'.join(wrapped), (255,255,255), font=font)
+        draw.text((180, down), '\n'.join(wrapped), (255,255,255), font=font)
         byte = BytesIO()
         img.save(byte, 'PNG')
         byte.seek(0)
