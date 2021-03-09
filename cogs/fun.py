@@ -9,6 +9,7 @@ from io import BytesIO
 
 import discord
 from discord.ext import commands, flags
+from discord.ext.commands.cooldowns import BucketType
 
 from utils.bottom import from_bottom, to_bottom
 from jishaku.functools import executor_function
@@ -211,14 +212,16 @@ class Fun(commands.Cog):
     def do_typerace(self, text):
         img = Image.open('assets/black.jpeg')
         draw = ImageDraw.Draw(img)
-        font = ImageFont.truetype('assets/Montserrat-Bold.ttf', 130)
-        wrapped = textwrap.wrap(text, width=30)
+        font = ImageFont.truetype('assets/Montserrat-Bold.ttf', 125)
+        wrapped = textwrap.wrap(text, width=25)
         draw.text((40, 40), '\n'.join(wrapped), (255,255,255), font=font)
         byte = BytesIO()
         img.save(byte, 'PNG')
         byte.seek(0)
         return byte
 
+    @commands.max_concurrency(1, per=BucketType.channel, wait=False)
+    @commands.cooldown(1,30,BucketType.user) 
     @commands.command(aliases=["tr"])
     async def typeracer(self, ctx):
         """Who's the fastest typer?"""
@@ -239,6 +242,11 @@ class Fun(commands.Cog):
         else:
             winn = ctx.embed(description=f"**{message.author}** got it in **{time.perf_counter() - start:.2f}** seconds!")
             await msg.reply(embed=winn)
+
+    @typeracer.error
+    async def concur(self, ctx, error):
+        if isinstance(error, commands.MaxConcurrencyReached):
+            return await ctx.send("There is already an ongoing session of typeracer in this channel.")
 
 
 def setup(bot):
