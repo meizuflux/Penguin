@@ -11,6 +11,7 @@ import discord
 from discord.ext import commands, flags
 
 from utils.bottom import from_bottom, to_bottom
+from jishaku.functools import executor_function
 from utils.default import qembed
 
 mystbin_url = re.compile(
@@ -206,13 +207,8 @@ class Fun(commands.Cog):
         decoded = encoded_encoded_string.decode('utf-8')
         await qembed(ctx, decoded)
 
-    @commands.command()
-    async def typeracer(self, ctx):
-        """Who's the fastest typer?"""
-        async with self.bot.session.get("https://api.quotable.io/random") as f:
-            data = await f.json()
-        text = data["content"]
-
+    @executor_function
+    def do_typerace(self, text):
         img = Image.open('assets/black.jpeg')
         draw = ImageDraw.Draw(img)
         font = ImageFont.truetype('assets/Montserrat-Bold.ttf', 130)
@@ -221,11 +217,19 @@ class Fun(commands.Cog):
         byte = BytesIO()
         img.save(byte, 'PNG')
         byte.seek(0)
+        return byte
+
+    @commands.command(aliases=["tr"])
+    async def typeracer(self, ctx):
+        """Who's the fastest typer?"""
+        async with self.bot.session.get("https://api.quotable.io/random") as f:
+            data = await f.json()
+        text = data["content"]
 
         embed = ctx.embed(title='You have 60 seconds to type this:')
         embed.set_image(url="attachment://typeracer.png")
 
-        msg = await ctx.send(embed=embed, file=discord.File(byte, "typeracer.png"))
+        msg = await ctx.send(embed=embed, file=discord.File(await self.do_typerace(text), "typeracer.png"))
         start = time.perf_counter()
 
         try:
