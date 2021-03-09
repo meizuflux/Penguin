@@ -218,10 +218,10 @@ class Fun(commands.Cog):
         font = ImageFont.truetype('/assets/COMICATE.ttf', 47)
         wrapped = textwrap.wrap(text, width=34)
         draw.text((40, 40), '\n'.join(wrapped), (255,255,255), font=font)
-        obj = BytesIO()
-		img.save(obj, 'PNG')
-		obj.seek(0)
-        await ctx.send(file=discord.File(obj, "typeracer.png"))
+        byte = BytesIO()
+        img.save(byte, 'PNG')
+        byte.seek(0)
+        await ctx.send(file=discord.File(byte, "typeracer.png"))
 
 
 def setup(bot):
