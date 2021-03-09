@@ -215,7 +215,7 @@ class Fun(commands.Cog):
 
         img = Image.open('assets/black.jpeg')
         draw = ImageDraw.Draw(img)
-        font = ImageFont.truetype('assets/COMICATE.ttf', 47)
+        font = ImageFont.truetype('assets/COMICATE.TTF', 47)
         wrapped = textwrap.wrap(text, width=34)
         draw.text((40, 40), '\n'.join(wrapped), (255,255,255), font=font)
         byte = BytesIO()
