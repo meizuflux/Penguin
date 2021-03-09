@@ -3,7 +3,8 @@ import math
 import discord
 import humanize
 from discord.ext import commands, tasks
-from prettytable import PrettyTable
+#from prettytable import PrettyTable
+import tabulate
 
 from utils.default import plural
 
@@ -157,20 +158,12 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         if not user:
             user = ctx.author
 
-        res = await self.bot.db.fetch("SELECT ticker, amount FROM stocks WHERE user_id = $1", user.id)
-        if len(res) == 0:
-            return await ctx.send(f'{user} has no stocks', allowed_mentions=discord.AllowedMentions().none())
-
-        table = PrettyTable()
-        table.field_names = list(res[0].keys())
-
-        for record in res:
-            lst = list(record)
-            if record["amount"] != 0:
-                table.add_row(lst)
-
-        msg = table.get_string()
-        await ctx.send(f"{user.mention}\'s stocks:```\n{msg}\n```", allowed_mentions=discord.AllowedMentions().none())
+        stuff = await self.bot.db.fetch("SELECT ticker, amount FROM stocks WHERE user_id = $1", user.id)
+        if len(stuff) == 0:
+            return await ctx.send(f'{user.mention} has no stocks', allowed_mentions=discord.AllowedMentions().none())
+        table = tabulate.tabulate((dict(thing) for thing in stuff if thing["amount"] != 0), headers="keys", tablefmt="github")
+        embed = ctx.embed(title=f"{user.mention}\'s stocks:", description=f'```py\n{table}```')
+        await ctx.send(embed=embed)
 
     @commands.command(help='Looks up a stocks price.', aliases=['stock_lookup'])
     async def lookup(self, ctx, ticker: str):

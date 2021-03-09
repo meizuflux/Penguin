@@ -34,7 +34,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         response = await self.bot.db.fetch(query)
         if len(response) == 0:
             return await ctx.message.add_reaction('✅')
-        table = tabulate.tabulate((dict(item) for item in response if item["amount"] != 0),
+        table = tabulate.tabulate((dict(item) for item in response),
                                 headers="keys",
                                 tablefmt=flags["style"])
         await ctx.send(embed=ctx.embed(description=f'```py\n{table}```'))
