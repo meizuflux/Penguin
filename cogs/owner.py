@@ -11,7 +11,7 @@ from discord.ext import commands
 from jishaku.paginators import PaginatorInterface, WrappedPaginator
 from prettytable import PrettyTable
 
-from utils.default import escape, qembed, traceback_maker
+from utils.default import qembed, traceback_maker
 
 
 class Owner(commands.Cog, command_attrs=dict(hidden=True)):
@@ -137,7 +137,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
 
         paginator = WrappedPaginator(prefix='```py', suffix='```', max_size=1985)
         for num, line in enumerate(source_lines, start=1):
-            paginator.add_line(f"{str(num)} {escape(line)}")
+            paginator.add_line(f"{str(num)} {ctx.escape(line)}")
 
         interface = PaginatorInterface(ctx.bot, paginator, owner=ctx.author)
         await interface.send_to(ctx)

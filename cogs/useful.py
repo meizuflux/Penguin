@@ -77,7 +77,6 @@ class ChuckContext(commands.Context):
             '_',
             '*'
         ]
-        text = text
         for item in mark:
             text = text.replace(item, f'\u200b{item}')
         return text
