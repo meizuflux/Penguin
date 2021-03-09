@@ -17,8 +17,7 @@ mystbin_url = re.compile(
 
 
 class Fun(commands.Cog):
-    """For the fun commands"""
-
+    """For the fun commands."""
     def __init__(self, bot):
         self.bot = bot
 
@@ -37,8 +36,10 @@ class Fun(commands.Cog):
     @flags.add_flag("--text", default="supreme")
     @commands.command(usage='[--text "supreme"] [--dark|--light]', cls=flags.FlagCommand)
     async def supreme(self, ctx, **flags):
-        """Makes a custom supreme logo
-        example: supreme --text "hey guys" --dark"""
+        """
+        Makes a custom supreme logo
+        example: supreme --text "hey guys" --dark
+        """
         if flags["dark"] and flags["light"]:
             return await qembed(ctx, "You can't have both dark and light, sorry.")
         image = await self.bot.alex.supreme(text=flags["text"],
@@ -91,10 +92,9 @@ class Fun(commands.Cog):
             embed = discord.Embed(description=f'You reacted in **{tim:.2f}** seconds, **{seconds - tim:.2f}** off.')
             await msg.edit(embed=embed)
 
-    @commands.command(name='chucknorris',
-                      aliases=['norris', 'chucknorrisjoke'],
-                      help='Gets a random Chuck Norris Joke')
-    async def norris(self, ctx):
+    @commands.command(name='chucknorris',aliases=['norris', 'chucknorrisjoke'])
+    async def norris(self, ctx): 
+        """Tells a random Chuck Norris joke."""
         data = await self.bot.session.get(
             'https://api.chucknorris.io/jokes/random')
         joke = await data.json()
@@ -192,14 +192,14 @@ class Fun(commands.Cog):
 
     @base64.command()
     async def decode(self, ctx, *, string):
-        """Decodes a base64 string"""
+        """Decodes a base64 string."""
         decoded_string = base64.b64decode(string)
         decoded = decoded_string.decode('utf-8')
         await qembed(ctx, decoded)
 
     @base64.command()
     async def encode(self, ctx, *, string):
-        """Encodes a base64 string"""
+        """Encodes a base64 string."""
         encoded_encoded_string = base64.b64encode(string.encode('utf-8'))
         decoded = encoded_encoded_string.decode('utf-8')
         await qembed(ctx, decoded)

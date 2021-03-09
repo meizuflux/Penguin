@@ -27,7 +27,6 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
 
         elif image is None:
             img = await ctx.author.avatar_url_as(format="png").read()
-            
         else:
             url = str(image).strip("<>")
             if re.match(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", url):
