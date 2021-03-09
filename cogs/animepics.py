@@ -1,4 +1,3 @@
-import discord
 from discord.ext import commands
 
 BASE_URL = 'https://waifu.pics/api/sfw/'

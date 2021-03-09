@@ -33,7 +33,7 @@ class ChuckContext(commands.Context):
                 reaction.emoji) == '❌'
 
         try:
-            reaction, user = await self.bot.wait_for('reaction_add',
+            reaction, _ = await self.bot.wait_for('reaction_add',
                                                      timeout=15,
                                                      check=terms)
         except asyncio.TimeoutError:
@@ -104,7 +104,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             if str(f).startswith("venv"):
                 continue
             with f.open() as of:
-                for line in of.readlines():
+                for _ in of.readlines():
                     ls += 1
 
         emb = discord.Embed(description=self.bot.description, colour=self.bot.embed_color,

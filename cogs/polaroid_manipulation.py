@@ -24,7 +24,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
 
         elif isinstance(image, (discord.Member, discord.User)):
             img = await image.avatar_url_as(format="png").read()
-            
+
         elif image is None:
             img = await ctx.author.avatar_url_as(format="png").read()
             
@@ -74,8 +74,6 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(help='Makes an image rainbowey')
     async def rainbow(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         await self.send_polaroid(ctx, image, method='apply_gradient')
-
-
 
     @commands.command(help='like putin')
     async def wide(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
@@ -152,7 +150,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
 
         embed = discord.Embed(colour=self.bot.embed_color,
                               timestamp=ctx.message.created_at)
-        embed.set_image(url=f"attachment://magik.png")
+        embed.set_image(url="attachment://magik.png")
         embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed, file=file)
 
