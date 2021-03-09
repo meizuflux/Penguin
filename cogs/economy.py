@@ -124,8 +124,8 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Lets you send money over to another user', alises=['send'])
     async def transfer(self, ctx, user: discord.Member, amount: typing.Union[str, int]):
-        author_wallet, author_bank = await get_stats(ctx, ctx.author.id)
-        target_wallet, target_bank = await get_stats(ctx, user.id)
+        author_wallet, _ = await get_stats(ctx, ctx.author.id)
+        target_wallet, _ = await get_stats(ctx, user.id)
 
         if isinstance(amount, int):
             if amount > author_wallet:
@@ -142,11 +142,9 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         author_wallet -= int(amount)
         target_wallet += int(amount)
 
-        await self.bot.db.execute("UPDATE economy SET wallet = $1, bank = $2 WHERE userid = $3", author_wallet,
-                                  author_bank, ctx.author.id)
+        await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE userid = $2", author_wallet, ctx.author.id)
 
-        await self.bot.db.execute("UPDATE economy SET wallet = $1, bank = $2 WHERE userid = $3", target_wallet,
-                                  target_bank, user.id)
+        await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE userid = $2", target_wallet, user.id)
 
         await qembed(ctx, f'You gave {user.mention} ${humanize.intcomma(amount)}')
 

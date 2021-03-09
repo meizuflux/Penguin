@@ -1,6 +1,5 @@
 import datetime
 import json
-import random
 import re
 import string
 import secrets
@@ -45,9 +44,7 @@ class Utilities(commands.Cog):
     @tasks.loop(hours=1)
     async def clear_message(self):
         for channel_id in self.bot.deleted_messages:
-
             if len(self.bot.deleted_messages[channel_id]) > 250:
-
                 dele = len(self.bot.deleted_messages[channel_id]) - 250
                 for number in range(dele):
                     del self.bot.deleted_messages[channel_id][number]
@@ -58,11 +55,6 @@ class Utilities(commands.Cog):
                 return None
         except KeyError:
             return None
-
-        if len(self.bot.deleted_messages[channel_id]) > 250:
-            dele = len(self.bot.deleted_messages[channel_id]) - 250
-            for number in range(dele):
-                del self.bot.deleted_messages[channel_id][number]
 
         readable_order = list(reversed(self.bot.deleted_messages[channel_id]))
         try:

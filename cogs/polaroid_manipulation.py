@@ -33,7 +33,6 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
                 async with ctx.bot.session.get(url) as resp:
                     if resp.headers["Content-type"].startswith("image"):
                         img = await resp.read()
-                        
                     else:
                         img = None
             else:
