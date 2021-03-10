@@ -332,5 +332,15 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         await ctx.send(f'{result[0]} won with {answer} votes and {answer / 1500:.2f}% of the votes')
 
 
+class AAAAAA(commands.Cog):
+    def init(self, bot):
+        self.bot = bot
+
+    @commands.command()
+    @commands.is_owner()
+    async def asdfasdfasdfasdfasdfasdfadsfasdf(self, ctx):
+        await ctx.send(1+2)
+
 def setup(bot):
     bot.add_cog(Useful(bot))
+    bot.add_cog(AAAAAA(bot))
