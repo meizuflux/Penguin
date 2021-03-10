@@ -102,8 +102,7 @@ class MenuSource(menus.ListPageSource):
                               description=f"Page {menu.current_page + 1}/{self.get_max_pages()}",
                               colour=menu.ctx.bot.embed_color)
 
-        cog = menu.ctx.bot.get_cog(thing)
-        commands = cog.get_commands()
+        commands = thing[1].get_commands()
         embed.add_field(name=thing, value="\n".join(get_command_signature(menu.ctx, command) for command in commands))
         return embed
 
