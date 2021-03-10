@@ -204,7 +204,7 @@ class CogSource(menus.ListPageSource):
     def __init__(self, ctx, cog):
         pag = commands.Paginator()
         _commands = [command for command in cog.get_commands()]
-        cmds = sorted([command for command in _commands if not command.hidden])
+        cmds = sorted([command for command in _commands if not command.hidden], key=lambda c: c.qualified_name)
         for command in cmds:
             pag.add_line(add_formatting(ctx, command))
         super().__init__(pag.pages, per_page=15)
