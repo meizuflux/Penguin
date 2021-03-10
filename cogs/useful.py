@@ -103,8 +103,8 @@ class MenuSource(menus.ListPageSource):
                               colour=menu.ctx.bot.embed_color)
 
         await menu.ctx.send(page)
-        _commands = page[1].get_commands()
-        embed.add_field(name=page[0], value=f"```yaml\n{_commands}```")
+        _commands = page.get_commands()
+        embed.add_field(name=page.name, value=f"```yaml\n{_commands}```")
         return embed
 
 class Helpti(menus.MenuPages):
@@ -120,9 +120,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.is_owner()
     @commands.command()
     async def menus(self, ctx):
-        data = {0: None}
-        cogs = [cog_pair for cog_pair in ctx.bot.cogs.items() if cog_pair[1].get_commands()]
-        data.update({num: cog_pair for num, cog_pair in enumerate(cogs, start=1)})
+        data = self.bot.cogs.values()})
         await ctx.send(data)
         pages = Helpti(source=MenuSource(data), clear_reactions_after=True)
         await pages.start(ctx)
