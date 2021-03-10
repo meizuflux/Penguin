@@ -113,10 +113,10 @@ class MenuSource(menus.GroupByPageSource):
                 pass
         
         def check(c):
-            if c == 'Info':
-                return c
-            else:
+            try:
                 return getattr(c.cog, 'qualified_name', 'Unsorted')
+            except AttributeError:
+                return c
         super().__init__(list(data[0]) + cmds, key=check, per_page=20)
 
 
