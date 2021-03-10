@@ -100,9 +100,18 @@ def add_formatting(ctx, command):
 
 class MenuSource(menus.ListPageSource):
     def __init__(self, data):
-        super().__init__(data, per_page=1)
+        pg = commands.Paginator
+        for cog in data:
+            _commands = [command for command in cog.get_commands()]
+            for command in _commands:
+                if not command.hidden:
+                    pg.add_line(add_formatting(self.ctx, command))
+
+        super().__init__(pg.pages, per_page=1)
+
 
     async def format_page(self, menu, page):
+        await menu.ctx.send(page)
         _commands = [command for command in page.get_commands()]
         dink = "\n".join(add_formatting(menu.ctx, command) for command in _commands if not command.hidden)
 
