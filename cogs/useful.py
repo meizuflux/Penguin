@@ -104,6 +104,8 @@ class MenuSource(menus.GroupByPageSource):
 
         cmds = []
         for cog in data:
+            if cog == "Info":
+                return
             _commands = [command for command in cog.get_commands()]
             for command in _commands:
                 if not command.hidden:
