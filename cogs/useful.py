@@ -263,8 +263,8 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Invites the bot to your server')
     async def invite(self, ctx):
-        invite = ctx.embed(title='Invite me to your server:', description="https://discord.com/oauth2/authorize?client_id=810570659968057384&scope=bot&permissions=70646849")
-        invite.add_field(name='You can also join the support server:', value='https://discord.gg/NTNgvHkjSp')
+        invite = ctx.embed(title='Invite me to your server:', description=self.bot.invite)
+        invite.add_field(name='You can also join the support server:', value=self.bot.support_invite)
         await ctx.send(embed=invite)
 
     @commands.command(help='An invite link to the bot support server.')

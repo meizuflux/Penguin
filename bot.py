@@ -37,6 +37,8 @@ class Chuck(commands.Bot):
         self.deleted_messages = collections.defaultdict(list)
         self.default_prefix = 'p!'
         self.config = config
+        self.support_invite = "https://discord.gg/NTNgvHkjSp"
+        self.invite = "https://discord.com/oauth2/authorize?client_id=810570659968057384&scope=bot&permissions=70646849"
         self.alex = alexflipnote.Client(self.get_config('alex_api_key'))
         self.timetime = time.time()
         self.case_insensitive = True
