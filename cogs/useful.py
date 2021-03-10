@@ -108,7 +108,6 @@ class MenuSource(menus.GroupByPageSource):
                 if not command.hidden:
                     cmds.append(command)
                     #pg.add_line(add_formatting(ctx, command))
-        await ctx.send(cmds)
         super().__init__(cmds, key=lambda c: c.cog, per_page=12)
 
 
@@ -133,6 +132,14 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         nono = ["jishaku", "owner", "commanderrorhandler", "helpful"]
         data = list(cog for cog in self.bot.cogs.values() if cog.qualified_name.lower() not in nono)
         data = sorted(data, key=lambda c: c.qualified_name)
+
+        cmds = []
+        for cog in data:
+            _commands = [command for command in cog.get_commands()]
+            for command in _commands:
+                if not command.hidden:
+                    cmds.append(command)
+        await ctx.send(cmds)
         pages = Helpti(source=MenuSource(ctx, data), clear_reactions_after=True)
         await pages.start(ctx)
 
