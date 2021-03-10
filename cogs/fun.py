@@ -280,7 +280,7 @@ class Fun(commands.Cog):
     @commands.command()
     async def sadcat(self, ctx):
         embed = ctx.embed()
-        embed.set_image(url=await self.bot.sadcat())
+        embed.set_image(url=await self.bot.alex.sadcat())
         await ctx.send(embed-embed)
 
 def setup(bot):
