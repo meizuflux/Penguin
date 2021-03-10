@@ -111,7 +111,7 @@ class MenuSource(menus.GroupByPageSource):
                 if not command.hidden:
                     cmds.append(command)
 
-        super().__init__(cmds, key=lambda c: if c == "Info": return c else: getattr(c.cog, 'qualified_name', 'Unsorted'), per_page=20)
+        super().__init__(cmds, key=lambda c: if c == "Info": c else: getattr(c.cog, 'qualified_name', 'Unsorted'), per_page=20)
 
 
     async def format_page(self, menu, commands):
