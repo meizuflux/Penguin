@@ -232,7 +232,7 @@ class HelpPages(menus.MenuPages):
 
     @menus.button('\N{BLACK SQUARE FOR STOP}\ufe0f', position=menus.Last(2))
     async def end_menu(self, _):
-        self.message.delete()
+        await self.message.delete()
         self.stop()
 
 
