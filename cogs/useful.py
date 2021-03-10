@@ -109,9 +109,14 @@ class MenuSource(menus.GroupByPageSource):
                 for command in _commands:
                     if not command.hidden:
                         cmds.append(command)
-            except:
+            except AttributeError:
                 pass
         
+        def check(c):
+            if c == 'Info':
+                return c
+            else:
+                
 
         super().__init__(list(data[0]) + cmds, key=lambda c: getattr(c.cog, 'qualified_name', 'Unsorted'), per_page=20)
 
