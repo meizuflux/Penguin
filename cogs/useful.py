@@ -103,7 +103,7 @@ class MenuSource(menus.ListPageSource):
         super().__init__(data, per_page=1)
 
     async def format_page(self, menu, page):
-        embed = ctx.embed(title="Commands",
+        embed = menu.ctx.embed(title="Commands",
                         description=f"Page {menu.current_page + 1}/{self.get_max_pages()}")
 
 
