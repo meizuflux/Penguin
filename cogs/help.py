@@ -279,7 +279,6 @@ class PaginatedHelp(commands.MinimalHelpCommand):
             self.paginator.add_line(f'{emoji if emoji else ""}  **{heading}**')
 
             self.paginator.add_line(f'> `{joined}`')
-            # self.paginator.add_line()
 
     def get_ending_note(self):
         command_name = self.invoked_with
