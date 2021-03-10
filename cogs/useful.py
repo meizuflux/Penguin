@@ -116,9 +116,8 @@ class MenuSource(menus.GroupByPageSource):
             if c == 'Info':
                 return c
             else:
-                
-
-        super().__init__(list(data[0]) + cmds, key=lambda c: getattr(c.cog, 'qualified_name', 'Unsorted'), per_page=20)
+                return getattr(c.cog, 'qualified_name', 'Unsorted')
+        super().__init__(list(data[0]) + cmds, key=check, per_page=20)
 
 
     async def format_page(self, menu, commands):
