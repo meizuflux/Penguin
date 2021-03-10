@@ -2,7 +2,7 @@ import difflib
 import itertools
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, menus
 from cogs.useful import MenuSource, Helpti
 
 from utils.default import plural, qembed
@@ -162,6 +162,53 @@ class CustomHelp(commands.MinimalHelpCommand):
         match = "\n".join(matches[:1])
         return f"No command called `{string}` found. Did you mean `{match}`?"
 
+
+def get_sig(ctx, command):
+    """Method to return a commands name and signature."""
+    sig = command.usage or command.signature
+    if not sig and not command.parent:
+        return f'`{ctx.prefix}{command.name}`'
+    if not command.parent:
+        return f'`{ctx.prefix}{command.name}` `{sig}`'
+    if not sig:
+        return f'`{ctx.prefix}{command.parent}` `{command.name}`'
+    else:
+        return f'`{ctx.prefix}{command.parent}` `{command.name}` `{sig}`'
+
+
+def add_formatting(ctx, command):
+    fmt = '{0} \N{EN DASH} {1}' if command.short_doc else '{0}'
+    return fmt.format(get_sig(ctx, command), command.short_doc)
+
+
+class HelpSource(menus.GroupByPageSource):
+    def __init__(self, ctx, data):
+
+        cmds = []
+        for cog in data:
+            _commands = [command for command in cog.get_commands()]
+            for command in _commands:
+                if not command.hidden:
+                    cmds.append(command)
+
+        super().__init__(cmds, key=lambda c: getattr(c.cog, 'qualified_name', 'Unsorted'), per_page=20)
+
+    async def format_page(self, menu, commands):
+        embed = menu.ctx.embed(title=f"{commands.key} | Page {menu.current_page + 1}/{self.get_max_pages()}",
+                               description="\n".join(add_formatting(menu.ctx, command) for command in commands.items))
+        if commands.key == "AAAAAA":
+            embed = menu.ctx.embed(title='test')
+        return embed
+
+
+class HelpPages(menus.MenuPages):
+
+    @menus.button('\N{BLACK SQUARE FOR STOP}\ufe0f', position=menus.Last(2))
+    async def end_menu(self, _):
+        self.message.delete()
+        self.stop()
+
+
 class PaginatedHelp(commands.MinimalHelpCommand):
     def get_command_signature(self, command):
         """Method to return a commands name and signature."""
@@ -240,23 +287,13 @@ class PaginatedHelp(commands.MinimalHelpCommand):
         ctx = self.context
         bot = ctx.bot
 
-        if bot.description:
-            self.paginator.add_line(bot.description, empty=True)
+        nono = ["jishaku", "owner", "commanderrorhandler", "helpful"]
+        data = [cog for cog in bot.cogs.values() if cog.qualified_name.lower() not in nono]
+        data = sorted(data, key=lambda c: c.qualified_name)
+        await ctx.send(data)
+        pages = HelpPages(source=HelpSource(ctx, data), clear_reactions_after=True)
 
-        def get_category(command, *, no_category='\u200bNo Category'):
-            cog = command.cog
-            return cog.qualified_name if cog is not None else no_category
-
-        filtered = await self.filter_commands(bot.commands, sort=True, key=get_category)
-        to_iterate = itertools.groupby(filtered, key=get_category)
-
-        for category, actual_commands in to_iterate:
-            self.add_bot_commands_formatting(list(actual_commands), category)
-
-        self.paginator.add_line()
-        self.paginator.add_line(self.get_ending_note())
-
-        await self.send_pages()
+        await pages.start(ctx)
 
     @staticmethod
     def get_help(command, brief=True):
@@ -317,11 +354,13 @@ class PaginatedHelp(commands.MinimalHelpCommand):
         return f"No command called `{string}` found. Did you mean `{match}`?"
 
 
+
+
 class Helpful(commands.Cog, command_attrs=dict(hidden=True)):
     def __init__(self, bot):
         self.bot = bot
         self._original_help_command = bot.help_command
-        bot.help_command = CustomHelp(command_attrs=dict(hidden=True, aliases=['halp', 'h', 'help_command'],
+        bot.help_command = PaginatedHelp(command_attrs=dict(hidden=True, aliases=['halp', 'h', 'help_command'],
                                                          help='Literally shows this message. Jesus, do you really need this?'))
         bot.help_command.cog = self
 
