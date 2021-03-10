@@ -81,6 +81,18 @@ class ChuckContext(commands.Context):
             text = text.replace(item, f'\u200b{item}')
         return text
 
+def get_command_signature(ctx, command):
+    """Method to return a commands name and signature."""
+    sig = command.usage or command.signature
+    if not sig and not command.parent:
+        return f'`{ctx.prefix}{command.name}`'
+    if not command.parent:
+        return f'`{ctx.prefix}{command.name}` `{sig}`'
+    if not sig:
+        return f'`{ctx.prefix}{command.parent}` `{command.name}`'
+    else:
+        return f'`{ctx.prefix}{command.parent}` `{command.name}` `{sig}`'
+
 class MenuSource(menus.ListPageSource):
     def __init__(self, data):
         super().__init__(data, per_page=1)
@@ -92,7 +104,7 @@ class MenuSource(menus.ListPageSource):
 
         cog = menu.ctx.bot.get_cog(thing)
         commands = cog.get_commands()
-        embed.add_field(name=thing, value="\n".join(command.name for command in commands))
+        embed.add_field(name=thing, value="\n".join(get_command_signature(menu.ctx, command) for command in commands))
         return embed
 
 class Helpti(menus.MenuPages):
@@ -108,7 +120,10 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.is_owner()
     @commands.command()
     async def menus(self, ctx):
-        pages = Helpti(source=MenuSource(["Fun", "Useful"]))
+        data = {0: None}
+        cogs = [cog_pair for cog_pair in self.context.bot.cogs.items() if cog_pair[1].get_commands()]
+        data.update({num: cog_pair for num, cog_pair in enumerate(cogs, start=1)})
+        pages = Helpti(source=MenuSource(data))
         await pages.start(ctx)
 
 
