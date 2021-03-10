@@ -104,7 +104,7 @@ class MenuSource(menus.ListPageSource):
 
         await menu.ctx.send(page)
         _commands = page.get_commands()
-        embed.add_field(name=page.name, value=f"```yaml\n{_commands}```")
+        embed.add_field(name=page.qualified_name, value=f"```yaml\n{_commands}```")
         return embed
 
 class Helpti(menus.MenuPages):
