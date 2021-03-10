@@ -111,7 +111,9 @@ class MenuSource(menus.GroupByPageSource):
                         cmds.append(command)
             except:
                 pass
-        super().__init__(data[0] + cmds, key=lambda c: getattr(c.cog, 'qualified_name', 'Unsorted'), per_page=20)
+        
+
+        super().__init__(list(data[0]) + cmds, key=lambda c: getattr(c.cog, 'qualified_name', 'Unsorted'), per_page=20)
 
 
     async def format_page(self, menu, commands):
