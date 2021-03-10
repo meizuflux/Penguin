@@ -12,6 +12,7 @@ import aiohttp
 import discord
 import humanize
 import psutil
+import itertools
 from discord.ext import commands, menus
 
 from utils.default import qembed
@@ -100,15 +101,13 @@ def add_formatting(ctx, command):
 
 class MenuSource(menus.GroupByPageSource):
     def __init__(self, ctx, data):
-        #pg = commands.Paginator(prefix='', suffix='')
         cmds = []
         for cog in data:
             _commands = [command for command in cog.get_commands()]
             for command in _commands:
                 if not command.hidden:
                     cmds.append(command)
-                    #pg.add_line(add_formatting(ctx, command))
-        super().__init__(cmds, key=lambda c: str(c.cog.qualified_name), per_page=12)
+        super().__init__(cmds, key=lambda c: getattr(c.cog, 'qualified_name', 'Unsorted'), per_page=12)
 
 
     async def format_page(self, menu, page):
