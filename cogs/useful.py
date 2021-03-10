@@ -123,7 +123,6 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.is_owner()
     @commands.command()
     async def menus(self, ctx):
         nono = ["jishaku", "owner"]
