@@ -200,8 +200,8 @@ class HelpSource(menus.GroupByPageSource):
             description = (
                 "`<argument>` means the argument is required\n"
                 "`[argument]` means the argument is required\n"
-                "You can view the help for a command or category by doing\n"
-                f"`{ctx.prefix}help` `[command|category]`"
+                f"Type `{ctx.prefix}help` `[command]` for more info on a command.\n"
+                f"You can also type `{ctx.prefix}help` `[category]` for more info on a category."
             )
             embed = menu.ctx.embed(title='Penguin Help Command', description=description)
             embed.add_field(name="About", value=f"```yaml\n{ctx.bot.description}```", inline=False)
