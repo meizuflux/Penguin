@@ -107,7 +107,7 @@ class MenuSource(menus.GroupByPageSource):
                 #if not command.hidden:
                     #pg.add_line(add_formatting(ctx, command))
 
-        super().__init__(ctx.bot.commands, key=lambda c: str(c.cog), per_page=12)
+        super().__init__(ctx.bot.commands, key=lambda c: c.cog.qualified_name, per_page=12)
 
 
     async def format_page(self, menu, page):
