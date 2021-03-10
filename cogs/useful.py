@@ -160,7 +160,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     async def menu(self, ctx):
         nono = ["jishaku", "owner", "commanderrorhandler", "helpful"]
         data = {0: None}
-        cogs = [cog for cog in self.bot.cogs.values() if cog.get_commands() and cog.qualified_name.lower() not in nono]
+        cogs = [cog_pair for cog_pair in ctx.bot.cogs.items() if cog_pair[1].get_commands() and cog_pair[1].qualified_name.lower() not in nono]
         data.update({num: cog_pair for num, cog_pair in enumerate(cogs, start=1)})
 
         pages = Helpti(source=TestMenuSource(ctx, data), clear_reactions_after=True)
