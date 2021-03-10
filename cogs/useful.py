@@ -101,6 +101,7 @@ def add_formatting(ctx, command):
 
 class MenuSource(menus.GroupByPageSource):
     def __init__(self, ctx, data):
+
         cmds = []
         for cog in data:
             _commands = [command for command in cog.get_commands()]
@@ -108,11 +109,11 @@ class MenuSource(menus.GroupByPageSource):
                 if not command.hidden:
                     cmds.append(command)
 
-        super().__init__(cmds, key=lambda c: getattr(c.cog, 'qualified_name', 'Unsorted'), per_page=12)
+        super().__init__(cmds, key=lambda c: getattr(c.cog, 'qualified_name', 'Unsorted'), per_page=15)
 
 
     async def format_page(self, menu, commands):
-        embed = menu.ctx.embed(title=f"{commands.key} {menu.current_page + 1}/{self.get_max_pages()}",
+        embed = menu.ctx.embed(title=f"{commands.key} | Page {menu.current_page + 1}/{self.get_max_pages()}",
                         description="\n".join(add_formatting(menu.ctx, command) for command in commands.items))
 
         return embed
