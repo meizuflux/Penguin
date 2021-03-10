@@ -109,7 +109,7 @@ class MenuSource(menus.ListPageSource):
 
         
         _commands = page.get_commands()
-        dink = "\n".join(add_formatting(menu.context, command) for command in _commands if not command.hidden)
+        dink = "\n".join(add_formatting(menu.ctx, command) for command in _commands if not command.hidden)
         embed.add_field(name=page.qualified_name, value=dink)
         return embed
 
@@ -129,7 +129,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         nono = ["jishaku", "owner"]
         data = list(cog for cog in self.bot.cogs.values() if cog.qualified_name.lower() not in nono)
         data = sorted(data, key=lambda c: c.qualified_name)
-        await ctx.send(data)
+
         pages = Helpti(source=MenuSource(data), clear_reactions_after=True)
         await pages.start(ctx)
 
