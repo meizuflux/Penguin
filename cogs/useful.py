@@ -113,6 +113,7 @@ class MenuSource(menus.GroupByPageSource):
 
 
     async def format_page(self, menu, commands):
+        await menu.ctx.send(commands)
         embed = menu.ctx.embed(title=f"{commands.key} | Page {menu.current_page + 1}/{self.get_max_pages()}",
                         description="\n".join(add_formatting(menu.ctx, command) for command in commands.items))
 
