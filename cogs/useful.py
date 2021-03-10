@@ -139,7 +139,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             for command in _commands:
                 if not command.hidden:
                     cmds.append(command)
-        await ctx.send(cmds[:1900])
+        await ctx.send(cmds[:10])
         pages = Helpti(source=MenuSource(ctx, data), clear_reactions_after=True)
         await pages.start(ctx)
 
