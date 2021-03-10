@@ -204,11 +204,11 @@ class CogSource(menus.ListPageSource):
     def __init__(self, ctx, cog):
         _commands = [command for command in cog.get_commands()]
         cmds = sorted([command for command in _commands if not command.hidden], key=lambda c: c.qualified_name)
-        super().__init__([cog.qualified_name, cmds], per_page=15)
+        super().__init__(cmds, per_page=15)
 
     async def format_page(self, menu, page):
-        embed = menu.ctx.embed(title=f"{page[0]} | Page {menu.current_page + 1}/{self.get_max_pages()}",
-                               description="\n".join(add_formatting(menu.ctx, command) for command in page[1]))
+        embed = menu.ctx.embed(title=f"{page[0].cog_name} | Page {menu.current_page + 1}/{self.get_max_pages()}",
+                               description="\n".join(add_formatting(menu.ctx, command) for command in page))
         return embed
 
 
