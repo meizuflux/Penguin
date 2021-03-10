@@ -102,6 +102,7 @@ class MenuSource(menus.ListPageSource):
                               description=f"Page {menu.current_page + 1}/{self.get_max_pages()}",
                               colour=menu.ctx.bot.embed_color)
 
+        await menu.ctx.send(page)
         _commands = page[1].get_commands()
         embed.add_field(name=page[0], value=f"```yaml\n{_commands}```")
         return embed
@@ -122,7 +123,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         data = {0: None}
         cogs = [cog_pair for cog_pair in ctx.bot.cogs.items() if cog_pair[1].get_commands()]
         data.update({num: cog_pair for num, cog_pair in enumerate(cogs, start=1)})
-        pages = Helpti(source=MenuSource(data))
+        pages = Helpti(source=MenuSource(data), clear_reactions_after=True)
         await pages.start(ctx)
 
 
