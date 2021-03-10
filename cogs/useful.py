@@ -120,7 +120,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.is_owner()
     @commands.command()
     async def menus(self, ctx):
-        data = self.bot.cogs.values()
+        data = list(self.bot.cogs.values())
         await ctx.send(data)
         pages = Helpti(source=MenuSource(data), clear_reactions_after=True)
         await pages.start(ctx)
