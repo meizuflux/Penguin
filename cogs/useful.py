@@ -105,7 +105,7 @@ class MenuSource(menus.ListPageSource):
 
         
         _commands = page.get_commands()
-        dink = "\n".join(get_sig(menu.ctx, command) for command in _commands)
+        dink = "\n".join(get_sig(menu.ctx, command) for command in _commands if not command.hidden)
         embed.add_field(name=page.qualified_name, value=dink)
         return embed
 
@@ -123,6 +123,17 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command()
     async def menus(self, ctx):
         data = list(self.bot.cogs.values())
+        for cog in data:
+            cmds = cog.get_commands()
+            bonk = 0
+            for command in cmds:
+                if command.hidden:
+                    bonk += 1
+                else:
+                    break
+            if bonk == len(cmds):
+                del cog
+                    
         await ctx.send(data)
         pages = Helpti(source=MenuSource(data), clear_reactions_after=True)
         await pages.start(ctx)
