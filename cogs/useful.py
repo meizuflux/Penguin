@@ -81,7 +81,7 @@ class ChuckContext(commands.Context):
             text = text.replace(item, f'\u200b{item}')
         return text
 
-def get_command_signature(ctx, command):
+def get_sig(ctx, command):
     """Method to return a commands name and signature."""
     sig = command.usage or command.signature
     if not sig and not command.parent:
@@ -102,9 +102,10 @@ class MenuSource(menus.ListPageSource):
                               description=f"Page {menu.current_page + 1}/{self.get_max_pages()}",
                               colour=menu.ctx.bot.embed_color)
 
-        await menu.ctx.send(page)
-        _commands = page.get_commands()
-        embed.add_field(name=page.qualified_name, value=f"```yaml\n{_commands}```")
+
+        dink = "\n".join(get_sig(menu.ctx, command) for command in _commands)        _commands = page.get_commands
+()
+        embed.add_field(name=page.qualified_name, valudink}```")
         return embed
 
 class Helpti(menus.MenuPages):
