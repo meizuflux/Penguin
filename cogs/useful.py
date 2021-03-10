@@ -121,7 +121,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command()
     async def menus(self, ctx):
         data = {0: None}
-        cogs = [cog_pair for cog_pair in self.context.bot.cogs.items() if cog_pair[1].get_commands()]
+        cogs = [cog_pair for cog_pair in ctx.bot.cogs.items() if cog_pair[1].get_commands()]
         data.update({num: cog_pair for num, cog_pair in enumerate(cogs, start=1)})
         pages = Helpti(source=MenuSource(data))
         await pages.start(ctx)
