@@ -88,7 +88,7 @@ class MenuSource(menus.ListPageSource):
     async def format_page(self, menu, thing):
         embed = discord.Embed(title="Test",
                               description=f"Page {menu.current_page + 1}/{self.get_max_pages()}",
-                              colour=menu.ctx.bot.embed_colour)
+                              colour=menu.ctx.bot.embed_color)
         embed.add_field(name="Test", value=thing)
         return embed
 
