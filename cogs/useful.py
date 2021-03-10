@@ -111,7 +111,7 @@ class MenuSource(menus.ListPageSource):
         
         _commands = page.get_commands()
         dink = "\n".join(add_formatting(menu.ctx, command) for command in _commands if not command.hidden)
-        embed.add_field(name=page.qualified_name, value=dink)
+        embed.add_field(name=page.qualified_name, value=dink if not page.description else page.description + "\n" + dink)
         return embed
 
 class Helpti(menus.MenuPages):
