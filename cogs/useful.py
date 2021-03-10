@@ -115,7 +115,7 @@ class MenuSource(menus.GroupByPageSource):
                 return c
             else:
                 return getattr(c.cog, 'qualified_name', 'Unsorted')
-
+        print(cmds)
         super().__init__(cmds, key=check, per_page=20)
 
 
