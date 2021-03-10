@@ -115,7 +115,6 @@ class MenuSource(menus.GroupByPageSource):
                 return c
             else:
                 return getattr(c.cog, 'qualified_name', 'Unsorted')
-        print(cmds)
         super().__init__(cmds, key=check, per_page=20)
 
 
@@ -144,6 +143,16 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         data = sorted(data, key=lambda c: c.qualified_name)
         data.insert(0, "Info")
         pages = Helpti(source=MenuSource(ctx, data), clear_reactions_after=True)
+        cmds = []
+        for cog in data:
+            if cog == "Info":
+                return
+            _commands = [command for command in cog.get_commands()]
+            for command in _commands:
+                if not command.hidden:
+                    cmds.append(command)
+
+        await ctx.send(cmds)
         await pages.start(ctx)
 
 
