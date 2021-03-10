@@ -103,9 +103,10 @@ class MenuSource(menus.ListPageSource):
                               colour=menu.ctx.bot.embed_color)
 
 
-        dink = "\n".join(get_sig(menu.ctx, command) for command in _commands)        _commands = page.get_commands
-()
-        embed.add_field(name=page.qualified_name, valudink}```")
+        
+        _commands = page.get_commands()
+        dink = "\n".join(get_sig(menu.ctx, command) for command in _commands)
+        embed.add_field(name=page.qualified_name, value=dink)
         return embed
 
 class Helpti(menus.MenuPages):
