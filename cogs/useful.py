@@ -123,7 +123,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command()
     async def menus(self, ctx):
-        nono = ["jishaku", "owner"]
+        nono = ["jishaku", "owner", "commanderrorhandler"]
         data = list(cog for cog in self.bot.cogs.values() if cog.qualified_name.lower() not in nono)
         data = sorted(data, key=lambda c: c.qualified_name)
         await ctx.send(data)
