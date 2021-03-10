@@ -104,24 +104,15 @@ class MenuSource(menus.GroupByPageSource):
 
         cmds = []
         for cog in data:
-            try:
-                _commands = [command for command in cog.get_commands()]
-                for command in _commands:
-                    if not command.hidden:
-                        cmds.append(command)
-            except AttributeError:
-                pass
+            _commands = [command for command in cog.get_commands()]
+            for command in _commands:
+                if not command.hidden:
+                    cmds.append(command)
         
-        def check(c):
-            try:
-                return getattr(c.cog, 'qualified_name', 'Unsorted')
-            except AttributeError:
-                return c
-        super().__init__(list(data[0]) + cmds, key=check, per_page=20)
+        super().__init__(cmds, key=lambda c: getattr(c.cog, 'qualified_name', 'Unsorted'), per_page=20)
 
 
     async def format_page(self, menu, commands):
-        await menu.ctx.send(commands)
         embed = menu.ctx.embed(title=f"{commands.key} | Page {menu.current_page + 1}/{self.get_max_pages()}",
                         description="\n".join(add_formatting(menu.ctx, command) for command in commands.items))
 
@@ -143,9 +134,6 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         nono = ["jishaku", "owner", "commanderrorhandler", "helpful"]
         data = list(cog for cog in self.bot.cogs.values() if cog.qualified_name.lower() not in nono)
         data = sorted(data, key=lambda c: c.qualified_name)
-        data.insert(0, "Info")
-
-        await ctx.send(data)
         pages = Helpti(source=MenuSource(ctx, data), clear_reactions_after=True)
 
         await pages.start(ctx)
