@@ -92,7 +92,7 @@ class MenuSource(menus.ListPageSource):
 
         cog = menu.ctx.bot.get_cog(thing)
         commands = cog.get_commands()
-        embed.add_field(name=thing, value="\n".join(commands))
+        embed.add_field(name=thing, value="\n".join(command.name for command in commands))
         return embed
 
 class Helpti(menus.MenuPages):
