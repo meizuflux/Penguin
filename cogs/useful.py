@@ -118,6 +118,22 @@ class MenuSource(menus.GroupByPageSource):
 
         return embed
 
+class MenuSource(menus.ListPageSource):
+    def __init__(self, ctx, data):
+        super().__init__(data, per_page=10)
+
+
+    async def format_page(self, menu, cog):
+        if cog != None:
+            commands = cog.get_commands()
+            embed = menu.ctx.embed(title=f"{cog.qualified_name} | Page {menu.current_page + 1}/{self.get_max_pages()}",
+                            description="\n".join(add_formatting(menu.ctx, command) for command in commands))
+
+        else:
+            embed= menu.ctx.embed(description='nice')
+
+        return embed
+
 class Helpti(menus.MenuPages):
 
     @menus.button('\N{BLACK SQUARE FOR STOP}\ufe0f', position=menus.Last(2))
