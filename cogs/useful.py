@@ -124,6 +124,8 @@ class TestMenuSource(menus.ListPageSource):
 
 
     async def format_page(self, menu, cog):
+        ctx = menu.ctx
+        await ctx.send(cog)
         if cog != None:
             commands = cog.get_commands()
             embed = menu.ctx.embed(title=f"{cog.qualified_name} | Page {menu.current_page + 1}/{self.get_max_pages()}",
