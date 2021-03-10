@@ -142,7 +142,6 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         data = list(cog for cog in self.bot.cogs.values() if cog.qualified_name.lower() not in nono)
         data = sorted(data, key=lambda c: c.qualified_name)
         data.insert(0, "Info")
-        pages = Helpti(source=MenuSource(ctx, data), clear_reactions_after=True)
         cmds = []
         for cog in data:
             if cog == "Info":
@@ -153,6 +152,8 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                     cmds.append(command)
 
         await ctx.send(cmds)
+        pages = Helpti(source=MenuSource(ctx, data), clear_reactions_after=True)
+
         await pages.start(ctx)
 
 
