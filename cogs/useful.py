@@ -106,9 +106,11 @@ class MenuSource(menus.ListPageSource):
         embed = menu.ctx.embed(title="Commands",
                         description=f"Page {menu.current_page + 1}/{self.get_max_pages()}")
 
-        if page == menu.ctx.bot.get_cog("Fun"):
-            await menu.ctx.send([command for command in page.get_commands()])
+
         _commands = [command for command in page.get_commands()]
+        if page == menu.ctx.bot.get_cog("Fun"):
+            await menu.ctx.send(_commands)
+            await menu.ctx.send("\n".join(add_formatting(menu.ctx, command) for command in _commands if not command.hidden))
         dink = "\n".join(add_formatting(menu.ctx, command) for command in _commands if not command.hidden)
         embed.add_field(name=page.qualified_name, value=dink if not page.description else page.description + "\n\n" + dink)
         return embed
