@@ -12,7 +12,7 @@ import aiohttp
 import discord
 import humanize
 import psutil
-from discord.ext import commands
+from discord.ext import commands, menus
 
 from utils.default import qembed
 
@@ -81,10 +81,31 @@ class ChuckContext(commands.Context):
             text = text.replace(item, f'\u200b{item}')
         return text
 
+class MenuSource(menus.ListPageSource):
+    def __init__(self, data):
+        super().__init__(data, per_page=1)
+
+    async def format_page(self, menu: menus.MenuPages, page):
+        embed = discord.Embed(title="Test",
+                              description=f"Page {menu.current_page + 1}/{self.get_max_pages()}",
+                              colour=menu.ctx.bot.embed_colour)
+        embed.add_field(name="Test", value=page[1])
+        return embed
+
+class Helpti(menus.MenuPages):
+
+    @menus.button('\N{BLACK SQUARE FOR STOP}\ufe0f', position=menus.Last(2))
+    async def end_menu(self, _):
+        self.stop()
 
 class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.is_owner()
+    async def menus(self, ctx):
+        pages = Helpti(source=MenuSource({"test": "test"}))
+
 
     @commands.command(aliases=['information', 'botinfo'],
                       help='Gets info about the bot')
