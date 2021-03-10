@@ -111,12 +111,8 @@ class MenuSource(menus.ListPageSource):
 
 
     async def format_page(self, menu, page):
-        await menu.ctx.send(page)
-        _commands = [command for command in page.get_commands()]
-        dink = "\n".join(add_formatting(menu.ctx, command) for command in _commands if not command.hidden)
-
-        embed = menu.ctx.embed(title=f"{page.qualified_name} {menu.current_page + 1}/{self.get_max_pages()}",
-                        description=dink if not page.description else page.description + "\n\n" + dink)
+        embed = menu.ctx.embed(title=f"{menu.current_page + 1}/{self.get_max_pages()}",
+                        description=page)
 
         return embed
 
