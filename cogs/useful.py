@@ -104,18 +104,14 @@ class MenuSource(menus.GroupByPageSource):
 
         cmds = []
         for cog in data:
-            if cog == "Info":
-                return
-            _commands = [command for command in cog.get_commands()]
-            for command in _commands:
-                if not command.hidden:
-                    cmds.append(command)
-        def check(c):
-            if c == "Info":
-                return c
-            else:
-                return getattr(c.cog, 'qualified_name', 'Unsorted')
-        super().__init__(cmds, key=check, per_page=20)
+            try:
+                _commands = [command for command in cog.get_commands()]
+                for command in _commands:
+                    if not command.hidden:
+                        cmds.append(command)
+            except:
+                pass
+        super().__init__(cmds, key=lambda c: getattr(c.cog, 'qualified_name', 'Unsorted'), per_page=20)
 
 
     async def format_page(self, menu, commands):
