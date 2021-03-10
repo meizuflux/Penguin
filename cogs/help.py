@@ -208,7 +208,7 @@ class CogSource(menus.ListPageSource):
 
     async def format_page(self, menu, page):
         embed = menu.ctx.embed(title=f"{page[0]} | Page {menu.current_page + 1}/{self.get_max_pages()}",
-                               description=page[1][0])
+                               description="\n".join(add_formatting(menu.ctx, command) for command in page[1][0]))
         return embed
 
 
