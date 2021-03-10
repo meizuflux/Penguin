@@ -110,7 +110,6 @@ class MenuSource(menus.GroupByPageSource):
                     cmds.append(command)
 
         super().__init__(cmds, key=lambda c: getattr(c.cog, 'qualified_name', 'Unsorted'), per_page=20)
-        cmds.insert(0, "Info")
 
 
     async def format_page(self, menu, commands):
@@ -135,14 +134,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         nono = ["jishaku", "owner", "commanderrorhandler", "helpful"]
         data = list(cog for cog in self.bot.cogs.values() if cog.qualified_name.lower() not in nono)
         data = sorted(data, key=lambda c: c.qualified_name)
-
-        cmds = []
-        for cog in data:
-            _commands = [command for command in cog.get_commands()]
-            for command in _commands:
-                if not command.hidden:
-                    cmds.append(command)
- 
+        data.insert(0, "Info")
         pages = Helpti(source=MenuSource(ctx, data), clear_reactions_after=True)
         await pages.start(ctx)
 
