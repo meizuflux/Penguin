@@ -149,19 +149,19 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command()
     async def menus(self, ctx):
-        data = {0: None}
-        cogs = [cog for cog in self.bot.cogs.values() if cog.get_commands()]
-        data.update({num: cog_pair for num, cog_pair in enumerate(cogs, start=1)})
-
+        nono = ["jishaku", "owner", "commanderrorhandler", "helpful"]
+        data = list(cog for cog in self.bot.cogs.values() if cog.qualified_name.lower() not in nono)
+        data = sorted(data, key=lambda c: c.qualified_name)
         pages = Helpti(source=MenuSource(ctx, data), clear_reactions_after=True)
 
         await pages.start(ctx)
 
     @commands.command()
     async def menu(self, ctx):
-        nono = ["jishaku", "owner", "commanderrorhandler", "helpful"]
-        data = list(cog for cog in self.bot.cogs.values() if cog.qualified_name.lower() not in nono)
-        data = sorted(data, key=lambda c: c.qualified_name)
+        data = {0: None}
+        cogs = [cog for cog in self.bot.cogs.values() if cog.get_commands()]
+        data.update({num: cog_pair for num, cog_pair in enumerate(cogs, start=1)})
+
         pages = Helpti(source=TestMenuSource(ctx, data), clear_reactions_after=True)
 
         await pages.start(ctx)
