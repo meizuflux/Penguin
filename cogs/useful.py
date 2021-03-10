@@ -105,7 +105,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.is_owner()
     @commands.command()
     async def menus(self, ctx):
-        pages = Helpti(source=MenuSource([{"test": "test"}], per_page=1))
+        pages = Helpti(source=MenuSource([{"test": "test"}]))
         await pages.start(ctx)
 
 
