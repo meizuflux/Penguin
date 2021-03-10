@@ -99,18 +99,24 @@ def add_formatting(ctx, command):
     return fmt.format(get_sig(ctx, command), command.short_doc)
 
 
-class MenuSource(menus.ListPageSource):
+class MenuSource(menus.GroupByPageSource):
     def __init__(self, ctx, data):
+
+        cmds = []
+        for cog in data:
+            _commands = [command for command in cog.get_commands()]
+            for command in _commands:
+                if not command.hidden:
+                    cmds.append(command)
         
-        super().__init__(data, per_page=1)
+        super().__init__(cmds, key=lambda c: getattr(c.cog, 'qualified_name', 'Unsorted'), per_page=20)
 
 
     async def format_page(self, menu, commands):
-        if commands is None:
-            embed = menu.ctx.embed(title="Cool")
-        else:
-            embed = menu.ctx.embed(title=f"{commands.key} | Page {menu.current_page + 1}/{self.get_max_pages()}",
-                            description="\n".join(add_formatting(menu.ctx, command) for command in commands.items))
+        embed = menu.ctx.embed(title=f"{commands.key} | Page {menu.current_page + 1}/{self.get_max_pages()}",
+                        description="\n".join(add_formatting(menu.ctx, command) for command in commands.items))
+        if commands.key == "AAAAAA":
+            embed=menu.ctx.embed(title='test')
         return embed
 
 class TestMenuSource(menus.ListPageSource):
@@ -145,18 +151,10 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command()
     async def menus(self, ctx):
         nono = ["jishaku", "owner", "commanderrorhandler", "helpful"]
-        data = list(cog for cog in self.bot.cogs.values() if cog.qualified_name.lower() not in nono)
+        data = [cog for cog in self.bot.cogs.values() if cog.qualified_name.lower() not in nono]
         data = sorted(data, key=lambda c: c.qualified_name)
-        cmds = []
-        for cog in data:
-            _commands = [command for command in cog.get_commands()]
-            for command in _commands:
-                if not command.hidden:
-                    cmds.append(command)
-
-        cmds = sorted(cmds, key=lambda c: getattr(c.cog, 'qualified_name', 'Unsorted'))
-        cmds.insert(0, None)
-        pages = Helpti(source=MenuSource(ctx, cmds), clear_reactions_after=True)
+        await ctx.send(data)
+        pages = Helpti(source=MenuSource(ctx, data), clear_reactions_after=True)
 
         await pages.start(ctx)
 
