@@ -64,9 +64,9 @@ class ChuckContext(commands.Context):
         except asyncio.TimeoutError:
             pass
 
-    def embed(self, *args, **kwargs):
+    def embed(self, **kwargs):
         color = kwargs.pop("color", self.bot.embed_color)
-        embed = discord.Embed(*args, **kwargs, color=color)
+        embed = discord.Embed(**kwargs, color=color)
         embed.timestamp = self.message.created_at
         embed.set_footer(text=f"Requested by {self.author}", icon_url=self.author.avatar_url)
         return embed
@@ -146,13 +146,10 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Shows how long the bot has been online for')
     async def uptime(self, ctx):
-        await ctx.send(embed=discord.Embed(
-            description=f"I've been up for {humanize.precisedelta(self.bot.uptime - datetime.datetime.utcnow(), format='%0.0f')}",
-            color=self.bot.embed_color,
-            timestamp=ctx.message.created_at).set_footer(text=f"Requested by {ctx.author}",
-                                                         icon_url=ctx.author.avatar_url))
+        uptime = humanize.precisedelta(self.bot.uptime - datetime.datetime.utcnow(), format='%0.0f')
+        await ctx.send(embed=ctx.embed(description=f"I've been up for {uptime}"))
 
-    @commands.command(help='Shows the avatar of a user', aliases=['pfp'])
+    @commands.command(aliases=['a', 'pfp'])
     async def avatar(self, ctx, user: discord.Member = None):
         if not user:
             user = ctx.author
@@ -207,7 +204,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         try:
             await ctx.send(embed=discord.Embed().from_dict(embed))
         except:
-            await qembed.send(ctx, 'You clearly don\'t know what this is')
+            await qembed(ctx, 'You clearly don\'t know what this is')
 
 
     @commands.command(help='Invites the bot to your server')
@@ -222,10 +219,11 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Sends the 5 most recent commits to the bot.')
     async def recent_commits(self, ctx):
-        async with self.bot.session.get('https://api.github.com/repos/ppotatoo/SYSTEM32/commits') as f:
+        async with self.bot.session.get('https://api.github.com/repos/ppotatoo/Penguin/commits') as f:
             resp = await f.json()
         embed = ctx.embed(description="\n".join(
-            f"[`{commit['sha'][:6]}`]({commit['html_url']}) {commit['commit']['message']}" for commit in resp[:5]))
+            f"[`{commit['sha'][:6]}`]({commit['html_url']}) {commit['commit']['message']}" for commit in resp[:5])
+        )
         await ctx.send(embed=embed)
 
     @commands.command(help='Suggests a feature to the developers!')

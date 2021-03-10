@@ -2,17 +2,17 @@ import asyncio
 import base64
 import random
 import re
-from PIL import Image, ImageDraw, ImageFont
-import time
 import textwrap
+import time
 from io import BytesIO
 
 import discord
+from PIL import Image, ImageDraw, ImageFont
 from discord.ext import commands, flags
 from discord.ext.commands.cooldowns import BucketType
+from jishaku.functools import executor_function
 
 from utils.bottom import from_bottom, to_bottom
-from jishaku.functools import executor_function
 from utils.default import qembed
 
 mystbin_url = re.compile(
@@ -22,6 +22,7 @@ mystbin_url = re.compile(
 
 class Fun(commands.Cog):
     """For the fun commands."""
+
     def __init__(self, bot):
         self.bot = bot
 
@@ -96,7 +97,7 @@ class Fun(commands.Cog):
             embed = discord.Embed(description=f'You reacted in **{tim:.2f}** seconds, **{seconds - tim:.2f}** off.')
             await msg.edit(embed=embed)
 
-    @commands.command(name='chucknorris',aliases=['norris', 'chucknorrisjoke'])
+    @commands.command(name='chucknorris', aliases=['norris', 'chucknorrisjoke'])
     async def norris(self, ctx):
         """Tells a random Chuck Norris joke."""
         data = await self.bot.session.get(
@@ -169,14 +170,15 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def ship(self, ctx, user_1: discord.Member, user_2: discord.Member = None):
-        if not user_2: user_2 = ctx.author
+        if not user_2:
+            user_2 = ctx.author
         random.seed(int(user_1.id) + int(user_2.id))
         love = random.randint(1, 100)
         await qembed(ctx,
                      f'I calculate that the love between {user_1.mention} and {user_2.mention} is {str(love)[:2]}%')
 
     @commands.command(aliases=['ppsize'])
-    async def pp(self, ctx, user: discord.Member = None): # [p]pp
+    async def pp(self, ctx, user: discord.Member = None):  # [p]pp
         if not user:
             user = ctx.author
         random.seed(int(user.id))
@@ -216,14 +218,14 @@ class Fun(commands.Cog):
         font = ImageFont.truetype('assets/Montserrat-Regular.ttf', 125)
         wrapped = textwrap.wrap(text, width=24)
         w, h = draw.textsize(text)
-        draw.text((40, 40), '\n'.join(wrapped), (255,255,255), font=font)
+        draw.text((40, 40), '\n'.join(wrapped), (255, 255, 255), font=font)
         byte = BytesIO()
         img.save(byte, 'PNG')
         byte.seek(0)
         return byte
 
     @commands.max_concurrency(1, per=BucketType.channel, wait=False)
-    @commands.cooldown(1,30,BucketType.user) 
+    @commands.cooldown(1, 30, BucketType.user)
     @commands.command(aliases=["tr"])
     async def typeracer(self, ctx):
         """Who's the fastest typer?"""
@@ -238,11 +240,13 @@ class Fun(commands.Cog):
         start = time.perf_counter()
 
         try:
-            message = await self.bot.wait_for("message", timeout=60, check=lambda m: m.content == text and m.channel == ctx.channel)
+            message = await self.bot.wait_for("message", timeout=60,
+                                              check=lambda m: m.content == text and m.channel == ctx.channel)
         except asyncio.TimeoutError:
-        	await msg.reply("Nobody got it.")
+            await msg.reply("Nobody got it.")
         else:
-            winn = ctx.embed(description=f"**{message.author}** got it in **{time.perf_counter() - start:.2f}** seconds!")
+            winn = ctx.embed(
+                description=f"**{message.author}** got it in **{time.perf_counter() - start:.2f}** seconds!")
             await msg.reply(embed=winn)
 
     @typeracer.error
@@ -258,13 +262,13 @@ class Fun(commands.Cog):
         wrapped = textwrap.wrap(text, width=20)
         down = 110
         down -= len(wrapped) * 17
-        draw.text((150, down), '\n'.join(wrapped), (255,255,255), font=font, align="center")
+        draw.text((150, down), '\n'.join(wrapped), (255, 255, 255), font=font, align="center")
         byte = BytesIO()
         img.save(byte, 'PNG')
         byte.seek(0)
         return byte
 
-    @commands.cooldown(1,10,BucketType.user) 
+    @commands.cooldown(1, 10, BucketType.user)
     @commands.command(aliases=['alwayshasbeen', 'ahb'], usage='[text]')
     async def always_has_been(self, ctx, *, text='Wait, it\'s all Ohio?'):
         """Wait, it's all Ohio?"""
@@ -273,8 +277,11 @@ class Fun(commands.Cog):
         embed = ctx.embed().set_image(url="attachment://always_has_been.jpeg")
         await ctx.send(embed=embed, file=discord.File(await self.do_ahb(text), "always_has_been.jpeg"))
 
-
-
+    @commands.command()
+    async def sadcat(self, ctx):
+        embed = ctx.embed()
+        embed.set_image(url=await self.bot.sadcat())
+        await ctx.send(embed-embed)
 
 def setup(bot):
     bot.add_cog(Fun(bot))

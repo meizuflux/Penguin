@@ -6,7 +6,6 @@ import discord
 import humanize
 from discord.ext import commands
 
-from utils.default import qembed
 from utils.fuzzy import finder
 
 
@@ -16,6 +15,8 @@ class CommandErrorHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
+
+        command = ctx.invoked_with
 
         # This prevents any commands with local handlers being handled here in on_command_error.
         global match
@@ -50,57 +51,51 @@ class CommandErrorHandler(commands.Cog):
                     return
                 match = command
                 break
-            return await qembed(ctx, f"No command called `{ctx.invoked_with}` found. Did you mean `{match}`?")
+            return await ctx.send(embed=ctx.embed(
+                description=f"No command called `{command}` found. Did you mean `{match}`?"
+            ))
 
-        elif isinstance(error, commands.CheckFailure):
-            return await qembed(
-                ctx,
-                f'You do not have the correct permissions for `{ctx.invoked_with}`')
+        if isinstance(error, commands.CheckFailure):
+            return await ctx.send(embed=ctx.embed(
+                description=f'You do not have the correct permissions for `{command}`'
+            ))
 
         if isinstance(error, discord.Forbidden):
-            return await qembed(
-                ctx,
-                f'I do not have the correct permissions for `{ctx.command}`')
+            return await ctx.send(embed=ctx.embed(
+                description=f'I do not have the correct permissions for `{command}`'
+            ))
 
-        elif isinstance(error, commands.CommandOnCooldown):
-            return await qembed(
-                ctx,
-                f"This command is on cooldown.\nTry again in {humanize.precisedelta(error.retry_after, minimum_unit='seconds')}"
-            )
+        if isinstance(error, commands.CommandOnCooldown):
+            retry = humanize.precisedelta(error.retry_after, minimum_unit='seconds')
+            return await ctx.send(embed=ctx.embed(
+                description=f"{command} is on cooldown.\nTry again in {retry}"
+            ))
 
-        elif isinstance(error, commands.NoPrivateMessage):
+        if isinstance(error, commands.NoPrivateMessage):
             try:
-                e = discord.Embed(
-                    description=f'`{ctx.command}` can not be used in Private Messages.',
-                    color=self.bot.embed_color)
-                return await ctx.author.send(embed=e)
+                return await ctx.author.send(embed=ctx.embed(description=f"{ctx.invoked_with} cannot be used in DM's"))
             except discord.HTTPException:
                 pass
 
-        elif isinstance(error, commands.MissingRequiredArgument):
+        if isinstance(error, commands.MissingRequiredArgument):
             errors = str(error).split(" ", maxsplit=1)
-            return await qembed(ctx,
-                                f'`{errors[0]}` {errors[1]}\n'
-                                f'You can view the help for this command with `{ctx.prefix}help {ctx.invoked_with}`')
+            return await ctx.send(embed=ctx.embed(
+                description=f'`{errors[0]}` {errors[1]}\n'
+                            f'You can view the help for this command with `{ctx.prefix}help` `{command}`'
+            ))
 
-        elif isinstance(error, commands.DisabledCommand):
-            return await qembed(ctx, f'`{ctx.command}` has been disabled.')
+        if isinstance(error, commands.DisabledCommand):
+            return await ctx.send(embed=ctx.embed(description=f'`{command}` has been disabled.'))
 
-        # For this error example we check to see where it came from...
-        elif isinstance(error, commands.BadArgument):
-            if ctx.command.qualified_name == 'tag list':  # Check if the command being invoked is 'tag list'
-                return await qembed(ctx, 'I could not find that member. Please try again.')
 
-        else:
-            # All other Errors not returned come here. And we can just print the default TraceBack.
-            print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
-            traceback.print_exception(type(error),
-                                      error,
-                                      error.__traceback__,
-                                      file=sys.stderr)
-            formatted = traceback.format_exception(type(error), error, error.__traceback__)
-            await ctx.send(f"Something has gone wrong while executing `{ctx.invoked_with}`:\n"
-                           f"```py\n{''.join(formatted)}\n```")
+        print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
+        traceback.print_exception(type(error),
+                                  error,
+                                  error.__traceback__,
+                                  file=sys.stderr)
+        formatted = traceback.format_exception(type(error), error, error.__traceback__)
+        await ctx.send(f"Something has gone wrong while executing `{command}`:\n"
+                       f"```py\n{''.join(formatted)}\n```")
 
 
 def setup(bot):
