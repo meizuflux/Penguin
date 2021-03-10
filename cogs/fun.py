@@ -279,7 +279,7 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def sadcat(self, ctx):
-        embed = ctx.embed()
+        embed = ctx.embed(title=random.choice(["<:Sadge:789590510225457152>", "<:sad:790608581615288320>"]))
         embed.set_image(url=await self.bot.alex.sadcat())
         await ctx.send(embed=embed)
 
