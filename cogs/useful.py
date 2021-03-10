@@ -105,7 +105,7 @@ class MenuSource(menus.ListPageSource):
             _commands = [command for command in cog.get_commands()]
             for command in _commands:
                 if not command.hidden:
-                    pg.add_line(add_formatting(self.ctx, command))
+                    pg.add_line(add_formatting(ctx, command))
 
         super().__init__(pg.pages, per_page=1)
 
