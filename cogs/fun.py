@@ -21,7 +21,7 @@ mystbin_url = re.compile(
 
 
 class Fun(commands.Cog):
-    """For the fun commands."""
+    #"""For the fun commands."""
 
     def __init__(self, bot):
         self.bot = bot
