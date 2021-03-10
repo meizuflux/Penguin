@@ -207,12 +207,11 @@ class CogSource(menus.ListPageSource):
         cmds = sorted([command for command in _commands if not command.hidden], key=lambda c: c.qualified_name)
         for command in cmds:
             pag.add_line(add_formatting(ctx, command))
-        super().__init__(pag.pages, per_page=15)
+        super().__init__([cog.qualified_name, pag.pages], per_page=15)
 
-    async def format_page(self, menu, commands):
-        await menu.ctx.send(commands[0])
-        embed = menu.ctx.embed(title=f"{commands.key} | Page {menu.current_page + 1}/{self.get_max_pages()}",
-                               description="\n".join(add_formatting(menu.ctx, command) for command in commands.items))
+    async def format_page(self, menu, page):
+        embed = menu.ctx.embed(title=f"{page[0]} | Page {menu.current_page + 1}/{self.get_max_pages()}",
+                               description=page[1][0])
         return embed
 
 
