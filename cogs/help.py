@@ -315,23 +315,11 @@ class PaginatedHelp(commands.MinimalHelpCommand):
         return real_help if not brief else command.short_doc or real_help
 
     async def send_cog_help(self, cog):
-        bot = self.context.bot
-        if bot.description:
-            self.paginator.add_line(bot.description)
+        ctx = self.context
 
-        note = self.get_opening_note()
-        if note:
-            self.paginator.add_line(note, empty=True)
+        pages = HelpPages(source=CogSource(ctx, cog), clear_reactions_after=True)
 
-        filtered = await self.filter_commands(cog.get_commands(), sort=False)
-        if filtered:
-            self.paginator.add_line('**%s %s**' % (cog.qualified_name, self.commands_heading))
-            if cog.description:
-                self.paginator.add_line(cog.description, empty=True)
-            for command in filtered:
-                self.add_subcommand_formatting(command)
-
-        await self.send_pages()
+        await pages.start(ctx)
 
     def get_command_help(self, command):
         ctx = self.context
