@@ -279,9 +279,17 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def sadcat(self, ctx):
+        """Sends a sadcat."""
         embed = ctx.embed(title=random.choice(["<:Sadge:789590510225457152>", "<:sad:790608581615288320>"]))
         embed.set_image(url=await self.bot.alex.sadcat())
         await ctx.send(embed=embed)
+
+    @commands.command(aliases=['ach'])
+    async def achievement(self, ctx, text):
+        """Sends a Minecraft Achievement."""
+        embed = ctx.embed().set_image(url="attachment://achievement.png")
+        image = discord.File(await (await self.bot.alex.achievement(text=text)).read(), "achievement.png")
+        await ctx.send(embed=embed, file=image)
 
 def setup(bot):
     bot.add_cog(Fun(bot))
