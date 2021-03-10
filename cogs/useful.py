@@ -123,7 +123,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command()
     async def menus(self, ctx):
         nono = ["jishaku"]
-        data = list(cog for cog in self.bot.cogs.values() if cog.qualified_name.lower() not in )
+        data = list(cog for cog in self.bot.cogs.values() if cog.qualified_name.lower() not in nono)
         await ctx.send(data)
         pages = Helpti(source=MenuSource(data), clear_reactions_after=True)
         await pages.start(ctx)
