@@ -202,7 +202,7 @@ class HelpSource(menus.GroupByPageSource):
 
 class CogSource(menus.ListPageSource):
     def __init__(self, ctx, cog):
-        pag = commands.Paginator()
+        pag = commands.Paginator(prefix='', suffix='')
         _commands = [command for command in cog.get_commands()]
         cmds = sorted([command for command in _commands if not command.hidden], key=lambda c: c.qualified_name)
         for command in cmds:
@@ -210,7 +210,7 @@ class CogSource(menus.ListPageSource):
         super().__init__(pag.pages, per_page=15)
 
     async def format_page(self, menu, commands):
-        await menu.ctx.send(commands)
+        await menu.ctx.send(commands[0])
         embed = menu.ctx.embed(title=f"{commands.key} | Page {menu.current_page + 1}/{self.get_max_pages()}",
                                description="\n".join(add_formatting(menu.ctx, command) for command in commands.items))
         return embed
