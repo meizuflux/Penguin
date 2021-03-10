@@ -106,10 +106,11 @@ class MenuSource(menus.ListPageSource):
 
 
     async def format_page(self, menu, commands):
-        embed = menu.ctx.embed(title=f"{commands.key} | Page {menu.current_page + 1}/{self.get_max_pages()}",
-                        description="\n".join(add_formatting(menu.ctx, command) for command in commands.items))
-        if commands.key == "AAAAAA":
-            embed=menu.ctx.embed(title='test')
+        if commands is None:
+            embed = menu.ctx.embed(title="Cool")
+        else:
+            embed = menu.ctx.embed(title=f"{commands.key} | Page {menu.current_page + 1}/{self.get_max_pages()}",
+                            description="\n".join(add_formatting(menu.ctx, command) for command in commands.items))
         return embed
 
 class TestMenuSource(menus.ListPageSource):
