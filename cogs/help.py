@@ -3,6 +3,7 @@ import itertools
 
 import discord
 from discord.ext import commands
+from cogs.useful import MenuSource, Helpti
 
 from utils.default import plural, qembed
 
