@@ -200,7 +200,7 @@ class HelpSource(menus.GroupByPageSource):
             description = (
                 "`<argument>` means the argument is required\n"
                 "`[argument]` means the argument is required\n"
-                "You can view the help for a command or category by doing"
+                "You can view the help for a command or category by doing\n"
                 f"`{ctx.prefix}help` `[command|category]`"
             )
             embed = menu.ctx.embed(title='Penguin Help Command', description=description)

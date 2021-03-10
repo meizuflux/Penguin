@@ -27,7 +27,9 @@ class Chuck(commands.Bot):
             command_prefix=self.get_prefix,
             case_insensitive=True,
             intents=intents,
-            owner_ids={809587169520910346})
+            owner_ids={809587169520910346},
+            description="Penguin is a simple and easy-to-use Discord bot"
+        )
         self._BotBase__cogs = commands.core._CaseInsensitiveDict()
         self.author_id = 809587169520910346
         self.session = aiohttp.ClientSession()
