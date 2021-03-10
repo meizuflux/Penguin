@@ -103,12 +103,11 @@ class MenuSource(menus.ListPageSource):
         super().__init__(data, per_page=1)
 
     async def format_page(self, menu, page):
-        embed = discord.Embed(title="Commands",
-                              description=f"Page {menu.current_page + 1}/{self.get_max_pages()}",
-                              colour=menu.ctx.bot.embed_color)
+        embed = ctx.embed(title="Commands",
+                        description=f"Page {menu.current_page + 1}/{self.get_max_pages()}")
 
 
-        
+
         _commands = page.get_commands()
         dink = "\n".join(add_formatting(menu.ctx, command) for command in _commands if not command.hidden)
         embed.add_field(name=page.qualified_name, value=dink if not page.description else page.description + "\n" + dink)
