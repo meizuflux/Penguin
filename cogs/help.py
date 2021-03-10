@@ -194,7 +194,8 @@ class HelpSource(menus.GroupByPageSource):
 
     async def format_page(self, menu, commands):
         ctx = menu.ctx
-        embed = menu.ctx.embed(title=f"{commands.key} | Page {menu.current_page + 1}/{self.get_max_pages()}",
+        current_page = f"{menu.current_page + 1}/{self.get_max_pages()}"
+        embed = menu.ctx.embed(title=f"{commands.key} | Page {current_page}",
                                description="\n".join(add_formatting(ctx, command) for command in commands.items))
         if commands.key == "AAAAAA":
             description = (
@@ -203,7 +204,7 @@ class HelpSource(menus.GroupByPageSource):
                 f"Type `{ctx.prefix}help` `[command]` for more info on a command.\n"
                 f"You can also type `{ctx.prefix}help` `[category]` for more info on a category."
             )
-            embed = menu.ctx.embed(title='Penguin Help Command', description=description)
+            embed = menu.ctx.embed(title=f'Penguin Help Command | Page {current_page}', description=description)
             embed.add_field(name="About", value=f"```yaml\n{ctx.bot.description}```", inline=False)
 
             embed.add_field(name="Useful Links",
