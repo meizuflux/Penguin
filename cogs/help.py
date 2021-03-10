@@ -200,6 +200,21 @@ class HelpSource(menus.GroupByPageSource):
             embed = menu.ctx.embed(title='test')
         return embed
 
+class CogSource(menus.ListPageSource):
+    def __init__(self, ctx, cog):
+        pag = commands.Paginator()
+        _commands = [command for command in cog.get_commands()]
+        cmds = sorted([command for command in _commands if not command.hidden])
+        for command in cmds:
+            pag.add_line(add_formatting(ctx, command))
+        super().__init__(pag.pages, per_page=15)
+
+    async def format_page(self, menu, commands):
+        await menu.ctx.send(commands)
+        embed = menu.ctx.embed(title=f"{commands.key} | Page {menu.current_page + 1}/{self.get_max_pages()}",
+                               description="\n".join(add_formatting(menu.ctx, command) for command in commands.items))
+        return embed
+
 
 class HelpPages(menus.MenuPages):
 
