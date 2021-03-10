@@ -92,6 +92,12 @@ def get_sig(ctx, command):
         return f'`{ctx.prefix}{command.parent}` `{command.name}`'
     else:
         return f'`{ctx.prefix}{command.parent}` `{command.name}` `{sig}`'
+        
+def add_formatting(ctx, command):
+        fmt = '{0} \N{EN DASH} {1}' if command.short_doc else '{0} \N{EN DASH} This command is not documented'
+        self.paginator.add_line(fmt.format(get_sig(ctx, command), command.short_doc))
+
+    async def on_help_command_error(self, ctx, error):
 
 class MenuSource(menus.ListPageSource):
     def __init__(self, data):
@@ -105,7 +111,7 @@ class MenuSource(menus.ListPageSource):
 
         
         _commands = page.get_commands()
-        dink = "\n".join(get_sig(menu.ctx, command) for command in _commands if not command.hidden)
+        dink = "\n".join(add_formatting(menu.context, command) for command in _commands if not command.hidden)
         embed.add_field(name=page.qualified_name, value=dink)
         return embed
 
