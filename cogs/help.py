@@ -3,7 +3,6 @@ import itertools
 
 import discord
 from discord.ext import commands, menus
-from cogs.useful import MenuSource, Helpti
 
 from utils.default import plural, qembed
 
@@ -131,7 +130,7 @@ class CustomHelp(commands.MinimalHelpCommand):
     def get_command_help(self, command):
         ctx = self.context
         embed = ctx.embed(title=self.get_command_signature(command),
-                              description=f'```{self.get_help(command, brief=False)}```')
+                          description=f'```{self.get_help(command, brief=False)}```')
         if alias := command.aliases:
             embed.add_field(name="Aliases", value=f"```{', '.join(alias)}```", inline=False)
         if isinstance(command, commands.Group):
@@ -194,22 +193,38 @@ class HelpSource(menus.GroupByPageSource):
         super().__init__(cmds, key=lambda c: getattr(c.cog, 'qualified_name', 'Unsorted'), per_page=15)
 
     async def format_page(self, menu, commands):
+        ctx = menu.ctx
         embed = menu.ctx.embed(title=f"{commands.key} | Page {menu.current_page + 1}/{self.get_max_pages()}",
-                               description="\n".join(add_formatting(menu.ctx, command) for command in commands.items))
+                               description="\n".join(add_formatting(ctx, command) for command in commands.items))
         if commands.key == "AAAAAA":
-            embed = menu.ctx.embed(title='test')
+            description = (
+                "`<argument>` means the argument is required\n"
+                "`[argument]` means the argument is required\n"
+                "You can view the help for a command or category by doing"
+                f"`{ctx.prefix}help` `[command|category]`"
+            )
+            embed = menu.ctx.embed(title='Penguin Help Command', description=description)
+            embed.add_field(name="About", value=f"```yaml\n{ctx.bot.description}```", inline=False)
+
+            embed.add_field(name="Useful Links",
+                            value=f"[Invite Link]({ctx.bot.invite})\n"
+                                  f"[Support Server Invite]({ctx.bot.support_invite})", inline=False)
         return embed
 
+
 class CogSource(menus.ListPageSource):
-    def __init__(self, ctx, cog):
+    def __init__(self, cog):
         _commands = [command for command in cog.get_commands()]
         cmds = sorted([command for command in _commands if not command.hidden], key=lambda c: c.qualified_name)
         super().__init__(cmds, per_page=15)
 
-    async def format_page(self, menu, page):
-        embed = menu.ctx.embed(title=f"{page[0].cog_name} | Page {menu.current_page + 1}/{self.get_max_pages()}",
-                               description="\n".join(add_formatting(menu.ctx, command) for command in page))
-        return embed
+    async def format_page(self, menu, cmds):
+        return menu.ctx.embed(
+            title=f"{cmds[0].cog_name} | Page {menu.current_page + 1}/{self.get_max_pages()}",
+            description="\n".join(
+                add_formatting(menu.ctx, command) for command in cmds
+            ),
+        )
 
 
 class HelpPages(menus.MenuPages):
@@ -313,14 +328,14 @@ class PaginatedHelp(commands.MinimalHelpCommand):
     async def send_cog_help(self, cog):
         ctx = self.context
 
-        pages = HelpPages(source=CogSource(ctx, cog), clear_reactions_after=True)
+        pages = HelpPages(source=CogSource(cog), clear_reactions_after=True)
 
         await pages.start(ctx)
 
     def get_command_help(self, command):
         ctx = self.context
         embed = ctx.embed(title=self.get_command_signature(command),
-                              description=f'```{self.get_help(command, brief=False)}```')
+                          description=f'```{self.get_help(command, brief=False)}```')
         if alias := command.aliases:
             embed.add_field(name="Aliases", value=f"```{', '.join(alias)}```", inline=False)
         if isinstance(command, commands.Group):
@@ -352,14 +367,12 @@ class PaginatedHelp(commands.MinimalHelpCommand):
         return f"No command called `{string}` found. Did you mean `{match}`?"
 
 
-
-
 class Helpful(commands.Cog, command_attrs=dict(hidden=True)):
     def __init__(self, bot):
         self.bot = bot
         self._original_help_command = bot.help_command
         bot.help_command = PaginatedHelp(command_attrs=dict(hidden=True, aliases=['halp', 'h', 'help_command'],
-                                                         help='Literally shows this message. Jesus, do you really need this?'))
+                                                            help='Literally shows this message. Jesus, do you really need this?'))
         bot.help_command.cog = self
 
     def cog_unload(self):
