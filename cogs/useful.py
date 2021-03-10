@@ -94,7 +94,7 @@ def get_sig(ctx, command):
         return f'`{ctx.prefix}{command.parent}` `{command.name}` `{sig}`'
         
 def add_formatting(ctx, command):
-    fmt = '{0} \N{EN DASH} {1}' if command.short_doc else '{0} \N{EN DASH} This command is not documented'
+    fmt = '{0} \N{EN DASH} {1}' if command.short_doc else '{0}'
     return fmt.format(get_sig(ctx, command), command.short_doc)
 
 
