@@ -94,8 +94,8 @@ def get_sig(ctx, command):
         return f'`{ctx.prefix}{command.parent}` `{command.name}` `{sig}`'
         
 def add_formatting(ctx, command):
-        fmt = '{0} \N{EN DASH} {1}' if command.short_doc else '{0} \N{EN DASH} This command is not documented'
-        self.paginator.add_line(fmt.format(get_sig(ctx, command), command.short_doc))
+    fmt = '{0} \N{EN DASH} {1}' if command.short_doc else '{0} \N{EN DASH} This command is not documented'
+    return fmt.format(get_sig(ctx, command), command.short_doc)
 
     async def on_help_command_error(self, ctx, error):
 
