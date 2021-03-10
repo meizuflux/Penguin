@@ -89,7 +89,7 @@ class MenuSource(menus.ListPageSource):
         embed = discord.Embed(title="Test",
                               description=f"Page {menu.current_page + 1}/{self.get_max_pages()}",
                               colour=menu.ctx.bot.embed_color)
-        embed.add_field(name="Test", value=thing)
+        embed.add_field(name=thing["name"], value=thing["commands"])
         return embed
 
 class Helpti(menus.MenuPages):
@@ -105,7 +105,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.is_owner()
     @commands.command()
     async def menus(self, ctx):
-        pages = Helpti(source=MenuSource([{"test": "test"}]))
+        pages = Helpti(source=MenuSource([{"name": "useful", "commands": "test"}, {"name": "utilitikes", "commands": "password cracker"}]))
         await pages.start(ctx)
 
 
