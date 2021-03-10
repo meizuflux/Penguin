@@ -98,7 +98,7 @@ def add_formatting(ctx, command):
     return fmt.format(get_sig(ctx, command), command.short_doc)
 
 
-class MenuSource(menus.ListPageSource):
+class MenuSource(menus.GroupByPageSource):
     def __init__(self, ctx, data):
         pg = commands.Paginator(prefix='', suffix='')
         for cog in data:
@@ -107,7 +107,7 @@ class MenuSource(menus.ListPageSource):
                 if not command.hidden:
                     pg.add_line(add_formatting(ctx, command))
 
-        super().__init__(pg.pages, per_page=1)
+        super().__init__(pg.pages, key=lambda c: c.cog, per_page=12)
 
 
     async def format_page(self, menu, page):
