@@ -103,18 +103,12 @@ class MenuSource(menus.ListPageSource):
         super().__init__(data, per_page=1)
 
     async def format_page(self, menu, page):
-        embed = menu.ctx.embed(title="Commands",
-                        description=f"Page {menu.current_page + 1}/{self.get_max_pages()}")
-
-
         _commands = [command for command in page.get_commands()]
-
-
         dink = "\n".join(add_formatting(menu.ctx, command) for command in _commands if not command.hidden)
-        if page == menu.ctx.bot.get_cog("Fun"):
-            await menu.ctx.send(dink)
-            await menu.ctx.send("\n".join(add_formatting(menu.ctx, command) for command in _commands if not command.hidden))
-        embed.add_field(name=page.qualified_name, value=dink if not page.description else page.description + "\n\n" + dink)
+
+        embed = menu.ctx.embed(title=f"{page.qualified_name} {menu.current_page + 1}/{self.get_max_pages()}",
+                        description=dink if not page.description else page.description + "\n\n" + dink)
+
         return embed
 
 class Helpti(menus.MenuPages):
