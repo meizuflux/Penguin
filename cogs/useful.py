@@ -118,7 +118,7 @@ class MenuSource(menus.GroupByPageSource):
 
         return embed
 
-class MenuSource(menus.ListPageSource):
+class TestMenuSource(menus.ListPageSource):
     def __init__(self, ctx, data):
         super().__init__(data, per_page=10)
 
@@ -151,6 +151,15 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         data = list(cog for cog in self.bot.cogs.values() if cog.qualified_name.lower() not in nono)
         data = sorted(data, key=lambda c: c.qualified_name)
         pages = Helpti(source=MenuSource(ctx, data), clear_reactions_after=True)
+
+        await pages.start(ctx)
+
+    @commands.command()
+    async def menu(self, ctx):
+        nono = ["jishaku", "owner", "commanderrorhandler", "helpful"]
+        data = list(cog for cog in self.bot.cogs.values() if cog.qualified_name.lower() not in nono)
+        data = sorted(data, key=lambda c: c.qualified_name)
+        pages = Helpti(source=TestMenuSource(ctx, data), clear_reactions_after=True)
 
         await pages.start(ctx)
 
