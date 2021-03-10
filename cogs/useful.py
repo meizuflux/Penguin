@@ -100,7 +100,7 @@ def add_formatting(ctx, command):
 
 class MenuSource(menus.ListPageSource):
     def __init__(self, ctx, data):
-        pg = commands.Paginator
+        pg = commands.Paginator(prefix='', suffix='')
         for cog in data:
             _commands = [command for command in cog.get_commands()]
             for command in _commands:
