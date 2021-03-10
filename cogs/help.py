@@ -316,7 +316,7 @@ class PaginatedHelp(commands.MinimalHelpCommand):
         nono = ["jishaku", "owner", "commanderrorhandler", "helpful"]
         data = [cog for cog in bot.cogs.values() if cog.qualified_name.lower() not in nono]
         data = sorted(data, key=lambda c: c.qualified_name)
-        pages = HelpPages(source=HelpSource(ctx, data), clear_reactions_after=True)
+        pages = HelpPages(source=HelpSource(ctx, data))
 
         await pages.start(ctx)
 
@@ -328,7 +328,7 @@ class PaginatedHelp(commands.MinimalHelpCommand):
     async def send_cog_help(self, cog):
         ctx = self.context
 
-        pages = HelpPages(source=CogSource(cog), clear_reactions_after=True)
+        pages = HelpPages(source=CogSource(cog))
 
         await pages.start(ctx)
 
