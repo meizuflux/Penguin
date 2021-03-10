@@ -105,6 +105,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.is_owner()
     async def menus(self, ctx):
         pages = Helpti(source=MenuSource({"test": "test"}))
+        await pages.start(ctx)
 
 
     @commands.command(aliases=['information', 'botinfo'],
