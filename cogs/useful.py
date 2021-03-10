@@ -119,6 +119,8 @@ class MenuSource(menus.GroupByPageSource):
         return embed
 
 class Helpti(menus.MenuPages):
+    async def send_initial_message(self, ctx, channel):
+        return await channel.send(f'this is uh the help')
 
     @menus.button('\N{BLACK SQUARE FOR STOP}\ufe0f', position=menus.Last(2))
     async def end_menu(self, _):
