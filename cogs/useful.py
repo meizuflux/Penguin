@@ -136,12 +136,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
-    async def menus(self, ctx):
-        nono = ["jishaku", "owner", "commanderrorhandler", "helpful"]
-        data = list(cog for cog in self.bot.cogs.values() if cog.qualified_name.lower() not in nono)
-        data = sorted(data, key=lambda c: c.qualified_name)
-        data.insert(0, "Info")
+    def meh(self, data):
         cmds = []
         for cog in data:
             if cog == "Info":
@@ -150,8 +145,16 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             for command in _commands:
                 if not command.hidden:
                     cmds.append(command)
+        return cmds
 
-        await ctx.send(cmds)
+    @commands.command()
+    async def menus(self, ctx):
+        nono = ["jishaku", "owner", "commanderrorhandler", "helpful"]
+        data = list(cog for cog in self.bot.cogs.values() if cog.qualified_name.lower() not in nono)
+        data = sorted(data, key=lambda c: c.qualified_name)
+        data.insert(0, "Info")
+
+        await ctx.send(self.meh(data))
         pages = Helpti(source=MenuSource(ctx, data), clear_reactions_after=True)
 
         await pages.start(ctx)
