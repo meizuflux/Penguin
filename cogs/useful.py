@@ -119,24 +119,6 @@ class MenuSource(menus.GroupByPageSource):
             embed=menu.ctx.embed(title='test')
         return embed
 
-class TestMenuSource(menus.ListPageSource):
-    def __init__(self, ctx, data):
-        super().__init__(data, per_page=10)
-
-
-    async def format_page(self, menu, cog):
-        ctx = menu.ctx
-        await ctx.send(cog)
-        if cog != None:
-            commands = cog.get_commands()
-            embed = menu.ctx.embed(title=f"{cog.qualified_name} | Page {menu.current_page + 1}/{self.get_max_pages()}",
-                            description="\n".join(add_formatting(menu.ctx, command) for command in commands))
-
-        else:
-            embed= menu.ctx.embed(description='nice')
-
-        return embed
-
 class Helpti(menus.MenuPages):
 
     @menus.button('\N{BLACK SQUARE FOR STOP}\ufe0f', position=menus.Last(2))
@@ -157,18 +139,6 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         pages = Helpti(source=MenuSource(ctx, data), clear_reactions_after=True)
 
         await pages.start(ctx)
-
-    @commands.command()
-    async def menu(self, ctx):
-        nono = ["jishaku", "owner", "commanderrorhandler", "helpful"]
-        data = {0: None}
-        cogs = [cog_pair for cog_pair in ctx.bot.cogs.items() if cog_pair[1].get_commands() and cog_pair[1].qualified_name.lower() not in nono]
-        data.update({num: cog_pair for num, cog_pair in enumerate(cogs, start=1)})
-
-        pages = Helpti(source=TestMenuSource(ctx, data), clear_reactions_after=True)
-
-        await pages.start(ctx)
-
 
     @commands.command(aliases=['information', 'botinfo'],
                       help='Gets info about the bot')
