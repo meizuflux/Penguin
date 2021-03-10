@@ -122,6 +122,7 @@ class Helpti(menus.MenuPages):
 
     @menus.button('\N{BLACK SQUARE FOR STOP}\ufe0f', position=menus.Last(2))
     async def end_menu(self, _):
+        self.message.delete()
         self.stop()
 
 class Useful(commands.Cog, command_attrs=dict(hidden=False)):
