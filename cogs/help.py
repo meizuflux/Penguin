@@ -326,6 +326,8 @@ class PaginatedHelp(commands.MinimalHelpCommand):
         return real_help if not brief else command.short_doc or real_help
 
     async def send_cog_help(self, cog):
+        if cog.qualified_name == "AAAAAA":
+            raise commands.CommandNotFound(cog.qualified_name)
         ctx = self.context
 
         pages = HelpPages(source=CogSource(cog))
