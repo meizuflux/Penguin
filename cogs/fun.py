@@ -312,7 +312,7 @@ class Fun(commands.Cog):
     async def caption(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         image = await get_image_url(ctx, image)
         data = {
-            "Content": image,
+            "Content": str(image),
             "Type": "CaptionRequest",
         }
         headers = {"Content-Type": "application/json; charset=utf-8"}
