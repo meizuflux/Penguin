@@ -299,12 +299,11 @@ class PaginatedHelp(commands.MinimalHelpCommand):
         fmt = '{0} \N{EN DASH} {1}' if command.short_doc else '{0} \N{EN DASH} This command is not documented'
         self.paginator.add_line(fmt.format(self.get_command_signature(command), command.short_doc))
 
-    #async def on_help_command_error(self, ctx, error):
-        #if isinstance(error, commands.CommandNotFound):
-            #embed = discord.Embed(title="Error", description=str(error))
-            #await ctx.send(embed=embed)
-        #else:
-            #raise error
+    async def on_help_command_error(self, ctx, error):
+        if isinstance(error, commands.CommandNotFound):
+            await self.send_error_message(await self.command_not_found(error))
+        else:
+            raise error
 
     async def send_bot_help(self, mapping):
         ctx = self.context
