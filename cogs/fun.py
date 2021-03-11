@@ -311,13 +311,13 @@ class Fun(commands.Cog):
     @commands.command()
     async def caption(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         image = await get_image_url(ctx, image)
-        data = json.dumps({
+        data = {
             "Content": image,
             "Type": "CaptionRequest",
-        })
+        }
         headers = {"Content-Type": "application/json; charset=utf-8"}
         caption_url = "https://captionbot.azurewebsites.net/api/messages"
-        async with self.bot.session.post(url, data=data, headers=headers) as resp:
+        async with self.bot.session.post(url, data=json.dumps(data), headers=headers) as resp:
             await ctx.send(await resp.json())
 
 def setup(bot):
