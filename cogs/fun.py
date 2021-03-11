@@ -9,6 +9,7 @@ from io import BytesIO
 import discord
 import typing
 import json
+import timeit
 from cogs.polaroid_manipulation import get_image_url
 from PIL import Image, ImageDraw, ImageFont
 from discord.ext import commands, flags
@@ -318,7 +319,8 @@ class Fun(commands.Cog):
         headers = {"Content-Type": "application/json; charset=utf-8"}
         caption_url = "https://captionbot.azurewebsites.net/api/messages"
         async with self.bot.session.post(caption_url, data=json.dumps(data), headers=headers) as resp:
-            await ctx.send(await resp.json())
+            await ctx.send(timeit.timeit(await resp.json())
+            await ctx.send(timeit.timeit(await resp.text())
 
 def setup(bot):
     bot.add_cog(Fun(bot))
