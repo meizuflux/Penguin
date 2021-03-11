@@ -300,14 +300,7 @@ class PaginatedHelp(commands.MinimalHelpCommand):
         self.paginator.add_line(fmt.format(self.get_command_signature(command), command.short_doc))
 
     async def on_help_command_error(self, ctx, error):
-        if isinstance(error, commands.BadArgument):
-            embed = discord.Embed(title="Error", description=str(error))
-            await ctx.send(embed=embed)
-        if isinstance(error, commands.CommandNotFound):
-            embed = discord.Embed(title="Error", description=str(error))
-            await ctx.send(embed=embed)
-        else:
-            raise error
+        raise error
 
     async def send_bot_help(self, mapping):
         ctx = self.context
