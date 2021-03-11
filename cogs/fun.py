@@ -8,6 +8,8 @@ from io import BytesIO
 
 import discord
 import typing
+import json
+from cogs.polaroid_manipulation import get_image_url
 from PIL import Image, ImageDraw, ImageFont
 from discord.ext import commands, flags
 from discord.ext.commands.cooldowns import BucketType
@@ -305,6 +307,17 @@ class Fun(commands.Cog):
         if not content and not text:
             content = ctx.author.nick or ctx.author.name
         await ctx.send("".join([i.upper() if num % 2 == 0 else i.lower() for num, i in enumerate(content)]))
+
+    @commands.command()
+    async def caption(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
+        image = await get_image_url(ctx, image)
+        data = json.dumps({
+            "Content": image,
+            "Type": "CaptionRequest",
+        })
+        caption_url = "https://captionbot.azurewebsites.net/api/messages"
+        async with self.bot.session.post(url, data=data) as resp:
+            await ctx.send(await resp.json())
 
 def setup(bot):
     bot.add_cog(Fun(bot))
