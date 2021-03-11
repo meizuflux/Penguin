@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from cogs.polaroid_manipulation import get_image_url
+import typing
 
 
 class Images(commands.Cog):
