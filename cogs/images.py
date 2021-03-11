@@ -10,8 +10,7 @@ class Images(commands.Cog):
 
     async def do_alex_image(self, ctx, method, args: list = [], kwargs: dict = {}):
         alex = getattr(self.bot.alex, method)
-        m = await alex(*args, **kwargs)
-        file = discord.File(m, filename=f"{method}.png")
+        file = discord.File(await alex(*args, **kwargs).read(), filename=f"{method}.png")
         embed = ctx.embed()
         embed.set_image(url=f"attachment://{method}.png")
         await ctx.send(embed=embed, file=file)
