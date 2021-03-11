@@ -294,6 +294,7 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def mock(self, ctx, text: typing.Union[discord.PartialMessage, str]=None):
+        content = None
         if isinstance(text, discord.Message):
             content = text.content
         elif text:
