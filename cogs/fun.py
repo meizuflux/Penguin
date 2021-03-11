@@ -293,7 +293,7 @@ class Fun(commands.Cog):
         await ctx.send(embed=embed, file=image)
 
     @commands.command()
-    async def mock(self, ctx, text: typing.Union[discord.PartialMessage, str]=None):
+    async def mock(self, ctx, text: str=None):
         content = None
         if isinstance(text, discord.Message):
             content = text.content
