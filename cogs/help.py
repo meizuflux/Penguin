@@ -200,7 +200,7 @@ class HelpSource(menus.GroupByPageSource):
         if commands.key == "AAAAAA":
             description = (
                 "`<argument>` means the argument is required\n"
-                "`[argument]` means the argument is required\n\n"
+                "`[argument]` means the argument is optional\n\n"
                 f"Type `{ctx.prefix}help` `[command]` for more info on a command.\n"
                 f"You can also type `{ctx.prefix}help` `[category]` for more info on a category.\n"
             )
