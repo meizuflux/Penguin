@@ -8,12 +8,17 @@ class Images(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    async def do_alex_image(self, ctx, method, args: list = [], kwargs: dict = {}):
+        alex = getattr(self.bot.alex, method)
+        m = await image(*args, **kwargs)
+        file = discord.File(m, filename=f"{method}.png")
+        embed = ctx.embed()
+        embed.set_image(url=f"attachment://{method}.png")
+        await ctx.send(embed=embed, file=file)
+
     @commands.command()
     async def amiajoke(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
-        embed = ctx.embed()
-        embed.set_image(url='attachment://yes_you_are.png')
-        image = discord.File(await (await self.bot.alex.amiajoke(await get_image_url(ctx, image))).read(), "yes_you_are.png")
-        await ctx.send(embed=embed, file=image)
+        await self.do_alex_image(ctx, method="amiajoke", args=await get_image_url(ctx, image))
     
 
 def setup(bot):
