@@ -11,7 +11,7 @@ class Images(commands.Cog):
     async def amiajoke(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         embed = ctx.embed()
         embed.set_image(url='attachment://yes_you_are.png')
-        image = discord.File(await (await self.bot.alex.achievement(get_image_url(image))).read(), "yes_you_are.png")
+        image = discord.File(await (await self.bot.alex.achievement(await get_image_url(ctx, image))).read(), "yes_you_are.png")
         await ctx.send(embed=embed, file=image)
     
 
