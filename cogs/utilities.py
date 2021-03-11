@@ -257,7 +257,8 @@ class Utilities(commands.Cog):
 
     @commands.command()
     async def percentage(self, ctx, percentage: str, number: int):
-        percentage = int(percentage.split("%"))
+        await ctx.send(percentage.strip("%"))
+        percentage = int(str(percentage.split("%"))
         result = (percentage * number) / 100
         await ctx.send(f"`{percentage}%` of `{number}` is {result:.4f}")
 
