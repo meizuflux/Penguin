@@ -323,7 +323,7 @@ class PaginatedHelp(commands.MinimalHelpCommand):
 
     async def send_cog_help(self, cog):
         if cog.qualified_name == "AAAAAA":
-            await self.send_error_message(await self.command_not_found(cog.qualified_name))
+            return await self.send_error_message(await self.command_not_found(cog.qualified_name))
         ctx = self.context
 
         pages = HelpPages(source=CogSource(cog))
