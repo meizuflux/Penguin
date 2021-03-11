@@ -9,37 +9,36 @@ from jishaku.functools import executor_function
 
 from utils.default import qembed
 
+async def get_image_object(ctx, image):
+    if ctx.message.attachments:
+        img = await ctx.message.attachments[0].read()
+
+    elif isinstance(image, discord.PartialEmoji):
+        img = await image.url.read()
+
+    elif isinstance(image, (discord.Member, discord.User)):
+        img = await image.avatar_url_as(format="png").read()
+
+    elif image is None:
+        img = await ctx.author.avatar_url_as(format="png").read()
+    else:
+        url = str(image).strip("<>")
+        if re.match(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", url):
+            async with ctx.bot.session.get(url) as resp:
+                if resp.headers["Content-type"].startswith("image"):
+                    img = await resp.read()
+                else:
+                    img = None
+        else:
+            img = None
+    if not img:
+        img = await ctx.author.avatar_url_as(format="png").read()
+    return img
+
 
 class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     def __init__(self, bot):
         self.bot = bot
-
-    @staticmethod
-    async def get_image(ctx, image):
-        if ctx.message.attachments:
-            img = await ctx.message.attachments[0].read()
-
-        elif isinstance(image, discord.PartialEmoji):
-            img = await image.url.read()
-
-        elif isinstance(image, (discord.Member, discord.User)):
-            img = await image.avatar_url_as(format="png").read()
-
-        elif image is None:
-            img = await ctx.author.avatar_url_as(format="png").read()
-        else:
-            url = str(image).strip("<>")
-            if re.match(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", url):
-                async with ctx.bot.session.get(url) as resp:
-                    if resp.headers["Content-type"].startswith("image"):
-                        img = await resp.read()
-                    else:
-                        img = None
-            else:
-                img = None
-        if not img:
-            img = await ctx.author.avatar_url_as(format="png").read()
-        return img
 
     @executor_function
     def do_polaroid(self, img, method: str, args: list = None, kwargs: dict = None):
@@ -54,7 +53,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
 
     async def send_polaroid(self, ctx, image, method: str, *args, **kwargs):
         try:
-            image = await self.get_image(ctx, image)
+            image = await get_image_object(ctx, image)
         except:
             await qembed(ctx, 'Invalid URL provided.')
         img = await self.do_polaroid(image, method, *args, **kwargs)

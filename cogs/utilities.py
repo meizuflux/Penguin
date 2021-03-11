@@ -255,6 +255,12 @@ class Utilities(commands.Cog):
             return await ctx.send(f'Invalid IP. Error message:\n`{ip["message"]}`')
         await ctx.send(f'```json\n{json.dumps(ip, indent=4)}```')
 
+    @commands.command()
+    async def percentage(self, ctx, percentage: str, number: int):
+        percentage = int(percentage.split("%%"))
+        result = (percentage * number) / 100
+        await ctx.send(f"`{percentage}%` of `{number}` is {result:.4f}")
+
 
 def setup(bot):
     bot.add_cog(Utilities(bot))
