@@ -40,7 +40,7 @@ async def get_image_url(ctx, image):
         img = ctx.message.attachments[0].proxy_url
 
     elif isinstance(image, discord.PartialEmoji):
-        img = image.url_as(format="png")
+        img = image.url
 
     elif isinstance(image, (discord.Member, discord.User)):
         img = image.avatar_url_as(format="png")
