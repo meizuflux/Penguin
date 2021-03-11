@@ -317,7 +317,7 @@ class Fun(commands.Cog):
         }
         headers = {"Content-Type": "application/json; charset=utf-8"}
         caption_url = "https://captionbot.azurewebsites.net/api/messages"
-        async with self.bot.session.post(url, data=json.dumps(data), headers=headers) as resp:
+        async with self.bot.session.post(caption_url, data=json.dumps(data), headers=headers) as resp:
             await ctx.send(await resp.json())
 
 def setup(bot):
