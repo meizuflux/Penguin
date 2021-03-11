@@ -18,7 +18,7 @@ class Images(commands.Cog):
 
     @commands.command()
     async def amiajoke(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
-        await self.do_alex_image(ctx, method="amiajoke", args=await get_image_url(ctx, image))
+        await self.do_alex_image(ctx, method="amiajoke", args=[await get_image_url(ctx, image)])
     
 
 def setup(bot):
