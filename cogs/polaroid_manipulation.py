@@ -43,10 +43,10 @@ async def get_image_url(ctx, image):
         img = image.url
 
     elif isinstance(image, (discord.Member, discord.User)):
-        img = image.avatar_url_as(format="png")
+        img = image.avatar_url
 
     elif image is None:
-        img = ctx.author.avatar_url_as(format="png")
+        img = ctx.author.avatar_url
     else:
         url = str(image).strip("<>")
         if re.match(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", url):
@@ -58,7 +58,7 @@ async def get_image_url(ctx, image):
         else:
             img = None
     if not img:
-        img = await ctx.author.avatar_url_as(format="png")
+        img = await ctx.author.avatar_url
     return img
 
 
