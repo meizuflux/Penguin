@@ -320,7 +320,7 @@ class Fun(commands.Cog):
         caption_url = "https://captionbot.azurewebsites.net/api/messages"
         async with self.bot.session.post(caption_url, data=json.dumps(data), headers=headers) as resp:
             await ctx.send(timeit.timeit(await resp.json())
-            await ctx.send(timeit.timeit(await resp.text())
+        await ctx.send(timeit.timeit(await resp.text())
 
 def setup(bot):
     bot.add_cog(Fun(bot))
