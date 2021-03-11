@@ -291,5 +291,17 @@ class Fun(commands.Cog):
         image = discord.File(await (await self.bot.alex.achievement(text=text)).read(), "achievement.png")
         await ctx.send(embed=embed, file=image)
 
+    @commands.command()
+    async def mock(self, ctx, text: typing.Union[discord.PartialMessage, str]=None):
+        if isinstance(text, discord.Message):
+            content = text.content
+        elif text:
+            content = text
+        if ctx.message.reference:
+            content = ctx.message.reference.resolved.content
+        if not content and not text:
+            content = ctx.author.nick or ctx.author.name
+        await ctx.send("".join([i.upper() if num % 2 == 0 else i.lower() for num, i in enumerate(content)]))
+
 def setup(bot):
     bot.add_cog(Fun(bot))
