@@ -289,6 +289,7 @@ class Fun(commands.Cog):
     async def achievement(self, ctx, *, text):
         """Sends a Minecraft Achievement."""
         embed = ctx.embed()
+        embed.set_image(url='attachment://achievement.png')
         image = discord.File(await (await self.bot.alex.achievement(text=text)).read(), "achievement.png")
         await ctx.send(embed=embed, file=image)
 
