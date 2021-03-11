@@ -257,10 +257,9 @@ class Utilities(commands.Cog):
 
     @commands.command()
     async def percentage(self, ctx, percentage: str, number: int):
-        await ctx.send(type(percentage.strip("%")))
         percentage = int(str(percentage.split("%")[0]))
         result = (percentage * number) / 100
-        await ctx.send(f"`{percentage}%` of `{number}` is {result:.4f}")
+        await ctx.send(f"`{percentage}%` of `{number}` is `{result}`")
 
 
 def setup(bot):
