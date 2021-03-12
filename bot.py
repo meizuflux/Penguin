@@ -66,7 +66,7 @@ class Chuck(commands.Bot):
                     self.prefixes[message.guild.id].append(i["prefix"])
             else:
                 await self.db.execute("INSERT INTO prefixes(guild_id,prefix) VALUES($1,$2)", message.guild.id, self.default_prefix)
-                self.prefixes[message.guild.id] = self.default_prefix
+                self.prefixes[message.guild.id].append(self.default_prefix)
 
             return commands.when_mentioned_or(*self.prefixes[message.guild.id])(self, message)
 
