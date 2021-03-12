@@ -24,7 +24,7 @@ class Chuck(commands.Bot):
         intents = discord.Intents.default()
         intents.members = True
         super().__init__(
-            command_prefix=get_prefix,
+            command_prefix=self.get_prefix,
             case_insensitive=True,
             intents=intents,
             owner_ids={809587169520910346},
