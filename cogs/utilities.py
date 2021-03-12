@@ -266,6 +266,7 @@ class Utilities(commands.Cog):
     @commands.command(cls=flags.FlagCommand, usage='<text> [--ext ".py"]')
     async def text(self, ctx, *, text, **flags):
         """Writes text to a file."""
+        await ctx.send(flags)
         ext = flags['ext'] if flags['ext'].startswith(".") else "." + flags['ext']
         buffer = io.BytesIO(text.encode("utf8"))
 
