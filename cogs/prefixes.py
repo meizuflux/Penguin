@@ -80,6 +80,7 @@ class Prefixes(commands.Cog):
         """View the prefixes on this server."""
         prefixes = '"\n"'.join(self.bot.prefixes[ctx.guild.id])
         embed = ctx.embed(description=f'```yaml\n"{prefixes}"```')
+        await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Prefixes(bot))
