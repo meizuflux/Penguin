@@ -263,12 +263,12 @@ class Utilities(commands.Cog):
         await ctx.send(f"`{percentage}%` of `{number}` is `{result}`")
 
     @flags.add_flag("--ext", default="txt")
-    @flags.command(usage='<text> [--ext ".py"]')
-    async def text(self, ctx, **flags):
+    @commands.command(cls=flags.FlagCommand, usage='<text> [--ext ".py"]')
+    async def text(self, ctx, text, **flags):
         """Writes text to a file."""
         await ctx.send(flags)
         ext = flags['ext'] if flags['ext'].startswith(".") else "." + flags['ext']
-        buffer = io.BytesIO("bonk".encode("utf8"))
+        buffer = io.BytesIO(text.encode("utf8"))
 
         await ctx.send(file=discord.File(fp=buffer, filename=f"{ctx.author.name}{ext}"))
 
