@@ -263,7 +263,7 @@ class Utilities(commands.Cog):
         await ctx.send(f"`{percentage}%` of `{number}` is `{result}`")
 
     @flags.add_flag("--ext", default="txt")
-    @commands.command(cls=flags.FlagCommand, usage='<text> [--ext ".py"]')
+    @flags.command(usage='<text> [--ext ".py"]')
     async def text(self, ctx, *, text, **flags):
         """Writes text to a file."""
         await ctx.send(flags)
