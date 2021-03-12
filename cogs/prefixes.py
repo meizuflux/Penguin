@@ -55,9 +55,8 @@ class Prefixes(commands.Cog):
     @mng_gld()
     async def edit(self, ctx, prefix):
         """Edits the prefix being used to invoke the command."""
-        if ctx.prefix == self.bot.user.mention:
-            return await ctx.send(embed=ctx.embed(description="Nice try."))
-        await ctx.send(f"```yaml\n{ctx.prefix}```")
+        if ctx.prefix == ("<@!810570659968057384> ", "<@!810570659968057384>"):
+            return await ctx.send(embed=ctx.embed(description="Nice try, but you can't edit this."))
 
 def setup(bot):
     bot.add_cog(Prefixes(bot))
