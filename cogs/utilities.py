@@ -7,7 +7,8 @@ import secrets
 import discord
 import humanize
 import numpy as np
-from discord.ext import commands, tasks
+import io
+from discord.ext import commands, tasks, flags
 from jishaku.functools import executor_function
 from jishaku.paginators import PaginatorInterface, WrappedPaginator
 
@@ -260,6 +261,15 @@ class Utilities(commands.Cog):
         percentage = int(str(percentage.split("%")[0]))
         result = (percentage * number) / 100
         await ctx.send(f"`{percentage}%` of `{number}` is `{result}`")
+
+    @flags.add_flag("--ext", default="txt")
+    @commands.command(cls=flags.FlagCommand, usage='<text> [--ext ".py"]')
+    async def text(self, ctx, *, text, **flags):
+        """Writes text to a file."""
+        ext = flags['ext'] if flags['ext'].startswith(".") else "." + flags['ext']
+        buffer = io.BytesIO(text.encode("utf8"))
+
+        await ctx.send(file=discord.File(fp=buffer, filename=f"{ctx.author.name}{ext}"))
 
 
 def setup(bot):
