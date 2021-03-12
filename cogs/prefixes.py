@@ -29,11 +29,15 @@ class Prefixes(commands.Cog):
     @prefix.command()
     @mng_gld()
     async def add(self, ctx, prefix):
+        if prefix in self.bot.prefixes[ctx.guild.id]:
+            return await ctx.send(embed=ctx.embed(description="This is already a prefix."))
+
         sql = (
             "INSERT INTO prefixes(guild_id,prefix) "
             "VALUES($1,$2) "
             "ON CONFLICT (guild_id, prefix) DO NOTHING"
         )
+
         await self.bot.db.execute(sql, ctx.guild.id, prefix)
         self.bot.prefixes[ctx.guild.id].append(prefix)
         await ctx.send(embed=ctx.embed(description=f"Added prefix `{prefix}`"))
@@ -57,6 +61,17 @@ class Prefixes(commands.Cog):
         """Edits the prefix being used to invoke the command."""
         if ctx.prefix in ("<@!810570659968057384> ", "<@!810570659968057384>"):
             return await ctx.send(embed=ctx.embed(description="Nice try, but you can't edit this."))
+        sql = (
+            "DELETE FROM prefixes "
+            "WHERE guild_id = $1 AND prefix = $2; "
+            "INSERT INTO prefixes (guild_id, prefix) "
+            "VALUES ($1, $3)"
+        )
+        await self.bot.db.execute(sql, ctx.guild.id, ctx.prefix, prefix)
+        self.bot.prefixes[ctx.guild.id].remove(ctx.prefix)
+        self.bot.prefixes[ctx.guild.id].append(prefix)
+        await ctx.send(embed=ctx.embed(description=f"Edited `{ctx.prefix}` to `{prefix}`"))
+
 
 def setup(bot):
     bot.add_cog(Prefixes(bot))
