@@ -211,7 +211,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         types = []
         for type in ["webp", "png", "jpeg", "jpg"]:
             types.append(f"[{type}]({str(user.avatar_url_as(format=type))})")
-        if user.is_avatar_animated:
+        if user.is_avatar_animated():
             types.append(f"[gif]({str(user.avatar_url_as(format='gif'))})")
         ava.description= " | ".join(types)
         ava.set_image(url=user.avatar_url)
