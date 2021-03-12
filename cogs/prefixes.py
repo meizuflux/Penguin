@@ -57,7 +57,7 @@ class Prefixes(commands.Cog):
         """Edits the prefix being used to invoke the command."""
         if ctx.prefix == self.bot.user.mention:
             return await ctx.send(embed=ctx.embed(description="Nice try."))
-        await ctx.send("```yaml\n{ctx.prefix}```")
+        await ctx.send(f"```yaml\n{ctx.prefix}```")
 
 def setup(bot):
     bot.add_cog(Prefixes(bot))
