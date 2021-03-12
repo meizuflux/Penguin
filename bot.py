@@ -24,7 +24,7 @@ class Chuck(commands.Bot):
         intents = discord.Intents.default()
         intents.members = True
         super().__init__(
-            command_prefix=self.get_prefix,
+            command_prefix="p ",
             case_insensitive=True,
             intents=intents,
             owner_ids={809587169520910346},
@@ -34,7 +34,7 @@ class Chuck(commands.Bot):
         self.author_id = 809587169520910346
         self.session = aiohttp.ClientSession()
         self.embed_color = 0x89CFF0# discord.Color.green()  # 0x9c5cb4
-        self.prefixes = {}
+        self.prefixes = collections.defaultdict(list)
         self.command_list = []
         self.deleted_messages = collections.defaultdict(list)
         self.default_prefix = 'p!'
@@ -105,12 +105,8 @@ class Chuck(commands.Bot):
     async def create_tables(self):
         """Creates the needed SQL tables for this bot."""
         await self.wait_until_ready()
-        await self.db.execute("CREATE TABLE IF NOT EXISTS prefixes (serverid BIGINT PRIMARY KEY,prefix VARCHAR(50))")
-        await self.db.execute("CREATE TABLE IF NOT EXISTS scoresaber (userid BIGINT PRIMARY KEY,ssid BIGINT)")
-        await self.db.execute(
-            "CREATE TABLE IF NOT EXISTS economy (userid BIGINT PRIMARY KEY,wallet BIGINT,bank BIGINT)")
-        await self.db.execute(
-            "CREATE TABLE IF NOT EXISTS stocks (user_id BIGINT,ticker VARCHAR,amount BIGINT, PRIMARY KEY (user_id, ticker))")
+        with open("tables.sql") as f:
+            await self.db.execute(f.read())
 
     async def create_cache(self):
         await self.wait_until_ready()
@@ -159,7 +155,7 @@ class Chuck(commands.Bot):
         """Checking if someone pings the bot."""
         if message.author.bot:
             return
-        if re.fullmatch(r"^(<@!?{self.user.id}>)\s*", message.content):
+        if re.fullmatch(fr"^(<@!?{self.user.id}>)\s*", message.content):
             try:
                 server_prefix = bot.prefixes[message.guild.id]
             except KeyError:

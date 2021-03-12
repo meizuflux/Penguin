@@ -82,7 +82,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
             eco_sql = (
                 "UPDATE economy "
                 "SET wallet = $1 "
-                "WHERE userid = $2"
+                "WHERE user_id = $2"
             )
             eco_values = (wallet - total, ctx.author.id)
 
@@ -146,7 +146,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
             wallet, _ = await get_stats(ctx, ctx.author.id)
             eco_values = (wallet + total, ctx.author.id)
 
-            await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE userid = $2", *eco_values)
+            await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE user_id = $2", *eco_values)
             await self.bot.db.execute(stock_sql, *stock_values)
 
             await message.edit(content=f'Sold **{amount}** {share} of **{ticker}** for **${humanized_total}**.')
