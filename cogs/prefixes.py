@@ -75,6 +75,11 @@ class Prefixes(commands.Cog):
         self.bot.prefixes[ctx.guild.id].append(prefix)
         await ctx.send(embed=ctx.embed(description=f"Edited `{ctx.prefix}` to `{prefix}`"))
 
+    @prefix.command()
+    async def edit(self, ctx, prefix):
+        """View the prefixes on this server."""
+        prefixes = '"\n"'.join(self.bot.prefixes[ctx.guild.id])
+        embed = ctx.embed(description=f'```yaml\n"{prefixes}"```')
 
 def setup(bot):
     bot.add_cog(Prefixes(bot))
