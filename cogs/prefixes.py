@@ -27,7 +27,7 @@ class Prefixes(commands.Cog):
         await self.bot.db.execute(
             "INSERT INTO prefixes(guild_id,prefix) VALUES($1,$2) ON CONFLICT (guild_id, prefix) DO UPDATE SET prefix = $2",
             ctx.guild.id, prefix)
-        self.bot.prefixes[ctx.guild.id] = prefix
+        self.bot.prefixes[ctx.guild.id].append(prefix)
         await qembed(ctx, f"Changed prefix to `{prefix}`")
 
 
