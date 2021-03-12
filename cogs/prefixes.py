@@ -21,14 +21,33 @@ class Prefixes(commands.Cog):
             guild.id, self.bot.default_prefix)
         self.bot.prefixes[guild.id] = self.bot.default_prefix
 
-    @commands.command(aliases=['changeprefix', 'setprefix'])
-    @mng_gld()
+    @commands.group()
     async def prefix(self, ctx, prefix):
-        await self.bot.db.execute(
-            "INSERT INTO prefixes(guild_id,prefix) VALUES($1,$2) ON CONFLICT (guild_id, prefix) DO UPDATE SET prefix = $2",
-            ctx.guild.id, prefix)
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help(str(ctx.command))
+
+    @prefix.command()
+    @mng_gld()
+    async def add(self, ctx, prefix):
+        sql = (
+            "INSERT INTO prefixes(guild_id,prefix) "
+            "VALUES($1,$2) "
+            "ON CONFLICT (guild_id, prefix) DO NOTHING"
+        )
+        await self.bot.db.execute(sql, ctx.guild.id, prefix)
         self.bot.prefixes[ctx.guild.id].append(prefix)
-        await qembed(ctx, f"Changed prefix to `{prefix}`")
+        await ctx.send(embed=ctx.embed(description=f"Changed prefix to `{prefix}`"))
+
+    @prefix.command()
+    @mng_gld()
+    async def remove(self, ctx, prefix):
+        sql = (
+            "DELETE FROM prefixes "
+            "WHERE guild_id = $1 AND prefix = $2"
+        )
+        await self.bot.db.execute(sql, ctx.guild.id, prefix)
+        self.bot.prefixes[ctx.guild.id].remove(prefix)
+        await ctx.send(embed=ctx.embed(description=f"Removed `{prefix}`"))
 
 
 def setup(bot):
