@@ -29,7 +29,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         await self.bot.db.execute('DELETE FROM stocks WHERE amount = 0')
         
     @commands.command()
-    async def dividend(self, ctx, dividend:int, stock_price:int, amount:int):
+    async def dividend(self, ctx, dividend:float, stock_price:int, amount:int):
         """
         dividend can be find by searching it on google on the information card find `Div yield` you can enter it like 5.79 for 5.79%
         Stock price is just the stock price
