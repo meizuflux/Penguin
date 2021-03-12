@@ -93,7 +93,7 @@ class Chuck(commands.Bot):
 
             extensions = ['jishaku', 'cogs.useful', 'cogs.owner', 'cogs.prefixes', 'cogs.economy', 'cogs.errorhandler',
                           'cogs.fun', 'cogs.utilities', 'cogs.polaroid_manipulation', 'cogs.music', 'cogs.stonks',
-                          'cogs.help', 'cogs.animepics']
+                          'cogs.help', 'cogs.animepics', 'cogs.images']
             for extension in extensions:
                 self.load_extension(extension)
 
