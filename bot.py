@@ -162,7 +162,7 @@ class Chuck(commands.Bot):
             except KeyError:
                 prefix = await bot.db.fetchval("SELECT prefix FROM prefixes WHERE serverid = $1", message.guild.id)
                 server_prefix = prefix or bot.default_prefix
-            await message.channel.send("My prefix on `{}` is `{}`".format(message.guild.name, server_prefix))
+            await message.channel.send("My prefixes on `{}` are `{}`".format(message.guild.name, ", ".join(server_prefix)))
         await self.process_commands(message)
 
     async def on_message_edit(self, before, after):
