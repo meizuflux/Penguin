@@ -207,13 +207,15 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     async def avatar(self, ctx, user: discord.Member = None):
         if not user:
             user = ctx.author
-        ext = 'gif' if user.is_avatar_animated() else 'png'
-        ava = discord.Embed(title=f'{user.name}\'s avatar:',
-                            color=self.bot.embed_color,
-                            timestamp=ctx.message.created_at)
-        ava.set_image(url=f"attachment://{user.id}.{ext}")
-        ava.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
-        await ctx.send(embed=ava, file=discord.File(BytesIO(await user.avatar_url.read()), f"{user.id}.{ext}"))
+        ava = ctx.embed(title=f'{user.name}\'s avatar:')
+        types = []
+        for type in ["webp", "png", "jpeg", "jpg"]:
+            types.append(f"[{type}]({str(user.avatar_url_as(format=type))})")
+        if user.is_avatar_animated:
+            types.append(f"[gif]({str(user.avatar_url_as(format='gif'))})")
+        ava.description= " | ".join(types)
+        ava.set_image(url=user.avatar_url)
+        await ctx.send(embed=ava)
 
     @commands.command(help='Searches PyPI for a Python Package')
     async def pypi(self, ctx, package: str):
