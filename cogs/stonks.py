@@ -27,6 +27,18 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
     @tasks.loop(hours=12)
     async def del_none(self):
         await self.bot.db.execute('DELETE FROM stocks WHERE amount = 0')
+        
+    @commands.command()
+    async def dividend(self, ctx, dividend:int, stock_price:int, amount:int):
+        """
+        dividend can be find by searching it on google on the information card find `Div yield` you can enter it like 5.79 for 5.79%
+        Stock price is just the stock price
+        Amount is the amount of stocks you own
+        """
+        total_price = stock_price*amount
+        real_dividend = dividend/100
+        price = total_price*real_dividend
+        return await ctx.send(price)
 
     @commands.command()
     async def buy(self, ctx, ticker: str = 'MSFT', amount='1'):
