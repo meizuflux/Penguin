@@ -109,6 +109,8 @@ class Chuck(commands.Bot):
 
     async def create_cache(self):
         await self.wait_until_ready()
+        for guild in self.guilds:
+            await self.db.execute("INSERT INTO guilds (guild_id) VALUES ($1) ON CONFLICT (guild_id) DO NOTHING", guild.id)
         guilds = await self.db.fetch("SELECT * FROM prefixes")
         for guild in guilds:
             self.prefixes[guild['guild_id']].append(guild['prefix'])
