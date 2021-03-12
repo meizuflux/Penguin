@@ -41,6 +41,8 @@ class Prefixes(commands.Cog):
     @prefix.command()
     @mng_gld()
     async def remove(self, ctx, prefix):
+        if prefix not in self.bot.prefixes[ctx.guild.id]:
+            return await ctx.send(embed=ctx.embed(description="Invalid prefix provided."))
         sql = (
             "DELETE FROM prefixes "
             "WHERE guild_id = $1 AND prefix = $2"
