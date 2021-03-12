@@ -22,7 +22,7 @@ class Prefixes(commands.Cog):
         self.bot.prefixes[guild.id] = self.bot.default_prefix
 
     @commands.group()
-    async def prefix(self, ctx, prefix):
+    async def prefix(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(str(ctx.command))
 
