@@ -24,7 +24,7 @@ class Chuck(commands.Bot):
         intents = discord.Intents.default()
         intents.members = True
         super().__init__(
-            command_prefix="p ",
+            command_prefix=get_prefix,
             case_insensitive=True,
             intents=intents,
             owner_ids={809587169520910346},
@@ -58,18 +58,17 @@ class Chuck(commands.Bot):
         if message.guild is None:
             return commands.when_mentioned_or(self.default_prefix)(self, message)
         try:
-            return commands.when_mentioned_or(self.prefixes[message.guild.id])(self, message)
+            return commands.when_mentioned_or(*self.prefixes[message.guild.id])(self, message)
         except KeyError:
-            prefix = await self.db.fetchval("SELECT prefix FROM prefixes WHERE serverid = $1", message.guild.id)
+            prefix = await self.db.fetch("SELECT prefix FROM prefixes WHERE guild_id = $1", message.guild.id)
             if prefix:
-                self.prefixes[message.guild.id] = prefix
+                for i in prefix:
+                    self.prefixes[message.guild.id].append(i["prefix"])
             else:
-                await self.db.execute(
-                    "INSERT INTO prefixes(serverid,prefix) VALUES($1,$2) ON CONFLICT (serverid) DO UPDATE SET prefix = $2",
-                    message.guild.id, self.default_prefix)
+                await self.db.execute("INSERT INTO prefixes(guild_id,prefix) VALUES($1,$2)", message.guild.id, self.default_prefix)
                 self.prefixes[message.guild.id] = self.default_prefix
 
-            return commands.when_mentioned_or(self.prefixes[message.guild.id])(self, message)
+            return commands.when_mentioned_or(*self.prefixes[message.guild.id])(self, message)
 
     async def try_user(self, user_id: int) -> discord.User:
         """Method to try and fetch a user from cache then fetch from API."""
@@ -112,7 +111,7 @@ class Chuck(commands.Bot):
         await self.wait_until_ready()
         guilds = await self.db.fetch("SELECT * FROM prefixes")
         for guild in guilds:
-            self.prefixes[guild['serverid']] = guild['prefix']
+            self.prefixes[guild['guild_id']].append(guild['prefix'])
 
     def get_subcommands(self, command):
         gotten_subcommands = []
