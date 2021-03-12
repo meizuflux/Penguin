@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS guilds (
 
 CREATE TABLE IF NOT EXISTS prefixes (
     guild_id BIGINT REFERENCES guilds ON DELETE CASCADE,
-    prefix VARCHAR(10) NOT NULL,
+    prefix VARCHAR NOT NULL,
     PRIMARY KEY (guild_id, prefix)
 );
 
