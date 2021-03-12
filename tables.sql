@@ -19,4 +19,10 @@ CREATE TABLE IF NOT EXISTS stocks (
     ticker VARCHAR
     amount BIGINT
     PRIMARY KEY (user_id, ticker)
+);
+
+CREATE TABLE IF NOT EXISTS todos (
+    user_id BIGINT
+    todo VARCHAR
+    sort_date TIMESTAMP
 )
