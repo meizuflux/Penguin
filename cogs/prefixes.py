@@ -36,7 +36,7 @@ class Prefixes(commands.Cog):
         )
         await self.bot.db.execute(sql, ctx.guild.id, prefix)
         self.bot.prefixes[ctx.guild.id].append(prefix)
-        await ctx.send(embed=ctx.embed(description=f"Changed prefix to `{prefix}`"))
+        await ctx.send(embed=ctx.embed(description=f"Added prefix `{prefix}`"))
 
     @prefix.command()
     @mng_gld()
@@ -51,6 +51,12 @@ class Prefixes(commands.Cog):
         self.bot.prefixes[ctx.guild.id].remove(prefix)
         await ctx.send(embed=ctx.embed(description=f"Removed `{prefix}`"))
 
+    @prefix.command()
+    @mng_gld()
+    async def edit(self, ctx, prefix):
+        """Edits the prefix being used to invoke the command."""
+        if ctx.prefix == f"<@!{self.bot.user_id}>":
+            return await ctx.send(embed=ctx.embed(description="Nice try."))
 
 def setup(bot):
     bot.add_cog(Prefixes(bot))
