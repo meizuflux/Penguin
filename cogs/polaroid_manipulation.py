@@ -51,10 +51,7 @@ async def get_image_url(ctx, image):
         url = str(image).strip("<>")
         if re.match(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", url):
             async with ctx.bot.session.get(url) as resp:
-                if resp.headers["Content-type"].startswith("image"):
-                    img = url
-                else:
-                    img = None
+                img = url if resp.headers["Content-type"].startswith("image") else None
         else:
             img = None
     if not img:

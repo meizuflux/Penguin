@@ -307,7 +307,12 @@ class Fun(commands.Cog):
             content = ctx.message.reference.resolved.content
         if not content and not text:
             content = ctx.author.nick or ctx.author.name
-        await ctx.send("".join([i.upper() if num % 2 == 0 else i.lower() for num, i in enumerate(content)]))
+        await ctx.send(
+            "".join(
+                i.upper() if num % 2 == 0 else i.lower()
+                for num, i in enumerate(content)
+            )
+        )
 
     @commands.command()
     async def caption(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
