@@ -327,5 +327,29 @@ class Fun(commands.Cog):
             caption = await resp.text()
         await ctx.send(embed=ctx.embed(title=f'"{caption}"').set_image(url=image))
 
+    @commands.command()
+    async def pepe(self, ctx):
+        frog = ":frog:"
+        circle = ":red_circle:"
+        pepe = (
+            frog * 7,
+            frog * 10,
+            frog * 12,
+            frog * 13,
+            f"{frog*2}⚪️⚫️⚫️⚪️{frog*3}⚪️⚫️⚫️⚪️",
+            ":frog:⚪️⚫️⚫️⚪️⚫️⚪️:frog:⚪️⚫️⚫️⚪️⚫️⚪️",
+            ":frog:⚪️⚫️⚪️⚫️⚫️⚪️:frog:⚪️⚫️⚪️⚫️⚫️⚪️",
+            ":frog::frog:⚪️⚫️⚪️⚪️:frog::frog::frog:⚪️⚫️⚪️⚪️",
+            frog * 13,
+            f"{circle*2}{frog*11}",
+            ":frog::red_circle::red_circle::frog::frog::frog::frog::frog::frog::frog::frog::frog:",
+            f"{frog*2}{circle*11}",
+            f"{frog*3}{circle*10}",
+            frog * 11,
+            frog * 10,
+            frog * 9
+        )
+        await ctx.send("\n".join(pepe))
+
 def setup(bot):
     bot.add_cog(Fun(bot))
