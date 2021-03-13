@@ -355,7 +355,7 @@ class Fun(commands.Cog):
     async def animequote(self, ctx):
         async with self.bot.session.get("https://some-random-api.ml/animu/quote") as f:
             data = await f.json()
-        embed = ctx.embed(title=f'{data.get("characther")} said in {data.get("anime")}',
+        embed = ctx.embed(title=f'{data.get("characther")} said in{data.get("anime")}',
                           description=data.get("sentence"))
         await ctx.send(embed=embed)
 
