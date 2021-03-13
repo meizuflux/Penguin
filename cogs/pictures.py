@@ -144,6 +144,42 @@ class Pictures(commands.Cog):
         types = ['gif', 'img']
         await self.send_purr(ctx, f"/img/sfw/eevee/{random.choice(types)}")
 
+    @commands.command()
+    async def feed(self, ctx):
+        """Sends a random feeding gif."""
+        await self.send_purr(ctx, "/img/sfw/feed/gif")
+
+    @commands.command()
+    async def feed(self, ctx):
+        """Sends a random Image of Holo (Spice & Wolf)."""
+        await self.send_purr(ctx, "/img/sfw/holo/img")
+
+    @commands.command()
+    async def icon(self, ctx):
+        """Sends a random welcome icon."""
+        await self.send_purr(ctx, "/img/sfw/icon/img")
+
+    @commands.command()
+    async def kitsune(self, ctx):
+        """Sends a  random Image of a Kitsune (Fox girl)."""
+        await self.send_purr(ctx, "/img/sfw/kitsune/img")
+
+    @commands.command()
+    async def nekogif(self, ctx):
+        """Sends a random neko gif."""
+        await self.send_purr(ctx, "/img/sfw/neko/gif")
+
+    @commands.command()
+    async def senko(self, ctx):
+        """Sends a rrandom Image of Senko-San"""
+        await self.send_purr(ctx, "/img/sfw/senko/img")
+
+    @commands.command()
+    async def tickle(self, ctx):
+        """Sends a rrandom tickle gif."""
+        await self.send_purr(ctx, "/img/sfw/tickle/gif")
+
+
 def setup(bot):
     bot.add_cog(Pictures(bot))
     cog = bot.get_cog('Pictures')
