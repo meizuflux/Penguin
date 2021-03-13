@@ -16,6 +16,7 @@ class Pictures(commands.Cog):
     async def send_purr(self, ctx, endpoint):
         async with self.bot.session.get(WAIFU_URL + endpoint) as resp:
             purr = await resp.json()
+        await ctx.send(purr)
         await ctx.send(embed=ctx.embed().set_image(url=purr.get('link')))
 
     @commands.command()
