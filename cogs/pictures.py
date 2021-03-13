@@ -142,7 +142,8 @@ class Pictures(commands.Cog):
     @commands.command()
     async def eevee(self, ctx):
         """Sends a random picture of Eevee."""
-        await self.send_purr(ctx, f"/img/sfw/eevee/{random.choice(['gif', 'img'])}")
+        types = ['gif', 'img']
+        await self.send_purr(ctx, f"/img/sfw/eevee/{random.choice(types)}")
 
 def setup(bot):
     bot.add_cog(Pictures(bot))
