@@ -57,13 +57,14 @@ class Chuck(commands.Bot):
         """Function for getting the command prefix."""
         if message.guild is None:
             return commands.when_mentioned_or(self.default_prefix)(self, message)
-        try:
+        if self.prefixes[message.guild.id]:
             return commands.when_mentioned_or(*self.prefixes[message.guild.id])(self, message)
-        except KeyError:
+        if not self.prefixes[message.guild.id]:
             await self.db.execute("INSERT INTO prefixes(guild_id,prefix) VALUES($1,$2)", message.guild.id, self.default_prefix)
             self.prefixes[message.guild.id].append(self.default_prefix)
 
             return commands.when_mentioned_or(*self.prefixes[message.guild.id])(self, message)
+        return commands.when_mentioned_or(self.default_prefix)(self, message)
 
     async def try_user(self, user_id: int) -> discord.User:
         """Method to try and fetch a user from cache then fetch from API."""
