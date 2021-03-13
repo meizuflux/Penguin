@@ -161,7 +161,7 @@ class Pictures(commands.Cog):
 
     @commands.command()
     async def kitsune(self, ctx):
-        """Sends a  random Image of a Kitsune (Fox girl)."""
+        """Sends a random Image of a Kitsune (Fox girl)."""
         await self.send_purr(ctx, "/img/sfw/kitsune/img")
 
     @commands.command()
