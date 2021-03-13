@@ -2,7 +2,7 @@ from discord.ext import commands
 
 BASE_URL = 'https://waifu.pics/api/sfw/'
 
-class AnimePics(commands.Cog):
+class Pictures(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -132,7 +132,7 @@ class AnimePics(commands.Cog):
         await self.send_waifu(ctx, "cringe")
 
 def setup(bot):
-    bot.add_cog(AnimePics(bot))
-    cog = bot.get_cog('AnimePics')
+    bot.add_cog(Pictures(bot))
+    cog = bot.get_cog('Pictures')
     for command in cog.get_commands():
         command.help = f"Sends a {command.qualified_name}"
