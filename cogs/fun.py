@@ -343,11 +343,11 @@ class Fun(commands.Cog):
             frog * 13,
             f"{circle*2}{frog*11}",
             ":frog::red_circle::red_circle::frog::frog::frog::frog::frog::frog::frog::frog::frog:",
-            f"{frog*2}{circle*11}",
-            f"{frog*3}{circle*9}",
-            frog * 11,
+            f"{frog*2}{circle*10}",
+            f"{frog*3}{circle*8}",
             frog * 10,
-            frog * 9
+            frog * 9,
+            frog * 8
         )
         await ctx.send("\n".join(pepe))
 
