@@ -87,11 +87,9 @@ class Chuck(commands.Bot):
             self.uptime = datetime.datetime.utcnow()
             self.db = pool_pg
 
-            extensions = ['jishaku', 'cogs.useful', 'cogs.owner', 'cogs.prefixes', 'cogs.economy', 'cogs.errorhandler',
-                          'cogs.fun', 'cogs.utilities', 'cogs.polaroid_manipulation', 'cogs.music', 'cogs.stonks',
-                          'cogs.help', 'cogs.pictures', 'cogs.images']
-            for extension in extensions:
-                self.load_extension(extension)
+            for file in os.listdir("cogs"):
+                if not file.startswith("_"):
+                    self.load_extension(f'cogs.{file[:-3]}')
 
             self.create_command_list()
 
