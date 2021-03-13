@@ -153,11 +153,11 @@ class Chuck(commands.Bot):
         if message.author.bot:
             return
         if re.fullmatch(fr"^(<@!?{self.user.id}>)\s*", message.content):
-            try:
+            if self.prefixes[message.guild.id]:
                 server_prefix = bot.prefixes[message.guild.id]
-            except KeyError:
-                prefix = await bot.db.fetchval("SELECT prefix FROM prefixes WHERE serverid = $1", message.guild.id)
-                server_prefix = prefix or bot.default_prefix
+            else:
+                await self.db.execute("INSERT INTO prefixes(guild_id,prefix) VALUES($1,$2)", message.guild.id, self.default_prefix)
+                server_prefix = self.default_prefix
             await message.channel.send("My prefixes on `{}` are `{}`".format(message.guild.name, ", ".join(server_prefix)))
         await self.process_commands(message)
 
