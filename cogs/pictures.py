@@ -1,16 +1,22 @@
 from discord.ext import commands
 import random
 
-BASE_URL = 'https://waifu.pics/api/sfw/'
+WAIFU_URL = 'https://waifu.pics/api/sfw/'
+PURRBOT_URL = "https://purrbot.site/api"
 
 class Pictures(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     async def send_waifu(self, ctx, category):
-        async with self.bot.session.get(BASE_URL + category) as resp:
+        async with self.bot.session.get(WAIFU_URL + category) as resp:
             waifu = await resp.json()
         await ctx.send(embed=ctx.embed().set_image(url=waifu.get('url')))
+
+    async def send_purr(self, ctx, endpoint):
+        async with self.bot.session.get(WAIFU_URL + endpoint) as resp:
+            purr = await resp.json()
+        await ctx.send(embed=ctx.embed().set_image(url=purr.get('link')))
 
     @commands.command()
     async def waifu(self, ctx):
@@ -135,10 +141,7 @@ class Pictures(commands.Cog):
     @commands.command()
     async def eevee(self, ctx):
         """Sends a random picture of Eevee."""
-        type = ['img', 'gif']
-        async with self.bot.session.get(f"https://purrbot.site/api/img/sfw/eevee/{random.choice(type)}") as f:
-            data = await f.json()
-        await ctx.send(embed=ctx.embed().set_image(url=data["link"]))
+        await self.send_purr(ctx, f"/img/sfw/eevee/{random.choice(['gif', 'img'])}")
 
 def setup(bot):
     bot.add_cog(Pictures(bot))
