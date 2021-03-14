@@ -316,7 +316,10 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             "WHERE user_id = $1 ORDER BY sort_date"
         )
         todos = await self.bot.db.fetch(sql, ctx.author.id)
-        await ctx.send(todos)
+        pg = commands.Paginator(prefix="", suffix="")
+        for todo in todos:
+            pg.add_line(f"`[{todo['row_number']}]` {todo['todo']}")
+        await ctx.send(pg.pages)
 
 class AAAAAA(commands.Cog):
     def init(self, bot):
