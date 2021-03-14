@@ -359,5 +359,11 @@ class Fun(commands.Cog):
                           description=data.get("sentence"))
         await ctx.send(embed=embed)
 
+    @commands.command(aliases=['trumpquote', 'trump_quote'])
+    async def trump(self, ctx):
+        async with self.bot.session.get("https://www.tronalddump.io/random/quote") as f:
+            data = await f.json()
+        embed=ctx.embed(title='Donald Trump once said...', description=data.get("value"))
+
 def setup(bot):
     bot.add_cog(Fun(bot))
