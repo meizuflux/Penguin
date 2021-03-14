@@ -303,9 +303,10 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         result = sorted(choice, key=lambda e: e == answer)
         await ctx.send(f'{result[0]} won with {answer} votes and {answer / 1500:.2f}% of the votes')
 
-    @commands.group(invoke_without_subcommand=False)
+    @commands.group()
     async def todo(self, ctx):
-        await ctx.send_help(str(ctx.command))
+        if not ctx.invoked_subcommand:
+            await ctx.send_help(str(ctx.command))
 
     @todo.command()
     async def list(self, ctx):
