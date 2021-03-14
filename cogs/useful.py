@@ -322,6 +322,16 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         todo_embed=ctx.embed(title=f"{ctx.author.name}'s Todo List | Page 1/1", description="\n".join(pg.pages))
         await ctx.send(embed=todo_embed)
 
+    @todo.command()
+    async def add(self, ctx, *, task: str):
+        sql = (
+            "INSERT INTO TODOS (user_id, todo, sort_date) "
+            "VALUES ($1, $2, $3)"
+        )
+        await self.bot.db.execute(sql, ctx.author.id, task, datetime.datetime.utcnow())
+        await ctx.send(embed=ctx.embed(title="Inserted into your todo list...", description=task))
+
+
 class AAAAAA(commands.Cog):
     def init(self, bot):
         self.bot = bot
