@@ -56,6 +56,9 @@ class Chuck(commands.Bot):
     async def get_prefix(self, message):
         """Function for getting the command prefix."""
         if message.guild is None:
+            if message.author.id in self.owner_ids:
+                bonk = [self.default_prefix, ""]
+                return commands.when_mentioned_or(*bonk)(self, message)
             return commands.when_mentioned_or(self.default_prefix)(self, message)
         if self.prefixes[message.guild.id]:
             return commands.when_mentioned_or(*self.prefixes[message.guild.id])(self, message)
