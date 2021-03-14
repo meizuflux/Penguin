@@ -319,7 +319,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         pg = commands.Paginator(prefix="", suffix="")
         for todo in todos:
             pg.add_line(f"`[{todo['row_number']}]` {todo['todo']}")
-        todo_embed=ctx.embed(f"{ctx.author.name}'s Todo List | Page 1/1", description="\n".join(pg.pages))
+        todo_embed=ctx.embed(title=f"{ctx.author.name}'s Todo List | Page 1/1", description="\n".join(pg.pages))
         await ctx.send(embed=todo_embed)
 
 class AAAAAA(commands.Cog):
