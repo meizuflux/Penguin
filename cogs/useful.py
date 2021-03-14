@@ -14,7 +14,7 @@ import humanize
 import psutil
 from discord.ext import commands, menus
 
-from utils.default import qembed, plural
+from utils.default import qembed
 
 
 class ChuckContext(commands.Context):
@@ -82,7 +82,7 @@ class ChuckContext(commands.Context):
         return text
 
     #https://github.com/InterStella0/stella_bot/blob/master/utils/useful.py#L199-L205
-    def plural(text, size):
+    def plural(self, text, size):
         logic = size == 1
         target = (("(s)", ("s", "")), ("(is/are)", ("are", "is")))
         for x, y in target:
