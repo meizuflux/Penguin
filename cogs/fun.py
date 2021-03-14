@@ -367,7 +367,7 @@ class Fun(commands.Cog):
         embed=ctx.embed(title='Donald Trump once said...', description=data.get("value"), url=link)
         await ctx.send(embed=embed)
 
-    @commands.commands()
+    @commands.command()
     async def dadjoke(self, ctx):
         headers = {
             'Accept': 'application/json'
