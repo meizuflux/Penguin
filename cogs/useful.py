@@ -4,16 +4,14 @@ import json
 import pathlib
 import platform
 import random
+import re
 import time
 from collections import Counter
-from io import BytesIO
 
 import aiohttp
 import discord
-import re
 import humanize
 import psutil
-import itertools
 from discord.ext import commands, menus
 
 from utils.default import qembed
@@ -36,8 +34,8 @@ class ChuckContext(commands.Context):
 
         try:
             reaction, _ = await self.bot.wait_for('reaction_add',
-                                                     timeout=15,
-                                                     check=terms)
+                                                  timeout=15,
+                                                  check=terms)
         except asyncio.TimeoutError:
             return False, message
         else:
@@ -83,6 +81,7 @@ class ChuckContext(commands.Context):
             text = text.replace(item, f'\u200b{item}')
         return text
 
+
 def get_sig(ctx, command):
     """Method to return a commands name and signature."""
     sig = command.usage or command.signature
@@ -94,7 +93,8 @@ def get_sig(ctx, command):
         return f'`{ctx.prefix}{command.parent}` `{command.name}`'
     else:
         return f'`{ctx.prefix}{command.parent}` `{command.name}` `{sig}`'
-        
+
+
 def add_formatting(ctx, command):
     fmt = '{0} \N{EN DASH} {1}' if command.short_doc else '{0}'
     return fmt.format(get_sig(ctx, command), command.short_doc)
@@ -109,16 +109,16 @@ class MenuSource(menus.GroupByPageSource):
             for command in _commands:
                 if not command.hidden:
                     cmds.append(command)
-        
-        super().__init__(cmds, key=lambda c: getattr(c.cog, 'qualified_name', 'Unsorted'), per_page=20)
 
+        super().__init__(cmds, key=lambda c: getattr(c.cog, 'qualified_name', 'Unsorted'), per_page=20)
 
     async def format_page(self, menu, commands):
         embed = menu.ctx.embed(title=f"{commands.key} | Page {menu.current_page + 1}/{self.get_max_pages()}",
-                        description="\n".join(add_formatting(menu.ctx, command) for command in commands.items))
+                               description="\n".join(add_formatting(menu.ctx, command) for command in commands.items))
         if commands.key == "AAAAAA":
-            embed=menu.ctx.embed(title='test')
+            embed = menu.ctx.embed(title='test')
         return embed
+
 
 class Helpti(menus.MenuPages):
 
@@ -126,6 +126,7 @@ class Helpti(menus.MenuPages):
     async def end_menu(self, _):
         self.message.delete()
         self.stop()
+
 
 class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     def __init__(self, bot):
@@ -214,7 +215,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             types.append(f"[{type}]({str(user.avatar_url_as(format=type))})")
         if user.is_avatar_animated():
             types.append(f"[gif]({str(user.avatar_url_as(format='gif'))})")
-        ava.description= " | ".join(types)
+        ava.description = " | ".join(types)
         ava.set_image(url=user.avatar_url)
         await ctx.send(embed=ava)
 
@@ -226,8 +227,8 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             package = await f.json()
         data = package.get("info")
         embed = ctx.embed(title=f"{data.get('name')} {data['version'] or ''}",
-                              url=data.get('project_url', 'None provided'),
-                              description=data["summary"] or "None provided")
+                          url=data.get('project_url', 'None provided'),
+                          description=data["summary"] or "None provided")
         embed.set_thumbnail(url='https://cdn.discordapp.com/attachments/381963689470984203/814267252437942272/pypi.png')
         embed.add_field(name='Author Info:', value=f'**Author Name**: `{data["author"] or "None provided"}`\n'
                                                    f'**Author Email**: `{data["author_email"] or "None provided"}`')
@@ -256,13 +257,13 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         level = js["attributeScores"]["TOXICITY"]["summaryScore"]["value"] * 100
         await ctx.send(f"`{text}` is `{level:.2f}%` likely to be toxic.")
 
-    @commands.command(help='Builds an embed from a dict. You can use https://eb.nadeko.bot/ to get one', brief='Builds an embed', aliases=['make_embed', 'embed_builder'])
+    @commands.command(help='Builds an embed from a dict. You can use https://eb.nadeko.bot/ to get one',
+                      brief='Builds an embed', aliases=['make_embed', 'embed_builder'])
     async def embedbuilder(self, ctx, *, embed: json.loads):
         try:
             await ctx.send(embed=discord.Embed().from_dict(embed))
         except:
             await qembed(ctx, 'You clearly don\'t know what this is')
-
 
     @commands.command(help='Invites the bot to your server')
     async def invite(self, ctx):
@@ -286,7 +287,8 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(help='Suggests a feature to the developers!')
     async def suggest(self, ctx, *, suggestion):
         support = self.bot.get_channel(818246475867488316)
-        await support.send(embed=ctx.embed(title='New Suggestion:', description=f"```\n{ctx.escape(suggestion)}```\n[**JUMP URL**]({ctx.message.jump_url})"))
+        await support.send(embed=ctx.embed(title='New Suggestion:',
+                                           description=f"```\n{ctx.escape(suggestion)}```\n[**JUMP URL**]({ctx.message.jump_url})"))
         await ctx.send(embed=ctx.embed(description='Your suggestion has been sent! '))
 
     @commands.command(help='Pretty-Prints some JSON')
@@ -319,15 +321,15 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         todos = await self.bot.db.fetch(sql, ctx.author.id)
         pg = commands.Paginator(prefix="", suffix="")
         discord_match = re.compile(r"https?:\/\/(?:(?:ptb|canary)\.)?discord(?:app)?\.com"
-                           r"\/channels\/[0-9]{15,19}"
-                           r"\/[0-9]{15,19}\/[0-9]{15,19}\/?")
+                                   r"\/channels\/[0-9]{15,19}"
+                                   r"\/[0-9]{15,19}\/[0-9]{15,19}\/?")
         url_match = re.compile(r"http[s]?:\/\/(?:[a-zA-Z0-9.])+")
         for todo in todos:
             text = todo['todo']
             if d_match := discord_match.match(text):
                 text = text.replace(d_match[0], f"[`[jump link]`]({d_match[0]})")
             pg.add_line(f"`[{todo['row_number']}]` {text}")
-        todo_embed=ctx.embed(title=f"{ctx.author.name}'s Todo List | Page 1/1", description="\n".join(pg.pages))
+        todo_embed = ctx.embed(title=f"{ctx.author.name}'s Todo List | Page 1/1", description="\n".join(pg.pages))
         await ctx.send(embed=todo_embed)
 
     @todo.command()
@@ -340,25 +342,31 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         await ctx.send(embed=ctx.embed(title="Inserted into your todo list...", description=task))
 
     @todo.command()
-    async def remove(self, ctx, id: int):
+    async def remove(self, ctx, numbers: commands.Greedy[int]):
         sql = (
             "SELECT DISTINCT todo, sort_date, "
             "ROW_NUMBER () OVER (ORDER BY sort_date) FROM todos "
             "WHERE user_id = $1 ORDER BY sort_date"
         )
         todos = await self.bot.db.fetch(sql, ctx.author.id)
-        text = todos[id-1]["todo"]
-        await self.bot.db.execute("DELETE FROM todos WHERE user_id = $1 AND todo = $2", ctx.author.id, text)
-        await ctx.send(embed=ctx.embed(title=f"Removed one task:", description=f"`{id}` => {text}"))
+        delete = (
+            "DELETE FROM todos "
+            "WHERE user_id = $1 AND todo = ANY ($2)"
+        )
+        await self.bot.db.execute(delete, ctx.author.id, tuple(todos[num - 1]["todo"] for num in numbers))
+        return await ctx.send("\n".join(f"`{todos[num - 1]['row_number']}` - {todos[num - 1]['todo']}" for num in numbers))
+        await ctx.send(embed=ctx.embed(title=f"Removed {humanize.apnumber(4)} task:", description=f"`{id}` => {text}"))
 
 
 class AAAAAA(commands.Cog):
     def init(self, bot):
         self.bot = bot
+
     @commands.command()
     @commands.is_owner()
     async def asdfasdfasdfasdfasdfasdfadsfasdf(self, ctx):
-        await ctx.send(1+2)
+        await ctx.send(1 + 2)
+
 
 def setup(bot):
     bot.add_cog(Useful(bot))
