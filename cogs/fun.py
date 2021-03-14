@@ -367,5 +367,14 @@ class Fun(commands.Cog):
         embed=ctx.embed(title='Donald Trump once said...', description=data.get("value"), url=link)
         await ctx.send(embed=embed)
 
+    @commands.commands()
+    async def dadjoke(self, ctx):
+        headers = {
+            'Accept': 'application/json'
+        }
+        async with self.bot.session.get("https://icanhazdadjoke.com/", headers=headers) as f:
+            dad = await f.json()
+        await ctx.send(embed=ctx.embed(description=dad.get("joke")))
+
 def setup(bot):
     bot.add_cog(Fun(bot))
