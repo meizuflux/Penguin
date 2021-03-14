@@ -81,6 +81,14 @@ class ChuckContext(commands.Context):
             text = text.replace(item, f'\u200b{item}')
         return text
 
+    #https://github.com/InterStella0/stella_bot/blob/master/utils/useful.py#L199-L205
+    def plural(text, size):
+        logic = size == 1
+        target = (("(s)", ("s", "")), ("(is/are)", ("are", "is")))
+        for x, y in target:
+            text = text.replace(x, y[logic])
+        return text
+
 
 def get_sig(ctx, command):
     """Method to return a commands name and signature."""
@@ -349,13 +357,21 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             "WHERE user_id = $1 ORDER BY sort_date"
         )
         todos = await self.bot.db.fetch(sql, ctx.author.id)
+        for number in numbers:
+            if number > len(todos):
+                return await ctx.send("You can't delete a task you don't have.")
         delete = (
             "DELETE FROM todos "
             "WHERE user_id = $1 AND todo = ANY ($2)"
         )
-        await self.bot.db.execute(delete, ctx.author.id, tuple(todos[num - 1]["todo"] for num in numbers))
-        desc = "    \n".join(f"`{todos[num - 1]['row_number']}` - {todos[num - 1]['todo']}" for num in numbers)
-        await ctx.send(embed=ctx.embed(title=f"Removed {humanize.apnumber(len(numbers))} {plural('task(s)', len(numbers))}:", description=desc))
+        to_delete = [todos[num - 1]["todo"] for num in numbers]
+        await self.bot.db.execute(delete, ctx.author.id, tuple(to_delete))
+
+        desc = "\n".join(f"`{todos[num - 1]['row_number']}` - {to_delete}" for num in numbers)
+        task = ctx.plural('task(s)', len(numbers))
+        embed = ctx.embed(title=f"Removed {humanize.apnumber(len(numbers))} {task}:",
+                          description=desc)
+        await ctx.send(embed=embed)
 
 
 class AAAAAA(commands.Cog):
