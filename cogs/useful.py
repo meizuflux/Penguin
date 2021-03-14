@@ -14,7 +14,7 @@ import humanize
 import psutil
 from discord.ext import commands, menus
 
-from utils.default import qembed
+from utils.default import qembed, plural
 
 
 class ChuckContext(commands.Context):
@@ -354,8 +354,8 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             "WHERE user_id = $1 AND todo = ANY ($2)"
         )
         await self.bot.db.execute(delete, ctx.author.id, tuple(todos[num - 1]["todo"] for num in numbers))
-        return await ctx.send("\n".join(f"`{todos[num - 1]['row_number']}` - {todos[num - 1]['todo']}" for num in numbers))
-        await ctx.send(embed=ctx.embed(title=f"Removed {humanize.apnumber(4)} task:", description=f"`{id}` => {text}"))
+        desc = "    \n".join(f"`{todos[num - 1]['row_number']}` - {todos[num - 1]['todo']}" for num in numbers)
+        await ctx.send(embed=ctx.embed(title=f"Removed {humanize.apnumber(len(numbers))} {plural('task(s)', len(numbers))}:", description=desc))
 
 
 class AAAAAA(commands.Cog):
