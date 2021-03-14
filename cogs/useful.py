@@ -341,7 +341,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         todos = await self.bot.db.fetch(sql, ctx.author.id)
         text = todos[id-1]["todo"]
         await self.bot.db.execute("DELETE FROM todos WHERE user_id = $1 AND todo = $2", ctx.author.id, text)
-        await ctx.send(f"Removed one task: \n {text}")
+        await ctx.send(embed=ctx.embed(title=f"Removed one task:", description=f"{id} => {text}"))
 
 
 class AAAAAA(commands.Cog):
