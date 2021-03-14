@@ -335,7 +335,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     async def remove(self, ctx, id):
         sql = (
             "WITH bonk (rn) AS (SELECT DISTINCT ROW_NUMBER () OVER (ORDER BY sort_date) FROM todos)"
-            "DELETE FROM todos WHERE user_id = $1 AND bonk.rn = $2"
+            "DELETE FROM todos WHERE user_id = $1 AND (SELECT rn FROM bonk) = $2"
         )
         await self.bot.db.execute(sql, ctx.author.id, id)
         await ctx.send("bonk")
