@@ -10,6 +10,7 @@ from io import BytesIO
 
 import aiohttp
 import discord
+import re
 import humanize
 import psutil
 import itertools
@@ -317,7 +318,13 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         )
         todos = await self.bot.db.fetch(sql, ctx.author.id)
         pg = commands.Paginator(prefix="", suffix="")
+        match = re.compile(r"https?:\/\/(?:(?:ptb|canary)\.)?discord(?:app)?\.com"
+                           r"\/channels\/[0-9]{15,19}"
+                           r"\/[0-9]{15,19}\/[0-9]{15,19}\/?")
         for todo in todos:
+            text = todo['todo']
+            if match := match.match(text):
+                text = text.replace(match[0], f"[(jump link)]({match[0]})")
             pg.add_line(f"`[{todo['row_number']}]` {todo['todo']}")
         todo_embed=ctx.embed(title=f"{ctx.author.name}'s Todo List | Page 1/1", description="\n".join(pg.pages))
         await ctx.send(embed=todo_embed)
@@ -341,7 +348,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         todos = await self.bot.db.fetch(sql, ctx.author.id)
         text = todos[id-1]["todo"]
         await self.bot.db.execute("DELETE FROM todos WHERE user_id = $1 AND todo = $2", ctx.author.id, text)
-        await ctx.send(embed=ctx.embed(title=f"Removed one task:", description=f"{id} => {text}"))
+        await ctx.send(embed=ctx.embed(title=f"Removed one task:", description=f"`{id}` => {text}"))
 
 
 class AAAAAA(commands.Cog):
