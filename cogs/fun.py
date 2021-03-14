@@ -363,7 +363,8 @@ class Fun(commands.Cog):
     async def trump(self, ctx):
         async with self.bot.session.get("https://www.tronalddump.io/random/quote") as f:
             data = await f.json()
-        embed=ctx.embed(title='Donald Trump once said...', description=data.get("value"))
+        link = data["_links"]["self"]["href"]
+        embed=ctx.embed(title='Donald Trump once said...', description=data.get("value"), url=link)
         await ctx.send(embed=embed)
 
 def setup(bot):
