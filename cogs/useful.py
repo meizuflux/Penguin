@@ -325,7 +325,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             text = todo['todo']
             if match := match.match(text):
                 text = text.replace(match[0], f"[(jump link)]({match[0]})")
-            pg.add_line(f"`[{todo['row_number']}]` {todo['todo']}")
+            pg.add_line(f"`[{todo['row_number']}]` {text}")
         todo_embed=ctx.embed(title=f"{ctx.author.name}'s Todo List | Page 1/1", description="\n".join(pg.pages))
         await ctx.send(embed=todo_embed)
 
