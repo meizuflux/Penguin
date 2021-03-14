@@ -332,7 +332,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         await ctx.send(embed=ctx.embed(title="Inserted into your todo list...", description=task))
 
     @todo.command()
-    async def remove(self, ctx, id):
+    async def remove(self, ctx, id: int):
         sql = (
             "WITH bonk (rn) AS (SELECT DISTINCT ROW_NUMBER () OVER (ORDER BY sort_date) FROM todos)"
             "DELETE FROM todos WHERE user_id = $1 AND (SELECT rn FROM bonk) = $2"
