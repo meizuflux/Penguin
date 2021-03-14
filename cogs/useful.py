@@ -334,11 +334,14 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @todo.command()
     async def remove(self, ctx, id: int):
         sql = (
-            "WITH bonk (rn) AS (SELECT DISTINCT ROW_NUMBER () OVER (ORDER BY sort_date) FROM todos WHERE user_id = $1)"
-            "DELETE FROM todos WHERE user_id = $1 AND (SELECT rn FROM bonk) = $2"
+            "SELECT DISTINCT todo, sort_date, "
+            "ROW_NUMBER () OVER (ORDER BY sort_date) FROM todos "
+            "WHERE user_id = $1 ORDER BY sort_date"
         )
-        await self.bot.db.execute(sql, ctx.author.id, id)
-        await ctx.send("bonk")
+        todos = await self.bot.db.fetch(sql, ctx.author.id)
+        text = todos[id-1]["todo"]
+        await self.bot.db.execute("DELETE FROM todos WHERE user_id = $1 AND todo = $2", ctx.author.id, text)
+        await ctx.send(f"Removed one task: \n {text}")
 
 
 class AAAAAA(commands.Cog):
