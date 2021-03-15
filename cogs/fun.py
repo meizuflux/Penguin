@@ -267,10 +267,10 @@ class Fun(commands.Cog):
 
         wrapped = textwrap.wrap(text, width=20)
 
-        down = 110
+        down = 90
         for text in wrapped:
             width, height = draw.textsize(text, font=font)
-            draw.text(((150 - width) / 2, down), text, font=font)
+            draw.text(((360 - width) / 2, down), text, font=font)
             down -= height + 8
 
         byte = BytesIO()
