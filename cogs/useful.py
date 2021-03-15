@@ -294,6 +294,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
     @todo.command()
     async def list(self, ctx):
+        """View all your todos."""
         sql = (
             "SELECT DISTINCT todo, sort_date, jump_url, "
             "ROW_NUMBER () OVER (ORDER BY sort_date) FROM todos "
@@ -308,6 +309,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
     @todo.command()
     async def add(self, ctx, *, task: str):
+        """Insert a task into your todo list."""
         sql = (
             "INSERT INTO TODOS (user_id, todo, sort_date, jump_url, time) "
             "VALUES ($1, $2, $3, $4, $3)"
@@ -317,6 +319,8 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
     @todo.command()
     async def remove(self, ctx, numbers: commands.Greedy[int]):
+        """Delete 1 or many tasks.
+        Separate todos with a space, EX "1 2 3 4" will delete tasks 1, 2, 3, and 4."""
         sql = (
             "SELECT DISTINCT todo, sort_date, "
             "ROW_NUMBER () OVER (ORDER BY sort_date) FROM todos "
@@ -341,6 +345,10 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
     @todo.command(name='info')
     async def todo_info(self, ctx, id: int):
+        """
+        View info about a certain task.
+        You can see the exact time the task was created.
+        """
         sql = (
             "SELECT DISTINCT todo, sort_date, time, jump_url, "
             "ROW_NUMBER () OVER (ORDER BY sort_date) FROM todos "
@@ -355,12 +363,16 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
     @todo.command()
     async def raw(self, ctx, id: int):
+        """View the raw todo for a task."""
         sql = (
             "SELECT DISTINCT todo, sort_date, "
             "ROW_NUMBER () OVER (ORDER BY sort_date) FROM todos "
             "WHERE user_id = $1 ORDER BY sort_date"
         )
+
         todos = await self.bot.db.fetch(sql, ctx.author.id)
+        if id > len(todos):
+            return await ctx.send(f"You only have {len(todos)} {ctx.plural('task(s)', len(todos))}")
         await ctx.send(todos[id-1]['todo'], allowed_mentions=discord.AllowedMentions().none())
 
     @commands.Cog.listener()
