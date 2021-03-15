@@ -297,7 +297,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @todo.command()
     async def list(self, ctx):
         sql = (
-            "SELECT DISTINCT todo, sort_date, jump_url"
+            "SELECT DISTINCT todo, sort_date, jump_url, "
             "ROW_NUMBER () OVER (ORDER BY sort_date) FROM todos "
             "WHERE user_id = $1 ORDER BY sort_date"
         )
