@@ -96,13 +96,13 @@ class TodoSource(menus.ListPageSource):
                                    r"\/channels\/[0-9]{15,19}"
                                    r"\/[0-9]{15,19}\/[0-9]{15,19}\/?")
         url_match = re.compile(r"http[s]?:\/\/(?:[a-zA-Z0-9.])+")
-        pg = commands.Paginator(prefix="", suffix="")
+        tod=[]
         for todo in todos:
             text = todo['todo']
             if d_match := discord_match.match(text):
                 text = text.replace(d_match[0], f"[`[jump link]`]({d_match[0]})")
-            pg.add_line(f"`[{todo['row_number']}]` {text}")
-        super().__init__(pg.pages, per_page=10)
+            tod.append(f"`[{todo['row_number']}]` {text}")
+        super().__init__(tod, per_page=10)
 
     async def format_page(self, menu, pages):
         return menu.ctx.embed(
