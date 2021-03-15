@@ -339,6 +339,16 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                           description=desc)
         await ctx.send(embed=embed)
 
+    @todo.command(name='info')
+    async def todo_info(self, ctx, id: int):
+        sql = (
+            "SELECT DISTINCT todo, sort_date, "
+            "ROW_NUMBER () OVER (ORDER BY sort_date) FROM todos "
+            "WHERE user_id = $1 ORDER BY sort_date"
+        )
+        todos = await self.bot.db.fetch(sql, ctx.author.id)
+        await ctx.send(todos[id-1]['todo'])
+
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.author.id in self.bot.afk.keys():
