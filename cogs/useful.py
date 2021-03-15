@@ -346,9 +346,8 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             return await message.channel.send(f"Welcome back, {message.author.mention}, I have removed your AFK status.")
         for user_id, reason in self.bot.afk.items():
             user = self.bot.try_user(user_id)
-            name = user.nick or user.name
             if user.mentioned_in(message):
-                await message.channel.send(f"<:whenyahomiesaysomewildshit:596577153135673344> Hey, but {name} is AFK for: `{reason}`")
+                await message.channel.send(f"<:whenyahomiesaysomewildshit:596577153135673344> Hey, but {user.name} is AFK for `{reason}`")
 
     @commands.command()
     async def afk(self, ctx, *, reason: str):
