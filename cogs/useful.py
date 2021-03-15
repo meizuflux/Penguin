@@ -342,7 +342,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @todo.command(name='info')
     async def todo_info(self, ctx, id: int):
         sql = (
-            "SELECT DISTINCT todo, sort_date, time, "
+            "SELECT DISTINCT todo, sort_date, time, jump_url, "
             "ROW_NUMBER () OVER (ORDER BY sort_date) FROM todos "
             "WHERE user_id = $1 ORDER BY sort_date"
         )
