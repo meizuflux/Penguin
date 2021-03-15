@@ -108,7 +108,9 @@ class TodoSource(menus.ListPageSource):
         super().__init__(tod, per_page=10)
 
     async def format_page(self, menu, pages):
-        return menu.ctx.embed(
+        ctx = menu.ctx
+        pages = f""
+        return ctx.embed(
             title=f"{menu.ctx.author.name}'s todo list | Page {menu.current_page + 1}/{self.get_max_pages()}",
             description="\n".join(pages),
         )

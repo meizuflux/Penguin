@@ -19,7 +19,7 @@ class Prefixes(commands.Cog):
         await self.bot.db.execute(
             "INSERT INTO prefixes(guild_id,prefix) VALUES($1,$2)",
             guild.id, self.bot.default_prefix)
-        self.bot.prefixes[guild.id] = self.bot.default_prefix
+        self.bot.prefixes[guild.id].append(self.bot.default_prefix)
 
     @commands.group()
     async def prefix(self, ctx):
