@@ -91,7 +91,7 @@ class ChuckContext(commands.Context):
 
 
 class TodoSource(menus.ListPageSource):
-    def __init__(self, todos):
+    def __init__(self, ctx, todos):
         discord_match = re.compile(r"https?:\/\/(?:(?:ptb|canary)\.)?discord(?:app)?\.com"
                                    r"\/channels\/[0-9]{15,19}"
                                    r"\/[0-9]{15,19}\/[0-9]{15,19}\/?")
