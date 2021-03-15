@@ -45,6 +45,7 @@ class Chuck(commands.Bot):
         self.timetime = time.time()
         self.case_insensitive = True
         self.perspective = self.get_config("perspective_key")
+        self.afk = {}
 
     @staticmethod
     def get_config(item: str):
