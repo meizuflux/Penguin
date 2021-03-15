@@ -89,6 +89,9 @@ class ChuckContext(commands.Context):
             text = text.replace(x, y[logic])
         return text
 
+    def clean_prefix(self):
+        return re.sub(f"<@!?{self.bot.user.id}>", f"@{self.bot.user.name}", self.prefix)
+
 
 class TodoSource(menus.ListPageSource):
     def __init__(self, todos):

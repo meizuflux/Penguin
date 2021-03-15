@@ -10,13 +10,13 @@ def get_sig(ctx, command):
     """Method to return a commands name and signature."""
     sig = command.usage or command.signature
     if not sig and not command.parent:
-        return f'`{ctx.prefix}{command.name}`'
+        return f'`{ctx.clean_prefix}{command.name}`'
     if not command.parent:
-        return f'`{ctx.prefix}{command.name}` `{sig}`'
+        return f'`{ctx.clean_prefix}{command.name}` `{sig}`'
     if not sig:
-        return f'`{ctx.prefix}{command.parent}` `{command.name}`'
+        return f'`{ctx.clean_prefix}{command.parent}` `{command.name}`'
     else:
-        return f'`{ctx.prefix}{command.parent}` `{command.name}` `{sig}`'
+        return f'`{ctx.clean_prefix}{command.parent}` `{command.name}` `{sig}`'
 
 
 def add_formatting(ctx, command):
