@@ -91,8 +91,18 @@ class ChuckContext(commands.Context):
 
 
 class TodoSource(menus.ListPageSource):
-    def __init__(self, data):
-        super().__init__(data, per_page=10)
+    def __init__(self, todos):
+        discord_match = re.compile(r"https?:\/\/(?:(?:ptb|canary)\.)?discord(?:app)?\.com"
+                                   r"\/channels\/[0-9]{15,19}"
+                                   r"\/[0-9]{15,19}\/[0-9]{15,19}\/?")
+        url_match = re.compile(r"http[s]?:\/\/(?:[a-zA-Z0-9.])+")
+        pg = commands.Paginator(prefix="", suffix="")
+        for todo in todos:
+            text = todo['todo']
+            if d_match := discord_match.match(text):
+                text = text.replace(d_match[0], f"[`[jump link]`]({d_match[0]})")
+            pg.add_line(f"`[{todo['row_number']}]` {text}")
+        super().__init__(pg.pages, per_page=10)
 
     async def format_page(self, menu, pages):
         return menu.ctx.embed(
@@ -293,21 +303,10 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         )
         todos = await self.bot.db.fetch(sql, ctx.author.id)
 
-        discord_match = re.compile(r"https?:\/\/(?:(?:ptb|canary)\.)?discord(?:app)?\.com"
-                                   r"\/channels\/[0-9]{15,19}"
-                                   r"\/[0-9]{15,19}\/[0-9]{15,19}\/?")
-        url_match = re.compile(r"http[s]?:\/\/(?:[a-zA-Z0-9.])+")
-        pg = commands.Paginator(prefix="", suffix="")
-        for todo in todos:
-            text = todo['todo']
-            if d_match := discord_match.match(text):
-                text = text.replace(d_match[0], f"[`[jump link]`]({d_match[0]})")
-            pg.add_line(f"`[{todo['row_number']}]` {text}")
-        pages = TodoPages(source=TodoSource(pg.pages))
+
+        pages = TodoPages(source=TodoSource(todos))
 
         await pages.start(ctx)
-        #todo_embed = ctx.embed(title=f"{ctx.author.name}'s Todo List | Page 1/1", description="\n".join(pg.pages))
-        #await ctx.send(embed=todo_embed)
 
     @todo.command()
     async def add(self, ctx, *, task: str):
