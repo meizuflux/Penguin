@@ -75,8 +75,8 @@ class Chuck(commands.Bot):
         user = self.get_user(user_id)
         if not user:
             user = await self.fetch_user(user_id)
-        return user.name
-
+        return user
+        
     def starter(self):
         """Runs the bot."""
         try:
