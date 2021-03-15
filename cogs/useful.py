@@ -347,7 +347,21 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             "WHERE user_id = $1 ORDER BY sort_date"
         )
         todos = await self.bot.db.fetch(sql, ctx.author.id)
-        await ctx.send(todos[id-1]['todo'])
+        todo = todos[id-1]["todo"]
+        pro = humanize.humanize.precisedelta(todos[id-1]["time"], minimum_unit="minutes")
+        embed = ctx.embed(title=f'Task `{id}`', description=todo)
+        embed.add_field(name='Info', value=f"This todo was created {pro}")
+        await ctx.send(embed=embed)
+
+    @todo.command()
+    async def raw(self, ctx, id: int):
+        sql = (
+            "SELECT DISTINCT todo, sort_date, "
+            "ROW_NUMBER () OVER (ORDER BY sort_date) FROM todos "
+            "WHERE user_id = $1 ORDER BY sort_date"
+        )
+        todos = await self.bot.db.fetch(sql, ctx.author.id)
+        await ctx.send(todos[id-1]['todo'], allowed_mentions=discord.AllowedMentions().none())
 
     @commands.Cog.listener()
     async def on_message(self, message):
