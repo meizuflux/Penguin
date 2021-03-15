@@ -261,12 +261,18 @@ class Fun(commands.Cog):
     @executor_function
     def do_ahb(self, text):
         img = Image.open('assets/ahb.jpeg')
+
         draw = ImageDraw.Draw(img)
         font = ImageFont.truetype('assets/Helvetica Bold.ttf', 20)
+
         wrapped = textwrap.wrap(text, width=20)
+
         down = 110
-        down -= len(wrapped) * 17
-        draw.text((150, down), '\n'.join(wrapped), (255, 255, 255), font=font, align="center")
+        for text in wrapped:
+            width, height = draw.textsize(text, font=font)
+            draw.text(((150 - width), down), text, font=font)
+            down -= height + 8
+
         byte = BytesIO()
         img.save(byte, 'PNG')
         byte.seek(0)
