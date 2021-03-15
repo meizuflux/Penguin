@@ -339,6 +339,24 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                           description=desc)
         await ctx.send(embed=embed)
 
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.author.id in self.bot.afk.keys():
+            del self.bot.afk[message.author.id]
+            return await message.channel.send(f"Welcome back, {message.author.mention}, I have removed your AFK status.")
+        for user_id, reason in self.bot.afk.items():
+            user = self.bot.try_user(user_id)
+            name = user.nick or user.name
+            if user.mentioned_in(message):
+                await message.channel.send(f"<:whenyahomiesaysomewildshit:596577153135673344> Hey, but {name} is AFK for: `{reason}`")
+
+    @commands.command()
+    async def afk(self, ctx, *, reason: str):
+        self.bot.afk[ctx.author.id] = reason
+        await ctx.send(f'OK, I have set your AFK status to `{reason}`')
+
+    
+
 
 class AAAAAA(commands.Cog):
     def init(self, bot):

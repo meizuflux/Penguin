@@ -93,16 +93,7 @@ class Utilities(commands.Cog):
                 emoji.append(str(e))
         await message.channel.send(" ".join(emoji))
 
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        if message.author.id in self.bot.afk.keys():
-            del self.bot.afk[message.author.id]
-            return await message.channel.send(f"Welcome back, {message.author.mention}, I have removed your AFK status.")
-        for user_id, reason in self.bot.afk.items():
-            user = self.bot.try_user(user_id)
-            name = user.nick or user.name
-            if user.mentioned_in(message):
-                await message.channel.send(f"<:whenyahomiesaysomewildshit:596577153135673344> Hey, but {name} is AFK for: `{reason}`")
+
 
     @commands.command(help='Sends a list of the emojis that the bot can see.')
     async def emojis(self, ctx, search=None):
