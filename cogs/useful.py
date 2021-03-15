@@ -81,7 +81,7 @@ class ChuckContext(commands.Context):
             text = text.replace(item, f'\u200b{item}')
         return text
 
-    #https://github.com/InterStella0/stella_bot/blob/master/utils/useful.py#L199-L205
+    # https://github.com/InterStella0/stella_bot/blob/master/utils/useful.py#L199-L205
     def plural(self, text, size):
         logic = size == 1
         target = (("(s)", ("s", "")), ("(is/are)", ("are", "is")))
@@ -90,45 +90,18 @@ class ChuckContext(commands.Context):
         return text
 
 
-def get_sig(ctx, command):
-    """Method to return a commands name and signature."""
-    sig = command.usage or command.signature
-    if not sig and not command.parent:
-        return f'`{ctx.prefix}{command.name}`'
-    if not command.parent:
-        return f'`{ctx.prefix}{command.name}` `{sig}`'
-    if not sig:
-        return f'`{ctx.prefix}{command.parent}` `{command.name}`'
-    else:
-        return f'`{ctx.prefix}{command.parent}` `{command.name}` `{sig}`'
+class TodoSource(menus.ListPageSource):
+    def __init__(self, data):
+        super().__init__(data, per_page=10)
+
+    async def format_page(self, menu, pages):
+        return menu.ctx.embed(
+            title=f"{menu.ctx.author.name}'s todo list: | Page {menu.current_page + 1}/{self.get_max_pages()}",
+            description="\n".join(pages),
+        )
 
 
-def add_formatting(ctx, command):
-    fmt = '{0} \N{EN DASH} {1}' if command.short_doc else '{0}'
-    return fmt.format(get_sig(ctx, command), command.short_doc)
-
-
-class MenuSource(menus.GroupByPageSource):
-    def __init__(self, ctx, data):
-
-        cmds = []
-        for cog in data:
-            _commands = [command for command in cog.get_commands()]
-            for command in _commands:
-                if not command.hidden:
-                    cmds.append(command)
-
-        super().__init__(cmds, key=lambda c: getattr(c.cog, 'qualified_name', 'Unsorted'), per_page=20)
-
-    async def format_page(self, menu, commands):
-        embed = menu.ctx.embed(title=f"{commands.key} | Page {menu.current_page + 1}/{self.get_max_pages()}",
-                               description="\n".join(add_formatting(menu.ctx, command) for command in commands.items))
-        if commands.key == "AAAAAA":
-            embed = menu.ctx.embed(title='test')
-        return embed
-
-
-class Helpti(menus.MenuPages):
+class TodoPages(menus.MenuPages):
 
     @menus.button('\N{BLACK SQUARE FOR STOP}\ufe0f', position=menus.Last(2))
     async def end_menu(self, _):
@@ -139,16 +112,6 @@ class Helpti(menus.MenuPages):
 class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     def __init__(self, bot):
         self.bot = bot
-
-    @commands.command()
-    async def menus(self, ctx):
-        nono = ["jishaku", "owner", "commanderrorhandler", "helpful"]
-        data = [cog for cog in self.bot.cogs.values() if cog.qualified_name.lower() not in nono]
-        data = sorted(data, key=lambda c: c.qualified_name)
-        await ctx.send(data)
-        pages = Helpti(source=MenuSource(ctx, data), clear_reactions_after=True)
-
-        await pages.start(ctx)
 
     @commands.command(aliases=['information', 'botinfo'],
                       help='Gets info about the bot')
@@ -218,9 +181,11 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         if not user:
             user = ctx.author
         ava = ctx.embed(title=f'{user.name}\'s avatar:')
-        types = []
-        for type in ["webp", "png", "jpeg", "jpg"]:
-            types.append(f"[{type}]({str(user.avatar_url_as(format=type))})")
+        types = [
+            f"[{type}]({str(user.avatar_url_as(format=type))})"
+            for type in ["webp", "png", "jpeg", "jpg"]
+        ]
+
         if user.is_avatar_animated():
             types.append(f"[gif]({str(user.avatar_url_as(format='gif'))})")
         ava.description = " | ".join(types)
@@ -337,8 +302,11 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             if d_match := discord_match.match(text):
                 text = text.replace(d_match[0], f"[`[jump link]`]({d_match[0]})")
             pg.add_line(f"`[{todo['row_number']}]` {text}")
-        todo_embed = ctx.embed(title=f"{ctx.author.name}'s Todo List | Page 1/1", description="\n".join(pg.pages))
-        await ctx.send(embed=todo_embed)
+        pages = TodoPages(source=TodoSource(ctx, pg.pages))
+
+        await pages.start(ctx)
+        #todo_embed = ctx.embed(title=f"{ctx.author.name}'s Todo List | Page 1/1", description="\n".join(pg.pages))
+        #await ctx.send(embed=todo_embed)
 
     @todo.command()
     async def add(self, ctx, *, task: str):
