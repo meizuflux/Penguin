@@ -93,15 +93,17 @@ class ChuckContext(commands.Context):
 class TodoSource(menus.ListPageSource):
     def __init__(self, todos):
         discord_match = re.compile(r"https?:\/\/(?:(?:ptb|canary)\.)?discord(?:app)?\.com\/channels\/(?:[0-9]{15,19})\/(?:[0-9]{15,19})\/(?:[0-9]{15,19})\/?")
-        url_match = re.compile(r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))")
+        url_match = re.compile(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+")
         tod=[]
         for todo in todos:
             text = todo['todo']
-            if d_match := discord_match.findall(text):
-                text = text.replace(d_match[0], f"[`[jump link]`]({d_match[0]})")
-            if u_match := url_match.findall(text):
-                url = u_match[0][0].split("/")[2]
-                text = text.replace(u_match[0][0], f"[`[{url}]`]({u_match[0]})")
+            for match in url_match.findall(text):
+                if not discord_match.findall(match):
+                    url = match.replace(match, match.split("/")[2])
+                    text = text.replace(match, f"[`[{url}]`]({match})")
+            for match in discord_match.findall(text):
+                text = text.replace(match, f"[`[jump link]`]({match})")
+
             tod.append(f"[`[{todo['row_number']}]`]({todo['jump_url']}) {text}")
         super().__init__(tod, per_page=10)
 
