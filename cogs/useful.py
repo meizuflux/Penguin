@@ -348,6 +348,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         )
         todos = await self.bot.db.fetch(sql, ctx.author.id)
         todo = todos[id-1]["todo"]
+        await ctx.send(todos[id-1])
         pro = humanize.precisedelta(todos[id-1]["time"], minimum_unit="minutes")
         embed = ctx.embed(title=f'Task `{id}`', description=todo)
         embed.add_field(name='Info', value=f"This todo was created {pro}")
