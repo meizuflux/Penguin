@@ -96,6 +96,7 @@ class Utilities(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.author.id in self.bot.afk.keys():
+            del self.bot.afk[message.author.id]
             return await message.channel.send(f"Welcome back, {message.author.mention}, I have removed your AFK status.")
         for user_id, reason in self.bot.afk.items():
             user = self.bot.try_user(user_id)
