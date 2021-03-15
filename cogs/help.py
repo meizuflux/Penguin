@@ -61,7 +61,7 @@ class CogSource(menus.ListPageSource):
     def __init__(self, cog):
         _commands = [command for command in cog.get_commands()]
         cmds = sorted([command for command in _commands if not command.hidden], key=lambda c: c.qualified_name)
-        super().__init__(cmds, per_page=15)
+        super().__init__(cmds, per_page=10)
 
     async def format_page(self, menu, cmds):
         return menu.ctx.embed(
