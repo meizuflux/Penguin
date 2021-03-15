@@ -271,7 +271,7 @@ class Fun(commands.Cog):
         for text in wrapped:
             width, height = draw.textsize(text, font=font)
             draw.text(((img.width - width) / 2, down), text, font=font)
-            down += height + 8
+            down += height + 10
 
         byte = BytesIO()
         img.save(byte, 'PNG')
