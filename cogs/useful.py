@@ -342,13 +342,12 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @todo.command(name='info')
     async def todo_info(self, ctx, id: int):
         sql = (
-            "SELECT DISTINCT todo, sort_date, "
+            "SELECT DISTINCT todo, sort_date, time"
             "ROW_NUMBER () OVER (ORDER BY sort_date) FROM todos "
             "WHERE user_id = $1 ORDER BY sort_date"
         )
         todos = await self.bot.db.fetch(sql, ctx.author.id)
         todo = todos[id-1]["todo"]
-        await ctx.send(todos[id-1])
         pro = humanize.precisedelta(todos[id-1]["time"], minimum_unit="minutes")
         embed = ctx.embed(title=f'Task `{id}`', description=todo)
         embed.add_field(name='Info', value=f"This todo was created {pro}")
