@@ -93,7 +93,7 @@ class Chuck(commands.Bot):
             for file in os.listdir("cogs"):
                 if not file.startswith("_"):
                     self.load_extension(f'cogs.{file[:-3]}')
-            self.load_extension("Jishaku")
+            self.load_extension("jishaku")
             self.create_command_list()
 
             self.run(self.get_config('token'))
