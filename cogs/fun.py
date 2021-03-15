@@ -263,14 +263,14 @@ class Fun(commands.Cog):
         img = Image.open('assets/ahb.jpeg')
 
         draw = ImageDraw.Draw(img)
-        font = ImageFont.truetype('assets/Helvetica Bold.ttf', 20)
+        font = ImageFont.truetype('assets/Helvetica Bold.ttf', 15)
 
         wrapped = textwrap.wrap(text, width=20)
 
         down = 90
         for text in wrapped:
             width, height = draw.textsize(text, font=font)
-            draw.text(((360 - width) / 2, down), text, font=font)
+            draw.text(((img.width - width) / 2, down), text, font=font)
             down += height + 8
 
         byte = BytesIO()
