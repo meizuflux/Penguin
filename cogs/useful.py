@@ -347,7 +347,8 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         for user_id, data in self.bot.afk.items():
             user = await self.bot.try_user(user_id)
             if user.mentioned_in(message):
-                await message.channel.send(f"<:whenyahomiesaysomewildshit:596577153135673344> Hey, but {user.name} is AFK for `{data['reason']}`")
+                ago = humanize.naturaltime(datetime.datetime.utcnow() - data["time"])
+                await message.channel.send(f"<:whenyahomiesaysomewildshit:596577153135673344> Hey, but {user.name} went AFK {ago} ago for `{data['reason']}`")
 
     @commands.command()
     async def afk(self, ctx, *, reason: str):
