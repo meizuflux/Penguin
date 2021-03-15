@@ -292,17 +292,18 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             "WHERE user_id = $1 ORDER BY sort_date"
         )
         todos = await self.bot.db.fetch(sql, ctx.author.id)
-        pg = commands.Paginator(prefix="", suffix="")
+
         discord_match = re.compile(r"https?:\/\/(?:(?:ptb|canary)\.)?discord(?:app)?\.com"
                                    r"\/channels\/[0-9]{15,19}"
                                    r"\/[0-9]{15,19}\/[0-9]{15,19}\/?")
         url_match = re.compile(r"http[s]?:\/\/(?:[a-zA-Z0-9.])+")
+        pg = commands.Paginator(prefix="", suffix="")
         for todo in todos:
             text = todo['todo']
             if d_match := discord_match.match(text):
                 text = text.replace(d_match[0], f"[`[jump link]`]({d_match[0]})")
             pg.add_line(f"`[{todo['row_number']}]` {text}")
-        pages = TodoPages(source=TodoSource(ctx, pg.pages))
+        pages = TodoPages(source=TodoSource(pg.pages))
 
         await pages.start(ctx)
         #todo_embed = ctx.embed(title=f"{ctx.author.name}'s Todo List | Page 1/1", description="\n".join(pg.pages))
