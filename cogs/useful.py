@@ -92,7 +92,10 @@ class ChuckContext(commands.Context):
 
 class TodoSource(menus.ListPageSource):
     def __init__(self, todos):
-        discord_match = re.compile(r"https?:\/\/(?:(?:ptb|canary)\.)?discord(?:app)?\.com\/channels\/(?:[0-9]{15,19})\/(?:[0-9]{15,19})\/(?:[0-9]{15,19})\/?")
+        discord_match = re.compile(
+    r"https?:\/\/(?:(?:ptb|canary)\.)?discord(?:app)?\.com"
+    r"\/channels\/(?P<guild_id>[0-9]{15,19})\/(?P<channel_id>"
+    r"[0-9]{15,19})\/(?P<message_id>[0-9]{15,19})\/?")
         url_match = re.compile(r"http[s]?:\/\/(?:[a-zA-Z0-9.])+")
         tod=[]
         for todo in todos:
