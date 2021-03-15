@@ -107,12 +107,13 @@ class TodoSource(menus.ListPageSource):
             tod.append(f"[`[{todo['row_number']}]`]({todo['jump_url']}) {text}")
         super().__init__(tod, per_page=10)
 
-    async def format_page(self, menu, pages):
+    async def format_page(self, menu, todos):
         ctx = menu.ctx
-        pages = f""
+        count = await ctx.bot.db.fetchval("SELECT COUNT(*) FROM TODOS WHERE user_id = $1", ctx.author.id)
+        cur_page = f"Page {menu.current_page + 1}/{self.get_max_pages()}"
         return ctx.embed(
-            title=f"{menu.ctx.author.name}'s todo list | Page {menu.current_page + 1}/{self.get_max_pages()}",
-            description="\n".join(pages),
+            title=f"{menu.ctx.author.name}'s todo list | {count} total entries | {cur_page}",
+            description="\n".join(todos),
         )
 
 
