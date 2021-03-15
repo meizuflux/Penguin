@@ -3,6 +3,7 @@ import base64
 import random
 import re
 import textwrap
+import string
 import time
 from io import BytesIO
 
@@ -381,6 +382,25 @@ class Fun(commands.Cog):
         async with self.bot.session.get("https://icanhazdadjoke.com/", headers=headers) as f:
             dad = await f.json()
         await ctx.send(embed=ctx.embed(description=dad.get("joke")))
+
+    @commands.command()
+    async def bigtext(self, ctx, *, text):
+        """Makes the specified text bigger."""
+        if len(text) > 50: return await ctx.send("Less than 50 characters please!")
+        output = []
+        for char in text:
+            char = char.lower()
+            if char != ' ' and char in string.ascii_lowercase:
+                output.append(f":regional_indicator_{char}:")
+            if char == ' ':
+                output.append(f"  ")
+            if char in string.digits:
+                output.append(f"{char}\N{combining enclosing keycap}")
+            if char == "!":
+                output.append(":exclamation:")
+            else:
+                pass
+        await ctx.send("".join(output))
 
 def setup(bot):
     bot.add_cog(Fun(bot))
