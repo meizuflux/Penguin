@@ -309,8 +309,8 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @todo.command()
     async def add(self, ctx, *, task: str):
         sql = (
-            "INSERT INTO TODOS (user_id, todo, sort_date, jump_url) "
-            "VALUES ($1, $2, $3, $4)"
+            "INSERT INTO TODOS (user_id, todo, sort_date, jump_url, time) "
+            "VALUES ($1, $2, $3, $4, $4)"
         )
         await self.bot.db.execute(sql, ctx.author.id, task, datetime.datetime.utcnow(), ctx.message.jump_url)
         await ctx.send(embed=ctx.embed(title="Inserted into your todo list...", description=task))
