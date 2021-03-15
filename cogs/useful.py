@@ -379,7 +379,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         task2 = todos[t2 - 1]
         await self.bot.db.execute("UPDATE todos SET sort_date = $1 WHERE user_id = $2 AND todo = $3", task2['sort_date'], ctx.author.id, task1['todo'])
         await self.bot.db.execute("UPDATE todos SET sort_date = $1 WHERE user_id = $2 AND todo = $3", task1['sort_date'], ctx.author.id, task2['todo'])
-        await ctx.send(embed=ctx.embed(description=f"Succesfully swapped places of todo `{t1}` and `{t2}`")
+        await ctx.send(embed=ctx.embed(description=f"Succesfully swapped places of todo `{t1}` and `{t2}`"))
 
     @todo.command()
     async def raw(self, ctx, id: int):
