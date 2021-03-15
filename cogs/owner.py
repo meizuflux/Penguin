@@ -1,4 +1,4 @@
-# credit here goes to DeltaWing#0700 for the sql command its kinda cool
+# credit here goes to DeltaWing#0700 for the sql error handling its kinda cool
 
 import asyncio
 import inspect
