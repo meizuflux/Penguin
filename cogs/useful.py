@@ -352,6 +352,10 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command()
     async def afk(self, ctx, *, reason: str):
+        """
+        This marks you as AFK.
+        When someone pings you while you are AFK, it will let them know that you are AFK, how long you have been AFK, and your reason.
+        """
         self.bot.afk[ctx.author.id] = {"reason": reason, "time": datetime.datetime.utcnow()}
         await ctx.send(f'OK, I have set your AFK status to `{reason}`')
 
