@@ -100,7 +100,7 @@ class TodoSource(menus.ListPageSource):
         tod=[]
         for todo in todos:
             text = todo['todo']
-            if d_match := discord_match.match(text):
+            if d_match := discord_match.findall(text):
                 text = text.replace(d_match[0], f"[`[jump link]`]({d_match[0]})")
             tod.append(f"[`[{todo['row_number']}]`]({todo['jump_url']}) {text}")
         super().__init__(tod, per_page=10)
