@@ -335,7 +335,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         to_delete = [todos[num - 1]["todo"] for num in numbers]
         await self.bot.db.execute(delete, ctx.author.id, tuple(to_delete))
 
-        desc = "\n".join(f"`{todos[num - 1]['row_number']}` - {to_delete}" for num in numbers)
+        desc = "\n".join(f"`{todos[num - 1]['row_number']}` - {todos[num - 1]['todo']}" for num in numbers)
         task = ctx.plural('task(s)', len(numbers))
         embed = ctx.embed(title=f"Removed {humanize.apnumber(len(numbers))} {task}:",
                           description=desc)
