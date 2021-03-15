@@ -24,5 +24,6 @@ CREATE TABLE IF NOT EXISTS stocks (
 CREATE TABLE IF NOT EXISTS todos (
     user_id BIGINT,
     todo VARCHAR,
-    sort_date TIMESTAMP
+    sort_date TIMESTAMP,
+    jump_url VARCHAR
 )
