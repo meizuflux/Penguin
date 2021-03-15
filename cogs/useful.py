@@ -289,6 +289,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.group()
     async def todo(self, ctx):
+        """Create a todo list!"""
         if not ctx.invoked_subcommand:
             await ctx.send_help(str(ctx.command))
 
