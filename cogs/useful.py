@@ -369,6 +369,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
     @todo.command(usage='<task ID 1> <task ID 2>')
     async def swap(self, ctx, t1: int, t2: int):
+        """Swap the places of two tasks."""
         sql = (
             "SELECT DISTINCT sort_date, todo "
             "FROM todos "
