@@ -400,6 +400,7 @@ class Fun(commands.Cog):
                 output.append(":exclamation:")
             else:
                 pass
+        if not output: output = "Output came out empty."
         await ctx.send("".join(output))
 
 def setup(bot):
