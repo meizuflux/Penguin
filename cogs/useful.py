@@ -350,7 +350,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         todo = todos[id-1]["todo"]
         pro = humanize.precisedelta(todos[id-1]["time"], minimum_unit="minutes")
         embed = ctx.embed(title=f'Task `{id}`', description=todo)
-        embed.add_field(name='Info', value=f"This todo was created {pro}")
+        embed.add_field(name='Info', value=f"This todo was created **{pro}** ago.\n`[Jump to the creation message]({todos[id-1]['jump_url']})`")
         await ctx.send(embed=embed)
 
     @todo.command()
