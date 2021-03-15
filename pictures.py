@@ -150,7 +150,7 @@ class Pictures(commands.Cog):
         await self.send_purr(ctx, "/img/sfw/feed/gif")
 
     @commands.command()
-    async def holo(self, ctx):
+    async def feed(self, ctx):
         """Sends a random Image of Holo (Spice & Wolf)."""
         await self.send_purr(ctx, "/img/sfw/holo/img")
 
