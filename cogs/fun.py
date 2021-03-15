@@ -263,11 +263,11 @@ class Fun(commands.Cog):
         img = Image.open('assets/ahb.jpeg')
 
         draw = ImageDraw.Draw(img)
-        font = ImageFont.truetype('assets/Helvetica Bold.ttf', 15)
+        font = ImageFont.truetype('assets/Helvetica Bold.ttf', 17)
 
         wrapped = textwrap.wrap(text, width=20)
 
-        down = 90
+        down = 80
         for text in wrapped:
             width, height = draw.textsize(text, font=font)
             draw.text(((img.width - width) / 2, down), text, font=font)
