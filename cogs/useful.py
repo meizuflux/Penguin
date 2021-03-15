@@ -101,7 +101,7 @@ class TodoSource(menus.ListPageSource):
             text = todo['todo']
             if d_match := discord_match.match(text):
                 text = text.replace(d_match[0], f"[`[jump link]`]({d_match[0]})")
-            tod.append(f"`[{todo['row_number']}]` {text}")
+            tod.append(f"`[[{todo['row_number']}]]({todo['jump_url']})` {text}")
         super().__init__(tod, per_page=10)
 
     async def format_page(self, menu, pages):
@@ -297,7 +297,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @todo.command()
     async def list(self, ctx):
         sql = (
-            "SELECT DISTINCT todo, sort_date, "
+            "SELECT DISTINCT todo, sort_date, jump_url"
             "ROW_NUMBER () OVER (ORDER BY sort_date) FROM todos "
             "WHERE user_id = $1 ORDER BY sort_date"
         )
@@ -311,10 +311,10 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @todo.command()
     async def add(self, ctx, *, task: str):
         sql = (
-            "INSERT INTO TODOS (user_id, todo, sort_date) "
-            "VALUES ($1, $2, $3)"
+            "INSERT INTO TODOS (user_id, todo, sort_date, jump_url) "
+            "VALUES ($1, $2, $3, $4)"
         )
-        await self.bot.db.execute(sql, ctx.author.id, task, datetime.datetime.utcnow())
+        await self.bot.db.execute(sql, ctx.author.id, task, datetime.datetime.utcnow(), ctx.message.jump_url)
         await ctx.send(embed=ctx.embed(title="Inserted into your todo list...", description=task))
 
     @todo.command()
