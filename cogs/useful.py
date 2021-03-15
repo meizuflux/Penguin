@@ -348,9 +348,9 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         )
         todos = await self.bot.db.fetch(sql, ctx.author.id)
         todo = todos[id-1]["todo"]
-        pro = humanize.precisedelta(todos[id-1]["time"], minimum_unit="minutes")
+        pro = humanize.naturaltime(datetime.datetime.utcnow() - todos[id-1]["time"])
         embed = ctx.embed(title=f'Task `{id}`', description=todo)
-        embed.add_field(name='Info', value=f"This todo was created **{pro}** ago.\n[`Jump to the creation message`]({todos[id-1]['jump_url']})")
+        embed.add_field(name='Info', value=f"This todo was created **{pro}**.\n[`Jump to the creation message`]({todos[id-1]['jump_url']})")
         await ctx.send(embed=embed)
 
     @todo.command()
