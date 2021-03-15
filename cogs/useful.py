@@ -367,6 +367,20 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         embed.add_field(name='Info', value=f"This todo was created **{pro}**.\n[`Jump to the creation message`]({todos[id-1]['jump_url']})")
         await ctx.send(embed=embed)
 
+    @todo.command(usage='<task ID 1> <task ID 2>')
+    async def swap(self, ctx, t1: int, t2: int):
+        sql = (
+            "SELECT DISTINCT sort_date, todo "
+            "FROM todos "
+            "WHERE user_id = $1 ORDER BY sort_date"
+        )
+        todos = await self.bot.db.fetch(sql, ctx.author.id)
+        task1 = todos[t1 - 1]
+        task2 = todos[t2 - 1]
+        await self.bot.db.execute("UPDATE todos SET sort_date = $1 WHERE user_id = $2 AND todo = $3", task2['sort_date'], ctx.author.id, task1['todo'])
+        await self.bot.db.execute("UPDATE todos SET sort_date = $1 WHERE user_id = $2 AND todo = $3", task1['sort_date'], ctx.author.id, task2['todo'])
+        await ctx.send(embed=ctx.embed(description=f"Succesfully swapped places of todo `{t1}` and `{t2}`")
+
     @todo.command()
     async def raw(self, ctx, id: int):
         """View the raw todo for a task."""
