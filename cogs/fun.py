@@ -88,7 +88,7 @@ class Fun(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.group()
     async def morse(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(str(ctx.command))
