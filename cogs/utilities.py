@@ -285,7 +285,8 @@ class Utilities(commands.Cog):
             raise commands.BadArgument('Invalid URL provided.')
         if match:
             async with self.bot.session.get('https://clck.ru/--?url='+match[0]) as f:
-                await ctx.send(await f.text())
+                short = await f.text()
+                await ctx.send(embed=ctx.embed(description=f"<{short.strip()}> now redirects to <{url}>"))
 
 
 def setup(bot):
