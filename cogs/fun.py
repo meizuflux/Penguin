@@ -89,6 +89,7 @@ class Fun(commands.Cog):
 
     @commands.group()
     async def morse(self, ctx):
+        """Translate to and from morse code!"""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(str(ctx.command))
 
@@ -106,7 +107,10 @@ class Fun(commands.Cog):
             w = [morse_dict[char.lower()] for char in word if char.lower() in morse_dict]
             translation += " ".join(w)
             translation += "   "
-        await ctx.send(translation.rstrip())
+
+        output = translation.rstrip()
+        if len(output) > 2000: output = ctx.mystbin(output)
+        await ctx.send(output)
 
     @morse.command(name='decode', usage='<morse>')
     async def morse_decode(self, ctx, *, morse='.. -.. -.-'):
