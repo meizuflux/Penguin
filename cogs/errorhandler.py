@@ -52,7 +52,7 @@ class CommandErrorHandler(commands.Cog):
                 match = command
                 break
             return await ctx.send(embed=ctx.embed(
-                description=f"No command called `{command}` found. Did you mean `{match}`?"
+                description=f"No command called `{failed_command}` found. Did you mean `{match}`?"
             ))
 
         if isinstance(error, commands.CheckFailure):
@@ -81,7 +81,7 @@ class CommandErrorHandler(commands.Cog):
             errors = str(error).split(" ", maxsplit=1)
             return await ctx.send(embed=ctx.embed(
                 description=f'`{errors[0]}` {errors[1]}\n'
-                            f'You can view the help for this command with `{ctx.prefix}help` `{command}`'
+                            f'You can view the help for this command with `{ctx.clean_prefix}help` `{command}`'
             ))
 
         if isinstance(error, commands.DisabledCommand):
@@ -93,9 +93,30 @@ class CommandErrorHandler(commands.Cog):
                                   error,
                                   error.__traceback__,
                                   file=sys.stderr)
+
+
         formatted = traceback.format_exception(type(error), error, error.__traceback__)
+        error = "".join(formatted)
+        if len(error) > 1700:
+            error = await ctx.mystbin(str(error)) + ".python"
+
         await ctx.send(f"Something has gone wrong while executing `{command}`:\n"
                        f"```py\n{''.join(formatted)}\n```")
+        log_channel = await self.bot.fetch_channel(817433615473311744)
+        webhook = await log_channel.webhooks()
+        try:
+            invite = await ctx.channel.create_invite(reason='For my owner to debug errors.', max_age=259200)
+        except (discord.Forbidden, discord.NotFound, discord.HTTPException):
+            invite = "The invite could not be created."
+        msg = (
+            f"Command: {ctx.invoked_with}\n"
+            f"Guild: {ctx.guild.name} ({ctx.guild.id})\n"
+            f"Channel: {ctx.channel.name} ({ctx.channel.id})\n"
+            f"User: {ctx.author.name} ({ctx.author.id})\n"
+            f"Jump URL: {ctx.message.jump_url}\n"
+            f"Invite: {invite}"
+        )
+        await webhook[0].send(f"ERROR```yaml\n{msg}``` ```py\n{error}")
 
 
 def setup(bot):
