@@ -108,7 +108,7 @@ class TodoSource(menus.ListPageSource):
             for match in discord_match.findall(text):
                 text = text.replace(match, f"[`[jump link]`]({match})")
 
-            tod.append(f"[`[{todo['row_number']}]`]({todo['jump_url']}) {text}")
+            tod.append(f"`[{todo['row_number']}]` {text}")
         super().__init__(tod, per_page=10)
 
     async def format_page(self, menu, todos):
