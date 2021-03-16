@@ -110,12 +110,12 @@ class Fun(commands.Cog):
         await ctx.send(translation.rstrip())
 
     @morse.command()
-    async def decode(self, ctx, *, text):
+    async def decode(self, ctx, *, morse):
         if text == "":
             raise commands.BadArgument('You must provide a string of text to translate')
         translation = ""
 
-        words = text.split("   ")
+        words = morse.split("   ")
 
         for morse_word in words:
             chars = morse_word.split(" ")
