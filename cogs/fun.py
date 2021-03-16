@@ -426,7 +426,7 @@ class Fun(commands.Cog):
             data = await f.text()
         soup = BeautifulSoup(data, 'html.parser')
         img = url + soup.find_all('img')[1]['src']
-        await ctx.send(embed=ctx.embed(title=str(soup.title.string), url=soup.find('link')['href']).set_image(url=img))
+        await ctx.send(embed=ctx.embed(title=str(soup.title.string), url=soup.find_all("link")[1]['href']).set_image(url=img))
 
 
 def setup(bot):
