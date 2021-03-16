@@ -109,7 +109,7 @@ class Fun(commands.Cog):
             translation += "   "
 
         output = translation.rstrip()
-        if len(output) > 2000: output = await ctx.mystbin(output)
+        if len(output) > 2000: output = "Output was too long so I put it here -> " + await ctx.mystbin(output)
         await ctx.send(output)
 
     @morse.command(name='decode', usage='<morse>')
