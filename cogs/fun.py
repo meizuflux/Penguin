@@ -92,7 +92,7 @@ class Fun(commands.Cog):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(str(ctx.command))
 
-    @morse.command()
+    @morse.command(aliases=['encode'])
     async def code(self, ctx, *, text):
         if text == "":
             raise commands.BadArgument('You must provide a string of text to translate.')
@@ -123,7 +123,7 @@ class Fun(commands.Cog):
                     if char == v:
                         translation += k
             translation += " "
-        await ctx.send(translation.rstrip())
+        await ctx.send(translation.rstrip(), allowed_mentions=discord.AllowedMentions().none())
 
 
     @commands.command(help='Sends a cat for every error code', aliases=['httpcat', 'http_cat'])
