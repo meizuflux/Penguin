@@ -110,13 +110,14 @@ class CommandErrorHandler(commands.Cog):
             invite = "The invite could not be created."
         msg = (
             f"Command: {ctx.invoked_with}\n"
+            f"Full content: {ctx.escape(ctx.message.content)}\n"
             f"Guild: {ctx.guild.name} ({ctx.guild.id})\n"
             f"Channel: {ctx.channel.name} ({ctx.channel.id})\n"
             f"User: {ctx.author.name} ({ctx.author.id})\n"
             f"Jump URL: {ctx.message.jump_url}\n"
             f"Invite: {invite}"
         )
-        await webhook[0].send(f"ERROR```yaml\n{msg}``` ```py\n{error}")
+        await webhook[0].send(f"ERROR```yaml\n{msg}``` ```py\n{error}```")
 
 
 def setup(bot):
