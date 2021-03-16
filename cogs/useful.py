@@ -88,7 +88,8 @@ class ChuckContext(commands.Context):
         for x, y in target:
             text = text.replace(x, y[logic])
         return text
-
+    
+    @property
     def clean_prefix(self):
         return re.sub(f"<@!?{self.bot.user.id}>", f"@{self.bot.user.name}", self.prefix)
 
