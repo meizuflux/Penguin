@@ -424,7 +424,7 @@ class Fun(commands.Cog):
         url = 'https://whyarentyoucoding.com'
         async with self.bot.session.get(url) as f:
             data = await f.text()
-        soup = BeautifulSoup(data, 'html.parser')
+        soup = BeautifulSoup(data, 'lxml')
         img = url + soup.find_all('img')[1]['src']
         await ctx.send(embed=ctx.embed(title=str(soup.title.string), url=soup.find_all("link")[1]['href']).set_image(url=img))
 
