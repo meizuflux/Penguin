@@ -99,9 +99,33 @@ class Fun(commands.Cog):
             raise commands.BadArgument('You must provide a string of text to translate')
         if "    " in text:
             raise commands.BadArgument('Unable to translate morse code. Found 4 spaces in morse code string.')
-        for k, v in morse.items():
-            text = text.replace(k, v)
-        await ctx.send(text)
+        translation = ""
+
+        words = text.split(" ")
+
+        for word in words:
+            w = [self.morse[char.lower()] for char in word if char.lower() in self.morse]
+            translation += " ".join(w)
+            translation += "   "
+        await ctx.send(translation.rstrip())
+
+    @morse.command()
+    async def decode(self, ctx, *, text):
+        if text == "":
+            raise commands.BadArgument('You must provide a string of text to translate')
+        translation = ""
+
+        words = text.split("   ")
+
+        for morse_word in words:
+            chars = morse_word.split(" ")
+            for char in chars:
+                for k, v in morse.items():
+                    if char == v:
+                        translation += k
+            translation += " "
+        await ctx.send(translation.rstrip())
+
 
     @commands.command(help='Sends a cat for every error code', aliases=['httpcat', 'http_cat'])
     async def http(self, ctx, code=404):
