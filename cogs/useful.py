@@ -322,7 +322,9 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
     @todo.command()
     async def add(self, ctx, *, task: str):
-        """Insert a task into your todo list."""
+        """Insert a task into your todo list.
+        Limit of 150 characters."""
+        if len(task) > 150: raise commands.BadArgument('Tasks must be under 150 characters.')
         sql = (
             "INSERT INTO TODOS (user_id, todo, sort_date, jump_url, time) "
             "VALUES ($1, $2, $3, $4, $3)"
