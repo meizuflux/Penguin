@@ -247,6 +247,10 @@ class Utilities(commands.Cog):
     @commands.command(help='Checks where a URL redirects. WARNING NOT 100% ACCURATE',
                       aliases=['redirectchecker', 'redirectcheck', 'redirect_check'])
     async def redirect_checker(self, ctx, url):
+        url_regex = re.compile(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+")
+        match = url_regex.match(url)
+        if not match:
+            raise commands.BadArgument('Invalid URL provided.')
         async with self.bot.session.get(url) as redirect:
             await qembed(ctx, f'`{str(redirect.real_url)}`')
 
