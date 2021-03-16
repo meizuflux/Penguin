@@ -17,7 +17,13 @@ class Reddit(commands.Cog):
 
     @commands.command()
     async def chonkers(self, ctx):
+        """Sends a random post from the subreddit "Chonkers"."""
         await self.create_message(ctx, 'chonkers')
+
+    @commands.command()
+    async def aww(self, ctx):
+        """Sends a random post from the subreddit "aww"."""
+        await self.create_message(ctx, 'aww', min=2)
 
 
 def setup(bot):
