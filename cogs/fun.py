@@ -9,6 +9,7 @@ from io import BytesIO
 
 import discord
 import typing
+import asyncio
 import json
 import timeit
 from cogs.polaroid_manipulation import get_image_url
@@ -402,6 +403,18 @@ class Fun(commands.Cog):
                 pass
         if not output: output = "Output came out empty."
         await ctx.send("".join(output))
+
+    @commands.command(aliases=['point'])
+    async def pepepoint(self, ctx):
+        """Reacts to the next message.
+        Emoji is "PepePoint". If no message is sent in 60 seconds it times out."""
+        try:
+            message = await self.bot.wait_for("message", timeout=60, check=lambda m: m.channel == ctx.channel)
+        except asyncio.TimeoutError:
+            return
+        else:
+            await message.add_reaction('<:PepePoint:759934591590203423>')
+
 
 def setup(bot):
     bot.add_cog(Fun(bot))
