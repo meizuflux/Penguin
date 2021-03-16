@@ -6,6 +6,7 @@ from discord.ext import commands, menus
 from utils.default import plural, qembed
 
 
+
 def get_sig(ctx, command):
     """Method to return a commands name and signature."""
     sig = command.usage or command.signature
@@ -45,8 +46,8 @@ class HelpSource(menus.GroupByPageSource):
             description = (
                 "`<argument>` means the argument is required\n"
                 "`[argument]` means the argument is optional\n\n"
-                f"Type `{ctx.prefix}help` `[command]` for more info on a command.\n"
-                f"You can also type `{ctx.prefix}help` `[category]` for more info on a category.\n"
+                f"Type `{ctx.clean_prefix}help` `[command]` for more info on a command.\n"
+                f"You can also type `{ctx.clean_prefix}help` `[category]` for more info on a category.\n"
             )
             embed = menu.ctx.embed(title=f'Penguin Help Command | Page {current_page}', description=description)
             embed.add_field(name="About", value=f"```yaml\n{ctx.bot.description}```", inline=False)
