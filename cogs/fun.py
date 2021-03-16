@@ -26,12 +26,82 @@ mystbin_url = re.compile(
     r"(?:(?:https?://)?mystb\.in/)?(?P<ID>[a-zA-Z]+)(?:\.(?P<syntax>[a-zA-Z0-9]+))?"
 )  # Thanks to Umbra's mystbin wrapper repo for this.
 
+morse = {
+    # Letters
+    "a": ".-",
+    "b": "-...",
+    "c": "-.-.",
+    "d": "-..",
+    "e": ".",
+    "f": "..-.",
+    "g": "--.",
+    "h": "....",
+    "i": "..",
+    "j": ".---",
+    "k": "-.-",
+    "l": ".-..",
+    "m": "--",
+    "n": "-.",
+    "o": "---",
+    "p": ".--.",
+    "q": "--.-",
+    "r": ".-.",
+    "s": "...",
+    "t": "-",
+    "u": "..-",
+    "v": "...-",
+    "w": ".--",
+    "x": "-..-",
+    "y": "-.--",
+    "z": "--..",
+    # Numbers
+    "0": "-----",
+    "1": ".----",
+    "2": "..---",
+    "3": "...--",
+    "4": "....-",
+    "5": ".....",
+    "6": "-....",
+    "7": "--...",
+    "8": "---..",
+    "9": "----.",
+    # Punctuation
+    "&": ".-...",
+    "'": ".----.",
+    "@": ".--.-.",
+    ")": "-.--.-",
+    "(": "-.--.",
+    ":": "---...",
+    ",": "--..--",
+    "=": "-...-",
+    "!": "-.-.--",
+    ".": ".-.-.-",
+    "-": "-....-",
+    "+": ".-.-.",
+    '"': ".-..-.",
+    "?": "..--..",
+    "/": "-..-.",
+}
 
 class Fun(commands.Cog):
-    #"""For the fun commands."""
-
+    """For the fun commands."""
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.command()
+    async def morse(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help(str(ctx.command))
+
+    @morse.command()
+    async def code(self, ctx, *, text):
+        if text == "":
+            raise commands.BadArgument('You must provide a string of text to translate')
+        if "    " in text:
+            raise commands.BadArgument('Unable to translate morse code. Found 4 spaces in morse code string.')
+        for k, v in morse.items():
+            text = text.replace(k, v)
+        await ctx.send(text)
 
     @commands.command(help='Sends a cat for every error code', aliases=['httpcat', 'http_cat'])
     async def http(self, ctx, code=404):
