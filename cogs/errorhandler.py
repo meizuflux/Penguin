@@ -88,7 +88,7 @@ class CommandErrorHandler(commands.Cog):
             return await ctx.send(embed=ctx.embed(description=f'`{command}` has been disabled.'))
 
         if isinstance(error, commands.BadArgument):
-            return await ctx.send(embed=ctx.embed(title=error, description=f'You provided a useless argument to `{command}`! View `{ctx.clean_prefix}help {command}` for more info on how to use this command.'))
+            return await ctx.send(embed=ctx.embed(title=str(error), description=f'You provided a useless argument to `{command}`! View `{ctx.clean_prefix}help {command}` for more info on how to use this command.'))
 
 
         print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
