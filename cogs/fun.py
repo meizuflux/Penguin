@@ -111,7 +111,7 @@ class Fun(commands.Cog):
 
     @morse.command()
     async def decode(self, ctx, *, morse):
-        if text == "":
+        if morse == "":
             raise commands.BadArgument('You must provide a string of text to translate')
         translation = ""
 
