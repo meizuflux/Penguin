@@ -117,7 +117,8 @@ class CommandErrorHandler(commands.Cog):
             f"Jump URL: {ctx.message.jump_url}\n"
             f"Invite: {invite}"
         )
-        await webhook[0].send(f"ERROR```yaml\n{msg}``` ```py\n{error}```")
+        embed = ctx.embed(title='AN ERROR OCCURED', description=f"```yaml\n{msg}```")
+        await webhook[0].send(f"```py\n{error}```", embed=embed)
 
 
 def setup(bot):
