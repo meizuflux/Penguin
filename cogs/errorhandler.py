@@ -104,18 +104,13 @@ class CommandErrorHandler(commands.Cog):
                        f"```py\n{''.join(formatted)}\n```")
         log_channel = await self.bot.fetch_channel(817433615473311744)
         webhook = await log_channel.webhooks()
-        try:
-            invite = await ctx.channel.create_invite(reason='For my owner to debug errors.', max_age=259200)
-        except (discord.Forbidden, discord.NotFound, discord.HTTPException):
-            invite = "The invite could not be created."
         msg = (
             f"Command: {ctx.invoked_with}\n"
             f"Full content: {ctx.escape(ctx.message.content)}\n"
             f"Guild: {ctx.guild.name} ({ctx.guild.id})\n"
             f"Channel: {ctx.channel.name} ({ctx.channel.id})\n"
             f"User: {ctx.author.name} ({ctx.author.id})\n"
-            f"Jump URL: {ctx.message.jump_url}\n"
-            f"Invite: {invite}"
+            f"Jump URL: {ctx.message.jump_url}"
         )
         embed = ctx.embed(title='AN ERROR OCCURED', description=f"```yaml\n{msg}```")
         await webhook[0].send(f"```py\n{error}```", embed=embed)
