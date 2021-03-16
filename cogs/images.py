@@ -5,6 +5,7 @@ import typing
 
 
 class Images(commands.Cog):
+    """Some fun image commands."""
     def __init__(self, bot):
         self.bot = bot
 
@@ -18,7 +19,7 @@ class Images(commands.Cog):
 
     @commands.command()
     async def amiajoke(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
-        f"""{ctx.clean_prefix}nice"""
+        """Creates a "Am I a joke?" meme."""
         await self.do_alex_image(ctx, method="amiajoke", args=[await get_image_url(ctx, image)])
     
 
