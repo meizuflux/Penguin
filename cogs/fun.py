@@ -482,7 +482,7 @@ class Fun(commands.Cog):
             dad = await f.json()
         await ctx.send(embed=ctx.embed(description=dad.get("joke")))
 
-    @commands.command()
+    @commands.command(aliases=['bt'])
     async def bigtext(self, ctx, *, text):
         """Makes the specified text bigger."""
         if len(text) > 50: return await ctx.send("Less than 50 characters please!")
