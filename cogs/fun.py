@@ -332,7 +332,7 @@ class Fun(commands.Cog):
         caption_url = "https://captionbot.azurewebsites.net/api/messages"
         async with self.bot.session.post(caption_url, data=json.dumps(data), headers=headers) as resp:
             caption = await resp.text()
-        await ctx.send(embed=ctx.embed(title=f'"{caption}"').set_image(url=image))
+        await ctx.send(embed=ctx.embed(title=caption).set_image(url=image))
 
     @commands.command()
     async def pepe(self, ctx):
