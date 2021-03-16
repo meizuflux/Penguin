@@ -108,8 +108,8 @@ class Fun(commands.Cog):
             translation += "   "
         await ctx.send(translation.rstrip())
 
-    @morse.command(name='decode')
-    async def morse_decode(self, ctx, *, morse):
+    @morse.command(name='decode', usage='<morse>')
+    async def morse_decode(self, ctx, *, morse='.. -.. -.-'):
         if morse == "":
             raise commands.BadArgument('You must provide a string of text to translate.')
         translation = ""
@@ -493,8 +493,6 @@ class Fun(commands.Cog):
                 output.append(f"{char}\N{combining enclosing keycap}")
             if char == "!":
                 output.append(":exclamation:")
-            else:
-                pass
         if not output: output = "Output came out empty."
         await ctx.send("".join(output))
 
