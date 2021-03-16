@@ -104,11 +104,7 @@ class Fun(commands.Cog):
         words = text.split(" ")
 
         for word in words:
-            w = list()
-            for char in word:
-                if char.lower() in self.morse:
-                    w.append(self.morse[char.lower()])
-
+            w = [morse[char.lower()] for char in word if char.lower() in morse]
             translation += " ".join(w)
             translation += "   "
         await ctx.send(translation.rstrip())
