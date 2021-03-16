@@ -1,24 +1,23 @@
 import asyncio
+import asyncio
 import base64
+import discord
+import json
 import random
 import re
-import textwrap
 import string
+import textwrap
 import time
-from io import BytesIO
-
-import discord
-from bs4 import BeautifulSoup
-import typing
-import asyncio
-import json
 import timeit
-from cogs.polaroid_manipulation import get_image_url
+import typing
 from PIL import Image, ImageDraw, ImageFont
+from bs4 import BeautifulSoup
 from discord.ext import commands, flags
 from discord.ext.commands.cooldowns import BucketType
+from io import BytesIO
 from jishaku.functools import executor_function
 
+from cogs.polaroid_manipulation import get_image_url
 from utils.bottom import from_bottom, to_bottom
 from utils.default import qembed
 
@@ -96,7 +95,7 @@ class Fun(commands.Cog):
     @morse.command()
     async def code(self, ctx, *, text):
         if text == "":
-            raise commands.BadArgument('You must provide a string of text to translate')
+            raise commands.BadArgument('You must provide a string of text to translate.')
         if "    " in text:
             raise commands.BadArgument('Unable to translate morse code. Found 4 spaces in morse code string.')
         translation = ""
@@ -109,10 +108,10 @@ class Fun(commands.Cog):
             translation += "   "
         await ctx.send(translation.rstrip())
 
-    @morse.command()
-    async def decode(self, ctx, *, morse):
+    @morse.command(name='decode')
+    async def morse_decode(self, ctx, *, morse):
         if morse == "":
-            raise commands.BadArgument('You must provide a string of text to translate')
+            raise commands.BadArgument('You must provide a string of text to translate.')
         translation = ""
 
         words = morse.split("   ")
