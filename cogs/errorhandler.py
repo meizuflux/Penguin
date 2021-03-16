@@ -99,12 +99,7 @@ class CommandErrorHandler(commands.Cog):
 
 
         formatted = traceback.format_exception(type(error), error, error.__traceback__)
-        error = "".join(formatted)
-        if len(error) > 1700:
-            error = await ctx.mystbin(str(error)) + ".python"
 
-        await ctx.send(f"Something has gone wrong while executing `{command}`:\n"
-                       f"```py\n{''.join(formatted)}\n```")
         log_channel = await self.bot.fetch_channel(817433615473311744)
         webhook = await log_channel.webhooks()
         msg = (
@@ -116,7 +111,15 @@ class CommandErrorHandler(commands.Cog):
             f"Jump URL: {ctx.message.jump_url}"
         )
         embed = ctx.embed(title='AN ERROR OCCURED', description=f"```yaml\n{msg}```")
-        await webhook[0].send(f"```py\n{error}```", embed=embed)
+        await webhook[0].send(f"```py\n{''.join(formatted)}```", embed=embed)
+
+        error = "".join(formatted)
+        if len(error) > 1700:
+            error = await ctx.mystbin(str(error)) + ".python"
+
+        await ctx.send(f"Something has gone wrong while executing `{command}`. You should not be seeing this, I have contacted my developer with information about this error.\n"
+                       f"```py\n{error}\n```")
+
 
 
 def setup(bot):
