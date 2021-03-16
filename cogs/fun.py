@@ -26,7 +26,7 @@ mystbin_url = re.compile(
     r"(?:(?:https?://)?mystb\.in/)?(?P<ID>[a-zA-Z]+)(?:\.(?P<syntax>[a-zA-Z0-9]+))?"
 )  # Thanks to Umbra's mystbin wrapper repo for this.
 
-morse = {
+morse_dict = {
     # Letters
     "a": ".-",
     "b": "-...",
@@ -104,7 +104,7 @@ class Fun(commands.Cog):
         words = text.split(" ")
 
         for word in words:
-            w = [morse[char.lower()] for char in word if char.lower() in morse]
+            w = [morse_dict[char.lower()] for char in word if char.lower() in morse_dict]
             translation += " ".join(w)
             translation += "   "
         await ctx.send(translation.rstrip())
@@ -120,7 +120,7 @@ class Fun(commands.Cog):
         for morse_word in words:
             chars = morse_word.split(" ")
             for char in chars:
-                for k, v in morse.items():
+                for k, v in morse_dict.items():
                     if char == v:
                         translation += k
             translation += " "
