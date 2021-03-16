@@ -275,9 +275,13 @@ class Utilities(commands.Cog):
 
     @commands.command()
     async def shorten(self, ctx, url: str):
-        if not re.match("http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", url):
-            return await ctx.send("Invalid URL provided.")
-        if len
+        url_regex = re.compile(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+")
+        match = url_regex.match(url)
+        if not match:
+            raise commands.BadArgument('Invalid URL provided.')
+        if match:
+            async with self.bot.session.get('https://clck.ru/--?url='+match[0]) as f:
+                await ctx.send(await f.text())
 
 
 def setup(bot):
