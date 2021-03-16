@@ -418,13 +418,15 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def whyarentyoucoding(self, ctx):
-        """Grabs the latest "Why aren't you coding?" comic."""
+        """Grabs the latest "Why aren't you coding?" comic.
+        New comic every weekday according to their site. 
+        Give them some love at https://whyarentyoucoding.com"""
         url = 'https://whyarentyoucoding.com'
         async with self.bot.session.get(url) as f:
             data = await f.text()
         soup = BeautifulSoup(data, 'html.parser')
         img = url + soup.find_all('img')[1]['src']
-        await ctx.send(embed=ctx.embed(title=str(soup.title.string)).set_image(url=img))
+        await ctx.send(embed=ctx.embed(title=str(soup.title.string), url=soup.find('link')['href']).set_image(url=img))
 
 
 def setup(bot):
