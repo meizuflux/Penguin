@@ -273,6 +273,12 @@ class Utilities(commands.Cog):
 
         await ctx.send(file=discord.File(fp=buffer, filename=f"{ctx.author.name}{ext}"))
 
+    @commands.command()
+    async def shorten(self, ctx, url: str):
+        if not re.match("http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", url):
+            return await ctx.send("Invalid URL provided.")
+        if len
+
 
 def setup(bot):
     bot.add_cog(Utilities(bot))
