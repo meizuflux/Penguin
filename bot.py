@@ -45,6 +45,8 @@ class Chuck(commands.Bot):
         self.case_insensitive = True
         self.perspective = self.get_config("perspective_key")
         self.afk = {}
+        self.usage_counter = 0
+        self.command_usage = collections.Counter()
 
     @staticmethod
     def get_config(item: str):
