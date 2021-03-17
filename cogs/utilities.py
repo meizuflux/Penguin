@@ -295,6 +295,7 @@ class Utilities(commands.Cog):
             f"language": {language},
             "source": "{}".format(code)
         }
+        await ctx.send(params)
         async with self.bot.session.post("https://emkc.org/api/v1/piston/execute", json=params) as r:
             r = await r.json()
         await ctx.send(r)
