@@ -290,7 +290,7 @@ class Utilities(commands.Cog):
                 await ctx.send(embed=ctx.embed(description=f"<{short.strip()}> now redirects to <{url}>"))
 
     @commands.command()
-    async def run(self, language: str, code: str):
+    async def run(self, ctx, language: str, code: str):
         params = {
             "language": "python",
             "source": "{}".format(code)
