@@ -124,6 +124,7 @@ class TodoPages(menus.MenuPages):
 
     @menus.button('\N{BLACK SQUARE FOR STOP}\ufe0f', position=menus.Last(2))
     async def end_menu(self, _):
+        await self.message.delete()
         self.stop()
 
 
@@ -345,7 +346,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         todos = await self.bot.db.fetch(sql, ctx.author.id)
 
 
-        pages = TodoPages(source=TodoSource(todos), delete_after=True)
+        pages = TodoPages(source=TodoSource(todos))
 
         await pages.start(ctx)
 
@@ -459,7 +460,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         cmds = []
         for c, i in self.bot.command_usage.most_common():
             cmds.append(f"\n{c:<20}{i}")
-        pages = TodoPages(source=CommandSource(cmds), delete_after=True)
+        pages = TodoPages(source=CommandSource(cmds))
         await pages.start(ctx)
 
 class CommandSource(menus.ListPageSource):
