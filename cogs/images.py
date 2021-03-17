@@ -26,8 +26,15 @@ class Images(commands.Cog):
     async def animeface(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         async with self.bot.session.get("https://nekobot.xyz/api/imagegen?type=animeface&image=%s" % await get_image_url(ctx, image)) as resp:
             data = await resp.json()
-        await ctx.send(data)
-    
+        embed = ctx.embed().set_image(url=data['message'])
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def trumptweet(self, ctx, *, text: str):
+        async with self.bot.session.get("https://nekobot.xyz/api/imagegen?type=trumptweet&text=%s" % text) as resp:
+            data = await resp.json()
+        embed = ctx.embed().set_image(url=data['message'])
+        await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Images(bot))
