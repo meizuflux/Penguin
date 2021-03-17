@@ -124,7 +124,6 @@ class TodoPages(menus.MenuPages):
 
     @menus.button('\N{BLACK SQUARE FOR STOP}\ufe0f', position=menus.Last(2))
     async def end_menu(self, _):
-        self.message.delete()
         self.stop()
 
 
@@ -346,7 +345,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         todos = await self.bot.db.fetch(sql, ctx.author.id)
 
 
-        pages = TodoPages(source=TodoSource(todos))
+        pages = TodoPages(source=TodoSource(todos), delete_after=True)
 
         await pages.start(ctx)
 
@@ -454,6 +453,10 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         """
         self.bot.afk[ctx.author.id] = {"reason": reason, "time": datetime.datetime.utcnow()}
         await ctx.send(f'OK, I have set your AFK status to `{reason}`')
+
+    @commands.command()
+    async def command_usage(self, ctx):
+
 
 
 class AAAAAA(commands.Cog):
