@@ -500,6 +500,8 @@ class Fun(commands.Cog):
                 output.append(f"{char}\N{combining enclosing keycap}")
             if char == "!":
                 output.append(":exclamation:")
+            if char == "?":
+                output.append(":question:")
         if not output: output = "Output came out empty."
         await ctx.send("".join(output))
 
