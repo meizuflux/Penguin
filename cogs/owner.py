@@ -36,6 +36,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         table = tabulate.tabulate((dict(item) for item in response),
                                 headers="keys",
                                 tablefmt="github")
+        if len(table) > 2000: table = await ctx.mystbin(table)
         await ctx.send(embed=ctx.embed(description=f'```py\n{table}```'))
 
     @sql.error
