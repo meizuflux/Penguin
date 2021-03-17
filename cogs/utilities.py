@@ -292,7 +292,7 @@ class Utilities(commands.Cog):
     @commands.command()
     async def run(self, ctx, language: str, *, code: str):
         params = {
-            "language": "python",
+            f"language": {language},
             "source": "{}".format(code)
         }
         async with self.bot.session.post("https://emkc.org/api/v1/piston/execute", json=params) as r:
