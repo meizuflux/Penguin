@@ -3,6 +3,7 @@ import asyncio
 import base64
 import discord
 import json
+import os
 import random
 import re
 import string
@@ -82,8 +83,10 @@ morse_dict = {
     "/": "-..-.",
 }
 
+
 class Fun(commands.Cog):
     """For the fun commands."""
+
     def __init__(self, bot):
         self.bot = bot
 
@@ -128,7 +131,6 @@ class Fun(commands.Cog):
                         translation += k
             translation += " "
         await ctx.send(translation.rstrip(), allowed_mentions=discord.AllowedMentions().none())
-
 
     @commands.command(help='Sends a cat for every error code', aliases=['httpcat', 'http_cat'])
     async def http(self, ctx, code=404):
@@ -403,7 +405,7 @@ class Fun(commands.Cog):
         await ctx.send(embed=embed, file=image)
 
     @commands.command()
-    async def mock(self, ctx, *, text: str=None):
+    async def mock(self, ctx, *, text: str = None):
         content = None
         if isinstance(text, discord.Message):
             content = text.content
@@ -421,7 +423,8 @@ class Fun(commands.Cog):
         )
 
     @commands.command()
-    async def caption(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
+    async def caption(self, ctx, *,
+                      image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         image = await get_image_url(ctx, image)
         data = {
             "Content": str(image),
@@ -442,15 +445,15 @@ class Fun(commands.Cog):
             frog * 10,
             frog * 12,
             frog * 13,
-            f"{frog*2}⚪️⚫️⚫️⚪️{frog*3}⚪️⚫️⚫️⚪️",
+            f"{frog * 2}⚪️⚫️⚫️⚪️{frog * 3}⚪️⚫️⚫️⚪️",
             ":frog:⚪️⚫️⚫️⚪️⚫️⚪️:frog:⚪️⚫️⚫️⚪️⚫️⚪️",
             ":frog:⚪️⚫️⚪️⚫️⚫️⚪️:frog:⚪️⚫️⚪️⚫️⚫️⚪️",
             ":frog::frog:⚪️⚫️⚪️⚪️:frog::frog::frog:⚪️⚫️⚪️⚪️",
             frog * 13,
-            f"{circle*2}{frog*11}",
+            f"{circle * 2}{frog * 11}",
             ":frog::red_circle::red_circle::frog::frog::frog::frog::frog::frog::frog::frog::frog:",
-            f"{frog*2}{circle*10}",
-            f"{frog*3}{circle*8}",
+            f"{frog * 2}{circle * 10}",
+            f"{frog * 3}{circle * 8}",
             frog * 10,
             frog * 9,
             frog * 8
@@ -470,7 +473,7 @@ class Fun(commands.Cog):
         async with self.bot.session.get("https://www.tronalddump.io/random/quote") as f:
             data = await f.json()
         link = data["_links"]["self"]["href"]
-        embed=ctx.embed(title='Donald Trump once said...', description=data.get("value"), url=link)
+        embed = ctx.embed(title='Donald Trump once said...', description=data.get("value"), url=link)
         await ctx.send(embed=embed)
 
     @commands.command()
@@ -521,7 +524,17 @@ class Fun(commands.Cog):
             data = await f.text()
         soup = BeautifulSoup(data, 'lxml')
         img = url + soup.find_all('img')[1]['src']
-        await ctx.send(embed=ctx.embed(title=str(soup.title.string), url=soup.find_all("link")[1]['href']).set_image(url=img))
+        await ctx.send(
+            embed=ctx.embed(title=str(soup.title.string), url=soup.find_all("link")[1]['href']).set_image(url=img))
+
+    @commands.command()
+    async def cat(self, ctx):
+        """Random cat."""
+        path = '/home/ppotatoo/images/cats'
+        r = random.choice(os.listdir(path))
+        f = discord.File(path + "/" + r, filename="cat.jpeg")
+        e = discord.Embed().set_image(url="attachment://cat.jpeg")
+        await ctx.send(file=f, embed=e)
 
 
 def setup(bot):
