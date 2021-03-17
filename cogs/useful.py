@@ -159,7 +159,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             Classes: {cl}
             Functions: {fn}
             Coroutines: {cr}
-            Comments: {cm:,}
+            Comments: {cm:,} ```
             """
         )
 
