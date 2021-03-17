@@ -1,16 +1,15 @@
 """The actual bot that you run"""
+import aiohttp
+import alexflipnote
+import asyncpg
 import collections
+import config
 import datetime
+import discord
 import json
 import os
 import re
 import time
-
-import aiohttp
-import alexflipnote
-import asyncpg
-import config
-import discord
 from discord.ext import commands
 
 from cogs.useful import ChuckContext
@@ -28,7 +27,7 @@ class Chuck(commands.Bot):
             case_insensitive=True,
             intents=intents,
             owner_ids={809587169520910346},
-            description="Penguin is a simple and easy-to-use Discord bot"
+            description="Walrus is a simple and easy-to-use Discord bot"
         )
         self._BotBase__cogs = commands.core._CaseInsensitiveDict()
         self.author_id = 809587169520910346

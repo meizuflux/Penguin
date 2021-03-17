@@ -1,17 +1,16 @@
+import aiohttp
 import asyncio
 import datetime
+import discord
+import humanize
 import json
 import pathlib
 import platform
+import psutil
 import random
 import re
 import time
 from collections import Counter
-
-import aiohttp
-import discord
-import humanize
-import psutil
 from discord.ext import commands, menus
 
 from utils.default import qembed
@@ -132,6 +131,39 @@ class TodoPages(menus.MenuPages):
 class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.command(aliases=['codestats'])
+    async def code_stats(self, ctx):
+        p = pathlib.Path('./')
+        cm = cr = fn = cl = ls = fc = 0
+        for f in p.rglob('*.py'):
+            if str(f).startswith("venv"):
+                continue
+            fc += 1
+            with f.open() as of:
+                for l in of.readlines():
+                    l = l.strip()
+                    if l.startswith('class'):
+                        cl += 1
+                    if l.startswith('def'):
+                        fn += 1
+                    if l.startswith('async def'):
+                        cr += 1
+                    if '#' in l:
+                        cm += 1
+                    ls += 1
+        text = (
+            f"""```yaml
+            Files: {fc}
+            Lines: {ls:,}
+            Classes: {cl}
+            Functions: {fn}
+            Coroutines: {cr}
+            Comments: {cm:,}
+            """
+        )
+
+        m = await ctx.send(text)
 
     @commands.command(aliases=['information', 'botinfo'],
                       help='Gets info about the bot')
