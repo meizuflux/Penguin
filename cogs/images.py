@@ -21,7 +21,7 @@ class Images(commands.Cog):
     async def do_neko_image(self, ctx, endpoint, key='message'):
         async with self.bot.session.get(NEKOBOT_URL + endpoint) as resp:
             data = await resp.json()
-        embed = ctx.embed().set_image(url=data['key'])
+        embed = ctx.embed().set_image(url=data[key])
         await ctx.send(embed=embed)
 
     @commands.command()
