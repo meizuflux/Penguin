@@ -473,7 +473,7 @@ class CommandSource(menus.ListPageSource):
         cur_page = f"Command Usage | Page {menu.current_page + 1}/{self.get_max_pages()}"
         return ctx.embed(
             title=cur_page,
-            description=f"```\n{yee}```",
+            description=f"```\nTotal usage since restart => {ctx.bot.usage_counter}{yee}```",
         )
 
 
