@@ -457,7 +457,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command()
     async def command_usage(self, ctx):
         cmds = []
-        for c, i in bot.command_usage.most_common():
+        for c, i in self.bot.command_usage.most_common():
             cmds.append(f"\n{c:<20}{i}")
         pages = TodoPages(source=CommandSource(cmds), delete_after=True)
         await pages.start(ctx)
@@ -469,9 +469,9 @@ class CommandSource(menus.ListPageSource):
     async def format_page(self, menu, cmds):
         ctx = menu.ctx
         yee = "\n".join(cmds)
-        cur_page = f"Page {menu.current_page + 1}/{self.get_max_pages()}"
+        cur_page = f"Command Usage | Page {menu.current_page + 1}/{self.get_max_pages()}"
         return ctx.embed(
-            title=f"{count} total entries | {cur_page}",
+            title=cur_page,
             description=f"```\n{yee}```",
         )
 
