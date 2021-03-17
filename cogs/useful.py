@@ -268,7 +268,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                         inline=False)
         await ctx.send(embed=embed)
 
-    def get_item(self, ctx, dict, cat):
+    def get_item(self, dict, cat):
         return round(float(dict[cat]['summaryScore']['value']) * 100)
 
     @commands.command(help='Checks if your message is toxic or not.')

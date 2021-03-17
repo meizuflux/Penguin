@@ -289,6 +289,16 @@ class Utilities(commands.Cog):
                 short = await f.text()
                 await ctx.send(embed=ctx.embed(description=f"<{short.strip()}> now redirects to <{url}>"))
 
+    @commands.command()
+    async def run(self, language: str, code: str):
+        params = {
+            "language": "python",
+            "source": "{}".format(code)
+        }
+        async with self.bot.session.post("https://emkc.org/api/v1/piston/execute", json=params) as r:
+            r = await r.json()
+        await ctx.send(f"```{language}\n {r['output']}```")
+
 
 def setup(bot):
     bot.add_cog(Utilities(bot))
