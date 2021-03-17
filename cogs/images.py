@@ -50,10 +50,6 @@ class Images(commands.Cog):
         """Generates a message from clyde."""
         await self.do_neko_image(ctx, endpoint="/imagegen?type=clyde&text=%s" % text)
 
-    @commands.command()
-    async def stickbug(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
-        """Nice stickbug."""
-        await self.do_neko_image(ctx, endpoint="/imagegen?type=stickbug&url=%s" % await get_image_url(ctx, image))
 
 def setup(bot):
     bot.add_cog(Images(bot))
