@@ -105,6 +105,10 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     async def flip(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         await self.send_polaroid(ctx, image, method='fliph')
 
+    @commands.command(aliases=['colourize'], help='Colorizes an image.')
+    async def colorize(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
+        await self.send_polaroid(ctx, image, method='colorize')
+
     @commands.command(help='Blurs an image? Duh')
     async def blur(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         await self.send_polaroid(ctx, image, method='box_blur')
