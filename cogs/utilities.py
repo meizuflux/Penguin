@@ -305,7 +305,7 @@ class Utilities(commands.Cog):
                 return await ctx.send(embed=ctx.embed(title='Error:', description=res['message']))
         if len(res['output']) > 2000:
             return await ctx.send(f'Output was too long so I put it here => {await ctx.mystbin(res["output"])}')
-        await ctx.send(f"```\n {r['output'].strip()}```")
+        await ctx.send(f"```\n {res['output'].strip()}```")
 
 
 def setup(bot):
