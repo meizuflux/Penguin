@@ -532,8 +532,8 @@ class Fun(commands.Cog):
         """Random cat."""
         path = '/home/ppotatoo/images/cats'
         r = random.choice(os.listdir(path))
-        f = discord.File(path + "/" + r, filename="cat.jpeg")
-        e = ctx.embed().set_image(url="attachment://cat.jpeg")
+        f = discord.File(path + "/" + r, filename=r)
+        e = ctx.embed().set_image(url=f"attachment://{r}")
         await ctx.send(file=f, embed=e)
 
 
