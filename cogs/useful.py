@@ -267,21 +267,38 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                         inline=False)
         await ctx.send(embed=embed)
 
+    def get_item(self, ctx, dict, cat):
+        return round(float(dict[cat]['summaryScore']['value'])*100)
+
     @commands.command(help='Checks if your message is toxic or not.')
     async def toxic(self, ctx, *, text):
         url = f"https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key={self.bot.perspective}"
 
         headers = {'Content-Type': 'application/json', }
 
-        data = f'{{comment: {{text: "{text}"}}, ' \
-               'languages: ["en"], ' \
-               'requestedAttributes: {TOXICITY:{}} }'
-
+        data = {
+                'comment': {'text': f'{text}'},
+                'requestedAttributes': {'TOXICITY': {},
+                                        'SEVERE_TOXICITY': {},
+                                        'SPAM': {},
+                                        'UNSUBSTANTIAL': {},
+                                        'OBSCENE': {},
+                                        'INFLAMMATORY': {},
+                                        'INCOHERENT': {}}
+            }
         res = await self.bot.session.post(url, headers=headers, data=data)
         js = await res.json()
         await ctx.send(js)
         level = js["attributeScores"]["TOXICITY"]["summaryScore"]["value"] * 100
+        data = js["attributeScores"]
         await ctx.send(f"`{text}` is `{level:.2f}%` likely to be toxic.")
+        items = {'TOXICITY', 'SEVERE_TOXICITY', 'SPAM', 'UNSUBSTANTIAL', 'OBSCENE', 'INFLAMMATORY', 'INCOHERENT'}
+        embed = ctx.embed()
+        for type in items:
+            percentage = self.get_item(data, type)
+            embed.add_field(name=type.capitalize(), value=f"`{percentage}%` likely to be {type.capitalize()}")
+        await ctx.send(embed=embed)
+
 
     @commands.command(help='Builds an embed from a dict. You can use https://eb.nadeko.bot/ to get one',
                       brief='Builds an embed', aliases=['make_embed', 'embed_builder'])
