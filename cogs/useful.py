@@ -135,7 +135,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(aliases=['codestats'])
     async def code_stats(self, ctx):
         p = pathlib.Path('./')
-        cm = cr = fn = cl = ls = fc = 0
+        cm = cr = fn = cl = ls = fc = ch = 0
         for f in p.rglob('*.py'):
             if str(f).startswith("venv"):
                 continue
@@ -143,6 +143,8 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             with f.open() as of:
                 for l in of.readlines():
                     l = l.strip()
+                    for _ in l:
+                        ch += 1
                     if l.startswith('class'):
                         cl += 1
                     if l.startswith('def'):
@@ -156,6 +158,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             f"```yaml\n"
             f"Files: {fc}\n"
             f"Lines: {ls:,}\n"
+            f"Characters: {ch}\n"
             f"Classes: {cl}\n"
             f"Functions: {fn}\n"
             f"Coroutines: {cr}\n"
