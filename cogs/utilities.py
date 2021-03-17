@@ -292,7 +292,7 @@ class Utilities(commands.Cog):
     @commands.command()
     async def run(self, ctx, language: str, *, code: str):
         params = {
-            f"language": {language},
+            "language": f"{language}",
             "source": "{}".format(code)
         }
         await ctx.send(params)
