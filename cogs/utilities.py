@@ -145,7 +145,7 @@ class Utilities(commands.Cog):
     @commands.guild_only()
     @commands.command(help='Views up to the last 500 deleted messages')
     async def snipe(self, ctx, index: int = 1, channel: discord.TextChannel = None):
-        if ctx.author.id not in self.bot.author_ids:
+        if ctx.author.id not in self.bot.owner_ids:
             raise commands.CheckFailure()
         if channel and channel.is_nsfw():
             return await qembed(ctx, 'no sorry')
