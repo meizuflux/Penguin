@@ -21,6 +21,12 @@ class Images(commands.Cog):
     async def amiajoke(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         """Creates a "Am I a joke?" meme."""
         await self.do_alex_image(ctx, method="amiajoke", args=[await get_image_url(ctx, image)])
+
+    @commands.command()
+    async def animeface(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
+        async with self.bot.session.get("https://nekobot.xyz/api/imagegen?type=animeface&image=%s" % await get_image_url(ctx, image)) as resp:
+            data = await resp.json()
+        await ctx.send(data)
     
 
 def setup(bot):
