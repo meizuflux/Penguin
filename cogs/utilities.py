@@ -297,6 +297,7 @@ class Utilities(commands.Cog):
         }
         async with self.bot.session.post("https://emkc.org/api/v1/piston/execute", json=params) as r:
             r = await r.json()
+        await ctx.send(r)
         if len(r['output']) > 2000:
             return await ctx.send(f'Output was too long so I put it here => {await ctx.mystbin(r["output"])}')
         await ctx.send(f"```{language}\n {r['output'].strip()}```")
