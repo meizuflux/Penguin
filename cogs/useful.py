@@ -475,9 +475,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(aliases=['cmdus'])
     async def command_usage(self, ctx):
-        cmds = []
-        for c, i in self.bot.command_usage.most_common():
-            cmds.append(f"\n{c:<30}{i}")
+        cmds = [f"\n{c:<30}{i}" for c, i in self.bot.command_usage.most_common()]
         pages = TodoPages(source=CommandSource(cmds))
         await pages.start(ctx)
 
