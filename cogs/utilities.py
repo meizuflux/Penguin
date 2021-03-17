@@ -295,13 +295,13 @@ class Utilities(commands.Cog):
             "language": f"{language}",
             "source": "{}".format(code)
         }
-        await ctx.send(params)
-        async with self.bot.session.post("https://emkc.org/api/v1/piston/execute", json=params) as r:
-            r = await r.json()
-        await ctx.send(r)
-        if len(r['output']) > 2000:
-            return await ctx.send(f'Output was too long so I put it here => {await ctx.mystbin(r["output"])}')
-        await ctx.send(f"```{language}\n {r['output'].strip()}```")
+        async with self.bot.session.post("https://emkc.org/api/v1/piston/execute", json=params) as resp:
+            res = await resp.json()
+            if resp.status == 400:
+                return await ctx.send(embed=ctx.embed(title='Error:', description=res['message']))
+        if len(res['output']) > 2000:
+            return await ctx.send(f'Output was too long so I put it here => {await ctx.mystbin(res["output"])}')
+        await ctx.send(f"```\n {r['output'].strip()}```")
 
 
 def setup(bot):
