@@ -87,7 +87,7 @@ class ChuckContext(commands.Context):
         for x, y in target:
             text = text.replace(x, y[logic])
         return text
-    
+
     @property
     def clean_prefix(self):
         return re.sub(f"<@!?{self.bot.user.id}>", f"@{self.bot.user.name}", self.prefix)
@@ -95,9 +95,10 @@ class ChuckContext(commands.Context):
 
 class TodoSource(menus.ListPageSource):
     def __init__(self, todos):
-        discord_match = re.compile(r"https?:\/\/(?:(?:ptb|canary)\.)?discord(?:app)?\.com\/channels\/(?:[0-9]{15,19})\/(?:[0-9]{15,19})\/(?:[0-9]{15,19})\/?")
+        discord_match = re.compile(
+            r"https?:\/\/(?:(?:ptb|canary)\.)?discord(?:app)?\.com\/channels\/(?:[0-9]{15,19})\/(?:[0-9]{15,19})\/(?:[0-9]{15,19})\/?")
         url_match = re.compile(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+")
-        tod=[]
+        tod = []
         for todo in todos:
             text = todo['todo']
             for match in url_match.findall(text):
@@ -268,7 +269,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         await ctx.send(embed=embed)
 
     def get_item(self, ctx, dict, cat):
-        return round(float(dict[cat]['summaryScore']['value'])*100)
+        return round(float(dict[cat]['summaryScore']['value']) * 100)
 
     @commands.command(help='Checks if your message is toxic or not.')
     async def toxic(self, ctx, *, text):
@@ -276,16 +277,10 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
         headers = {'Content-Type': 'application/json', }
 
-        data = {
-                'comment': {'text': f'{text}'},
-                'requestedAttributes': {'TOXICITY': {},
-                                        'SEVERE_TOXICITY': {},
-                                        'SPAM': {},
-                                        'UNSUBSTANTIAL': {},
-                                        'OBSCENE': {},
-                                        'INFLAMMATORY': {},
-                                        'INCOHERENT': {}}
-            }
+        data = f'{{comment: {{text: "{text}"}}, ' \
+               'languages: ["en"], ' \
+               'requestedAttributes: {TOXICITY:{}, SEVERE_TOXICITY:{}, SPAM: {}, UNSUBSTANTIAL:{}, OBSCENE: {}, INFLAMMATORY: {}, INCOHERENT: {}} }'
+
         res = await self.bot.session.post(url, headers=headers, data=data)
         js = await res.json()
         await ctx.send(js)
@@ -298,7 +293,6 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             percentage = self.get_item(data, type)
             embed.add_field(name=type.capitalize(), value=f"`{percentage}%` likely to be {type.capitalize()}")
         await ctx.send(embed=embed)
-
 
     @commands.command(help='Builds an embed from a dict. You can use https://eb.nadeko.bot/ to get one',
                       brief='Builds an embed', aliases=['make_embed', 'embed_builder'])
@@ -365,7 +359,6 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         )
         todos = await self.bot.db.fetch(sql, ctx.author.id)
 
-
         pages = TodoPages(source=TodoSource(todos))
 
         await pages.start(ctx)
@@ -420,10 +413,11 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             "WHERE user_id = $1 ORDER BY sort_date"
         )
         todos = await self.bot.db.fetch(sql, ctx.author.id)
-        todo = todos[id-1]["todo"]
-        pro = humanize.naturaltime(datetime.datetime.utcnow() - todos[id-1]["time"])
+        todo = todos[id - 1]["todo"]
+        pro = humanize.naturaltime(datetime.datetime.utcnow() - todos[id - 1]["time"])
         embed = ctx.embed(title=f'Task `{id}`', description=todo)
-        embed.add_field(name='Info', value=f"This todo was created **{pro}**.\n[`Jump to the creation message`]({todos[id-1]['jump_url']})")
+        embed.add_field(name='Info',
+                        value=f"This todo was created **{pro}**.\n[`Jump to the creation message`]({todos[id - 1]['jump_url']})")
         await ctx.send(embed=embed)
 
     @todo.command(usage='<task ID 1> <task ID 2>')
@@ -437,8 +431,10 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         todos = await self.bot.db.fetch(sql, ctx.author.id)
         task1 = todos[t1 - 1]
         task2 = todos[t2 - 1]
-        await self.bot.db.execute("UPDATE todos SET sort_date = $1 WHERE user_id = $2 AND todo = $3", task2['sort_date'], ctx.author.id, task1['todo'])
-        await self.bot.db.execute("UPDATE todos SET sort_date = $1 WHERE user_id = $2 AND todo = $3", task1['sort_date'], ctx.author.id, task2['todo'])
+        await self.bot.db.execute("UPDATE todos SET sort_date = $1 WHERE user_id = $2 AND todo = $3",
+                                  task2['sort_date'], ctx.author.id, task1['todo'])
+        await self.bot.db.execute("UPDATE todos SET sort_date = $1 WHERE user_id = $2 AND todo = $3",
+                                  task1['sort_date'], ctx.author.id, task2['todo'])
         await ctx.send(embed=ctx.embed(description=f"Succesfully swapped places of todo `{t1}` and `{t2}`"))
 
     @todo.command()
@@ -453,18 +449,20 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         todos = await self.bot.db.fetch(sql, ctx.author.id)
         if id > len(todos):
             return await ctx.send(f"You only have {len(todos)} {ctx.plural('task(s)', len(todos))}")
-        await ctx.send(todos[id-1]['todo'], allowed_mentions=discord.AllowedMentions().none())
+        await ctx.send(todos[id - 1]['todo'], allowed_mentions=discord.AllowedMentions().none())
 
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.author.id in self.bot.afk.keys():
             del self.bot.afk[message.author.id]
-            return await message.channel.send(f"Welcome back, {message.author.mention}, I have removed your AFK status.")
+            return await message.channel.send(
+                f"Welcome back, {message.author.mention}, I have removed your AFK status.")
         for user_id, data in self.bot.afk.items():
             user = await self.bot.try_user(user_id)
             if user.mentioned_in(message):
                 ago = humanize.naturaltime(datetime.datetime.utcnow() - data["time"])
-                await message.channel.send(f"<:whenyahomiesaysomewildshit:596577153135673344> Hey, but {user.name} went AFK {ago} for `{data['reason']}`")
+                await message.channel.send(
+                    f"<:whenyahomiesaysomewildshit:596577153135673344> Hey, but {user.name} went AFK {ago} for `{data['reason']}`")
 
     @commands.command()
     async def afk(self, ctx, *, reason: str):
@@ -482,6 +480,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             cmds.append(f"\n{c:<30}{i}")
         pages = TodoPages(source=CommandSource(cmds))
         await pages.start(ctx)
+
 
 class CommandSource(menus.ListPageSource):
     def __init__(self, cmds):
