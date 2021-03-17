@@ -469,7 +469,7 @@ class CommandSource(menus.ListPageSource):
 
     async def format_page(self, menu, cmds):
         ctx = menu.ctx
-        yee = "\n".join(cmds)
+        yee = "".join(cmds)
         cur_page = f"Command Usage | Page {menu.current_page + 1}/{self.get_max_pages()}"
         return ctx.embed(
             title=cur_page,
