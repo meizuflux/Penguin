@@ -152,14 +152,15 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                     if '#' in l:
                         cm += 1
                     ls += 1
-        text = f"```yaml\n"
-        f"Files: {fc}\n"
-        f"Lines: {ls:,}\n"
-        f"Classes: {cl}\n"
-        f"Functions: {fn}\n"
-        f"Coroutines: {cr}\n"
-        f"Comments: {cm:,} ```"
-
+        text = (
+            f"```yaml\n"
+            f"Files: {fc}\n"
+            f"Lines: {ls:,}\n"
+            f"Classes: {cl}\n"
+            f"Functions: {fn}\n"
+            f"Coroutines: {cr}\n"
+            f"Comments: {cm:,} ```"
+        )
         await ctx.send(text)
 
     @commands.command(aliases=['information', 'botinfo'],
