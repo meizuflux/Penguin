@@ -455,11 +455,11 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         self.bot.afk[ctx.author.id] = {"reason": reason, "time": datetime.datetime.utcnow()}
         await ctx.send(f'OK, I have set your AFK status to `{reason}`')
 
-    @commands.command()
+    @commands.command(aliases=['cmdus'])
     async def command_usage(self, ctx):
         cmds = []
         for c, i in self.bot.command_usage.most_common():
-            cmds.append(f"\n{c:<27}{i}")
+            cmds.append(f"\n{c:<30}{i}")
         pages = TodoPages(source=CommandSource(cmds))
         await pages.start(ctx)
 
