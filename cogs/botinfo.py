@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from cogs.useful import TodoPages
+from cogs.useful import TodoPages, CommandSource
 
 
 class BotInfo(commands.Cog):
