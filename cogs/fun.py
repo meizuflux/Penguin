@@ -490,7 +490,7 @@ class Fun(commands.Cog):
         """Makes the specified text bigger."""
         if len(text) > 50: return await ctx.send("Less than 50 characters please!")
         output = ""
-        arrows = {"<": ":arrow_left:", ">": ":arrow_right:"}
+        special = {"<": ":arrow_left:", ">": ":arrow_right:", "!": ":exclamation:", "?": ":question:"}
         for char in text:
             char = char.lower()
             if char != ' ' and char in string.ascii_lowercase:
@@ -499,11 +499,7 @@ class Fun(commands.Cog):
                 output.append(f"  ")
             if char in string.digits:
                 output += f"{char}\N{combining enclosing keycap}"
-            if char == "!":
-                output += ":exclamation:"
-            if char == "?":
-                output += ":question:"
-            for arrow, emoji in arrows.items():
+            for arrow, emoji in special.items():
                 if arrow in char:
                     output += emoji
         if not output: output = "Output came out empty."
