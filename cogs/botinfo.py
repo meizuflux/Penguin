@@ -109,4 +109,4 @@ class BotInfo(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog()
+    bot.add_cog(BotInfo(bot))
