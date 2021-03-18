@@ -4,6 +4,7 @@ from cogs.useful import TodoPages, CommandSource
 import humanize
 import datetime
 import psutil
+import platform
 import pathlib
 
 
