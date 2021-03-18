@@ -91,6 +91,10 @@ class ChuckContext(commands.Context):
     @property
     def clean_prefix(self):
         return re.sub(f"<@!?{self.bot.user.id}>", f"@{self.bot.user.name}", self.prefix)
+    
+    def codeblock(text: str, lang=None):
+        """Method for enclosing text inside a codeblock."""
+        return f"```{lang}\n{text}```"
 
 
 class TodoSource(menus.ListPageSource):
