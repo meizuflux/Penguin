@@ -55,7 +55,7 @@ async def get_image_url(ctx, image):
         else:
             img = None
     if not img:
-        img = await ctx.author.avatar_url
+        img = ctx.author.avatar_url
     return img
 
 
