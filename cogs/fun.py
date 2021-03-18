@@ -489,21 +489,25 @@ class Fun(commands.Cog):
     async def bigtext(self, ctx, *, text):
         """Makes the specified text bigger."""
         if len(text) > 50: return await ctx.send("Less than 50 characters please!")
-        output = []
+        output = ""
+        arrows = {"<": ":arrow_left:", ">": ":arrow_right:"}
         for char in text:
             char = char.lower()
             if char != ' ' and char in string.ascii_lowercase:
-                output.append(f":regional_indicator_{char}:")
+                output += f":regional_indicator_{char}:"
             if char == ' ':
                 output.append(f"  ")
             if char in string.digits:
-                output.append(f"{char}\N{combining enclosing keycap}")
+                output += f"{char}\N{combining enclosing keycap}"
             if char == "!":
-                output.append(":exclamation:")
+                output += ":exclamation:"
             if char == "?":
-                output.append(":question:")
+                output += ":question:"
+            for arrow, emoji in arrows.items():
+                if arrow in char:
+                    output += emoji
         if not output: output = "Output came out empty."
-        await ctx.send("".join(output))
+        await ctx.send(output)
 
     @commands.command(aliases=['point'])
     async def pepepoint(self, ctx):
