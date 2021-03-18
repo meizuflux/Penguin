@@ -294,7 +294,7 @@ class Utilities(commands.Cog):
         lang = language.lower()
         text = code.strip('`')
         firstLine = text.splitlines()[0]
-        if re.fullmatch(r'( |[0-9A-z]*)\b', firstLine):
+        if re.fullmatch(r'( |[\w]*)\b', firstLine):
             _code = text[len(firstLine) + 1:]
         params = {
             "language": f"{lang}",
