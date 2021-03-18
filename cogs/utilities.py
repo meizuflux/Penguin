@@ -295,7 +295,7 @@ class Utilities(commands.Cog):
         code = code.strip('`')
         first_line = code.splitlines()[0]
         if re.fullmatch(r'( |[\w]*)\b', first_line):
-            code = code[len(firstLine) + 1:]
+            code = code[len(first_line) + 1:]
         params = {
             "language": f"{lang}",
             "source": "{}".format(code)
