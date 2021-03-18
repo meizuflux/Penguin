@@ -292,10 +292,10 @@ class Utilities(commands.Cog):
     @commands.command()
     async def run(self, ctx, language: str, *, code: str):
         lang = language.lower()
-        code = ''.join(code)
-        lines = code.split('\n')
-        escaped_code = "\n".join(line.strip("`") for line in lines)
-        _code = "".join(escaped_code.split("py", maxsplit=1))
+        text = code.strip('`')
+        firstLine = text.splitlines()[0]
+        if re.fullmatch(r'( |[0-9A-z]*)\b', firstLine):
+            _code = text[len(firstLine) + 1:]
         params = {
             "language": f"{lang}",
             "source": "{}".format(_code)
