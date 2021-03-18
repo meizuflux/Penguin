@@ -292,13 +292,13 @@ class Utilities(commands.Cog):
     @commands.command()
     async def run(self, ctx, language: str, *, code: str):
         lang = language.lower()
-        text = code.strip('`')
-        firstLine = text.splitlines()[0]
-        if re.fullmatch(r'( |[\w]*)\b', firstLine):
-            _code = text[len(firstLine) + 1:]
+        code = code.strip('`')
+        first_line = code.splitlines()[0]
+        if re.fullmatch(r'( |[\w]*)\b', first_line):
+            code = text[len(firstLine) + 1:]
         params = {
             "language": f"{lang}",
-            "source": "{}".format(_code)
+            "source": "{}".format(code)
         }
         async with self.bot.session.post("https://emkc.org/api/v1/piston/execute", json=params) as resp:
             res = await resp.json()
