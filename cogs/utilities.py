@@ -289,14 +289,13 @@ class Utilities(commands.Cog):
                 short = await f.text()
                 await ctx.send(embed=ctx.embed(description=f"<{short.strip()}> now redirects to <{url}>"))
 
-    @commands.command()
+    @commands.command(aliases=['execute'])
     async def run(self, ctx, language: str, *, code: str):
         """Runs code in a language. 
         You can use codeblocks, or you can just use plain-text.
+
         Available languages:
-        awk, bash, brainfuck, c, cpp, clojure, crystal, csharp, d, dash, deno, elixir, emacs, 
-        elisp, go, haskell, java, jelly, julia, kotlin, lisp, lolcode, lua, nasm, nasm64, nim, 
-        node, osabie, paradoc, perl, php, python2, python3, ruby, rust, scala, swift, typescript, and zig."""
+        awk, bash, brainfuck, c, cpp, clojure, crystal, csharp, d, dash, deno, elixir, emacs, elisp, go, haskell, java, jelly, julia, kotlin, lisp, lolcode, lua, nasm, nasm64, nim, node, osabie, paradoc, perl, php, python2, python3, ruby, rust, scala, swift, typescript, and zig."""
         lang = language.lower()
         code = code.strip('`')
         first_line = code.splitlines()[0]
