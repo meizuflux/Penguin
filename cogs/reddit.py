@@ -12,7 +12,10 @@ class Reddit(commands.Cog):
             res = await resp.json()
         data = res['data']['children'][random.randint(min, 26)]['data']
         embed = ctx.embed(title=data['title'], url=f"https://reddit.com{data['permalink']}")
-        embed.set_image(url=data['url_overridden_by_dest'])
+        url = data['url_overridden_by_dest']
+        if data['url'].startswith('https://imgur.com/'):
+            url = data['url']
+        embed.set_image(url=url)
         await ctx.send(embed=embed)
 
     @commands.command()

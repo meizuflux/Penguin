@@ -175,6 +175,7 @@ bot.loop.create_task(bot.create_cache())
 os.environ['JISHAKU_NO_UNDERSCORE'] = 'True'
 os.environ['JISHAKU_NO_DM_TRACEBACK'] = 'True'
 os.environ['JISHAKU_HIDE'] = 'True'
+os.environ["NO_COLOR"] = 'True'
 
 
 bot.loop.set_debug(True)
