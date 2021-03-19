@@ -2,11 +2,13 @@ import traceback
 
 import discord
 
+
 def traceback_maker(err, advance: bool = True):
     """A way to debug your code anywhere"""
     _traceback = ''.join(traceback.format_tb(err.__traceback__))
     error = '```py\n{1}{0}: {2}\n```'.format(type(err).__name__, _traceback, err)
     return error if advance else f"{type(err).__name__}: {err}"
+
 
 async def qembed(ctx, text):
     bot = ctx.bot
@@ -14,7 +16,8 @@ async def qembed(ctx, text):
         text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
     await ctx.send(embed=embed)
 
-#https://github.com/InterStella0/stella_bot/blob/master/utils/useful.py#L199-L205
+
+# https://github.com/InterStella0/stella_bot/blob/master/utils/useful.py#L199-L205
 def plural(text, size):
     logic = size == 1
     target = (("(s)", ("s", "")), ("(is/are)", ("are", "is")))

@@ -1,15 +1,16 @@
 """The actual bot that you run"""
-import aiohttp
-import alexflipnote
-import asyncpg
 import collections
-import config
 import datetime
-import discord
 import json
 import os
 import re
 import time
+
+import aiohttp
+import alexflipnote
+import asyncpg
+import config
+import discord
 from discord.ext import commands
 
 from cogs.useful import ChuckContext
@@ -32,7 +33,7 @@ class Chuck(commands.Bot):
         self._BotBase__cogs = commands.core._CaseInsensitiveDict()
         self.author_id = 809587169520910346
         self.session = aiohttp.ClientSession()
-        self.embed_color = 0x89CFF0# discord.Color.green()  # 0x9c5cb4
+        self.embed_color = 0x89CFF0  # discord.Color.green()  # 0x9c5cb4
         self.prefixes = collections.defaultdict(list)
         self.command_list = []
         self.deleted_messages = collections.defaultdict(list)
@@ -63,7 +64,8 @@ class Chuck(commands.Bot):
             return commands.when_mentioned_or(*self.prefixes[message.guild.id])(self, message)
 
         if not self.prefixes[message.guild.id]:
-            await self.db.execute("INSERT INTO prefixes(guild_id,prefix) VALUES($1,$2)", message.guild.id, self.default_prefix)
+            await self.db.execute("INSERT INTO prefixes(guild_id,prefix) VALUES($1,$2)", message.guild.id,
+                                  self.default_prefix)
             self.prefixes[message.guild.id].append(self.default_prefix)
 
             return commands.when_mentioned_or(*self.prefixes[message.guild.id])(self, message)
@@ -75,7 +77,7 @@ class Chuck(commands.Bot):
         if not user:
             user = await self.fetch_user(user_id)
         return user
-        
+
     def starter(self):
         """Runs the bot."""
         try:
@@ -107,7 +109,8 @@ class Chuck(commands.Bot):
     async def create_cache(self):
         await self.wait_until_ready()
         for guild in self.guilds:
-            await self.db.execute("INSERT INTO guilds (guild_id) VALUES ($1) ON CONFLICT (guild_id) DO NOTHING", guild.id)
+            await self.db.execute("INSERT INTO guilds (guild_id) VALUES ($1) ON CONFLICT (guild_id) DO NOTHING",
+                                  guild.id)
         guilds = await self.db.fetch("SELECT * FROM prefixes")
         for guild in guilds:
             self.prefixes[guild['guild_id']].append(guild['prefix'])
@@ -157,9 +160,11 @@ class Chuck(commands.Bot):
             if self.prefixes[message.guild.id]:
                 server_prefix = bot.prefixes[message.guild.id]
             else:
-                await self.db.execute("INSERT INTO prefixes(guild_id,prefix) VALUES($1,$2)", message.guild.id, self.default_prefix)
+                await self.db.execute("INSERT INTO prefixes(guild_id,prefix) VALUES($1,$2)", message.guild.id,
+                                      self.default_prefix)
                 server_prefix = self.default_prefix
-            await message.channel.send("My prefixes on `{}` are `{}`".format(message.guild.name, ", ".join(server_prefix)))
+            await message.channel.send(
+                "My prefixes on `{}` are `{}`".format(message.guild.name, ", ".join(server_prefix)))
         await self.process_commands(message)
 
     async def on_message_edit(self, before, after):
@@ -177,8 +182,8 @@ os.environ['JISHAKU_NO_DM_TRACEBACK'] = 'True'
 os.environ['JISHAKU_HIDE'] = 'True'
 os.environ["NO_COLOR"] = 'True'
 
-
 bot.loop.set_debug(True)
+
 
 @bot.event
 async def on_ready():

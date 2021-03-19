@@ -1,16 +1,14 @@
-import aiohttp
 import asyncio
 import datetime
-import discord
-import humanize
 import json
-import pathlib
-import platform
-import psutil
 import random
 import re
 import time
 from collections import Counter
+
+import aiohttp
+import discord
+import humanize
 from discord.ext import commands, menus
 
 from utils.default import qembed
@@ -91,7 +89,7 @@ class ChuckContext(commands.Context):
     @property
     def clean_prefix(self):
         return re.sub(f"<@!?{self.bot.user.id}>", f"@{self.bot.user.name}", self.prefix)
-    
+
     def codeblock(text: str, lang=None):
         """Method for enclosing text inside a codeblock."""
         return f"```{lang}\n{text}```"

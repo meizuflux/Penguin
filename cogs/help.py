@@ -1,4 +1,5 @@
 import difflib
+
 import discord
 from discord.ext import commands, menus
 
@@ -182,7 +183,9 @@ class PaginatedHelp(commands.MinimalHelpCommand):
             embed.add_field(name="Aliases", value=f"```{', '.join(alias)}```", inline=False)
         if isinstance(command, commands.Group):
             subcommand = command.commands
-            value = "\n".join(f'{self.get_command_signature(c)} \N{EN DASH} {c.short_doc if c.short_doc else "This command is not documented"}' for c in subcommand)
+            value = "\n".join(
+                f'{self.get_command_signature(c)} \N{EN DASH} {c.short_doc if c.short_doc else "This command is not documented"}'
+                for c in subcommand)
             if len(value) > 1024:
                 value = "\n".join(f'{self.get_command_signature(c)}' for c in subcommand)
             embed.add_field(name=plural("Subcommand(s)", len(subcommand)), value=value)

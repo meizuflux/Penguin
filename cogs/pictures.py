@@ -1,8 +1,10 @@
-from discord.ext import commands
 import random
+
+from discord.ext import commands
 
 WAIFU_URL = 'https://waifu.pics/api/sfw/'
 PURRBOT_URL = "https://purrbot.site/api"
+
 
 class Pictures(commands.Cog):
     def __init__(self, bot):

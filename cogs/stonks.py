@@ -2,13 +2,12 @@ import math
 
 import discord
 import humanize
-from discord.ext import commands, tasks
-#from prettytable import PrettyTable
+# from prettytable import PrettyTable
 import tabulate
-
-from utils.default import plural
+from discord.ext import commands, tasks
 
 from cogs.economy import get_stats
+from utils.default import plural
 
 FINNHUB_URL = "https://finnhub.io/api/v1/"
 
@@ -18,6 +17,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
     Buy and sell stocks. Prices are directly related to real life prices.
     This works with the Economy commands.
     """
+
     def __init__(self, bot):
         """Creates the cog."""
         self.bot = bot
@@ -27,17 +27,17 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
     @tasks.loop(hours=12)
     async def del_none(self):
         await self.bot.db.execute('DELETE FROM stocks WHERE amount = 0')
-        
+
     @commands.command()
-    async def dividend(self, ctx, dividend:float, stock_price:float, amount:int):
+    async def dividend(self, ctx, dividend: float, stock_price: float, amount: int):
         """
         dividend can be find by searching it on google on the information card find `Div yield` you can enter it like 5.79 for 5.79%
         Stock price is just the stock price
         Amount is the amount of stocks you own
         """
-        total_price = stock_price*amount
-        real_dividend = dividend/100
-        price = total_price*real_dividend
+        total_price = stock_price * amount
+        real_dividend = dividend / 100
+        price = total_price * real_dividend
         return await ctx.send(price)
 
     @commands.command()
@@ -173,7 +173,8 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         stuff = await self.bot.db.fetch("SELECT ticker, amount FROM stocks WHERE user_id = $1", user.id)
         if len(stuff) == 0:
             return await ctx.send(f'{user.mention} has no stocks', allowed_mentions=discord.AllowedMentions().none())
-        table = tabulate.tabulate((dict(thing) for thing in stuff if thing["amount"] != 0), headers="keys", tablefmt="github")
+        table = tabulate.tabulate((dict(thing) for thing in stuff if thing["amount"] != 0), headers="keys",
+                                  tablefmt="github")
         embed = ctx.embed(title=f"{user}\'s stocks:", description=f'```py\n{table}```')
         await ctx.send(embed=embed)
 

@@ -1,12 +1,16 @@
+import typing
+
 import discord
 from discord.ext import commands
+
 from cogs.polaroid_manipulation import get_image_url
-import typing
 
 NEKOBOT_URL = 'https://nekobot.xyz/api'
 
+
 class Images(commands.Cog):
     """Some fun image commands."""
+
     def __init__(self, bot):
         self.bot = bot
 
@@ -25,12 +29,14 @@ class Images(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
-    async def amiajoke(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
+    async def amiajoke(self, ctx, *,
+                       image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         """Creates a "Am I a joke?" meme."""
         await self.do_alex_image(ctx, method="amiajoke", args=[await get_image_url(ctx, image)])
 
     @commands.command()
-    async def animeface(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
+    async def animeface(self, ctx, *,
+                        image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         """Detects the anime faces in an image.
         Best to provide one, avatars don't really work great."""
         await self.do_neko_image(ctx, endpoint="/imagegen?type=animeface&image=%s" % await get_image_url(ctx, image))
@@ -41,7 +47,8 @@ class Images(commands.Cog):
         await self.do_neko_image(ctx, endpoint="/imagegen?type=trumptweet&text=%s" % text)
 
     @commands.command()
-    async def baguette(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
+    async def baguette(self, ctx, *,
+                       image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         """Generates a tweet from the one and only."""
         await self.do_neko_image(ctx, endpoint="/imagegen?type=baguette&url=%s" % await get_image_url(ctx, image))
 

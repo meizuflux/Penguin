@@ -1,14 +1,14 @@
 import datetime
+import io
 import json
 import re
-import string
 import secrets
+import string
 
 import discord
 import humanize
 import numpy as np
-import io
-from discord.ext import commands, tasks, flags
+from discord.ext import commands, flags, tasks
 from jishaku.functools import executor_function
 from jishaku.paginators import PaginatorInterface, WrappedPaginator
 
@@ -92,8 +92,6 @@ class Utilities(commands.Cog):
             if e.is_usable():
                 emoji.append(str(e))
         await message.channel.send(" ".join(emoji))
-
-
 
     @commands.command(help='Sends a list of the emojis that the bot can see.')
     async def emojis(self, ctx, search=None):
@@ -285,7 +283,7 @@ class Utilities(commands.Cog):
         if not match:
             raise commands.BadArgument('Invalid URL provided.')
         if match:
-            async with self.bot.session.get('https://clck.ru/--?url='+match[0]) as f:
+            async with self.bot.session.get('https://clck.ru/--?url=' + match[0]) as f:
                 short = await f.text()
                 await ctx.send(embed=ctx.embed(description=f"<{short.strip()}> now redirects to <{url}>"))
 

@@ -1,5 +1,6 @@
 from discord.ext import commands
 
+
 class Facts(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -64,6 +65,7 @@ class Facts(commands.Cog):
     async def whale_fact(self, ctx):
         """Sends a whale fact."""
         await self.animal_fact(ctx, "whale")
+
 
 def setup(bot):
     bot.add_cog(Facts(bot))
