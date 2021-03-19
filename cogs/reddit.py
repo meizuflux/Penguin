@@ -26,22 +26,22 @@ class Reddit(commands.Cog):
     @commands.command()
     async def me_irl(self, ctx):
         """Sends a random post from the subreddit "me_irl"."""
-        await self.create_message(ctx, 'me_irl', min=2)
+        await self.create_message(ctx, 'me_irl', minimum=2)
 
     @commands.command()
     async def dankmeme(self, ctx):
         """Sends a dank meme. 😎"""
-        await self.create_message(ctx, 'dankmemes', min=1)
+        await self.create_message(ctx, 'dankmemes')
 
     @commands.command()
     async def meme(self, ctx):
         """Sends a meme. Worse version of dankmeme"""
-        await self.create_message(ctx, 'memes', min=1)
+        await self.create_message(ctx, 'memes')
 
     @commands.command()
     async def programming(self, ctx):
         """Sends a meme. Worse version of dankmeme"""
-        await self.create_message(ctx, 'programmerhumor', min=1)
+        await self.create_message(ctx, 'programmerhumor')
 
 
 def setup(bot):
