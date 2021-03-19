@@ -291,6 +291,7 @@ class Utilities(commands.Cog):
     async def run(self, ctx, language: str, *, code: str):
         """Runs code in a language.
         You can use codeblocks, or you can just use plain-text.
+        Don't try to do something stupid, it won't work.
 
         Available languages:
         awk, bash, brainfuck, c, cpp, clojure, crystal, csharp, d, dash, deno, elixir, emacs, elisp, go, haskell, java, jelly, julia, kotlin, lisp, lolcode, lua, nasm, nasm64, nim, node, osabie, paradoc, perl, php, python2, python3, ruby, rust, scala, swift, typescript, and zig."""
