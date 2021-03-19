@@ -540,7 +540,7 @@ class Fun(commands.Cog):
         await ctx.send(file=f, embed=e)
 
     @commands.command()
-    async def dutchy(self, ctx):
+    async def dutch(self, ctx):
         await message.send('uwu')
 
 def setup(bot):
