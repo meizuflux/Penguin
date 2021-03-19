@@ -497,7 +497,7 @@ class Fun(commands.Cog):
             if char != ' ' and char in string.ascii_lowercase:
                 output += f":regional_indicator_{char}:"
             if char == ' ':
-                output.append(f"  ")
+                output += "  "
             if char in string.digits:
                 output += f"{char}\N{combining enclosing keycap}"
             for arrow, emoji in special.items():
