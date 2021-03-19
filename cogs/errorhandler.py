@@ -16,7 +16,7 @@ class CommandErrorHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        rerror = error
+        pretty_traceback = prettify_exceptions.DefaultFormatter().format_exception(type(error), error, error.__traceback__)
         command = ctx.invoked_with
 
         # This prevents any commands with local handlers being handled here in on_command_error.
@@ -103,7 +103,6 @@ class CommandErrorHandler(commands.Cog):
 
         log_channel = await self.bot.fetch_channel(817433615473311744)
         webhook = await log_channel.webhooks()
-        pretty_traceback = ''.join(prettify_exceptions.DefaultFormatter().format_exception(type(rerror), rerror, rerror.__traceback__))
         msg = (
             f"Command: {ctx.invoked_with}\n"
             f"Full content: {ctx.escape(ctx.message.content)}\n"
