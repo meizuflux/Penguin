@@ -7,10 +7,10 @@ class Reddit(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def create_message(self, ctx, subreddit: str, min: int = 1):
+    async def create_message(self, ctx, subreddit: str, minimum: int = 1):
         async with self.bot.session.get(f'https://reddit.com/r/{subreddit}.json') as resp:
             res = await resp.json()
-        data = res['data']['children'][random.randint(min, 26)]['data']
+        data = res['data']['children'][random.randint(minimum, 26)]['data']
         embed = ctx.embed(title=data['title'], url=f"https://reddit.com{data['permalink']}")
         url = data['url_overridden_by_dest']
         if data['url'].startswith('https://imgur.com/'):

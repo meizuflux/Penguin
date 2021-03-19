@@ -192,8 +192,8 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                         inline=False)
         await ctx.send(embed=embed)
 
-    def get_item(self, dict, cat):
-        return round(float(dict[cat]['summaryScore']['value']) * 100)
+    def get_item(self, items, cat):
+        return round(float(items[cat]['summaryScore']['value']) * 100)
 
     @commands.command(help='Checks if your message is toxic or not.')
     async def toxic(self, ctx, *, text):
@@ -213,9 +213,9 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         await ctx.send(f"`{text}` is `{level:.2f}%` likely to be toxic.")
         items = {'TOXICITY', 'SEVERE_TOXICITY', 'SPAM', 'UNSUBSTANTIAL', 'OBSCENE', 'INFLAMMATORY', 'INCOHERENT'}
         embed = ctx.embed()
-        for type in items:
-            percentage = self.get_item(data, type)
-            embed.add_field(name=type.capitalize(), value=f"`{percentage}%` likely to be {type.capitalize()}")
+        for item in items:
+            percentage = self.get_item(data, item)
+            embed.add_field(name=item.capitalize(), value=f"`{percentage}%` likely to be {item.capitalize()}")
         await ctx.send(embed=embed)
 
     @commands.command(help='Builds an embed from a dict. You can use https://eb.nadeko.bot/ to get one',
@@ -309,7 +309,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         await ctx.send(embed=embed)
 
     @todo.command(name='info')
-    async def todo_info(self, ctx, id: int):
+    async def todo_info(self, ctx, task_id: int):
         """
         View info about a certain task.
         You can see the exact time the task was created.
@@ -322,9 +322,9 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         todos = await self.bot.db.fetch(sql, ctx.author.id)
         todo = todos[id - 1]["todo"]
         pro = humanize.naturaltime(datetime.datetime.utcnow() - todos[id - 1]["time"])
-        embed = ctx.embed(title=f'Task `{id}`', description=todo)
+        embed = ctx.embed(title=f'Task `{task_id}`', description=todo)
         embed.add_field(name='Info',
-                        value=f"This todo was created **{pro}**.\n[`Jump to the creation message`]({todos[id - 1]['jump_url']})")
+                        value=f"This todo was created **{pro}**.\n[`Jump to the creation message`]({todos[task_id - 1]['jump_url']})")
         await ctx.send(embed=embed)
 
     @todo.command(usage='<task ID 1> <task ID 2>')
@@ -345,8 +345,8 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         await ctx.send(embed=ctx.embed(description=f"Succesfully swapped places of todo `{t1}` and `{t2}`"))
 
     @todo.command()
-    async def raw(self, ctx, id: int):
-        """View the raw todo for a task."""
+    async def raw(self, ctx, task_id: int):
+        """View the raw info for a task."""
         sql = (
             "SELECT DISTINCT todo, sort_date, "
             "ROW_NUMBER () OVER (ORDER BY sort_date) FROM todos "
@@ -356,7 +356,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         todos = await self.bot.db.fetch(sql, ctx.author.id)
         if id > len(todos):
             return await ctx.send(f"You only have {len(todos)} {ctx.plural('task(s)', len(todos))}")
-        await ctx.send(todos[id - 1]['todo'], allowed_mentions=discord.AllowedMentions().none())
+        await ctx.send(todos[task_id - 1]['todo'], allowed_mentions=discord.AllowedMentions().none())
 
     @commands.Cog.listener()
     async def on_message(self, message):

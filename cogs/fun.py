@@ -519,7 +519,7 @@ class Fun(commands.Cog):
     @commands.command()
     async def whyarentyoucoding(self, ctx):
         """Grabs the latest "Why aren't you coding?" comic.
-        New comic every weekday according to their site. 
+        New comic every weekday according to their site.
         Give them some love at https://whyarentyoucoding.com"""
         url = 'https://whyarentyoucoding.com'
         async with self.bot.session.get(url) as f:
