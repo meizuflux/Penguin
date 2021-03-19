@@ -539,6 +539,9 @@ class Fun(commands.Cog):
         e = ctx.embed().set_image(url=f"attachment://{r}")
         await ctx.send(file=f, embed=e)
 
+    @commands.command()
+    async def dutchy(self, ctx):
+        await message.send('uwu')
 
 def setup(bot):
     bot.add_cog(Fun(bot))
