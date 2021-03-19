@@ -123,6 +123,11 @@ class CommandErrorHandler(commands.Cog):
                        f"```py\n{error}\n```")
 
 
+    @commands.command()
+    async def dutchy(self):
+        await message.send('uwu')
+
+
 
 def setup(bot):
     bot.add_cog(CommandErrorHandler(bot))
