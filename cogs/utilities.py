@@ -289,7 +289,7 @@ class Utilities(commands.Cog):
 
     @commands.command(aliases=['execute'])
     async def run(self, ctx, language: str, *, code: str):
-        """Runs code in a language. 
+        """Runs code in a language.
         You can use codeblocks, or you can just use plain-text.
 
         Available languages:
