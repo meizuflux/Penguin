@@ -1,6 +1,5 @@
 from discord.ext import commands
 
-from utils.default import plural
 from utils.permissions import mng_gld
 
 
@@ -79,7 +78,7 @@ class Prefixes(commands.Cog):
     async def all(self, ctx):
         """View the prefixes on this server."""
         prefixes = '"\n"'.join(self.bot.prefixes[ctx.guild.id])
-        embed = ctx.embed(title=f"{plural('Prefix(s)', len(self.bot.prefixes[ctx.guild.id]))} on {ctx.guild.name}",
+        embed = ctx.embed(title=f"{ctx.plural('Prefix(s)', len(self.bot.prefixes[ctx.guild.id]))} on {ctx.guild.name}",
                           description=f'```yaml\n"{prefixes}"```')
         await ctx.send(embed=embed)
 

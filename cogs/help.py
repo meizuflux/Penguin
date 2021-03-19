@@ -3,7 +3,7 @@ import difflib
 import discord
 from discord.ext import commands, menus
 
-from utils.default import plural, qembed
+from utils.default import qembed
 
 
 def get_sig(ctx, command):
@@ -188,7 +188,7 @@ class PaginatedHelp(commands.MinimalHelpCommand):
                 for c in subcommand)
             if len(value) > 1024:
                 value = "\n".join(f'{self.get_command_signature(c)}' for c in subcommand)
-            embed.add_field(name=plural("Subcommand(s)", len(subcommand)), value=value)
+            embed.add_field(name=ctx.plural("Subcommand(s)", len(subcommand)), value=value)
 
         return embed
 
