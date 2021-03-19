@@ -62,7 +62,6 @@ class BotInfo(commands.Cog):
                         cr += 1
                     if '#' in l:
                         cm += 1
-                    ls += 1
         text = (
             f"```yaml\n"
             f"Files: {fc}\n"
