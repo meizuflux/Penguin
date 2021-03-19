@@ -49,7 +49,9 @@ class BotInfo(commands.Cog):
                 continue
             fc += 1
             with f.open() as of:
-                for l in of.readlines():
+                lines = of.readlines()
+                ls += len(lines)
+                for l in lines:
                     l = l.strip()
                     ch += len(l)
                     if l.startswith('class'):
