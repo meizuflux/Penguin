@@ -124,7 +124,7 @@ class CommandErrorHandler(commands.Cog):
 
 
     @commands.command()
-    async def dutchy(self):
+    async def dutchy(self, ctx):
         await message.send('uwu')
 
 
