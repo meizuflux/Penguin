@@ -7,7 +7,6 @@ import tabulate
 from discord.ext import commands, tasks
 
 from cogs.economy import get_stats
-from utils.default import plural
 
 FINNHUB_URL = "https://finnhub.io/api/v1/"
 
@@ -72,7 +71,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         total: int = amount * price
         humanized_total: str = humanize.intcomma(total)
 
-        share: str = plural("share(s)", amount)
+        share: str = ctx.plural("share(s)", amount)
 
         if total > wallet:
             return await ctx.send(f'You need **${humanize.intcomma(total - wallet)}** more in order to purchase'
@@ -119,7 +118,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
 
         try:
             if amount != 'max' and int(amount) > check:
-                return await ctx.send(f"You only have {check} {plural('share(s)', check)} of {ticker}")
+                return await ctx.send(f"You only have {check} {ctx.plural('share(s)', check)} of {ticker}")
         except ValueError:
             return await ctx.send("Invalid amount provided.")
 
@@ -141,7 +140,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         humanized_price: str = humanize.intcomma(price)
         humanized_total: str = humanize.intcomma(total)
 
-        share: str = plural("share(s)", amount)
+        share: str = ctx.plural("share(s)", amount)
         answer, message = await ctx.confirm(
             f'Confirm to sell **{amount}** {share} of **{ticker}** at **${humanized_price}**'
             f' per share for a total of **${humanized_total}**.'
