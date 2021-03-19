@@ -111,12 +111,12 @@ class CommandErrorHandler(commands.Cog):
             f"User: {ctx.author.name} ({ctx.author.id})\n"
             f"Jump URL: {ctx.message.jump_url}"
         )
-        embed = ctx.embed(title='AN ERROR OCCURED', url=await ctx.mystbin(pretty_traceback), description=f"```yaml\n{msg}```")
+        embed = ctx.embed(title='AN ERROR OCCURED', url=await ctx.mystbin(pretty_traceback) + '.py', description=f"```yaml\n{msg}```")
         await webhook[0].send(f"```py\n{''.join(formatted)}```", embed=embed)
 
         error = "".join(formatted)
         if len(error) > 1700:
-            error = await ctx.mystbin(str(error)) + ".python"
+            error = await ctx.mystbin(str(error)) + ".py"
 
         await ctx.send(f"Something has gone wrong while executing `{command}`. You should not be seeing this, I have contacted my developer with information about this error.\n"
                        f"```py\n{error}\n```")
