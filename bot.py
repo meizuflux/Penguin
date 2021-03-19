@@ -177,6 +177,8 @@ os.environ['JISHAKU_NO_DM_TRACEBACK'] = 'True'
 os.environ['JISHAKU_HIDE'] = 'True'
 
 
+bot.loop.set_debug(True)
+
 @bot.event
 async def on_ready():
     """Lets you know that the bot has run."""
