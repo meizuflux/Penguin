@@ -1,6 +1,7 @@
 import re
 import sys
 import traceback
+import prettify_exceptions
 
 import discord
 import humanize
@@ -102,6 +103,7 @@ class CommandErrorHandler(commands.Cog):
 
         log_channel = await self.bot.fetch_channel(817433615473311744)
         webhook = await log_channel.webhooks()
+        pretty_traceback = ''.join(prettify_exceptions.DefaultFormatter().format_exception(type(error), error, error.__traceback__))
         msg = (
             f"Command: {ctx.invoked_with}\n"
             f"Full content: {ctx.escape(ctx.message.content)}\n"
@@ -110,7 +112,7 @@ class CommandErrorHandler(commands.Cog):
             f"User: {ctx.author.name} ({ctx.author.id})\n"
             f"Jump URL: {ctx.message.jump_url}"
         )
-        embed = ctx.embed(title='AN ERROR OCCURED', description=f"```yaml\n{msg}```")
+        embed = ctx.embed(title='AN ERROR OCCURED', url=await ctx.mystbin(pretty_traceback), description=f"```yaml\n{msg}```")
         await webhook[0].send(f"```py\n{''.join(formatted)}```", embed=embed)
 
         error = "".join(formatted)
