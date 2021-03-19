@@ -309,9 +309,10 @@ class Utilities(commands.Cog):
             res = await resp.json()
             if resp.status == 400:
                 return await ctx.send(embed=ctx.embed(title='Error:', description=res['message']))
-        if len(res['output']) > 2000:
-            return await ctx.send(f'Output was too long so I put it here => {await ctx.mystbin(res["output"])}')
-        await ctx.send(f"```\n{res['output'].strip()}```")
+        result = res['output'].strip()
+        if len(result) > 2000 or len(result.split("\n")) > 15:
+            return await ctx.send(f'Output was too long so I put it here => {await ctx.mystbin(result)}')
+        await ctx.send(f"```\n{result}```")
 
 
 def setup(bot):
