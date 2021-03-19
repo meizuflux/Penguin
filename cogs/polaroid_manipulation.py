@@ -1,13 +1,14 @@
+import re
 import typing
 from io import BytesIO
 
 import discord
 import polaroid
-import re
 from discord.ext import commands
 from jishaku.functools import executor_function
 
 from utils.default import qembed
+
 
 async def get_image_object(ctx, image):
     if ctx.message.attachments:
@@ -34,6 +35,7 @@ async def get_image_object(ctx, image):
     if not img:
         img = await ctx.author.avatar_url_as(format="png").read()
     return img
+
 
 async def get_image_url(ctx, image):
     if ctx.message.attachments:
@@ -90,7 +92,8 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         await ctx.send(embed=embed, file=file)
 
     @commands.command(help='Makes an image rainbowey')
-    async def rainbow(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
+    async def rainbow(self, ctx, *,
+                      image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         await self.send_polaroid(ctx, image, method='apply_gradient')
 
     @commands.command(help='like putin')
@@ -106,7 +109,8 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         await self.send_polaroid(ctx, image, method='fliph')
 
     @commands.command(aliases=['colourize'], help='Colorizes an image.')
-    async def colorize(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
+    async def colorize(self, ctx, *,
+                       image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         await self.send_polaroid(ctx, image, method='colorize')
 
     @commands.command(help='Blurs an image? Duh')
@@ -122,27 +126,33 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         await self.send_polaroid(ctx, image, method='sobel_vertical')
 
     @commands.command(help='Decomposes the image')
-    async def decompose(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
+    async def decompose(self, ctx, *,
+                        image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         await self.send_polaroid(ctx, image, method='decompose_max')
 
     @commands.command(help='Turns an image black and white')
-    async def grayscale(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
+    async def grayscale(self, ctx, *,
+                        image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         await self.send_polaroid(ctx, image, method='grayscale')
 
     @commands.command(help='Solarizes an image')
-    async def solarize(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
+    async def solarize(self, ctx, *,
+                       image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         await self.send_polaroid(ctx, image, method='solarize')
 
     @commands.command(help='Rotates an image sideways')
-    async def sideways(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
+    async def sideways(self, ctx, *,
+                       image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         await self.send_polaroid(ctx, image, method='rotate90')
 
     @commands.command(help='Rotates an image upsidedown')
-    async def upsidedown(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
+    async def upsidedown(self, ctx, *,
+                         image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         await self.send_polaroid(ctx, image, method='rotate180')
 
     @commands.command(help='Makes an image monochrome.')
-    async def monochrome(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
+    async def monochrome(self, ctx, *,
+                         image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         await self.send_polaroid(ctx, image, method='monochrome')
 
     @commands.command(help='Applies an emboss effect to an image.')
@@ -152,7 +162,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(help='Applies an edges effect to an image.')
     async def edges(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         await self.send_polaroid(ctx, image, method='edge_detection')
-        
+
     @commands.command(help='Applies an oil effect to an image.')
     async def oil(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         await self.send_polaroid(ctx, image, method='oil', args=[4, 55])
@@ -194,11 +204,13 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         await self.send_polaroid(ctx, image, method='filter', args=["liquid"])
 
     @filter.command(help='Applies a dramatic filter to the image.')
-    async def dramatic(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
+    async def dramatic(self, ctx, *,
+                       image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         await self.send_polaroid(ctx, image, method='filter', args=["dramatic"])
 
     @filter.command(help='Applies a firenze filter to the image.')
-    async def firenze(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
+    async def firenze(self, ctx, *,
+                      image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         await self.send_polaroid(ctx, image, method='filter', args=["firenze"])
 
     @filter.command(help='Applies a golden filter to the image.')
@@ -214,7 +226,8 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         await self.send_polaroid(ctx, image, method='filter', args=["neue"])
 
     @filter.command(help='Applies an obsidian filter to the image.')
-    async def obsidian(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
+    async def obsidian(self, ctx, *,
+                       image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         await self.send_polaroid(ctx, image, method='filter', args=["obsidian"])
 
     @filter.command(help='Applies a ryo filter to the image.')

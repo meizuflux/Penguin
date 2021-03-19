@@ -3,16 +3,18 @@
 import asyncio
 import inspect
 import os
-import tabulate
 
 import aiohttp
 import asyncpg
 import discord
-from discord.ext import commands, flags
+import tabulate
+from discord.ext import commands
 from jishaku.paginators import PaginatorInterface, WrappedPaginator
-#from prettytable import PrettyTable
 
 from utils.default import qembed, traceback_maker
+
+
+# from prettytable import PrettyTable
 
 
 class Owner(commands.Cog, command_attrs=dict(hidden=True)):
@@ -34,8 +36,8 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         if len(response) == 0:
             return await ctx.message.add_reaction('✅')
         table = tabulate.tabulate((dict(item) for item in response),
-                                headers="keys",
-                                tablefmt="github")
+                                  headers="keys",
+                                  tablefmt="github")
         if len(table) > 2000: table = await ctx.mystbin(table)
         await ctx.send(embed=ctx.embed(description=f'```py\n{table}```'))
 

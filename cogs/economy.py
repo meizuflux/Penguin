@@ -8,6 +8,7 @@ from discord.ext import commands
 
 from utils.default import qembed
 
+
 async def get_stats(ctx, user_id: int):
     try:
         data = dict(await ctx.bot.db.fetchrow('SELECT wallet, bank FROM economy WHERE user_id = $1', user_id))
@@ -23,6 +24,7 @@ async def get_stats(ctx, user_id: int):
 
 class Economy(commands.Cog, command_attrs=dict(hidden=False)):
     """Earn some money. This ties in directly to the stock category."""
+
     def __init__(self, bot):
         """Creates the bot."""
         self.bot = bot

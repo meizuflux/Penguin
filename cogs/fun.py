@@ -1,7 +1,5 @@
 import asyncio
-import asyncio
 import base64
-import discord
 import json
 import os
 import random
@@ -9,13 +7,14 @@ import re
 import string
 import textwrap
 import time
-import timeit
 import typing
+from io import BytesIO
+
+import discord
 from PIL import Image, ImageDraw, ImageFont
 from bs4 import BeautifulSoup
 from discord.ext import commands, flags
 from discord.ext.commands.cooldowns import BucketType
-from io import BytesIO
 from jishaku.functools import executor_function
 
 from cogs.polaroid_manipulation import get_image_url
@@ -547,6 +546,7 @@ class Fun(commands.Cog):
         f = discord.File(path + "/" + r, filename=r)
         e = ctx.embed().set_image(url=f"attachment://{r}")
         await ctx.send(file=f, embed=e)
+
 
 def setup(bot):
     bot.add_cog(Fun(bot))

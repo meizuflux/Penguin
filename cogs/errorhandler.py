@@ -1,10 +1,10 @@
 import re
 import sys
 import traceback
-import prettify_exceptions
 
 import discord
 import humanize
+import prettify_exceptions
 from discord.ext import commands
 
 from utils.fuzzy import finder
