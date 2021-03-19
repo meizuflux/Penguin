@@ -540,6 +540,15 @@ class Fun(commands.Cog):
         await ctx.send(file=f, embed=e)
 
     @commands.command()
+    async def dog(self, ctx):
+        """Random dog."""
+        path = '/home/ppotatoo/images/dogs'
+        r = random.choice(os.listdir(path))
+        f = discord.File(path + "/" + r, filename=r)
+        e = ctx.embed().set_image(url=f"attachment://{r}")
+        await ctx.send(file=f, embed=e)
+
+    @commands.command()
     async def dutch(self, ctx):
         await message.send('uwu')
 
