@@ -104,6 +104,7 @@ class CommandErrorHandler(commands.Cog):
         log_channel = await self.bot.fetch_channel(817433615473311744)
         webhook = await log_channel.webhooks()
         pretty_traceback = ''.join(prettify_exceptions.DefaultFormatter().format_exception(type(error), error, error.__traceback__))
+        await ctx.send(f'```py\n{pretty_traceback}```')
         msg = (
             f"Command: {ctx.invoked_with}\n"
             f"Full content: {ctx.escape(ctx.message.content)}\n"
