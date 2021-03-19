@@ -49,10 +49,10 @@ class BotInfo(commands.Cog):
                 continue
             fc += 1
             with f.open() as of:
+                ls += len(of.readlines())
                 for l in of.readlines():
                     l = l.strip()
-                    for _ in l:
-                        ch += 1
+                    ch += len(l)
                     if l.startswith('class'):
                         cl += 1
                     if l.startswith('def'):
@@ -61,7 +61,6 @@ class BotInfo(commands.Cog):
                         cr += 1
                     if '#' in l:
                         cm += 1
-                    ls += 1
         text = (
             f"```yaml\n"
             f"Files: {fc}\n"
