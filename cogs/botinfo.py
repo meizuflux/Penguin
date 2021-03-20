@@ -16,34 +16,50 @@ class BotInfo(commands.Cog):
 
     @commands.command(aliases=['cmdus'])
     async def command_usage(self, ctx):
+        """Returns command usage for the bot."""
         cmds = [f"\n{c:<29}{i}" for c, i in self.bot.command_usage.most_common()]
         pages = TodoPages(source=CommandSource(cmds))
         await pages.start(ctx)
 
-    @commands.command(help='Suggests a feature to the developers!')
+    @commands.command()
     async def suggest(self, ctx, *, suggestion):
+        """Lets you suggest something to the developer.
+        Suggestion can be anything you want. Please don't spam, I don't want to have to blacklist you."""
         support = self.bot.get_channel(818246475867488316)
         await support.send(embed=ctx.embed(title='New Suggestion:',
                                            description=f"```\n{ctx.escape(suggestion)}```\n[**JUMP URL**]({ctx.message.jump_url})"))
         await ctx.send(embed=ctx.embed(description='Your suggestion has been sent! '))
 
-    @commands.command(help='Invites the bot to your server')
+    @commands.command()
     async def invite(self, ctx):
+        """Returns the link to invite the bot.
+        Also gives the invite to the support server."""
         invite = ctx.embed(title='Invite me to your server:', description=self.bot.invite)
         invite.add_field(name='You can also join the support server:', value=self.bot.support_invite)
         await ctx.send(embed=invite)
 
-    @commands.command(help='An invite link to the bot support server.')
+    @commands.command()
     async def support(self, ctx):
+        """Returns an invite to the support server."""
         await ctx.send(embed=ctx.embed(title='Support server invite:', description='https://discord.gg/NTNgvHkjSp'))
 
-    @commands.command(help='Shows how long the bot has been online for')
+    @commands.command()
     async def uptime(self, ctx):
+        """Returns the uptime of the bot."""
         uptime = humanize.precisedelta(self.bot.uptime - datetime.datetime.utcnow(), format='%0.0f')
         await ctx.send(embed=ctx.embed(description=f"I've been up for {uptime}"))
 
     @commands.command(aliases=['codestats'])
     async def code_stats(self, ctx):
+        """Returns code statistics for the bot.
+        Items:
+            Files,
+            Lines,
+            Characters,
+            Classes,
+            Functions,
+            Coroutines,
+            Comments."""
         p = pathlib.Path('./')
         cm = cr = fn = cl = ls = fc = ch = 0
         for f in p.rglob('*.py'):
@@ -76,9 +92,10 @@ class BotInfo(commands.Cog):
         )
         await ctx.send(text)
 
-    @commands.command(aliases=['information', 'botinfo'],
-                      help='Gets info about the bot')
+    @commands.command(aliases=['information', 'botinfo'])
     async def info(self, ctx):
+        """Returns info about the bot.
+        This also contains stats about things like Memory usage."""
         msg = await ctx.send('Getting bot information ...')
         average_members = sum([guild.member_count
                                for guild in self.bot.guilds]) / len(self.bot.guilds)
