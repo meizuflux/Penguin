@@ -178,7 +178,7 @@ class PaginatedHelp(commands.MinimalHelpCommand):
     def get_command_help(self, command):
         ctx = self.context
         embed = ctx.embed(title=self.get_command_signature(command),
-                          description=f'```{self.get_help(command, brief=False)}```')
+                          description=self.get_help(command, brief=False))
         if alias := command.aliases:
             embed.add_field(name="Aliases", value=f"```{', '.join(alias)}```", inline=False)
         if isinstance(command, commands.Group):
