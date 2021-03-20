@@ -144,7 +144,7 @@ class Chuck(commands.Bot):
             await ctx.trigger_typing()
         await self.invoke(ctx)
         
-    def is_owner(self, user: discord.User):
+    def check_owner(self, user: discord.User):
         if user.id in self.owner_ids:
             return True
         return False
@@ -201,7 +201,7 @@ async def on_ready():
     
 @bot.check
 async def is_maintenance(ctx):
-    if bot.maintenance and not bot.is_owner(ctx.author):
+    if bot.maintenance and not bot.check_owner(ctx.author):
         raise Maintenance()
         return False
     return True
