@@ -20,3 +20,11 @@ class TargetUser(commands.Converter):
 
         if user == ctx.guild.owner:
             raise commands.BadArgument(f"You can't {ctx.invoked_with} the server owner.")
+        return user
+
+class Moderation(commands.Cog):
+    def __init(self, bot):
+        self.bot = bot
+        
+def setup(bot):
+    bot.add_cog(Moderation(bot))
