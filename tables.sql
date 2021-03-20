@@ -29,6 +29,6 @@ CREATE TABLE IF NOT EXISTS todos (
 );
 
 CREATE TABLE IF NOT EXISTS blacklist (
-    user_id BIGINT
+    user_id BIGINT,
     reason VARCHAR
 )
