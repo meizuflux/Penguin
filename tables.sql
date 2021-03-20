@@ -26,4 +26,9 @@ CREATE TABLE IF NOT EXISTS todos (
     todo VARCHAR,
     sort_date TIMESTAMP,
     jump_url VARCHAR
+);
+
+CREATE TABLE IF NOT EXISTS blacklist (
+    user_id BIGINT
+    reason VARCHAR
 )
