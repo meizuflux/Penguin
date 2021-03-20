@@ -48,6 +48,7 @@ class Chuck(commands.Bot):
         self.afk = {}
         self.usage_counter = 0
         self.command_usage = collections.Counter()
+        self.maintenance = False
 
     @staticmethod
     def get_config(item: str):
@@ -141,6 +142,11 @@ class Chuck(commands.Bot):
         if ctx.valid:
             await ctx.trigger_typing()
         await self.invoke(ctx)
+        
+    def is_owner(self, user: discord.User):
+        if user.id in self.owner_ids:
+            return True
+        return False
 
     async def close(self):
         await self.alex.close()
@@ -191,7 +197,13 @@ async def on_ready():
     print(f'{bot.user} has connected to Discord!\n'
           f'Guilds: {len(bot.guilds)}\n'
           f'Members: {str(sum([guild.member_count for guild in bot.guilds]))}')
-
+    
+@bot.check
+async def is_maintenance(ctx):
+    if bot.maintenance and not bot.is_owner(ctx.author):
+        raise Maintenance()
+        return False
+    return True
 
 if __name__ == "__main__":
     bot.starter()
