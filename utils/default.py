@@ -17,5 +17,5 @@ async def qembed(ctx, text):
         text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
     await ctx.send(embed=embed)
     
-class Maintenence(commands.CheckFailure):
+class Maintenance(commands.CheckFailure):
     pass
