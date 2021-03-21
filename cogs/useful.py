@@ -232,7 +232,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         license_data = data.get('license')
         license = 'No license.'
         if license_data:
-            license = license.get('spdx_id')
+            license = license_data.get('spdx_id')
         stat_value = (
             f"**License:** `{license}`",
             f"**Stargazers:** `{data['stargazers_count']}`",
