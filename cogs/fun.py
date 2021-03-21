@@ -276,6 +276,12 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def ship(self, ctx, user_1: discord.Member, user_2: discord.Member = None):
+        """Checks the love between two users.
+        The love stays the same for each two same users.
+
+        Arguments:
+            `user_1`: This is the first user to compare.
+            `user_2`: [Optional] The second user to compare. If not provided defaults to you."""
         if not user_2:
             user_2 = ctx.author
         random.seed(int(user_1.id) + int(user_2.id))
@@ -284,7 +290,12 @@ class Fun(commands.Cog):
                      f'I calculate that the love between {user_1.mention} and {user_2.mention} is {str(love)[:2]}%')
 
     @commands.command(aliases=['ppsize'])
-    async def pp(self, ctx, user: discord.Member = None):  # [p]pp
+    async def pp(self, ctx, user: discord.Member = None):
+        """Checks how large a users pp is.
+        The same user will always have the same size.
+
+        Arguments:
+            `user`: [Optional] The member who's ppsize you want to check. If not provided defaults to you."""
         if not user:
             user = ctx.author
         random.seed(int(user.id))
@@ -294,32 +305,40 @@ class Fun(commands.Cog):
     async def roo(self, ctx):
         """Roo.
         Sends a random "roo" emoji.
+
+        Arguments:
+            This command takes no arguments.
         """
         await ctx.send(random.choice([str(i) for i in self.bot.emojis if i.name.startswith("roo")]))
 
-    @commands.group(help='Some functions with base64', aliases=['b64'])
+    @commands.group(help='Some functions with base64.', aliases=['b64'])
     async def base64(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(str(ctx.command))
 
     @base64.command()
-    async def decode(self, ctx, *, string):
-        """Decodes a base64 string."""
-        decoded_string = base64.b64decode(string)
+    async def decode(self, ctx, *, b64_string):
+        """Decodes a base64 string.
+
+        Arguments:
+            `b64_string`: The base 64 string you want to decode."""
+        decoded_string = base64.b64decode(b64_string)
         decoded = decoded_string.decode('utf-8')
         await qembed(ctx, decoded)
 
     @base64.command()
-    async def encode(self, ctx, *, string):
-        """Encodes a base64 string."""
-        encoded_encoded_string = base64.b64encode(string.encode('utf-8'))
+    async def encode(self, ctx, *, text):
+        """Encodes a base64 string.
+
+        Arguments:
+            `text`: The text you want to encode into base 64."""
+        encoded_encoded_string = base64.b64encode(text.encode('utf-8'))
         decoded = encoded_encoded_string.decode('utf-8')
         await qembed(ctx, decoded)
 
     @executor_function
     def do_typerace(self, text):
         img = Image.open('assets/black.jpeg')
-        width, height = img.size
         draw = ImageDraw.Draw(img)
         font = ImageFont.truetype('assets/Montserrat-Regular.ttf', 125)
         wrapped = textwrap.wrap(text, width=24)
@@ -334,7 +353,13 @@ class Fun(commands.Cog):
     @commands.cooldown(1, 30, BucketType.user)
     @commands.command(aliases=["tr"])
     async def typeracer(self, ctx):
-        """Who's the fastest typer?"""
+        """Who's the fastest typer?
+        This writes text onto an image, and the first person to type the exact sentence wins.
+        Caps sensitive and you need punctuation.
+        After a minute if nobody has sent the answer, the game cancels.
+
+        Arguments:
+            This command takes no arguments."""
         async with self.bot.session.get("https://api.quotable.io/random") as f:
             data = await f.json()
         text = data["content"]
@@ -383,7 +408,11 @@ class Fun(commands.Cog):
     @commands.cooldown(1, 10, BucketType.user)
     @commands.command(aliases=['alwayshasbeen', 'ahb'], usage='[text]')
     async def always_has_been(self, ctx, *, text='Wait, it\'s all Ohio?'):
-        """Wait, it's all Ohio?"""
+        """Wait, it's all Ohio?
+        This is the "Always has been" meme.
+
+        Arguments:
+            `text`: [Optional] The text to put on the image."""
         if len(text) > 100:
             return await ctx.send("Sorry, please keep the text under 100 characters.")
         embed = ctx.embed().set_image(url="attachment://always_has_been.jpeg")
@@ -391,14 +420,20 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def sadcat(self, ctx):
-        """Sends a sadcat."""
+        """Sends a sadcat.
+
+        Arguments:
+            This command takes no arguments."""
         embed = ctx.embed(title=random.choice(["<:Sadge:789590510225457152>", "<:sad:790608581615288320>"]))
         embed.set_image(url=await self.bot.alex.sadcat())
         await ctx.send(embed=embed)
 
     @commands.command(aliases=['ach'])
     async def achievement(self, ctx, *, text):
-        """Sends a Minecraft Achievement."""
+        """Sends a Minecraft Achievement.
+
+        Arguments:
+            `text`: The text you want the achievement to say."""
         embed = ctx.embed()
         embed.set_image(url='attachment://achievement.png')
         image = discord.File(await (await self.bot.alex.achievement(text=text)).read(), "achievement.png")
@@ -406,6 +441,11 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def mock(self, ctx, *, text: str = None):
+        """Returns a mock of a message.
+        If you provide no text it will check if you replied to a message, at which point it will mock that. If you don't provide text and you don't reply to a message, it takes your nickname/username.
+
+        Arguments:
+            `text`: [Optional] The text you want to mock."""
         content = None
         if isinstance(text, discord.Message):
             content = text.content
@@ -425,6 +465,10 @@ class Fun(commands.Cog):
     @commands.command()
     async def caption(self, ctx, *,
                       image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
+        """Captions an image.
+
+        Arguments:
+            `image`: [Optional] This can be an emoji, a url, or a user."""
         image = await get_image_url(ctx, image)
         data = {
             "Content": str(image),
@@ -438,6 +482,10 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def pepe(self, ctx):
+        """Returns a big version of pepe.
+
+        Arguments:
+            This command takes no arguments."""
         frog = ":frog:"
         circle = ":red_circle:"
         pepe = (
@@ -462,6 +510,11 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def animequote(self, ctx):
+        """Returns a random quote from an anime.
+        Gives info on who said it and in what anime.
+
+        Arguments:
+            This command takes no arguments."""
         async with self.bot.session.get("https://some-random-api.ml/animu/quote") as f:
             data = await f.json()
         embed = ctx.embed(title=f'{data.get("characther")} said in{data.get("anime")}',
@@ -470,6 +523,10 @@ class Fun(commands.Cog):
 
     @commands.command(aliases=['trumpquote', 'trump_quote'])
     async def trump(self, ctx):
+        """Returns a random quote from Trump himself.
+
+        Arguments:
+            This command takes no arguments."""
         async with self.bot.session.get("https://www.tronalddump.io/random/quote") as f:
             data = await f.json()
         link = data["_links"]["self"]["href"]
@@ -478,6 +535,11 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def dadjoke(self, ctx):
+        """Sends a dadjoke.
+        Best jokes ever!
+
+        Arguments:
+            This command takes no arguments."""
         headers = {
             'Accept': 'application/json'
         }
@@ -487,7 +549,12 @@ class Fun(commands.Cog):
 
     @commands.command(aliases=['bt'])
     async def bigtext(self, ctx, *, text):
-        """Makes the specified text bigger."""
+        """Makes the specified text bigger.
+        Characters accepted:
+            All letters in the English alphabet and `?` and `!`.
+
+        Arguments:
+            `text`: The text you want to make big."""
         if len(text) > 50: return await ctx.send("Less than 50 characters please!")
         output = ""
         special = {"<": ":arrow_left:", ">": ":arrow_right:", "!": ":exclamation:", "?": ":question:"}
@@ -508,7 +575,10 @@ class Fun(commands.Cog):
     @commands.command(aliases=['point'])
     async def pepepoint(self, ctx):
         """Reacts to the next message.
-        Emoji is "PepePoint". If no message is sent in 60 seconds it times out."""
+        Emoji is "PepePoint". If no message is sent in 60 seconds it times out.
+
+        Arguments:
+            This command takes no arguments."""
         try:
             message = await self.bot.wait_for("message", timeout=60, check=lambda m: m.channel == ctx.channel)
         except asyncio.TimeoutError:
@@ -535,7 +605,10 @@ class Fun(commands.Cog):
     @commands.command()
     async def cat(self, ctx):
         """Random cat.
-        If you see an image that you feel is not up to standard, join the support server [here]({support}) and send me the name of the file."""
+        If you see an image that you feel is not up to standard, join the support server [here]({support}) and send me the name of the file.
+
+        Arguments:
+            This command takes no arguments."""
         path = '/home/ppotatoo/images/cats'
         r = random.choice(os.listdir(path))
         f = discord.File(path + "/" + r, filename=r)
@@ -544,7 +617,11 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def dog(self, ctx):
-        """Random dog."""
+        """Random dog.
+        If you see an image that you feel is not up to standard, join the support server [here]({support}) and send me the name of the file.
+
+        Arguments:
+            This command takes no arguments."""
         path = '/home/ppotatoo/images/dogs'
         r = random.choice(os.listdir(path))
         f = discord.File(path + "/" + r, filename=r)
