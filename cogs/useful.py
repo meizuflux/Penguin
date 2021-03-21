@@ -225,7 +225,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         )
         embed.add_field(name='Info', value="\n".join(info_value))
         stat_value = (
-            f"**License:** `{data['license']['spdx_id']}`",
+            f"**License:** `{data['license'].get('spdx_id')}`",
             f"**Stargazers:** `{data['stargazers_count']}`",
             f"**Watchers:** `{data['watchers_count']}`",
             f"**Commits:** `{commit_count}`"
