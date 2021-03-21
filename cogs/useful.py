@@ -209,8 +209,8 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             f"**Owner:** {author}",
             f"**Language:** {data['language']}",
             f"**Forks:** {data['forks_count']}",
-            f"**Updated:** {humanize.naturaltime(datetime.datetime.utcnow() - data['updated_at'])}",
-            f"**Created:** {humanize.naturaltime(datetime.datetime.utcnow() - data['created_at'])}"
+            f"**Updated:** {humanize.naturaltime(datetime.datetime.utcnow() - datetime.datetime.strptime(data['updated_at'], '%Y-%m-%dT%H:%M:%S%fZ'))}",
+            f"**Created:** {humanize.naturaltime(datetime.datetime.utcnow() - datetime.datetime.strptime(data['created_at'], '%Y-%m-%dT%H:%M:%S%fZ'))}"
         )
         embed.add_field(name='Info', value="\n".join(info_value))
         stat_value = (
