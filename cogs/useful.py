@@ -225,9 +225,11 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         )
         embed.add_field(name='Info', value="\n".join(info_value))
         license = data.get('License')
-        license = license.get('spdx_id') or 'No license.'
+        license = 'No license.'
+        if license:
+            license = license.get('spdx_id')
         stat_value = (
-            f"**License:** `{data['license'].get('spdx_id')}`",
+            f"**License:** `{license}`",
             f"**Stargazers:** `{data['stargazers_count']}`",
             f"**Watchers:** `{data['watchers_count']}`",
             f"**Commits:** `{commit_count}`"
