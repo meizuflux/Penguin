@@ -33,7 +33,7 @@ class BotInfo(commands.Cog):
         cmduse = []
         for num, (command, amount) in enumerate(self.bot.command_usage.most_common(), start=1):
             e = 29 - num
-            cmduse.append(f"\n`{num}. {command:<e}{amount}`")
+            cmduse.append(f"\n`{num}. {command:<{e}}{amount}`")
         cmds = [f"\n{c:<29}{i}" for c, i in self.bot.command_usage.most_common()]
         pages = TodoPages(source=CommandSource(cmduse))
         await pages.start(ctx)
