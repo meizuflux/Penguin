@@ -173,7 +173,7 @@ class Chuck(commands.Bot):
                                       self.default_prefix)
                 server_prefix = self.default_prefix
             await message.channel.send(
-                "My prefixes on `{}` are `{}`".format(message.guild.name, ", ".join(server_prefix)))
+                "My prefixes on `{}` are \n[ `{}` ]".format(message.guild.name, "` | `".join(server_prefix)))
         await self.process_commands(message)
 
     async def on_message_edit(self, before, after):
