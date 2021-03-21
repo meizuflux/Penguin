@@ -117,7 +117,7 @@ class Chuck(commands.Bot):
         guilds = await self.db.fetch("SELECT * FROM prefixes")
         for guild in guilds:
             self.prefixes[guild['guild_id']].append(guild['prefix'])
-        blacklist = await self.db.fetch('SELECT user_id FROM blacklist')
+        blacklist = await self.db.fetch('SELECT user_id, reason FROM blacklist')
         for user in blacklist:
             self.blacklist[user['user_id']] = user['reason']
 
