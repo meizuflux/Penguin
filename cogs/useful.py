@@ -217,18 +217,18 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         embed.set_thumbnail(url=data['owner']['avatar_url'])
         author = f"[{data['owner']['login']}]({data['owner']['html_url']})"
         info_value = (
-            f"**Owner:** {author}",
-            f"**Language:** {data['language']}",
-            f"**Forks:** {data['forks_count']}",
+            f"**Owner:** `{author}`",
+            f"**Language:** `{data['language']}`",
+            f"**Forks:** `{data['forks_count']}`",
             f"**Updated:** {humanize.naturaltime(datetime.datetime.utcnow() - datetime.datetime.strptime(data['updated_at'], '%Y-%m-%dT%H:%M:%S%fZ'))}",
             f"**Created:** {humanize.naturaltime(datetime.datetime.utcnow() - datetime.datetime.strptime(data['created_at'], '%Y-%m-%dT%H:%M:%S%fZ'))}"
         )
         embed.add_field(name='Info', value="\n".join(info_value))
         stat_value = (
-            f"**License:** {data['license']['spdx_id']}",
-            f"**Stars:** {data['stargazers_count']}",
-            f"**Watchers:** {data['watchers_count']}",
-            f"**Commits:** {commit_count}"
+            f"**License:** `{data['license']['spdx_id']}`",
+            f"**Stargazers:** `{data['stargazers_count']}`",
+            f"**Watchers:** `{data['watchers_count']}`",
+            f"**Commits:** `{commit_count}`"
         )
         embed.add_field(name='Stats', value="\n".join(stat_value))
         await ctx.send(embed=embed)
