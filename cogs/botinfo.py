@@ -29,7 +29,11 @@ class BotInfo(commands.Cog):
 
     @commands.command(aliases=['cmdus'])
     async def command_usage(self, ctx):
-        """Returns command usage for the bot."""
+        """Returns command usage for the bot.
+        Paginated menu in order of most used.
+
+        Arguments:
+            This command takes no arguments."""
         cmds = [f"\n`{c:<29}{i}`" for c, i in self.bot.command_usage.most_common()]
         pages = TodoPages(source=CommandSource(cmds))
         await pages.start(ctx)
