@@ -294,7 +294,11 @@ class Utilities(commands.Cog):
         Don't try to do something stupid, it won't work.
 
         Available languages:
-        `awk`, `bash`, `brainfuck`, `c`, `cpp`, `clojure`, `crystal`, `csharp`, `d`, `dash`, `deno`, `elixir`, `emacs`, `elisp`, `go`, `haskell`, `java`, `jelly`, julia, kotlin, lisp, lolcode, lua, nasm, nasm64, nim, node, osabie, paradoc, perl, php, python2, python3, ruby, rust, scala, swift, typescript, and zig."""
+        `awk`, `bash`, `brainfuck`, `c`, `cpp`, `clojure`, `crystal`, `csharp`, `d`, `dash`, `deno`, `elixir`, `emacs`, `elisp`, `go`, `haskell`, `java`, `jelly`, `julia`, `kotlin`, `lisp`, `lolcode`, `lua`, `nasm`, `nasm64`, `nim`, `node`, `osabie`, `paradoc`, `perl`, `php`, `python2`, `python3`, `ruby`, `rust`, `scala`, `swift`, `typescript`, and `zig`.
+
+        Arguments:
+            `language`: The coding language you want to run code in. List is above.
+            `code`: The code you want to execute."""
         lang = language.lower()
         code = code.strip('`')
         first_line = code.splitlines()[0]
