@@ -14,7 +14,7 @@ import discord
 from discord.ext import commands
 
 from cogs.useful import ChuckContext
-from utils.default import Maintenance
+from utils.default import Maintenance, Blacklisted
 
 
 class Chuck(commands.Bot):
@@ -210,7 +210,10 @@ async def is_maintenance(ctx):
 
 @bot.check
 async def is_blacklisted(ctx):
-    return ctx.author.id not in bot.blacklist
+    if ctx.author.id in bot.blacklist:
+        raise Blacklisted()
+        return False
+    return True
 
 if __name__ == "__main__":
     bot.starter()
