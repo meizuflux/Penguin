@@ -170,8 +170,12 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         ava.set_image(url=user.avatar_url)
         await ctx.send(embed=ava)
 
-    @commands.command(help='Searches PyPI for a Python Package')
+    @commands.command(brief='Searches PyPI for a Python Package')
     async def pypi(self, ctx, package: str):
+        """Searches the Python Package index for a package.
+
+        Arguments:
+            `package`: The package you want to search for."""
         async with self.bot.session.get(f'https://pypi.org/pypi/{package}/json') as f:
             if not f or f.status != 200:
                 return await ctx.send(embed=ctx.embed(description='Package not found.'))
@@ -190,6 +194,32 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                               f'**Keywords**: `{data["keywords"] or "None provided"}`\n'
                               f'**License**: `{data["license"] or "None provided"}`',
                         inline=False)
+        await ctx.send(embed=embed)
+
+    @commands.command(aliases=['gh'], usage='<author name/repo name>')
+    async def github(self, ctx, *, repo_name):
+        async with self.bot.session.get(f'https://api.github.com/repos/{repo_name}') as res:
+            data = await res.json()
+        async with self.bot.session.get(f"https://api.github.com/repos/{data['full_name']}/commits") as r:
+            commits = await r.json()
+        embed = ctx.embed(title=f"{data['full_name']} `({data['id']})`", description=data.get('description'), url=data['html_url'])
+        embed.set_thumbnail(url=data['owner']['avatar_url'])
+        author = f"[{data['owner']['login']}]({data['owner']['html_url']})"
+        info_value = (
+            f"**Owner:** {author}",
+            f"**Language:** {data['language']}",
+            f"**Forks:** {data['forks_count']}",
+            f"**Updated:** {humanize.naturaltime(datetime.datetime.utcnow() - data['updated_at'])}",
+            f"**Created:** {humanize.naturaltime(datetime.datetime.utcnow() - data['created_at'])}"
+        )
+        embed.add_field(name='Info', value="\n".join(info_value))
+        stat_value = (
+            f"**License:** {data['license']['spdx_id']}",
+            f"**Stars:** {data['stargazers_count']}",
+            f"**Watchers:** {data['watchers_count']}",
+            f"**Commits:** {len(commits)}"
+        )
+        embed.add_field(name='Stats', value="\n".join(stat_value))
         await ctx.send(embed=embed)
 
     def get_item(self, items, cat):
