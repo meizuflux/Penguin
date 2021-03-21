@@ -200,10 +200,10 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(aliases=['gh'], usage='<author name/repo name>')
     async def github(self, ctx, *, repo_name):
         """Returns info about a GitHuh repo.
-        Private repo's will not work.
+        Private repos will not work.
 
         Arguments:
-            `author name/repo name`: The repo to lookup. Example: {prefix}github Daggy1234/dagpi"""
+            `author name/repo name`: The repo to lookup. Example: `{prefix}github Daggy1234/dagpi`"""
         async with self.bot.session.get(f'https://api.github.com/repos/{repo_name}') as res:
             if res.status != 200:
                 raise commands.BadArgument('Invalid repo provided.')
