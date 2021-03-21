@@ -7,7 +7,7 @@ import humanize
 import prettify_exceptions
 from discord.ext import commands
 
-from utils.default import Maintenance
+from utils.default import Maintenance, Blacklisted
 from utils.fuzzy import finder
 
 
@@ -20,7 +20,7 @@ class CommandErrorHandler(commands.Cog):
         if isinstance(error, Maintenance):
             return await ctx.send(embed=ctx.embed(title='⚠️ Maintenence mode is active.'))
 
-        if isinstance(error, Maintenance):
+        if isinstance(error, Blacklisted):
             return await ctx.send(embed=ctx.embed(title='⚠️ You are blacklisted.',
                                                   description=f'**Blacklisted For: {self.bot.blacklist[ctx.author.id]}'))
 
