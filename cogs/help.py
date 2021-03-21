@@ -161,10 +161,11 @@ class PaginatedHelp(commands.MinimalHelpCommand):
 
         await pages.start(ctx)
 
-    @staticmethod
-    def get_help(command, brief=True):
+    def get_help(self, command, brief=True):
+        ctx = self.context
         real_help = command.help or "This command is not documented."
-        return real_help if not brief else command.short_doc or real_help
+        help = real_help if not brief else command.short_doc or real_help
+        return help.format(support=ctx.bot.support_invite)
 
     async def send_cog_help(self, cog):
         if cog.qualified_name == "AAAAAA":

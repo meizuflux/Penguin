@@ -19,7 +19,7 @@ from jishaku.functools import executor_function
 
 from cogs.polaroid_manipulation import get_image_url
 from utils.bottom import from_bottom, to_bottom
-from utils.default import qembed
+from utils.default import qembed, format_doc
 
 mystbin_url = re.compile(
     r"(?:(?:https?://)?mystb\.in/)?(?P<ID>[a-zA-Z]+)(?:\.(?P<syntax>[a-zA-Z0-9]+))?"
@@ -88,6 +88,7 @@ class Fun(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
 
     @commands.group()
     async def morse(self, ctx):
@@ -520,7 +521,10 @@ class Fun(commands.Cog):
     async def whyarentyoucoding(self, ctx):
         """Grabs the latest "Why aren't you coding?" comic.
         New comic every weekday according to their site.
-        Give them some love at https://whyarentyoucoding.com"""
+        Give them some love at https://whyarentyoucoding.com
+
+        Arguments:
+            This command takes no arguments."""
         url = 'https://whyarentyoucoding.com'
         async with self.bot.session.get(url) as f:
             data = await f.text()
@@ -531,7 +535,8 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def cat(self, ctx):
-        """Random cat."""
+        """Random cat.
+        If you see an image that you feel is not up to standard, join the support server [here]({support}) and send me the name of the file."""
         path = '/home/ppotatoo/images/cats'
         r = random.choice(os.listdir(path))
         f = discord.File(path + "/" + r, filename=r)

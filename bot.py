@@ -50,7 +50,6 @@ class Chuck(commands.Bot):
         self.usage_counter = 0
         self.command_usage = collections.Counter()
         self.maintenance = False
-        self.blacklist = {}
 
     @staticmethod
     def get_config(item: str):
@@ -118,8 +117,7 @@ class Chuck(commands.Bot):
         for guild in guilds:
             self.prefixes[guild['guild_id']].append(guild['prefix'])
         blacklist = await self.db.fetch('SELECT user_id, reason FROM blacklist')
-        for user in blacklist:
-            self.blacklist[user['user_id']] = user['reason']
+        self.blacklist = dict(blacklist)
 
     def get_subcommands(self, command):
         gotten_subcommands = []
