@@ -19,7 +19,7 @@ from jishaku.functools import executor_function
 
 from cogs.polaroid_manipulation import get_image_url
 from utils.bottom import from_bottom, to_bottom
-from utils.default import qembed, format_doc
+from utils.default import qembed
 
 mystbin_url = re.compile(
     r"(?:(?:https?://)?mystb\.in/)?(?P<ID>[a-zA-Z]+)(?:\.(?P<syntax>[a-zA-Z0-9]+))?"
@@ -88,7 +88,6 @@ class Fun(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-
 
     @commands.group()
     async def morse(self, ctx):
