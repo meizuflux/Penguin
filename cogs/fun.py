@@ -633,7 +633,7 @@ class Fun(commands.Cog):
         """F*ck my life.
 
         Arguments:
-        \U00000020\U00000020\U00000020\U00000020This command takes no arguments."""
+            This command takes no arguments."""
         await ctx.send(await self.bot.alex.fml())
 
 
