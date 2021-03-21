@@ -11,7 +11,7 @@ from cogs.useful import TodoPages
 
 class CommandSource(menus.ListPageSource):
     def __init__(self, cmds):
-        super().__init__(cmds, per_page=9)
+        super().__init__(cmds, per_page=10)
 
     async def format_page(self, menu, cmds):
         ctx = menu.ctx
@@ -30,12 +30,8 @@ class BotInfo(commands.Cog):
     @commands.command(aliases=['cmdus'])
     async def command_usage(self, ctx):
         """Returns command usage for the bot."""
-        cmduse = []
-        for num, (command, amount) in enumerate(self.bot.command_usage.most_common(), start=1):
-            e = 29 + num
-            cmduse.append(f"\n`{num}. {command:<{e}}{amount}`")
-        cmds = [f"\n{c:<29}{i}" for c, i in self.bot.command_usage.most_common()]
-        pages = TodoPages(source=CommandSource(cmduse))
+        cmds = [f"\n`{c:<29}{i}`" for c, i in self.bot.command_usage.most_common()]
+        pages = TodoPages(source=CommandSource(cmds))
         await pages.start(ctx)
 
     @commands.command()
