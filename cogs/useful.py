@@ -431,18 +431,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         await ctx.send(f'OK, I have set your AFK status to `{reason}`')
 
 
-class CommandSource(menus.ListPageSource):
-    def __init__(self, cmds):
-        super().__init__(cmds, per_page=10)
 
-    async def format_page(self, menu, cmds):
-        ctx = menu.ctx
-        yee = "".join(cmds)
-        cur_page = f"Command Usage | Page {menu.current_page + 1}/{self.get_max_pages()}"
-        return ctx.embed(
-            title=cur_page,
-            description=f"```\nTotal usage since restart => {ctx.bot.usage_counter}{yee}```",
-        )
 
 
 class AAAAAA(commands.Cog):
