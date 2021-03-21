@@ -50,7 +50,7 @@ class Chuck(commands.Bot):
         self.usage_counter = 0
         self.command_usage = collections.Counter()
         self.maintenance = False
-        self.blacklist = set()
+        self.blacklist = {}
 
     @staticmethod
     def get_config(item: str):
@@ -119,7 +119,7 @@ class Chuck(commands.Bot):
             self.prefixes[guild['guild_id']].append(guild['prefix'])
         blacklist = await self.db.fetch('SELECT user_id FROM blacklist')
         for user in blacklist:
-            self.blacklist.add(user['user_id'])
+            self.blacklist[user['user_id']] = user['reason']
 
     def get_subcommands(self, command):
         gotten_subcommands = []
@@ -149,9 +149,7 @@ class Chuck(commands.Bot):
         await self.invoke(ctx)
         
     def check_owner(self, user: discord.User):
-        if user.id in self.owner_ids:
-            return True
-        return False
+        return user.id in self.owner_ids
 
     async def close(self):
         await self.alex.close()
@@ -212,9 +210,7 @@ async def is_maintenance(ctx):
 
 @bot.check
 async def is_blacklisted(ctx):
-    if ctx.author.id in bot.blacklist:
-        return False
-    return True
+    return ctx.author.id not in bot.blacklist
 
 if __name__ == "__main__":
     bot.starter()
