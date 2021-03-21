@@ -628,6 +628,15 @@ class Fun(commands.Cog):
         e = ctx.embed().set_image(url=f"attachment://{r}")
         await ctx.send(file=f, embed=e)
 
+    @commands.command()
+    async def fml(self, ctx):
+        """F*ck my life.
+
+        Arguments:
+            ""This command takes no arguments."
+            """
+        await ctx.send(await self.bot.alex.fml())
+
 
 def setup(bot):
     bot.add_cog(Fun(bot))
