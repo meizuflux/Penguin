@@ -215,9 +215,9 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             commit_count = int(dict(urllib.parse.parse_qsl(qs))['page'])
         embed = ctx.embed(title=f"{data['full_name']} `({data['id']})`", description=data.get('description'), url=data['html_url'])
         embed.set_thumbnail(url=data['owner']['avatar_url'])
-        author = f"[{data['owner']['login']}]({data['owner']['html_url']})"
+        author = f"[`{data['owner']['login']}`]({data['owner']['html_url']})"
         info_value = (
-            f"**Owner:** `{author}`",
+            f"**Owner:** {author}",
             f"**Language:** `{data['language']}`",
             f"**Forks:** `{data['forks_count']}`",
             f"**Updated:** {humanize.naturaltime(datetime.datetime.utcnow() - datetime.datetime.strptime(data['updated_at'], '%Y-%m-%dT%H:%M:%S%fZ'))}",
