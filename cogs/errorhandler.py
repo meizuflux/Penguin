@@ -21,8 +21,9 @@ class CommandErrorHandler(commands.Cog):
             return await ctx.send(embed=ctx.embed(title='⚠️ Maintenence mode is active.'))
 
         if isinstance(error, Blacklisted):
+            reason = self.bot.blacklist.get(ctx.author.id, "No reason, you probably did something dumb.")
             return await ctx.send(embed=ctx.embed(title='⚠️ You are blacklisted.',
-                                                  description=f'**Blacklisted For: {self.bot.blacklist[ctx.author.id]}'))
+                                                  description=f'**Blacklisted For: {reason}'))
 
         command = ctx.invoked_with
 
