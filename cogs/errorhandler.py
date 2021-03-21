@@ -23,7 +23,7 @@ class CommandErrorHandler(commands.Cog):
         if isinstance(error, Blacklisted):
             reason = self.bot.blacklist.get(ctx.author.id, "No reason, you probably did something dumb.")
             return await ctx.send(embed=ctx.embed(title='⚠️ You are blacklisted.',
-                                                  description=f'**Blacklisted For: {reason}'))
+                                                  description=f'**Blacklisted For:** {reason}'))
 
         command = ctx.invoked_with
 
