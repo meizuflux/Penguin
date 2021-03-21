@@ -5,9 +5,22 @@ import platform
 import discord
 import humanize
 import psutil
-from discord.ext import commands
+from discord.ext import commands, menus
 
-from cogs.useful import CommandSource, TodoPages
+from cogs.useful import TodoPages
+
+class CommandSource(menus.ListPageSource):
+    def __init__(self, cmds):
+        super().__init__(cmds, per_page=10)
+
+    async def format_page(self, menu, cmds):
+        ctx = menu.ctx
+        yee = "".join(cmds)
+        cur_page = f"Command Usage | Page {menu.current_page + 1}/{self.get_max_pages()}"
+        return ctx.embed(
+            title=cur_page,
+            description=f"`Total usage since restart => {ctx.bot.usage_counter}`{yee}",
+        )
 
 
 class BotInfo(commands.Cog):
@@ -17,8 +30,11 @@ class BotInfo(commands.Cog):
     @commands.command(aliases=['cmdus'])
     async def command_usage(self, ctx):
         """Returns command usage for the bot."""
+        cmduse = []
+        for num, (command, amount) in enumerate(self.bot.command_usage.most_common(), start=1):
+            cmduse.append(f"\n`{num}. {command:<29}{amount}`")
         cmds = [f"\n{c:<29}{i}" for c, i in self.bot.command_usage.most_common()]
-        pages = TodoPages(source=CommandSource(cmds))
+        pages = TodoPages(source=CommandSource(cmduse))
         await pages.start(ctx)
 
     @commands.command()
