@@ -200,7 +200,11 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     async def github(self, ctx, *, repo_name):
         async with self.bot.session.get(f'https://api.github.com/repos/{repo_name}') as res:
             data = await res.json()
-        async with self.bot.session.get(f"https://api.github.com/repos/{data['full_name']}/commits") as r:
+        params = {
+            'sha': data['default_branch'],
+            'per_page': 1,
+        }
+        async with self.bot.session.get(f"https://api.github.com/repos/{data['full_name']}/commits", params=params) as r:
             commits = await r.json()
         embed = ctx.embed(title=f"{data['full_name']} `({data['id']})`", description=data.get('description'), url=data['html_url'])
         embed.set_thumbnail(url=data['owner']['avatar_url'])
