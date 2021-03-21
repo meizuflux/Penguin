@@ -224,6 +224,8 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             f"**Created:** {humanize.naturaltime(datetime.datetime.utcnow() - datetime.datetime.strptime(data['created_at'], '%Y-%m-%dT%H:%M:%S%fZ'))}"
         )
         embed.add_field(name='Info', value="\n".join(info_value))
+        license = data.get('License')
+        license = license.get('spdx_id') or 'No license.'
         stat_value = (
             f"**License:** `{data['license'].get('spdx_id')}`",
             f"**Stargazers:** `{data['stargazers_count']}`",
