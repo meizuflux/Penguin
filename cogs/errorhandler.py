@@ -7,8 +7,8 @@ import humanize
 import prettify_exceptions
 from discord.ext import commands
 
-from utils.fuzzy import finder
 from utils.default import Maintenance
+from utils.fuzzy import finder
 
 
 class CommandErrorHandler(commands.Cog):
@@ -19,8 +19,11 @@ class CommandErrorHandler(commands.Cog):
     async def on_command_error(self, ctx, error):
         if isinstance(error, Maintenance):
             return await ctx.send(embed=ctx.embed(title='⚠️ Maintenence mode is active.'))
-            
-        pretty_traceback = "".join(prettify_exceptions.DefaultFormatter().format_exception(type(error), error, error.__traceback__))
+
+        if isinstance(error, Maintenance):
+            return await ctx.send(embed=ctx.embed(title='⚠️ You are blacklisted.',
+                                                  description=f'**Blacklisted For: {self.bot.blacklist[ctx.author.id]}'))
+
         command = ctx.invoked_with
 
         # This prevents any commands with local handlers being handled here in on_command_error.
@@ -93,8 +96,8 @@ class CommandErrorHandler(commands.Cog):
             return await ctx.send(embed=ctx.embed(description=f'`{command}` has been disabled.'))
 
         if isinstance(error, commands.BadArgument):
-            return await ctx.send(embed=ctx.embed(title=str(error), description=f'You provided a bad argument to `{command}`! View `{ctx.clean_prefix}help {command}` for more info on how to use this command.'))
-
+            return await ctx.send(embed=ctx.embed(title=str(error),
+                                                  description=f'You provided a bad argument to `{command}`! View `{ctx.clean_prefix}help {command}` for more info on how to use this command.'))
 
         print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
         traceback.print_exception(type(error),
@@ -102,9 +105,10 @@ class CommandErrorHandler(commands.Cog):
                                   error.__traceback__,
                                   file=sys.stderr)
 
-
         formatted = traceback.format_exception(type(error), error, error.__traceback__)
-
+        pretty_traceback = "".join(
+            prettify_exceptions.DefaultFormatter().format_exception(type(error), error, error.__traceback__)
+        )
         log_channel = await self.bot.fetch_channel(817433615473311744)
         webhook = await log_channel.webhooks()
         msg = (
@@ -115,16 +119,17 @@ class CommandErrorHandler(commands.Cog):
             f"User: {ctx.author.name} ({ctx.author.id})\n"
             f"Jump URL: {ctx.message.jump_url}"
         )
-        embed = ctx.embed(title='AN ERROR OCCURED', url=await ctx.mystbin(pretty_traceback) + '.py', description=f"```yaml\n{msg}```")
+        embed = ctx.embed(title='AN ERROR OCCURED', url=await ctx.mystbin(pretty_traceback) + '.py',
+                          description=f"```yaml\n{msg}```")
         await webhook[0].send(f"```py\n{''.join(formatted)}```", embed=embed)
 
         error = "".join(formatted)
         if len(error) > 1700:
             error = await ctx.mystbin(str(error)) + ".py"
 
-        await ctx.send(f"Something has gone wrong while executing `{command}`. You should not be seeing this, I have contacted my developer with information about this error.\n"
-                       f"```py\n{error}\n```")
-
+        await ctx.send(
+            f"Something has gone wrong while executing `{command}`. You should not be seeing this, I have contacted my developer with information about this error.\n"
+            f"```py\n{error}\n```")
 
 
 def setup(bot):
