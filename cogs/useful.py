@@ -7,6 +7,7 @@ import time
 from collections import Counter
 
 import aiohttp
+import urllib
 import discord
 import humanize
 from discord.ext import commands, menus
@@ -199,13 +200,19 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(aliases=['gh'], usage='<author name/repo name>')
     async def github(self, ctx, *, repo_name):
         async with self.bot.session.get(f'https://api.github.com/repos/{repo_name}') as res:
+            if res.status != 200:
+                raise commands.BadArgument('Invalid repo provided.')
             data = await res.json()
         params = {
             'sha': data['default_branch'],
             'per_page': 1,
         }
-        async with self.bot.session.get(f"https://api.github.com/repos/{data['full_name']}/commits", params=params) as r:
-            commits = await r.json()
+        async with self.bot.session.get(f"https://api.github.com/repos/{data['full_name']}/commits", params=params) as resp:
+            commit_count = len(await resp.json())
+        last_page = resp.links.get('last')
+        if last_page:
+            qs = urllib.parse.urlparse(str(last_page['url'])).query
+            commit_count = int(dict(urllib.parse.parse_qsl(qs))['page'])
         embed = ctx.embed(title=f"{data['full_name']} `({data['id']})`", description=data.get('description'), url=data['html_url'])
         embed.set_thumbnail(url=data['owner']['avatar_url'])
         author = f"[{data['owner']['login']}]({data['owner']['html_url']})"
@@ -221,7 +228,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             f"**License:** {data['license']['spdx_id']}",
             f"**Stars:** {data['stargazers_count']}",
             f"**Watchers:** {data['watchers_count']}",
-            f"**Commits:** {len(commits)}"
+            f"**Commits:** {commit_count}"
         )
         embed.add_field(name='Stats', value="\n".join(stat_value))
         await ctx.send(embed=embed)
