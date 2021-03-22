@@ -336,6 +336,37 @@ class Fun(commands.Cog):
         decoded = encoded_encoded_string.decode('utf-8')
         await qembed(ctx, decoded)
 
+    @commands.group(help='Some functions with binary.')
+    async def binary(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help(str(ctx.command))
+
+    @binary.command()
+    async def decode(self, ctx, *, binary_string: str):
+        """Decodes a binary string.
+
+        Arguments:
+            `binary_string`: The binary string you want to decode."""
+        dd = binary_string.split()
+        output = ""
+        for thing in dd:
+            thing = int(thing, 2)
+            try:
+                output += chr(thing)
+            except OverflowError:
+                raise commands.BadArgument('Invalid binary string provided.')
+        await ctx.send(output, allowed_mentions=discord.AllowedMentions().none())
+
+    @binary.command()
+    async def encode(self, ctx, *, text: str):
+        """Encodes a string to binary.
+
+        Arguments:
+            `text`: The text you want to encode into binary."""
+        e = ' '.join(map(bin, bytearray(text, encoding='utf-8')))
+        e = e.split(" ")
+        await ctx.send(" ".join(i.lstrip("0b") for i in e))
+
     @executor_function
     def do_typerace(self, text):
         img = Image.open('assets/black.jpeg')
