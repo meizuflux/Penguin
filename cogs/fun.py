@@ -356,6 +356,8 @@ class Fun(commands.Cog):
                 output += chr(thing)
             except OverflowError:
                 raise commands.BadArgument('Invalid binary string provided.')
+        if len(output) > 1990:
+            output = f"Output was too long so I put it here => {await ctx.mystbin(output)}"
         await ctx.send(output, allowed_mentions=discord.AllowedMentions().none())
 
     @binary.command(name='encode')
