@@ -341,8 +341,8 @@ class Fun(commands.Cog):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(str(ctx.command))
 
-    @binary.command()
-    async def decode(self, ctx, *, binary_string: str):
+    @binary.command(name='decode')
+    async def decode_binary(self, ctx, *, binary_string: str):
         """Decodes a binary string.
 
         Arguments:
@@ -357,8 +357,8 @@ class Fun(commands.Cog):
                 raise commands.BadArgument('Invalid binary string provided.')
         await ctx.send(output, allowed_mentions=discord.AllowedMentions().none())
 
-    @binary.command()
-    async def encode(self, ctx, *, text: str):
+    @binary.command(name='encode')
+    async def encode_binary(self, ctx, *, text: str):
         """Encodes a string to binary.
 
         Arguments:
