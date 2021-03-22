@@ -173,6 +173,10 @@ class Utilities(commands.Cog):
     @commands.command(help='Posts text to https://mystb.in', aliases=['paste'])
     async def mystbin(self, ctx, *, text=None):
         filenames = (".txt", ".py", ".json", ".html", ".csv")
+
+        if text:
+            result = await ctx.mystbin(text)
+
         if ctx.message.reference:
             ref = ctx.message.reference
             if ref.cached_message:
@@ -203,8 +207,7 @@ class Utilities(commands.Cog):
                     decoded_message = message.decode("utf-8")
                     result = f'{await ctx.mystbin(decoded_message)}.{syntax}'
 
-        if text:
-            result = await ctx.mystbin(text)
+
 
         await qembed(ctx, result)
 
