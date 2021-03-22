@@ -365,7 +365,10 @@ class Fun(commands.Cog):
             `text`: The text you want to encode into binary."""
         e = ' '.join(map(bin, bytearray(text, encoding='utf-8')))
         e = e.split(" ")
-        await ctx.send(" ".join(i.lstrip("0b") for i in e))
+        pp = " ".join(i.lstrip("0b") for i in e)
+        if len(pp) > 1990:
+            pp = f"Output was too long so I put it here => {await ctx.mystbin(pp)}"
+        await ctx.send(pp)
 
     @executor_function
     def do_typerace(self, text):
