@@ -684,6 +684,8 @@ class Fun(commands.Cog):
         else:
             if msg.content in allowed:
                 await ctx.send('i also picked {}'.format(msg.content))
+            else:
+                await msg.add_reaction("<:bonk:759934836193361991>")
 
 def setup(bot):
     bot.add_cog(Fun(bot))
