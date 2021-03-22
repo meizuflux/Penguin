@@ -181,7 +181,7 @@ class Utilities(commands.Cog):
                     syntax = attachment.filename.split(".")[1]
                     message = await attachment.read()
                     decoded_message = message.decode("utf-8")
-                    text = f'{await ctx.mystbin(decoded_message)}.{syntax}'
+                    result = f'{await ctx.mystbin(decoded_message)}.{syntax}'
 
             else:
                 message = await self.bot.get_channel(ctx.message.reference.channel_id).fetch_message(ref.message_id)
@@ -189,7 +189,7 @@ class Utilities(commands.Cog):
                     syntax = message.attachments[0].filename.split(".")[1]
                     message_ = await message.attachments[0].read()
                     decoded_message = message_.decode("utf-8")
-                    text = f'{await ctx.mystbin(decoded_message)}.{syntax}'
+                    result = f'{await ctx.mystbin(decoded_message)}.{syntax}'
 
         if text is None:
             try:
@@ -201,9 +201,12 @@ class Utilities(commands.Cog):
                 if attachment.filename.endswith(filenames):
                     message = await message.read()
                     decoded_message = message.decode("utf-8")
-                    text = f'{await ctx.mystbin(decoded_message)}.{syntax}'
+                    result = f'{await ctx.mystbin(decoded_message)}.{syntax}'
 
-        await qembed(ctx, text)
+        if text:
+            result = await ctx.mystbin(text)
+
+        await qembed(ctx, result)
 
     # from pb https://github.com/PB4162/PB-Bot
     @commands.command(aliases=["rawmessage", "rawmsg"])
