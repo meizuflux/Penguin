@@ -180,7 +180,10 @@ class Utilities(commands.Cog):
         if ctx.message.reference:
             ref = ctx.message.reference
             if ref.cached_message:
-                attachment = ref.cached_message.attachments[0]
+                try:
+                    attachment = ref.cached_message.attachments[0]
+                except IndexError:
+                    return await ctx.send("The message you replied to did not have a valid attachment.")
                 if (ref.cached_message.attachments and attachment.filename.endswith(filenames)):
                     syntax = attachment.filename.split(".")[1]
                     message = await attachment.read()
