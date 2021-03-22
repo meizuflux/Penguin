@@ -673,6 +673,17 @@ class Fun(commands.Cog):
             This command takes no arguments."""
         await ctx.send(await self.bot.alex.fml())
 
+    @commands.command()
+    async def rps(self, ctx):
+        await ctx.send("type rock, paper, or scissors")
+        allowed = {'rock', 'paper', 'scissors'}
+        try:
+            msg = await self.bot.wait_for('message', timeout = 60, check = lambda m: m.channel == ctx.channel and m.author == ctx.author)
+        except asyncio.TimeoutError:
+            await ctx.send('yu didn\'t send rock, paper, or scissors')
+        else:
+            if msg.content in allowed:
+                await ctx.send('i also picked {}'.format(msg.content))
 
 def setup(bot):
     bot.add_cog(Fun(bot))
