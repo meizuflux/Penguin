@@ -347,7 +347,8 @@ class Fun(commands.Cog):
 
         Arguments:
             `binary_string`: The binary string you want to decode."""
-        dd = binary_string.split()
+        idk = await self.check_mystbin(binary_string)
+        dd = idk.split()
         output = ""
         for thing in dd:
             thing = int(thing, 2)
