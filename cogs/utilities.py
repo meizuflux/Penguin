@@ -326,6 +326,12 @@ class Utilities(commands.Cog):
             return await ctx.send(f'Output was too long so I put it here => {await ctx.mystbin(result)}')
         await ctx.send(f"```\n{result}```")
 
+    @commands.command(aliases=['calc'])
+    async def math(self, ctx, *, expr: str):
+        params = {"expr": math}
+        async with bot.session.get("http://api.mathjs.org/v4/", params=params) as f:
+            result = await f.text()
+        await ctx.send(f"```yaml\n{result}```")
 
 def setup(bot):
     bot.add_cog(Utilities(bot))
