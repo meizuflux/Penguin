@@ -35,7 +35,7 @@ class Images(commands.Cog):
         await self.do_alex_image(ctx, method="amiajoke", args=[await get_image_url(ctx, image)])
 
     @commands.command()
-    async def shipimage(self, ctx, user1, user2=None):
+    async def shipimage(self, ctx, user1: discord.User, user2: discord.User=None):
         if not user2: user2 = ctx.author
         await self.do_alex_image(ctx, method='ship', args=[user1.avatar_url, user2.avatar_url])
 
