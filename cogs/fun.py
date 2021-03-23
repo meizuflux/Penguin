@@ -692,5 +692,13 @@ class Fun(commands.Cog):
             else:
                 await msg.add_reaction("<:bonk:759934836193361991>")
 
+    @commands.command()
+    async def shout(self, ctx, *, text):
+        """Shouts text.
+        
+        Arguments:
+            `text`: The text you want shouted."""
+        await ctx.send(text.upper(), allowed_mentions=discord.AllowedMentions().none())
+
 def setup(bot):
     bot.add_cog(Fun(bot))

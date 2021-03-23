@@ -329,7 +329,7 @@ class Utilities(commands.Cog):
     @commands.command(aliases=['calc'])
     async def math(self, ctx, *, expr: str):
         params = {"expr": expr}
-        async with self.bot.session.get("http://api.mathjs.org/v4/", params=params) as f:
+        async with self.bot.session.get("https://api.mathjs.org/v4/", params=params) as f:
             result = await f.text()
         await ctx.send(f"```yaml\n{result}```")
 
