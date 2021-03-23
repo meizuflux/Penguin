@@ -1,6 +1,7 @@
 import typing
 
 import discord
+import asyncio
 import io
 from discord.ext import commands
 
@@ -61,29 +62,29 @@ class Images(commands.Cog):
     @commands.command()
     async def fakecat(self, ctx):
         async with self.bot.session.get("https://thiscatdoesnotexist.com/") as resp:
-            file = discord.File(io.BytesIO(await resp.read()), "thiscatdoesnotexist.png")
-        embed=ctx.embed(title='This cat does not exist.').set_image(url="attachment://thiscatdoesnotexist.png")
+            file = discord.File(io.BytesIO(await resp.read()), "fake.png")
+        embed=ctx.embed(title='This cat does not exist.').set_image(url="attachment://fake.png")
         await ctx.send(embed=embed, file=file)
 
     @commands.command()
     async def fakeperson(self, ctx):
-        async with self.bot.session.get("https://thispersondoesnotexist.com/") as resp:
+        async with self.bot.session.get("https://thispersondoesnotexist.com/image") as resp:
             file = discord.File(io.BytesIO(await resp.read()), "thispersondoesnotexist.png")
-        embed=ctx.embed(title='This person does not exist.').set_image(url="attachment://thispersondoesnotexist.png")
+        embed=ctx.embed(title='This person does not exist.').set_image(url="attachment://fake.png")
         await ctx.send(embed=embed, file=file)
 
     @commands.command()
     async def fakeartwork(self, ctx):
         async with self.bot.session.get("https://thisartworkdoesnotexist.com/") as resp:
-            file = discord.File(io.BytesIO(await resp.read()), "thisartworkdoesnotexist.png")
-        embed=ctx.embed(title='This person does not exist.').set_image(url="attachment://thisartworkdoesnotexist.png")
+            file = discord.File(io.BytesIO(await resp.read()), "fake.png")
+        embed=ctx.embed(title='This artwork does not exist.').set_image(url="attachment://fake.png")
         await ctx.send(embed=embed, file=file)
 
     @commands.command()
-    async def fakechemical(self, ctx):
-        async with self.bot.session.get("https://thischemicaldoesnotexist.com/") as resp:
-            file = discord.File(io.BytesIO(await resp.read()), "thischemicaldoesnotexist.png")
-        embed=ctx.embed(title='This chemical does not exist.').set_image(url="attachment://thischemicaldoesnotexist.png")
+    async def fakehorse(self, ctx):
+        async with self.bot.session.get("https://thishorsedoesnotexist.com/") as resp:
+            file = discord.File(io.BytesIO(await resp.read()), "fake.png")
+        embed=ctx.embed(title='This chemical does not exist.').set_image(url="attachment://fake.png")
         await ctx.send(embed=embed, file=file)
 
 
