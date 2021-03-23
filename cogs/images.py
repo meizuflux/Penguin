@@ -84,7 +84,7 @@ class Images(commands.Cog):
     async def fakehorse(self, ctx):
         async with self.bot.session.get("https://thishorsedoesnotexist.com/") as resp:
             file = discord.File(io.BytesIO(await resp.read()), "fake.png")
-        embed=ctx.embed(title='This chemical does not exist.').set_image(url="attachment://fake.png")
+        embed=ctx.embed(title='This horse does not exist.').set_image(url="attachment://fake.png")
         await ctx.send(embed=embed, file=file)
 
 
