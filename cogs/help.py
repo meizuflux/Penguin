@@ -194,8 +194,6 @@ class PaginatedHelp(commands.MinimalHelpCommand):
         return embed
 
     async def handle_help(self, command):
-        if not await command.can_run(self.context):
-            return await qembed(self.context, f'You don\'t have enough permissions to see the help for `{command}`')
         return await self.context.send(embed=self.get_command_help(command))
 
     async def send_group_help(self, group):
