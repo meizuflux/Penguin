@@ -53,7 +53,7 @@ class Moderation(commands.Cog):
     @commands.command()
     @commands.has_permissions(kick_members=True)
     @commands.bot_has_permissions(kick_members=True)
-    async def kick(self, ctx, member: Target, *, reason):
+    async def kick(self, ctx, member: Target, *, reason=None):
         reason = get_reason(ctx, reason)
         with contextlib.suppress((discord.Forbidden, discord.HTTPException)):
             await member.send(f"You have been kicked from {ctx.guild.name}.\n{reason}")
