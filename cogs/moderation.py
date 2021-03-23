@@ -48,7 +48,7 @@ class Moderation(commands.Cog):
         with contextlib.suppress((discord.Forbidden, discord.HTTPException)):
             await member.send(f"You have been kicked from {ctx.guild.name}.\n{reason}")
         await ctx.guild.kick(member, reason=reason)
-        await ctx.send
+        await ctx.message.add_reaction("<:check:314349398811475968>")
         
         
 def setup(bot):
