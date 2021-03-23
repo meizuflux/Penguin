@@ -22,9 +22,17 @@ class TargetUser(commands.Converter):
             raise commands.BadArgument(f"You can't {ctx.invoked_with} the server owner.")
         return user
 
+class ModReason(commands.Converter):
+    async def convert(self, ctx, argument) -> str:
+        if arguemnt is none: raise commands.BadArgument("test")
+
 class Moderation(commands.Cog):
     def __init(self, bot):
         self.bot = bot
+
+    @commands.command()
+    async def test(self, idk: ModReason=None):
+        await ctx.send(idk)
         
 def setup(bot):
     bot.add_cog(Moderation(bot))
