@@ -26,7 +26,7 @@ class CommandErrorHandler(commands.Cog):
                                                   description=f'**Blacklisted For:** {reason}'
                                                               f'\n\nYou can join the support server [here]({self.bot.support_invite}) if you feel this is a mistake.'))
 
-        command = ctx.invoked_with
+        command = ctx.command.qualified_name
 
         # This prevents any commands with local handlers being handled here in on_command_error.
         if hasattr(ctx.command, 'on_error'):
