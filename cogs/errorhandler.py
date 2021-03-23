@@ -29,7 +29,6 @@ class CommandErrorHandler(commands.Cog):
         command = ctx.invoked_with
 
         # This prevents any commands with local handlers being handled here in on_command_error.
-        global match
         if hasattr(ctx.command, 'on_error'):
             return
 
