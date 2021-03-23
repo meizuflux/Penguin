@@ -1,8 +1,9 @@
 import discord
 from discord.ext import commands
+import contextlib
 
 
-class TargetUser(commands.Converter):
+class Target(commands.Converter):
     async def convert(self, ctx, argument) -> discord.Member:
         user = await commands.MemberConverter().convert(ctx, argument)
 
@@ -22,17 +23,30 @@ class TargetUser(commands.Converter):
             raise commands.BadArgument(f"You can't {ctx.invoked_with} the server owner.")
         return user
 
-class ModReason(commands.Converter):
-    async def convert(self, ctx, argument) -> str:
-        if arguemnt is none: raise commands.BadArgument("test")
+class Reason(commands.Converter):
+    async def convert(self, ctx, None):
+
+        default = f"{str(ctx.author)}: {reason}"
+
+        if len(default) > 500:
+            raise commands.BadArgument("The provided reason is too long")
+        
+        return default
+
 
 class Moderation(commands.Cog):
     def __init(self, bot):
         self.bot = bot
 
     @commands.command()
-    async def test(self, ctx, idk: ModReason=None):
-        await ctx.send(idk + "idk")
+    @commands.has_permissions(kick_members=True)
+    @commands.bot_has_permissions(kick_members=True)
+    async def kick(self, ctx, member: Target, reason: Reason="No reason"):
+        with contextlib.supress((discord.Forbidden, discord.HTTPException)):
+            await member.send(f"You have been kicked from {ctx.guild.name}.\n{reason}")
+        await ctx.guild.kick(member, reason=reason)
+        await ctx.send
+        
         
 def setup(bot):
     bot.add_cog(Moderation(bot))
