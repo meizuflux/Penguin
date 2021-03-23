@@ -7,6 +7,9 @@ class Target(commands.Converter):
     async def convert(self, ctx, argument) -> discord.Member:
         user = await commands.MemberConverter().convert(ctx, argument)
 
+        if ctx.author == ctx.guild.owner:
+            return user
+
         if user.top_role >= ctx.me.top_role:
             raise commands.BadArgument("This members top role is higher than or equal to my top role.")
 
