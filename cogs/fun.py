@@ -282,13 +282,18 @@ class Fun(commands.Cog):
         Arguments:
             `user_1`: This is the first user to compare.
             `user_2`: [Optional] The second user to compare. If not provided defaults to you."""
-        if not user_2:
-            user_2 = ctx.author
+        if not user_2: user_2 = ctx.author
+
         random.seed(int(user_1.id) + int(user_2.id))
         love = random.randint(1, 100)
-        await qembed(ctx,
-                     f'I calculate that the love between {user_1.mention} and {user_2.mention} is {str(love)[:2]}%')
 
+        m = await self.bot.alex.ship(user1.avatar_url, user2.avatar_url)
+        file = discord.File(await m.read(), filename=f"{user_1.name}+{user_2.name}.png")
+
+        embed = ctx.embed(description=f'I calculate that the love between {user_1.mention} and {user_2.mention} is {str(love)[:2]}%')
+        embed.set_image(url=f"attachment://{user_1.name}+{user_2.name}.png")
+        await ctx.send(embed=embed)
+        
     @commands.command(aliases=['ppsize'])
     async def pp(self, ctx, user: discord.Member = None):
         """Checks how large a users pp is.
