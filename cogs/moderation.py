@@ -36,6 +36,15 @@ class Reason(commands.Converter):
         
         return default
 
+def get_reason(ctx, argument):
+    if not argument: argument = "No reason."
+    default = f"{str(ctx.author)}: {argument}"
+
+    if len(default) > 500:
+        raise commands.BadArgument("The provided reason is too long")
+        
+    return default
+
 
 class Moderation(commands.Cog):
     def __init(self, bot):
@@ -44,10 +53,10 @@ class Moderation(commands.Cog):
     @commands.command()
     @commands.has_permissions(kick_members=True)
     @commands.bot_has_permissions(kick_members=True)
-    async def kick(self, ctx, member: Target, reason: Reason="No reason"):
+    async def kick(self, ctx, member: Target, reason):
         with contextlib.suppress((discord.Forbidden, discord.HTTPException)):
             await member.send(f"You have been kicked from {ctx.guild.name}.\n{reason}")
-        await ctx.guild.kick(member, reason=reason)
+        await ctx.guild.kick(member, reason=get_reason(ctx, reason))
         await ctx.message.add_reaction("<:check:314349398811475968>")
         
         
