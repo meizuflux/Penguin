@@ -108,7 +108,7 @@ class Moderation(commands.Cog):
         await self.do_remove(ctx, limit, lambda p: True)
 
     @_remove.command(aliases=['member'])
-    async def user(self, user: discord.Member, limit=100):
+    async def user(self, ctx, user: discord.Member, limit=100):
         await self.do_remove(ctx, limit, lambda m: m.author == user)
 
     
