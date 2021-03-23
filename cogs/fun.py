@@ -287,7 +287,7 @@ class Fun(commands.Cog):
         random.seed(int(user_1.id) + int(user_2.id))
         love = random.randint(1, 100)
 
-        embed = ctx.embed(description=f'I calculate that the love between {user_1.mention} and {user_2.mention} is {str(love)[:2]}%')
+        embed = ctx.embed(description=f'**I calculate that the love between {user_1.mention} and {user_2.mention} is {str(love)[:2]}%.**')
         embed.set_image(url="attachment://love.png")
 
         m = await self.bot.alex.ship(user_1.avatar_url, user_2.avatar_url)
