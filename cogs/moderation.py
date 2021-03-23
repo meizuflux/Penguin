@@ -31,8 +31,8 @@ class Moderation(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def test(self, idk: ModReason=None):
-        await ctx.send(idk)
+    async def test(self, ctx, idk: ModReason=None):
+        await ctx.send(idk + "idk")
         
 def setup(bot):
     bot.add_cog(Moderation(bot))
