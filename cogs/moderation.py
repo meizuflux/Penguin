@@ -24,9 +24,9 @@ class Target(commands.Converter):
         return user
 
 class Reason(commands.Converter):
-    async def convert(self, ctx, None):
+    async def convert(self, ctx, argument):
 
-        default = f"{str(ctx.author)}: {reason}"
+        default = f"{str(ctx.author)}: {argument}"
 
         if len(default) > 500:
             raise commands.BadArgument("The provided reason is too long")
