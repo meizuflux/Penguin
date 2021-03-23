@@ -7,7 +7,7 @@ import humanize
 import prettify_exceptions
 from discord.ext import commands
 
-from utils.default import Maintenance, Blacklisted, DiscordNoWork
+from utils.default import Maintenance, Blacklisted
 from utils.fuzzy import finder
 
 
