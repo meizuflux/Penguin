@@ -53,6 +53,7 @@ class Moderation(commands.Cog):
     @commands.command()
     @commands.has_permissions(kick_members=True)
     @commands.bot_has_permissions(kick_members=True)
+    @commands.guild_only()
     async def kick(self, ctx, member: Target, *, reason=None):
         reason = get_reason(ctx, reason)
         with contextlib.suppress((discord.Forbidden, discord.HTTPException)):
@@ -63,6 +64,7 @@ class Moderation(commands.Cog):
     @commands.command()
     @commands.has_permissions(ban_members=True)
     @commands.bot_has_permissions(ban_members=True)
+    @commands.guild_only()
     async def ban(self, ctx, member: Target, *, reason=None):
         reason = get_reason(ctx, reason)
         with contextlib.suppress((discord.Forbidden, discord.HTTPException)):
@@ -71,8 +73,9 @@ class Moderation(commands.Cog):
         await ctx.message.add_reaction("<:check:314349398811475968>")
 
     @commands.command()
-    @commands.has_permissions(ban_members=True)
+    @commands.has_permissions(kick_members=True)
     @commands.bot_has_permissions(ban_members=True)
+    @commands.guild_only()
     async def softban(self, ctx, member: Target, *, reason=None):
         reason = get_reason(ctx, reason)
         with contextlib.suppress((discord.Forbidden, discord.HTTPException)):
@@ -80,7 +83,36 @@ class Moderation(commands.Cog):
         await ctx.guild.ban(member, reason=reason)
         await ctx.guild.unban(member, reason=f"Softban by {ctx.author}")
         await ctx.message.add_reaction("<:check:314349398811475968>")
+
+
+    @commands.group(name="remove")
+    @commands.guild_only()
+    @commands.has_permissions(manage_messages=True)
+    @commands.bot_has_permissions(manage_messages=True)
+    async def _remove(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help(str(ctx.command))
+
+    async def do_remove(self, ctx, limit, check):
+        if limit > 2000:
+            raise commands.BadArgument("Limit must be under 2000.")
+
+        try:
+            deleted = await ctx.channel.purge(limit=limit, check=check)
+        except discord.HTTPException as e:
+            return await ctx.send(embed=ctx.embed(title='Looks like Discord is having some issues.', description=e))
+        await ctx.send(embed=ctx.embed(title=f"Successfully deleted {len(deleted)} messages"))
+
+    @_remove.command()
+    async def messages(self, ctx, limit=100):
+        await self.do_remove(ctx, limit, lambda p: True)
+
+    @_remove.command(aliases=['member'])
+    async def user(self, user: discord.Member, limit=100):
+        await self.do_remove(ctx, limit, lambda m: m.author == user)
+
+    
         
-        
+
 def setup(bot):
     bot.add_cog(Moderation(bot))
