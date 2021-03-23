@@ -56,7 +56,7 @@ class Moderation(commands.Cog):
     async def kick(self, ctx, member: Target, *, reason=None):
         reason = get_reason(ctx, reason)
         with contextlib.suppress((discord.Forbidden, discord.HTTPException)):
-            await member.send(f"You have been kicked from {ctx.guild.name}.\n{reason}")
+            await member.send(f"You have been kicked from **{ctx.guild.name}**.\n**{reason}**")
         await ctx.guild.kick(member, reason=reason)
         await ctx.message.add_reaction("<:check:314349398811475968>")
 
@@ -66,8 +66,19 @@ class Moderation(commands.Cog):
     async def ban(self, ctx, member: Target, *, reason=None):
         reason = get_reason(ctx, reason)
         with contextlib.suppress((discord.Forbidden, discord.HTTPException)):
-            await member.send(f"You have been banned from {ctx.guild.name}.\n{reason}")
+            await member.send(f"You have been banned from **{ctx.guild.name}**.\n**{reason}**")
         await ctx.guild.ban(member, reason=reason)
+        await ctx.message.add_reaction("<:check:314349398811475968>")
+
+    @commands.command()
+    @commands.has_permissions(ban_members=True)
+    @commands.bot_has_permissions(ban_members=True)
+    async def softban(self, ctx, member: Target, *, reason=None):
+        reason = get_reason(ctx, reason)
+        with contextlib.suppress((discord.Forbidden, discord.HTTPException)):
+            await member.send(f"You have been soft banned from **{ctx.guild.name}**.\n**{reason}**")
+        await ctx.guild.ban(member, reason=reason)
+        await ctx.guild.unban(member, reason=f"Softban by {ctx.author}")
         await ctx.message.add_reaction("<:check:314349398811475968>")
         
         
