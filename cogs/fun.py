@@ -717,5 +717,27 @@ class Fun(commands.Cog):
             `text`: The text you want shouted."""
         await ctx.send(text.upper(), allowed_mentions=discord.AllowedMentions().none())
 
+    def truncate(string, width):
+        if len(string) > width:
+            string = string[:width-3] + '...'
+        return string
+
+    @commands.command()
+    async def anime(self, ctx, *, search: str):
+        
+        BASE_URL = "https://kitsu.io/api/edge"
+        params = {"filter[text]": search}
+        async with self.bot.session.get(BASE_URL + "/anime", params=params) as f:
+            if f.status != 200:
+                return await ctx.send('Something went wrong.')
+            data = await f.json()
+        animes = data.get("data")
+        if not animes:
+            return await ctx.send(embed=ctx.embed(title="Anime not found."))
+        result = animes[0]
+        synopsis = self.truncate(result['attributes']['synopsis'], 1000)
+        result_embed = ctx.embed(title=result["canonicalTitle"], description=synopsis)
+        await ctx.send(embed=result_embed)
+
 def setup(bot):
     bot.add_cog(Fun(bot))
