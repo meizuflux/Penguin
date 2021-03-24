@@ -727,19 +727,24 @@ class Fun(commands.Cog):
         
         BASE_URL = "https://kitsu.io/api/edge"
         params = {"filter[text]": search}
+
         async with self.bot.session.get(BASE_URL + "/anime", params=params) as f:
             if f.status != 200:
                 return await ctx.send('Something went wrong.')
             data = await f.json()
+
         animes = data.get("data")
         if not animes:
             return await ctx.send(embed=ctx.embed(title="Anime not found."))
+
         result = animes[0]
         attrs = result["attributes"]
-        #await ctx.author.send(f"```json\n{await ctx.mystbin(json.dumps(result))}```")
+
         synopsis = self.truncate(attrs['synopsis'], 500)
+        
         result_embed = ctx.embed(title=attrs["canonicalTitle"], description=synopsis)
         result_embed.set_image(url=attrs["posterImage"]["medium"])
+
         await ctx.send(embed=result_embed)
 
 def setup(bot):
