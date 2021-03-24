@@ -741,9 +741,9 @@ class Fun(commands.Cog):
         attrs = result["attributes"]
 
         synopsis = self.truncate(attrs['synopsis'], 500)
-        
+
         result_embed = ctx.embed(title=attrs["canonicalTitle"], description=synopsis)
-        result_embed.set_image(url=attrs["posterImage"]["medium"])
+        result_embed.set_thumbnail(url=attrs["posterImage"]["medium"])
 
         await ctx.send(embed=result_embed)
 
