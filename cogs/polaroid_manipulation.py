@@ -167,25 +167,6 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     async def oil(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         await self.send_polaroid(ctx, image, method='oil', args=[4, 55])
 
-    @executor_function
-    def liquid_rescale(self, ctx, image):
-        img = polaroid.Image(image)
-        img.liquid_rescale(int(int(img.width) / 2), int(int(img.height) / 2))
-        return img
-
-    @commands.command(help='Makes an image magiked', aliases=['magic'])
-    async def magik(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
-        image = await get_image_object(ctx, image)
-        img = await self.liquid_rescale(ctx, image)
-        file = discord.File(BytesIO(img.save_bytes()),
-                            filename="magik.png")
-
-        embed = discord.Embed(colour=self.bot.embed_color,
-                              timestamp=ctx.message.created_at)
-        embed.set_image(url="attachment://magik.png")
-        embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
-        await ctx.send(embed=embed, file=file)
-
     @commands.group(help='Some commands that apply simple filters.')
     async def filter(self, ctx):
         if ctx.invoked_subcommand is None:
