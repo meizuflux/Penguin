@@ -719,16 +719,15 @@ class Fun(commands.Cog):
 
     def truncate(self, string, width):
         if len(string) > width:
-            string = string[:width-3] + '...'
+            string = string[:width] + '...'
         return string
 
     @commands.command()
     async def anime(self, ctx, *, search: str):
-        
-        BASE_URL = "https://kitsu.io/api/edge"
+
         params = {"filter[text]": search}
 
-        async with self.bot.session.get(BASE_URL + "/anime", params=params) as f:
+        async with self.bot.session.get("https://kitsu.io/api/edge" + "/anime", params=params) as f:
             if f.status != 200:
                 return await ctx.send('Something went wrong.')
             data = await f.json()
@@ -740,7 +739,7 @@ class Fun(commands.Cog):
         result = animes[0]
         attrs = result["attributes"]
 
-        synopsis = self.truncate(attrs['synopsis'], 500)
+        synopsis = self.truncate(attrs['synopsis'], 350)
 
         result_embed = ctx.embed(title=attrs["canonicalTitle"], description=synopsis)
         result_embed.set_thumbnail(url=attrs["posterImage"]["medium"])
