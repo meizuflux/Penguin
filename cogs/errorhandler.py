@@ -25,9 +25,7 @@ class CommandErrorHandler(commands.Cog):
             return await ctx.author.send(embed=ctx.embed(title='⚠️ You are blacklisted.',
                                                   description=f'**Blacklisted For:** {reason}'
                                                               f'\n\nYou can join the support server [here]({self.bot.support_invite}) if you feel this is a mistake.'))
-
-        command = ctx.command.qualified_name
-
+        
         # This prevents any commands with local handlers being handled here in on_command_error.
         if hasattr(ctx.command, 'on_error'):
             return
@@ -63,6 +61,8 @@ class CommandErrorHandler(commands.Cog):
             return await ctx.send(embed=ctx.embed(
                 description=f"No command called `{failed_command}` found. Did you mean `{match}`?"
             ))
+            
+        command = ctx.command.qualified_name
 
         if isinstance(error, commands.CheckFailure):
             return await ctx.send(embed=ctx.embed(
