@@ -717,7 +717,7 @@ class Fun(commands.Cog):
             `text`: The text you want shouted."""
         await ctx.send(text.upper(), allowed_mentions=discord.AllowedMentions().none())
 
-    def truncate(string, width):
+    def truncate(self, string, width):
         if len(string) > width:
             string = string[:width-3] + '...'
         return string
