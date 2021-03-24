@@ -1,4 +1,19 @@
-# credit here goes to DeltaWing#0700 for the sql error handling its kinda cool
+"""
+Copyright (C) 2021 ppotatoo
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
 
 import asyncio
 import inspect
@@ -7,11 +22,12 @@ import os
 import aiohttp
 import asyncpg
 import discord
+import traceback
 import tabulate
 from discord.ext import commands
 from jishaku.paginators import PaginatorInterface, WrappedPaginator
 
-from utils.default import qembed, traceback_maker
+from utils.default import qembed
 
 
 # from prettytable import PrettyTable
@@ -46,7 +62,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         if isinstance(error, commands.CommandInvokeError):
             error = error.original
             if isinstance(error, asyncpg.exceptions.UndefinedTableError):
-                return await qembed(ctx, "That table does not exist.")
+                return await qembed(ctx, "This table does not exist.")
             elif isinstance(error, asyncpg.exceptions.PostgresSyntaxError):
                 return await qembed(ctx, f"There was a syntax error:```\n {error} ```")
             else:
@@ -79,8 +95,10 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
                 try:
                     self.bot.reload_extension(f"cogs.{name}")
                 except Exception as e:
+                    _traceback = ''.join(traceback.format_tb(e.__traceback__))
+                    error = '```py\n{1}{0}: {2}\n```'.format(type(e).__name__, _traceback, e)
                     error_collection.append(
-                        [file, traceback_maker(e, advance=False)]
+                        [file, error]
                     )
 
         if error_collection:
