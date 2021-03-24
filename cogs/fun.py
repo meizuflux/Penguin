@@ -735,9 +735,11 @@ class Fun(commands.Cog):
         if not animes:
             return await ctx.send(embed=ctx.embed(title="Anime not found."))
         result = animes[0]
+        attrs = result["attributes"]
         #await ctx.author.send(f"```json\n{await ctx.mystbin(json.dumps(result))}```")
-        synopsis = self.truncate(result['attributes']['synopsis'], 1000)
-        result_embed = ctx.embed(title=result["attributes"]["canonicalTitle"], description=synopsis)
+        synopsis = self.truncate(attrs['synopsis'], 500)
+        result_embed = ctx.embed(title=attrs["canonicalTitle"], description=synopsis)
+        result_embed.set_image(url=attrs["posterImage"]["medium"])
         await ctx.send(embed=result_embed)
 
 def setup(bot):
