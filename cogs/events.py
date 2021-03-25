@@ -23,6 +23,7 @@ class Events(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.activity_type = 1
+        self.change_presence.start()
 
     @commands.Cog.listener()
     async def on_command(self, ctx):
@@ -31,6 +32,7 @@ class Events(commands.Cog):
 
     @tasks.loop(minutes=5)
     async def change_presence(self):
+        if not self.bot.is_ready: return
         if self.activity_type == 1:
             name = f"{len(self.bot.guilds)} servers and {len(self.bot.users)} users"
 
