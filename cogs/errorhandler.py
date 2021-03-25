@@ -7,7 +7,7 @@ import humanize
 import prettify_exceptions
 from discord.ext import commands
 
-from utils.default import Maintenance, Blacklisted
+from utils.default import Blacklisted, Maintenance
 from utils.fuzzy import finder
 
 
@@ -24,9 +24,9 @@ class CommandErrorHandler(commands.Cog):
             print("BLACKLISTED")
             reason = self.bot.blacklist.get(ctx.author.id, "No reason, you probably did something dumb.")
             return await ctx.author.send(embed=ctx.embed(title='⚠️ You are blacklisted.',
-                                                  description=f'**Blacklisted For:** {reason}'
-                                                              f'\n\nYou can join the support server [here]({self.bot.support_invite}) if you feel this is a mistake.'))
-        
+                                                         description=f'**Blacklisted For:** {reason}'
+                                                                     f'\n\nYou can join the support server [here]({self.bot.support_invite}) if you feel this is a mistake.'))
+
         # This prevents any commands with local handlers being handled here in on_command_error.
         if hasattr(ctx.command, 'on_error'):
             return
@@ -62,7 +62,7 @@ class CommandErrorHandler(commands.Cog):
             return await ctx.send(embed=ctx.embed(
                 description=f"No command called `{failed_command}` found. Did you mean `{match}`?"
             ))
-            
+
         command = ctx.command.qualified_name
 
         if isinstance(error, commands.CheckFailure):

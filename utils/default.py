@@ -31,5 +31,5 @@ class Maintenance(commands.CheckFailure):
     pass
 
 
-class Blacklisted(commands.CheckFailure):
+class Blacklisted(commands.CommandError):
     pass
