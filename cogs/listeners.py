@@ -15,18 +15,34 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-from discord.ext import commands
+import discord
+from discord.ext import commands, tasks
 
 
 class Listeners(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.activity_type = 1
 
     @commands.Cog.listener()
     async def on_command(self, ctx):
         self.bot.usage_counter += 1
         self.bot.command_usage[ctx.command.qualified_name] += 1
 
+    @tasks.loop(minutes=5)
+    async def change_presence(self):
+        if self.activity_type == 1:
+            name = f"{len(self.bot.guilds)} servers and {len(self.bot.users)} users"
+
+            activity = discord.Activity(type=discord.ActivityType.watching, name=name)
+            await self.bot.change_presence(activity=activity)
+            self.activity_type = 0
+        if self.activity_type == 0:
+            name = f"@{self.bot.user.name}"
+            activity = discord.Activity(type=discord.ActivityType.listening, name=name)
+
+            await self.bot.change_presence(activity=activity)
+            self.activity_type = 1
 
 def setup(bot):
     bot.add_cog(Listeners(bot))
