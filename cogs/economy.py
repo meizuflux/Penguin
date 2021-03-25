@@ -51,7 +51,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             number = number.strip("%")
             if not number.isdigit():
                 raise commands.BadArgument("That's... not a valid percentage.")
-            number = round(number)
+            number = round(float(number))
             if number > 100:
                 raise commands.BadArgument("You can't do more than 100%.")
             percentage = lambda percent, total_amount: (percent * total_amount) / 100
