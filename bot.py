@@ -68,6 +68,7 @@ class Chuck(commands.Bot):
         self.command_usage = collections.Counter()
         self.maintenance = False
 
+
     @staticmethod
     def get_config(item: str):
         """Gets an item from the config."""
