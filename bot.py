@@ -179,7 +179,7 @@ class Chuck(commands.Bot):
 
     async def on_message(self, message: discord.Message):
         """Checking if someone pings the bot."""
-        perms = message.channel.permissions_for(message.guild.me).send_messages + message.channel.permissions_for(message.guild.me).embed_links
+        perms = message.channel.permissions_for(message.guild.me).send_messages + message.channel.permissions_for(message.guild.me).embed_links if message.guild else 2
         if message.author.bot or not self.is_ready() or perms != 2:
             return
         if re.fullmatch(fr"^(<@!?{self.user.id}>)\s*", message.content):
