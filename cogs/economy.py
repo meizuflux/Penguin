@@ -143,7 +143,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
     async def withdraw(self, ctx, amount: str):
         wallet, bank = await get_stats(ctx, ctx.author.id)
 
-        amount = self.get_number(amount, wallet)
+        amount = self.get_number(amount, bank)
 
         wallet += amount
         updated_bank = bank - amount
