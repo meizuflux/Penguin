@@ -17,6 +17,7 @@ class CommandErrorHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
+        print(error)
         if isinstance(error, Maintenance):
             return await ctx.send(embed=ctx.embed(title='⚠️ Maintenence mode is active.'))
 
