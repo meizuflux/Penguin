@@ -21,11 +21,15 @@ class CommandErrorHandler(commands.Cog):
             return await ctx.send(embed=ctx.embed(title='⚠️ Maintenence mode is active.'))
 
         if isinstance(error, Blacklisted):
-            print("BLACKLISTED")
             reason = self.bot.blacklist.get(ctx.author.id, "No reason, you probably did something dumb.")
-            return await ctx.author.send(embed=ctx.embed(title='⚠️ You are blacklisted.',
-                                                         description=f'**Blacklisted For:** {reason}'
-                                                                     f'\n\nYou can join the support server [here]({self.bot.support_invite}) if you feel this is a mistake.'))
+            embed = ctx.embed(title='⚠️ You are blacklisted.',
+                              description=f'**Blacklisted For:** {reason}'
+                                          f'\n\nYou can join the support server [here]({self.bot.support_invite}) if you feel this is a mistake.')
+
+            try:
+                return await ctx.author.send(embed=embed)
+            except discord.Forbidden:
+                await ctx.send(embed=embed)
 
         # This prevents any commands with local handlers being handled here in on_command_error.
         if hasattr(ctx.command, 'on_error'):
