@@ -43,8 +43,38 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
     """Earn some money. This ties in directly to the stock category."""
 
     def __init__(self, bot):
-        """Creates the bot."""
         self.bot = bot
+
+    async def get_number(self, number: float, total: str):
+        number = number.replace(",", "")
+        if number.endswith("%"):
+            number = number.strip("%")
+            if not number.isdigit() or number > 100:
+                raise commands.BadArgument("Invalid amount provided for percentage.")
+            percentage = lambda percent, total_amount: (percent * total_amount) / 100
+            amount = percentage(number, total)
+
+        elif number == 'half':
+            amount = total / 2
+
+        elif number in ('max', 'all'):
+            amount = total
+        elif number.isdigit():
+            amount = int(number)
+            if amount == 0:
+                raise commands.BadArgument("You need to provide an amount that results in over $0")
+        else:
+            raise commands.BadArgument("Invalid amount provided.")
+
+        amount = round(amount)
+
+        if amount > 100000000000:
+            raise commands.BadArgument("Transfers of money over one billion are prohibited.")
+
+        if amount > total:
+            raise commands.BadArgument("That's more money than you have...")
+
+        return amount
 
     @commands.command(help='Registers you into the database')
     async def register(self, ctx):
@@ -90,76 +120,53 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         await ctx.send(embed=lb)
 
     @commands.command(help='Deposits a set amount into your bank', aliases=['dep'])
-    async def deposit(self, ctx, amount):
+    async def deposit(self, ctx, amount: str):
         wallet, bank = await get_stats(ctx, ctx.author.id)
 
-        if amount.lower() == 'all':
-            bank = bank + wallet
-            updated_wallet = 0
-            int_comma = humanize.intcomma(wallet)
-            message = f"You deposited your entire wallet of ${int_comma}"
+        amount = self.get_number(amount, wallet)
 
-        else:
-            if int(amount) > wallet:
-                return await qembed(ctx, 'You don\'t have that much money in your wallet.')
+        updated_wallet = amount
+        bank += amount
 
-            if int(amount) < 0:
-                return await qembed(ctx, 'How exactly are you going to deposit a negative amount of money?')
+        query = (
+            """
+            UPDATE economy SET wallet = $1, bank = $2
+            WHERE user_id = $3
+            """
+        )
 
-            updated_wallet = wallet - int(amount)
-            bank += int(amount)
-            message = f'You deposited ${humanize.intcomma(amount)}'
+        await self.bot.db.execute(query, updated_wallet, bank, ctx.author.id)
 
-        await self.bot.db.execute("UPDATE economy SET wallet = $1, bank = $2 WHERE user_id = $3", updated_wallet, bank,
-                                  ctx.author.id)
+        await qembed(ctx, f'You deposited **${humanize.intcomma(amount)}** into your bank.')
 
-        await qembed(ctx, message)
-
-    @commands.command(help='Deposits a set amount into your bank', aliases=['wd', 'with'])
-    async def withdraw(self, ctx, amount):
+    @commands.command(help='Withdraws a set amount from your bank', aliases=['wd', 'with'])
+    async def withdraw(self, ctx, amount: str):
         wallet, bank = await get_stats(ctx, ctx.author.id)
 
-        if amount.lower() == 'all':
-            wallet = bank + wallet
-            updated_bank = 0
-            message = f'You withdrew your entire bank of ${humanize.intcomma(bank)}'
+        amount = self.get_number(amount, wallet)
 
-        else:
-            if int(amount) > bank:
-                return await qembed(ctx, 'You don\'t have that much money in your bank.')
+        wallet += amount
+        updated_bank = bank - amount
 
-            if int(amount) < 0:
-                return await qembed(ctx, 'You can\'t exactly withdraw a negative amount of money')
+        query = (
+            """
+            UPDATE economy SET wallet = $1, bank = $2
+            WHERE user_id = $3
+            """
+        )
 
-            if bank < int(amount):
-                return await qembed(ctx, 'You don\'t have that much money!')
+        await self.bot.db.execute(query, wallet, updated_bank, ctx.author.id)
+        await qembed(ctx, f'You withdrew **${humanize.intcomma(amount)}** into your wallet.')
 
-            wallet += int(amount)
-            updated_bank = bank - int(amount)
-            message = f'You withdrew ${humanize.intcomma(amount)}'
-        await self.bot.db.execute("UPDATE economy SET wallet = $1, bank = $2 WHERE user_id = $3", wallet, updated_bank,
-                                  ctx.author.id)
-        await qembed(ctx, message)
-
-    @commands.command(help='Lets you send money over to another user', alises=['send'])
-    async def transfer(self, ctx, user: discord.Member, amount: typing.Union[str, int]):
+    @commands.command(help='Lets you send money over to another user', alises=['send', 'pay'])
+    async def transfer(self, ctx, user: discord.Member, amount: str):
         author_wallet, _ = await get_stats(ctx, ctx.author.id)
         target_wallet, _ = await get_stats(ctx, user.id)
 
-        if isinstance(amount, int):
-            if amount > author_wallet:
-                return await qembed(ctx, 'You don\'t have that much money in your wallet.')
+        amount = self.get_number(amount, author_wallet)
 
-            elif amount <= 0:
-                return await qembed(ctx,
-                                    f'{ctx.author.name}, it just isn\'t yet possible to send {user.name} a negative amount of money.')
-            amount = int(amount)
-
-        elif isinstance(amount, str) and amount.lower() == 'all':
-            amount = author_wallet
-
-        author_wallet -= int(amount)
-        target_wallet += int(amount)
+        author_wallet -= amount
+        target_wallet += amount
 
         await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE user_id = $2", author_wallet, ctx.author.id)
 
@@ -169,6 +176,11 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Takes a random amount of $ from someone', alises=['mug', 'steal'])
     async def rob(self, ctx, user: discord.Member):
+
+        if random.randint(1, 2) == 2:
+            desc = f"You try to rob {user.mention}, but the police see you and let you go with a warning."
+            return await ctx.send(embed=ctx.embed(description=desc))
+
         author_wallet, author_bank = await get_stats(ctx, ctx.author.id)
         target_wallet, target_bank = await get_stats(ctx, user.id)
 
@@ -177,16 +189,23 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
         amount = random.randint(1, target_wallet)
 
-        author_wallet += int(amount)
-        target_wallet -= int(amount)
+        author_wallet += amount
+        target_wallet -= amount
 
-        await self.bot.db.execute("UPDATE economy SET wallet = $1, bank = $2 WHERE user_id = $3", author_wallet,
-                                  author_bank, ctx.author.id)
+        author_query = (
+            """UPDATE economy SET wallet = $1
+            WHERE user_id = $2"""
+        )
+        target_query = (
+            """UPDATE economy SET wallet = $1
+            WHERE user_id = $2"""
+        )
 
-        await self.bot.db.execute("UPDATE economy SET wallet = $1, bank = $2 WHERE user_id = $3", target_wallet,
-                                  target_bank, user.id)
+        await self.bot.db.execute(author_query, author_wallet, ctx.author.id)
 
-        await qembed(ctx, f'You stole ${humanize.intcomma(amount)} from {user.mention}!')
+        await self.bot.db.execute(target_query, target_wallet, user.id)
+
+        await qembed(ctx, f'You stole **${humanize.intcomma(amount)}** from {user.mention}!')
 
     @commands.command(help='Work for some $$$')
     @commands.cooldown(rate=1, per=7200, type=commands.BucketType.user)
@@ -195,39 +214,51 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
         cash = random.randint(100, 500)
 
-        await self.bot.db.execute("UPDATE economy SET wallet = $1, bank = $2 WHERE user_id = $3", author_wallet + cash,
-                                  author_bank, ctx.author.id)
+        query = (
+            """UPDATE economy SET wallet = $1
+            WHERE user_id = $3"""
+        )
+
+        await self.bot.db.execute(query, author_wallet + cash, ctx.author.id)
         if cash >= 250:
             amount = 'handsome'
 
         if cash <= 249:
             amount = 'meager'
 
-        await qembed(ctx, f'You work and get paid a {amount} amount of ${cash}.')
+        await qembed(ctx, f'You work and get paid a {amount} amount of **${cash}.**')
 
     @commands.command(help='Daily reward')
     @commands.cooldown(rate=1, per=86400, type=commands.BucketType.user)
     async def daily(self, ctx):
-        data = await get_stats(ctx, ctx.author.id)
+        wallet, _ = await get_stats(ctx, ctx.author.id)
 
-        cash = random.randint(500, 700)
+        cash = random.randint(500, 1000)
 
-        await self.bot.db.execute("UPDATE economy SET wallet = $1, bank = $2 WHERE user_id = $3", data[0] + cash,
-                                  data[1], ctx.author.id)
+        query = (
+            """UPDATE economy SET wallet = $1
+            WHERE user_id = $3"""
+        )
 
-        await qembed(ctx, f'You collected ${cash} from the daily gift!')
+        await self.bot.db.execute(query, wallet + cash, ctx.author.id)
+
+        await qembed(ctx, f'You\'ve collected **${cash}** from the daily gift!')
 
     @commands.command(help='Fish in order to get some money.')
     @commands.cooldown(rate=1, per=7200, type=commands.BucketType.user)
     async def fish(self, ctx):
-        data = await get_stats(ctx, ctx.author.id)
+        wallet, _ = await get_stats(ctx, ctx.author.id)
 
         price = random.randint(20, 35)
         fish = random.randint(5, 20)
         cash = price * fish
 
-        await self.bot.db.execute("UPDATE economy SET wallet = $1, bank = $2 WHERE user_id = $3", data[0] + cash,
-                                  data[1], ctx.author.id)
+        query = (
+            """UPDATE economy SET wallet = $1
+            WHERE user_id = $3"""
+        )
+
+        await self.bot.db.execute(query, wallet + cash, ctx.author.id)
 
         emoji = ['🐟', '🐠', '🐡']
         await qembed(ctx,
@@ -245,34 +276,45 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             return await ctx.send('You sit all day on the street, but collect no money.')
         async with self.bot.session.get('https://pipl.ir/v1/getPerson') as f:
             cities = await f.json()
-        data = await get_stats(ctx, ctx.author.id)
+        wallet, _ = await get_stats(ctx, ctx.author.id)
 
         cash = random.randint(0, 500)
-        await self.bot.db.execute("UPDATE economy SET wallet = $1, bank = $2 WHERE user_id = $3", data[0] + cash,
-                                  data[1], ctx.author.id)
+
+        query = (
+            """UPDATE economy SET wallet = $1
+            WHERE user_id = $3"""
+        )
+
+        await self.bot.db.execute(query, wallet + cash, ctx.author.id)
         city = cities["person"]["personal"]["city"]
-        await qembed(ctx,
-                     f'You sit on the streets of {city} and a nice {random.choice(["man", "woman"])} hands you ${cash}.')
+        msg = f'You sit on the streets of {city} and a nice {random.choice(["man", "woman"])} hands you ${cash}.'
+        await ctx.send(embed=ctx.embed(description=msg))
 
     @commands.command(help='Resets a cooldown on one command', aliases=['reset', 'cooldownreset'])
     @commands.cooldown(rate=1, per=300, type=commands.BucketType.user)
     async def resetcooldown(self, ctx, command):
         eco = self.bot.get_cog("Economy")
-        data = await get_stats(ctx, ctx.author.id)
+        wallet, _ = await get_stats(ctx, ctx.author.id)
         if self.bot.get_command(command) not in eco.walk_commands():
             return await qembed(ctx,
-                                f'You can only reset the cooldown for commands in this category. You can do `{ctx.prefix}help Economy` to see all the commands.')
+                                f'You can only reset the cooldown for commands in this category. You can do `{ctx.clean_prefix}help Economy` to see all the commands.')
 
         if command == 'daily':
             return await qembed(ctx,
                                 'You can\'t reset the daily command, sorry. '
                                 'The whole point is that, well, it\'s meant to be once a day.')
 
-        if data[0] < 400:
+        if wallet < 400:
             return await qembed(ctx, 'You need at least 400 dollars.')
 
+        query = (
+            """UPDATE economy SET wallet = $1
+            WHERE user_id = $3"""
+        )
+
+
         self.bot.get_command(command).reset_cooldown(ctx)
-        await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE user_id = $2", data[0] - 400, ctx.author.id)
+        await self.bot.db.execute(query, wallet - 400, ctx.author.id)
         await qembed(ctx,
                      f'Reset the command cooldown for the command `{command}` and subtracted $400 from your account.')
 
