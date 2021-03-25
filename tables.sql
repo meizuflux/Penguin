@@ -50,4 +50,11 @@ CREATE TABLE IF NOT EXISTS todos (
 CREATE TABLE IF NOT EXISTS blacklist (
     user_id BIGINT,
     reason VARCHAR
+);
+
+CREATE TABLE IF NOT EXISTS highlights (
+    guild_id BIGINT REFERENCES guilds ON DELETE CASCADE,
+    user_id BIGINT,
+    word VARCHAR (256),
+    PRIMARY KEY (user_id, guild_id, word)
 )
