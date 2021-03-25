@@ -607,7 +607,7 @@ class Fun(commands.Cog):
         await ctx.send(embed=ctx.embed(description=dad.get("joke")))
 
     @commands.command(aliases=['bt'])
-    async def bigtext(self, ctx, *, text):
+    async def bigtext(self, ctx, *, text: commands.clean_content):
         """Makes the specified text bigger.
         Characters accepted:
             All letters in the English alphabet and `?` and `!`.
