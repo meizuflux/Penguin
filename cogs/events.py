@@ -19,7 +19,7 @@ import discord
 from discord.ext import commands, tasks
 
 
-class Listeners(commands.Cog):
+class Events(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.activity_type = 1
@@ -34,15 +34,15 @@ class Listeners(commands.Cog):
         if self.activity_type == 1:
             name = f"{len(self.bot.guilds)} servers and {len(self.bot.users)} users"
 
-            activity = discord.Activity(application_id=547843314586746880, type=discord.ActivityType.watching, name=name)
+            activity = discord.Activity(type=discord.ActivityType.watching, name=name)
             await self.bot.change_presence(activity=activity)
             self.activity_type = 0
         if self.activity_type == 0:
             name = f"@{self.bot.user.name}"
-            activity = discord.Activity(application_id=547843314586746880, type=discord.ActivityType.listening, name=name)
+            activity = discord.Activity(type=discord.ActivityType.listening, name=name)
 
             await self.bot.change_presence(activity=activity)
             self.activity_type = 1
 
 def setup(bot):
-    bot.add_cog(Listeners(bot))
+    bot.add_cog(Events(bot))

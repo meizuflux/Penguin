@@ -178,7 +178,8 @@ class Chuck(commands.Bot):
 
     async def on_message(self, message: discord.Message):
         """Checking if someone pings the bot."""
-        if message.author.bot:
+        perms = message.channel.permissions_for(message.guild.me).send_messages + message.channel.permissions_for(message.guild.me).embed_links
+        if message.author.bot or not self.is_ready() or perms != 2:
             return
         if re.fullmatch(fr"^(<@!?{self.user.id}>)\s*", message.content):
             if self.prefixes[message.guild.id]:
