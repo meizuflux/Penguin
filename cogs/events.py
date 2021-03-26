@@ -39,12 +39,14 @@ class Events(commands.Cog):
             activity = discord.Activity(type=discord.ActivityType.watching, name=name)
             await self.bot.change_presence(activity=activity)
             self.activity_type = 0
+            return
         if self.activity_type == 0:
             name = f"@{self.bot.user.name}"
             activity = discord.Activity(type=discord.ActivityType.listening, name=name)
 
             await self.bot.change_presence(activity=activity)
             self.activity_type = 1
+            return
 
 def setup(bot):
     bot.add_cog(Events(bot))
