@@ -319,7 +319,36 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         self.bot.get_command(command).reset_cooldown(ctx)
         await self.bot.db.execute(query, wallet - 400, ctx.author.id)
         await qembed(ctx,
-                     f'Reset the command cooldown for the command `{command}` and subtracted $400 from your account.')
+                     f'Reset the command cooldown for the command `{command}` and subtracted **$400** from your account.')
+        
+    @commands.is_owner()
+    @commands.group(name='set')
+    async def _set(self, ctx):
+        if not ctx.invoked_subcommand:
+            await ctx.send_help(ctx.command)
+            
+    @_set.command()
+    async def wallet(self, ctx, user: discord.User, amount):
+        await get_stats(user.id)
+        query = (
+            """
+            UPDATE economy SET wallet = $1
+            WHERE user_id = $2
+            """
+        )
+        await self.bot.db.execute(query, amount, user.id)
+        
+    @_set.command()
+    async def bank(self, ctx, user: discord.User, amount):
+        await get_stats(user.id)
+        query = (
+            """
+            UPDATE economy SET bank = $1
+            WHERE user_id = $2
+            """
+        )
+        await self.bot.db.execute(query, amount, user.id)
+        
 
 
 def setup(bot):
