@@ -329,7 +329,8 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             
     @_set.command()
     async def wallet(self, ctx, user: discord.User, amount):
-        await get_stats(user.id)
+        amount = amount.replace(",", "")
+        await get_stats(ctx, user.id)
         query = (
             """
             UPDATE economy SET wallet = $1
@@ -337,10 +338,12 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             """
         )
         await self.bot.db.execute(query, amount, user.id)
+        await ctx.send(f"Set {user.name}'s wallet to **{amount}**")
         
     @_set.command()
     async def bank(self, ctx, user: discord.User, amount):
-        await get_stats(user.id)
+        amount = amount.replace(",", "")
+        await get_stats(ctx, user.id)
         query = (
             """
             UPDATE economy SET bank = $1
@@ -348,6 +351,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             """
         )
         await self.bot.db.execute(query, amount, user.id)
+        await ctx.send(f"Set {user.name}'s bank to **{amount}**")
         
 
 
