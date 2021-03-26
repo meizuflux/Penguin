@@ -468,9 +468,9 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         You can sign up to record your pronouns at https://pronoundb.org
 
         Arguments:
-            `user`: The user who's pronouns you want to check."""
+            `user`: [Optional] The user who's pronouns you want to check."""
 
-        params = {"platform": "discord", "id": user.id}
+        params = {"platform": "discord", "id": user.id if user else ctx.author.id}
         async with self.bot.session.get("https://pronoundb.org/api/v1/lookup", params=params) as f:
             if f.status == 404:
                 embed = ctx.embed(title=f"{user.name} hasn't registered yet!", description="You can tell them to sign up [here](https://pronoundb.org)")
