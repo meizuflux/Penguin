@@ -282,7 +282,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             percentage = "`{0:.2f}".format(self.get_item(js["attributeScores"], item)) + "%`"
             
             item = item.replace("_", " ")
-            attributes.append(f"{percentage:<8}likely to be **{item}**")                 
+            attributes.append(f"{percentage:<10}likely to be **{item}**")                 
         
         await ctx.send(embed=ctx.embed(title="Toxicity rating:", description="\n".join(attributes)))
 
