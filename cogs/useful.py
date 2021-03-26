@@ -470,7 +470,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         Arguments:
             `user`: [Optional] The user who's pronouns you want to check."""
         user = user or ctx.author
-        params = {"platform": "discord", "id": user.idd}
+        params = {"platform": "discord", "id": user.id}
         async with self.bot.session.get("https://pronoundb.org/api/v1/lookup", params=params) as f:
             if f.status == 404:
                 embed = ctx.embed(title=f"{user.name} hasn't registered yet!", description="You can tell them to sign up [here](https://pronoundb.org)")
