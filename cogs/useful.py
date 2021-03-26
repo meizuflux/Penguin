@@ -21,10 +21,10 @@ import json
 import random
 import re
 import time
+import urllib
 from collections import Counter
 
 import aiohttp
-import urllib
 import discord
 import humanize
 from discord.ext import commands, menus
@@ -149,6 +149,14 @@ class TodoPages(menus.MenuPages):
         self.stop()
 
 
+pronouns = {'unspecified': 'Unspecified', 'hh': 'he/him', 'hi': 'he/it', 'hs': 'he/she', 'ht': 'he/they',
+            'ih': 'it/him', 'ii': 'it/its', 'is': 'it/she', 'it': 'it/they', 'shh': 'she/he', 'sh': 'she/her',
+            'si': 'she/it', 'st': 'she/they', 'th': 'they/he', 'ti': 'they/it', 'ts': 'they/she', 'tt': 'they/them',
+            'any': 'Any pronouns', 'other': 'Other pronouns', 'ask': 'Ask me my pronouns',
+            'avoid': 'Avoid pronouns, use my name',
+            }
+
+
 class Useful(commands.Cog, command_attrs=dict(hidden=False)):
     def __init__(self, bot):
         self.bot = bot
@@ -229,13 +237,15 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             'sha': data['default_branch'],
             'per_page': 1,
         }
-        async with self.bot.session.get(f"https://api.github.com/repos/{data['full_name']}/commits", params=params) as resp:
+        async with self.bot.session.get(f"https://api.github.com/repos/{data['full_name']}/commits",
+                                        params=params) as resp:
             commit_count = len(await resp.json())
         last_page = resp.links.get('last')
         if last_page:
             qs = urllib.parse.urlparse(str(last_page['url'])).query
             commit_count = int(dict(urllib.parse.parse_qsl(qs))['page'])
-        embed = ctx.embed(title=f"{data['full_name']} `({data['id']})`", description=data.get('description'), url=data['html_url'])
+        embed = ctx.embed(title=f"{data['full_name']} `({data['id']})`", description=data.get('description'),
+                          url=data['html_url'])
         embed.set_thumbnail(url=data['owner']['avatar_url'])
         author = f"[`{data['owner']['login']}`]({data['owner']['html_url']})"
         info_value = (
@@ -274,18 +284,18 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
         async with self.bot.session.post(url, headers=headers, data=data) as res:
             js = await res.json()
-                          
+
         items = {'TOXICITY', 'SEVERE_TOXICITY', 'SPAM', 'UNSUBSTANTIAL', 'OBSCENE', 'INFLAMMATORY', 'INCOHERENT'}
-                
+
         attributes = []
         for item in items:
             p = self.get_item(js["attributeScores"], item)
             formatting = "{0:.2f}" if len(str(p).split(".")[0]) == 1 else "{0:.1f}"
             percentage = formatting.format(p) + "%"
-            
+
             item = item.replace("_", " ")
-            attributes.append(f"**{percentage}** likely to be **{item}**")                 
-        
+            attributes.append(f"**{percentage}** likely to be **{item}**")
+
         await ctx.send(embed=ctx.embed(title="Toxicity rating:", description="\n".join(attributes)))
 
     @commands.command(help='Builds an embed from a dict. You can use https://eb.nadeko.bot/ to get one',
@@ -452,8 +462,22 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         self.bot.afk[ctx.author.id] = {"reason": reason, "time": datetime.datetime.utcnow()}
         await ctx.send(f'OK, I have set your AFK status to `{reason}`')
 
+    @commands.command()
+    async def pronoun(self, ctx, user: discord.User = None):
+        """Checks the pronouns of another user.
+        You can sign up to record your pronouns at https://pronoundb.org
 
+        Arguments:
+            `user`: The user who's pronouns you want to check."""
 
+        params = {"platform": "discord", "id": user.id}
+        async with self.bot.session.get("https://pronoundb.org/api/v1/lookup", params=params) as f:
+            if f.status == 404:
+                embed = ctx.embed(title=f"{user.name} hasn't registered yet!", description="You can tell them to sign up [here](https://pronoundb.org)")
+                return await ctx.send(embed=embed)
+            data = await f.json()
+        pronoun = pronouns[data['pronouns']]
+        await ctx.send(embed=ctx.embed(title=f"{user.name}'s pronouns:", description=pronoun))
 
 
 class AAAAAA(commands.Cog):
