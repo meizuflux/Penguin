@@ -272,21 +272,14 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
                'languages: ["en"], ' \
                'requestedAttributes: {TOXICITY:{}, SEVERE_TOXICITY:{}, SPAM: {}, UNSUBSTANTIAL:{}, OBSCENE: {}, INFLAMMATORY: {}, INCOHERENT: {}} }'
 
-        res = await self.bot.session.post(url, headers=headers, data=data)
-        js = await res.json()
-        level = js["attributeScores"]["TOXICITY"]["summaryScore"]["value"] * 100
-        data = js["attributeScores"]
-        await ctx.send(f"`{text}` is `{level:.2f}%` likely to be toxic.")
-        items = {'TOXICITY', 'SEVERE_TOXICITY', 'SPAM', 'UNSUBSTANTIAL', 'OBSCENE', 'INFLAMMATORY', 'INCOHERENT'}
-        embed = ctx.embed()
-        for item in items:
-            percentage = self.get_item(data, item)
-            item = item.replace("_", " ")
-            embed.add_field(name=item.capitalize(), value=f"`{percentage}%` likely to be {item}")
+        async with self.bot.session.post(url, headers=headers, data=data) as res:
+            js = await res.json()
                           
+        items = {'TOXICITY', 'SEVERE_TOXICITY', 'SPAM', 'UNSUBSTANTIAL', 'OBSCENE', 'INFLAMMATORY', 'INCOHERENT'}
+                
         attributes = []
         for item in items:
-            percentage = self.get_item(data, item)
+            percentage = self.get_item(js["attributeScores"], item)
             item = item.replace("_", " ")
             attributes.append(f"`{percentage}%` likely to be **{item}**")                 
         
