@@ -45,7 +45,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
     def __init__(self, bot):
         self.bot = bot
 
-    def get_number(self, number: float, total: str):
+    def get_number(self, number: str, total: int):
         number = number.replace(",", "")
         if number.endswith("%"):
             number = number.strip("%")
