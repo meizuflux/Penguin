@@ -70,12 +70,12 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             raise commands.BadArgument("Invalid amount provided.")
 
         amount = round(amount)
-
-        if amount > 100000000000:
-            raise commands.BadArgument("Transfers of money over one billion are prohibited.")
-
+        
         if amount > total:
             raise commands.BadArgument("That's more money than you have...")
+
+        if amount > 100000000000:
+            raise commands.BadArgument("Transfers of money over one hundred billion are prohibited.")
 
         return amount
 
