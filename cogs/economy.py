@@ -328,8 +328,11 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             await ctx.send_help(ctx.command)
             
     @_set.command()
-    async def wallet(self, ctx, user: discord.User, amount):
+    async def wallet(self, ctx, user: discord.User, amount: str):
         amount = amount.replace(",", "")
+        if not amount.isdigit():
+            raise commands.BadArgument("Amount must be a number.")
+        amount = int(amount)
         await get_stats(ctx, user.id)
         query = (
             """
@@ -341,8 +344,11 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         await ctx.send(f"Set {user.name}'s wallet to **{amount}**")
         
     @_set.command()
-    async def bank(self, ctx, user: discord.User, amount):
+    async def bank(self, ctx, user: discord.User, amount: str):
         amount = amount.replace(",", "")
+        if not amount.isdigit():
+            raise commands.BadArgument("Amount must be a number.")
+        amount = int(amount)
         await get_stats(ctx, user.id)
         query = (
             """
