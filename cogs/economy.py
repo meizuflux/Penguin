@@ -322,7 +322,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
                      f'Reset the command cooldown for the command `{command}` and subtracted **$400** from your account.')
         
     @commands.is_owner()
-    @commands.group(name='set')
+    @commands.group(name='set', hidden=True)
     async def _set(self, ctx):
         if not ctx.invoked_subcommand:
             await ctx.send_help(ctx.command)
