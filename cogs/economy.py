@@ -128,7 +128,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
         amount = self.get_number(amount, wallet)
 
-        updated_wallet -= amount
+        updated_wallet = wallet - amount
         bank += amount
 
         query = (
