@@ -24,6 +24,9 @@ class Events(commands.Cog):
         self.bot = bot
         self.activity_type = 1
         self.change_presence.start()
+        
+    def cog_unload(self):
+        self.change_presence.cancel()
 
     @commands.Cog.listener()
     async def on_command(self, ctx):
@@ -32,7 +35,7 @@ class Events(commands.Cog):
 
     @tasks.loop(minutes=5)
     async def change_presence(self):
-        if not self.bot.is_ready: return
+        await self.bot.wait_until_ready()
         if self.activity_type == 1:
             name = f"{len(self.bot.guilds)} servers | {len(self.bot.users)} users"
 
@@ -40,6 +43,8 @@ class Events(commands.Cog):
             await self.bot.change_presence(activity=activity)
             self.activity_type = 0
             return
+        
+        
         if self.activity_type == 0:
             name = f"@{self.bot.user.name}"
             activity = discord.Activity(type=discord.ActivityType.listening, name=name)
