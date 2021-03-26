@@ -280,7 +280,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         attributes = []
         for item in items:
             p = self.get_item(js["attributeScores"], item)
-            formatting = "{0:.2f}" if len(p.split(".")[0]) == 1 else "{0:.1f}"
+            formatting = "{0:.2f}" if len(str(p).split(".")[0]) == 1 else "{0:.1f}"
             percentage = formatting.format(p) + "%"
             
             item = item.replace("_", " ")
