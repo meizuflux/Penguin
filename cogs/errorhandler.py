@@ -127,7 +127,7 @@ class CommandErrorHandler(commands.Cog):
         )
         embed = ctx.embed(title='AN ERROR OCCURED', url=await ctx.mystbin(pretty_traceback) + '.py',
                           description=f"```yaml\n{msg}```")
-        await webhook[0].send(f"```py\n{''.join(formatted)}```", embed=embed)
+        await next((x for x in webhook if x.name == "Error Collector"), None).send(f"```py\n{''.join(formatted)}```", embed=embed)
 
         error = "".join(formatted)
         if len(error) > 1700:
