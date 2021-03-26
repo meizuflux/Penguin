@@ -281,7 +281,8 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         embed = ctx.embed()
         for item in items:
             percentage = self.get_item(data, item)
-            embed.add_field(name=item.capitalize(), value=f"`{percentage}%` likely to be {item.capitalize()}")
+            item = item.replace("_", " ")
+            embed.add_field(name=item.capitalize(), value=f"`{percentage}%` likely to be {item}")
         await ctx.send(embed=embed)
 
     @commands.command(help='Builds an embed from a dict. You can use https://eb.nadeko.bot/ to get one',
