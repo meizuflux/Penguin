@@ -352,7 +352,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         await self.bot.db.execute(sql, ctx.author.id, task, datetime.datetime.utcnow(), ctx.message.jump_url)
         count = await self.bot.db.fetchval("SELECT COUNT(todo) FROM todos WHERE user_id = $1", ctx.author.id)
 
-        await ctx.send(embed=ctx.embed(title="Inserted into your todo list...", description=f"`({count + 1})` " + task))
+        await ctx.send(embed=ctx.embed(title="Inserted into your todo list...", description=f"`({count})` " + task))
 
     @todo.command()
     async def remove(self, ctx, numbers: commands.Greedy[int]):
