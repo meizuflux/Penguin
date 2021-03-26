@@ -354,7 +354,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
 
         await ctx.send(embed=ctx.embed(title="Inserted into your todo list...", description=f"`({count})` " + task))
 
-    @todo.command()
+    @todo.command(aliases=['rm'])
     async def remove(self, ctx, numbers: commands.Greedy[int]):
         """Delete 1 or many tasks.
         Separate todos with a space, EX "1 2 3 4" will delete tasks 1, 2, 3, and 4."""
