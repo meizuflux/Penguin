@@ -34,7 +34,7 @@ class Events(commands.Cog):
     async def change_presence(self):
         if not self.bot.is_ready: return
         if self.activity_type == 1:
-            name = f"{len(self.bot.guilds)} servers and {len(self.bot.users)} users"
+            name = f"{len(self.bot.guilds)} servers | {len(self.bot.users)} users"
 
             activity = discord.Activity(type=discord.ActivityType.watching, name=name)
             await self.bot.change_presence(activity=activity)
