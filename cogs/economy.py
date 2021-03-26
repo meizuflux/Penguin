@@ -76,7 +76,9 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
         if amount > 100000000000:
             raise commands.BadArgument("Transfers of money over one hundred billion are prohibited.")
-
+        print("_______________")
+        print(amount)
+        print("_______________")
         return amount
 
     @commands.command(help='Registers you into the database')
