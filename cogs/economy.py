@@ -62,6 +62,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
         elif number in ('max', 'all'):
             amount = total
+            print(type(amount))
         elif number.isdigit():
             amount = int(number)
             if amount == 0:
