@@ -276,15 +276,15 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             js = await res.json()
                           
         items = {'TOXICITY', 'SEVERE_TOXICITY', 'SPAM', 'UNSUBSTANTIAL', 'OBSCENE', 'INFLAMMATORY', 'INCOHERENT'}
-        percentage = "{0:.2f}".format(self.get_item(js["attributeScores"], 'TOXICITY')) + "%"
-        await ctx.send(f"**{percentage:<7}**likely to be **TOXIC**")
                 
         attributes = []
         for item in items:
-            percentage = "{0:.2f}".format(self.get_item(js["attributeScores"], item)) + "%"
+            p = self.get_item(js["attributeScores"], item)
+            formatting = "{0:.2f}" if len(p.split(".")[0]) == 1 else "{0:.1f}"
+            percentage = formatting.format(p) + "%"
             
             item = item.replace("_", " ")
-            attributes.append(f"**{percentage:<7}**likely to be **{item}**")                 
+            attributes.append(f"**{percentage}** likely to be **{item}**")                 
         
         await ctx.send(embed=ctx.embed(title="Toxicity rating:", description="\n".join(attributes)))
 
