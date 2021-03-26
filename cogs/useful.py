@@ -260,7 +260,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         await ctx.send(embed=embed)
 
     def get_item(self, items, cat):
-        return round(float(items[cat]['summaryScore']['value']) * 100)
+        return float(items[cat]['summaryScore']['value']) * 100
 
     @commands.command(help='Checks if your message is toxic or not.')
     async def toxic(self, ctx, *, text):
@@ -283,7 +283,14 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             percentage = self.get_item(data, item)
             item = item.replace("_", " ")
             embed.add_field(name=item.capitalize(), value=f"`{percentage}%` likely to be {item}")
-        await ctx.send(embed=embed)
+                          
+        attributes = []
+        for item in items:
+            percentage = self.get_item(data, item)
+            item = item.replace("_", " ")
+            attributes.append(f"`{percentage}%` likely to be {item}")                 
+        
+        await ctx.send(embed=ctx.embed(title="Toxicity rating:", description="\n".join(attributes)))
 
     @commands.command(help='Builds an embed from a dict. You can use https://eb.nadeko.bot/ to get one',
                       brief='Builds an embed', aliases=['make_embed', 'embed_builder'])
