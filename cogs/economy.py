@@ -134,7 +134,8 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         lb = []
 
         for num, user in enumerate(data, start=1):
-            item = f"**{user['number']}.** {await self.bot.try_user(user['user_id'])} » 💸{user['total']}"
+            name = discord.utils.escape_markdown(str(await self.bot.try_user(user['user_id'])))
+            item = f"**{user['number']}.** {name} » 💸{user['total']}"
             lb.append(item)
 
         table = "\n".join(lb)
