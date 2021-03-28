@@ -96,34 +96,19 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         e.set_thumbnail(url=user.avatar_url if user else ctx.author.avatar_url)
         await ctx.send(embed=e)
 
-    @commands.command(help='Gets the top 5 users.', aliases=['top', 'lb'])
-    async def leaderboard(self, ctx, number: int = 5):
-        if number > 10:
-            return await qembed(ctx, 'No more than 10 please!')
-
-        stats = await self.bot.db.fetch(
-            "SELECT user_id, wallet+bank AS TOTAL, ROW_NUMBER () OVER (ORDER BY wallet+bank) FROM economy WHERE guild_id = $1 ORDER BY bank+wallet DESC LIMIT $2",
-            ctx.guild.id, number)
-
-        lb = [
-            f'{stats[number]["row_number"]}.) {await self.bot.try_user(stats[number]["user_id"])} » ${stats[number]["total"]}'
-            for number, i in enumerate(range(number))
-        ]
-
-        lb = discord.Embed(title='Leaderboard',
-                           color=self.bot.embed_color,
-                           timestamp=ctx.message.created_at,
-                           description='**TOP {} PLAYERS:**\n```yaml\n'.format(number) + "\n".join(lb) + '```')
-
-        lb.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
-        await ctx.send(embed=lb)
-
-    @commands.command()
-    async def lbtest(self, ctx, page: int = 1):
+    @commands.command(aliases=["lb", "top"])
+    async def leaderboard(self, ctx, page: int = 1):
+        """
+        Sends the economy leaderboard.
+        Server specific.
+        If the page you provide is higher than the total amount of pages, it defaults to the last page.
+        Arguments:
+            `page`: [Optional] The leaderboard page you would like to see. If not provided, it will send the first page.
+        """
         count = await self.bot.db.fetchval("SELECT COUNT(user_id) FROM economy WHERE guild_id = $1", ctx.guild.id)
         max_pages = math.ceil(count / 10)
-        if page > max_pages:
-            page = max_pages
+        page = min(page, max_pages)
+
         query = (
             """
             SELECT ROW_NUMBER() OVER (ORDER BY wallet + bank DESC) AS number, user_id, wallet + bank AS total
@@ -131,16 +116,15 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             """
         )
         data = await self.bot.db.fetch(query, ctx.guild.id, (page * 10) - 10)
-        lb = []
 
-        for num, user in enumerate(data, start=1):
+        lb = []
+        for user in data:
             name = discord.utils.escape_markdown(str(await self.bot.try_user(user['user_id'])))
             item = f"**{user['number']}.** [{name}](https://www.youtube.com/watch?v=dQw4w9WgXcQ, \"seriously, don't click.\") » 💸{user['total']}"
             lb.append(item)
         lb.append(f"\nPage {page}/{max_pages}")
 
-        table = "\n".join(lb)
-        embed = ctx.embed(title=f"{ctx.guild.name} Leaderboard", description=table)
+        embed = ctx.embed(title=f"{ctx.guild.name} Leaderboard", description="\n".join(lb))
         await ctx.send(embed=embed)
 
     @commands.command(help='Deposits a set amount into your bank', aliases=['dep'])
