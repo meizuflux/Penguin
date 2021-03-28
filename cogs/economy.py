@@ -38,6 +38,9 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
     def __init__(self, bot):
         self.bot = bot
+        
+    async def cog_check(self, ctx):
+        return ctx.guild is not None
 
     def get_number(self, number: str, total: int):
         number = number.replace(",", "")
