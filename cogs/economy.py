@@ -101,7 +101,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         stats = await self.bot.db.fetch("SELECT user_id, wallet+bank AS TOTAL, ROW_NUMBER () OVER (ORDER BY wallet+bank) FROM economy WHERE guild_id = $1 ORDER BY bank+wallet DESC LIMIT $2", ctx.guild.id, number)
 
         lb = [
-            f'{stats[number]["row_number"]) {await self.bot.try_user(stats[number]["user_id"])} » ${stats[number]["total"]}'
+            f'{stats[number]["row_number"]}.) {await self.bot.try_user(stats[number]["user_id"])} » ${stats[number]["total"]}'
             for number, i in enumerate(range(number))
         ]
 
