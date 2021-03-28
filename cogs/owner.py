@@ -96,7 +96,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
                     self.bot.reload_extension(f"cogs.{name}")
                 except Exception as e:
                     _traceback = ''.join(traceback.format_tb(e.__traceback__))
-                    error = '```py\n{1}{0}: {2}\n```'.format(type(e).__name__, _traceback, e)
+                    error = '\n{1}{0}: {2}\n'.format(type(e).__name__, _traceback, e)
                     error_collection.append(
                         [file, error]
                     )
