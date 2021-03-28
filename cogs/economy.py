@@ -134,7 +134,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         lb = []
 
         for num, user in enumerate(data, start=1):
-            item = f"{user['row_number']}) {await self.bot.try_user(user['user_id'])} » ${user['total']}"
+            item = f"{user['number']}) {await self.bot.try_user(user['user_id'])} » ${user['total']}"
             lb.append(item)
 
         table = "\n".join(lb)
