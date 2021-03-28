@@ -27,16 +27,10 @@ from utils.default import qembed
 
 
 async def get_stats(ctx, user_id: int):
-    try:
-        data = dict(await ctx.bot.db.fetchrow('SELECT wallet, bank FROM economy WHERE user_id = $1', user_id))
-    except TypeError:
-        await ctx.bot.db.execute("INSERT INTO public.economy(user_id, wallet, bank) VALUES($1, 100, 100)", user_id)
-        data = dict(await ctx.bot.db.fetchrow('SELECT wallet, bank FROM economy WHERE user_id = $1', user_id))
-
-    wallet = data["wallet"]
-    bank = data["bank"]
-
-    return wallet, bank
+    await ctx.bot.db.execute("INSERT INTO economy VALUES ($1, $2)", ctx.guild.id, user_id)
+    data = await ctx.bot.db.fetchrow("SELECT wallet, bank FROM economy WHERE guild_id = $1 AND user_id = $2", ctx.guild.id, user_id)
+    
+    return data["wallet"], data["bank"]
 
 
 class Economy(commands.Cog, command_attrs=dict(hidden=False)):
@@ -81,11 +75,8 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
     @commands.command(help='Registers you into the database')
     async def register(self, ctx):
-        try:
-            await self.bot.db.execute("INSERT INTO public.economy(user_id, wallet, bank) VALUES($1, 100, 100)", id)
-            await qembed(ctx, 'Successfully registered you!')
-        except DataError:
-            await qembed(ctx, 'You are already registered!')
+        await get_stats(ctx, ctx.author.id)
+        await ctx.send("k its done")
 
     @commands.command(help='View yours or someone else\'s balance', aliases=['bal'])
     async def balance(self, ctx, user: discord.Member = None):
@@ -107,17 +98,17 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         if number > 10:
             return await qembed(ctx, 'No more than 10 please!')
 
-        stats = await self.bot.db.fetch("SELECT * FROM economy ORDER BY bank+wallet DESC LIMIT $1", number)
+        stats = await self.bot.db.fetch("SELECT user_id, wallet+bank AS TOTAL, ROW_NUMBER () OVER (ORDER BY wallet+bank) FROM economy WHERE guild_id = $1 ORDER BY bank+wallet DESC LIMIT $2", ctx.guild.id, number)
 
         lb = [
-            f'{number + 1}) {await self.bot.try_user(stats[number]["user_id"])} » ${stats[number]["wallet"] + stats[number]["bank"]}'
+            f'{stats[number]["row_number"]) {await self.bot.try_user(stats[number]["user_id"])} » ${stats[number]["total"]}'
             for number, i in enumerate(range(number))
         ]
 
         lb = discord.Embed(title='Leaderboard',
                            color=self.bot.embed_color,
                            timestamp=ctx.message.created_at,
-                           description='**TOP {} PLAYERS:**\n```py\n'.format(number) + "\n".join(lb) + '```')
+                           description='**TOP {} PLAYERS:**\n```yaml\n'.format(number) + "\n".join(lb) + '```')
 
         lb.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=lb)
@@ -134,11 +125,11 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         query = (
             """
             UPDATE economy SET wallet = $1, bank = $2
-            WHERE user_id = $3
+            WHERE guild_id = $3 AND user_id = $4
             """
         )
 
-        await self.bot.db.execute(query, updated_wallet, bank, ctx.author.id)
+        await self.bot.db.execute(query, updated_wallet, bank, ctx.guild.id, ctx.author.id)
 
         await qembed(ctx, f'You deposited **${humanize.intcomma(amount)}** into your bank.')
 
@@ -154,11 +145,11 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         query = (
             """
             UPDATE economy SET wallet = $1, bank = $2
-            WHERE user_id = $3
+            WHERE guild_id = $3 AND user_id = $4
             """
         )
 
-        await self.bot.db.execute(query, wallet, updated_bank, ctx.author.id)
+        await self.bot.db.execute(query, wallet, updated_bank, ctx.guild.id, ctx.author.id)
         await qembed(ctx, f'You withdrew **${humanize.intcomma(amount)}** into your wallet.')
 
     @commands.command(help='Lets you send money over to another user', alises=['send', 'pay'])
@@ -171,11 +162,10 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         author_wallet -= amount
         target_wallet += amount
 
-        await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE user_id = $2", author_wallet, ctx.author.id)
+        await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE guild_id = $2 AND user_id = $3", author_wallet, ctx.guild.id, ctx.author.id)
+        await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE guild_id = $2 AND user_id = $3", target_wallet, ctx.guild.id, user.id)
 
-        await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE user_id = $2", target_wallet, user.id)
-
-        await qembed(ctx, f'You gave {user.mention} ${humanize.intcomma(amount)}')
+        await qembed(ctx, f'You gave {user.mention} **${humanize.intcomma(amount)}**')
 
     @commands.command(help='Takes a random amount of $ from someone', alises=['mug', 'steal'])
     async def rob(self, ctx, user: discord.Member):
@@ -196,17 +186,20 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         target_wallet -= amount
 
         author_query = (
-            """UPDATE economy SET wallet = $1
-            WHERE user_id = $2"""
+            """
+            UPDATE economy SET wallet = $1
+            WHERE guild_id = $2 AND user_id = $3
+            """
         )
         target_query = (
-            """UPDATE economy SET wallet = $1
-            WHERE user_id = $2"""
+            """
+            UPDATE economy SET wallet = $1
+            WHERE guild_id = $2 AND user_id = $3
+            """
         )
 
-        await self.bot.db.execute(author_query, author_wallet, ctx.author.id)
-
-        await self.bot.db.execute(target_query, target_wallet, user.id)
+        await self.bot.db.execute(author_query, author_wallet, ctx.guild.id, ctx.author.id)
+        await self.bot.db.execute(target_query, target_wallet, ctx.guild.id, user.id)
 
         await qembed(ctx, f'You stole **${humanize.intcomma(amount)}** from {user.mention}!')
 
@@ -218,18 +211,20 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         cash = random.randint(100, 500)
 
         query = (
-            """UPDATE economy SET wallet = $1
-            WHERE user_id = $3"""
+            """
+            UPDATE economy SET wallet = $1
+            WHERE guild_id = $2 AND user_id = $3
+            """
         )
 
-        await self.bot.db.execute(query, author_wallet + cash, ctx.author.id)
+        await self.bot.db.execute(query, author_wallet + cash, ctx.guild.id, ctx.author.id)
         if cash >= 250:
             amount = 'handsome'
 
         if cash <= 249:
             amount = 'meager'
 
-        await qembed(ctx, f'You work and get paid a {amount} amount of **${cash}.**')
+        await qembed(ctx, f'You work and get paid a {amount} amount of **${cash}**.')
 
     @commands.command(help='Daily reward')
     @commands.cooldown(rate=1, per=86400, type=commands.BucketType.user)
@@ -239,11 +234,13 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         cash = random.randint(500, 1000)
 
         query = (
-            """UPDATE economy SET wallet = $1
-            WHERE user_id = $3"""
+            """
+            UPDATE economy SET wallet = $1
+            WHERE guild_id = $2 AND user_id = $3
+            """
         )
 
-        await self.bot.db.execute(query, wallet + cash, ctx.author.id)
+        await self.bot.db.execute(query, wallet + cash, ctx.guild.id, ctx.author.id)
 
         await qembed(ctx, f'You\'ve collected **${cash}** from the daily gift!')
 
@@ -257,11 +254,13 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         cash = price * fish
 
         query = (
-            """UPDATE economy SET wallet = $1
-            WHERE user_id = $3"""
+            """
+            UPDATE economy SET wallet = $1
+            WHERE guild_id = $2 AND user_id = $3
+            """
         )
 
-        await self.bot.db.execute(query, wallet + cash, ctx.author.id)
+        await self.bot.db.execute(query, wallet + cash, ctx.guild.id, ctx.author.id)
 
         emoji = ['🐟', '🐠', '🐡']
         await qembed(ctx,
@@ -284,11 +283,13 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         cash = random.randint(0, 500)
 
         query = (
-            """UPDATE economy SET wallet = $1
-            WHERE user_id = $3"""
+            """
+            UPDATE economy SET wallet = $1
+            WHERE guild_id = $2 AND user_id = $3
+            """
         )
 
-        await self.bot.db.execute(query, wallet + cash, ctx.author.id)
+        await self.bot.db.execute(query, wallet + cash, ctx.guild.id, ctx.author.id)
         city = cities["person"]["personal"]["city"]
         msg = f'You sit on the streets of {city} and a nice {random.choice(["man", "woman"])} hands you ${cash}.'
         await ctx.send(embed=ctx.embed(description=msg))
@@ -311,15 +312,16 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             return await qembed(ctx, 'You need at least 400 dollars.')
 
         query = (
-            """UPDATE economy SET wallet = $1
-            WHERE user_id = $3"""
+            """
+            UPDATE economy SET wallet = $1
+            WHERE guild_id = $2 AND user_id = $3
+            """
         )
 
 
         self.bot.get_command(command).reset_cooldown(ctx)
-        await self.bot.db.execute(query, wallet - 400, ctx.author.id)
-        await qembed(ctx,
-                     f'Reset the command cooldown for the command `{command}` and subtracted **$400** from your account.')
+        await self.bot.db.execute(query, wallet - 400, ctx.guild.id, ctx.author.id)
+        await qembed(ctx, f'Reset the command cooldown for the command `{command}` and subtracted **$400** from your account.')
         
     @commands.is_owner()
     @commands.group(name='set', hidden=True)
@@ -337,10 +339,10 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         query = (
             """
             UPDATE economy SET wallet = $1
-            WHERE user_id = $2
+            WHERE guild_id = $2 AND user_id = $3
             """
         )
-        await self.bot.db.execute(query, amount, user.id)
+        await self.bot.db.execute(query, amount, ctx.guild.id, user.id)
         await ctx.send(f"Set {user.name}'s wallet to **{amount}**")
         
     @_set.command()
@@ -353,10 +355,10 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         query = (
             """
             UPDATE economy SET bank = $1
-            WHERE user_id = $2
+            WHERE guild_id = $2 AND user_id = $3
             """
         )
-        await self.bot.db.execute(query, amount, user.id)
+        await self.bot.db.execute(query, amount, ctx.guild.id, user.id)
         await ctx.send(f"Set {user.name}'s bank to **{amount}**")
         
 
