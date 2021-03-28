@@ -105,6 +105,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
             output = "\n".join(
                 f"**{g[0]}** ```yaml\n- {g[1]}```" for g in error_collection
             )
+            if len(output) > 1024: output = await ctx.paste(output.replace("`", ""))
 
             embed.add_field(name='Cog Reloading', value=f"Attempted to reload all extensions, was able to reload, "
                                                         f"however the following failed...\n\n{output}")
