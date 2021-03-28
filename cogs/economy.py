@@ -16,11 +16,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import random
-import typing
+import math
 
 import discord
 import humanize
-from asyncpg import DataError
 from discord.ext import commands
 
 from utils.default import qembed
@@ -28,8 +27,9 @@ from utils.default import qembed
 
 async def get_stats(ctx, user_id: int):
     await ctx.bot.db.execute("INSERT INTO economy VALUES ($1, $2) ON CONFLICT DO NOTHING", ctx.guild.id, user_id)
-    data = await ctx.bot.db.fetchrow("SELECT wallet, bank FROM economy WHERE guild_id = $1 AND user_id = $2", ctx.guild.id, user_id)
-    
+    data = await ctx.bot.db.fetchrow("SELECT wallet, bank FROM economy WHERE guild_id = $1 AND user_id = $2",
+                                     ctx.guild.id, user_id)
+
     return data["wallet"], data["bank"]
 
 
@@ -38,7 +38,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
     def __init__(self, bot):
         self.bot = bot
-        
+
     async def cog_check(self, ctx):
         return ctx.guild is not None
 
@@ -67,13 +67,13 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             raise commands.BadArgument("Invalid amount provided.")
 
         amount = round(amount)
-        
+
         if amount > total:
             raise commands.BadArgument("That's more money than you have...")
 
         if amount > 100000000000:
             raise commands.BadArgument("Transfers of money over one hundred billion are prohibited.")
-            
+
         return amount
 
     @commands.command(help='Registers you into the database')
@@ -101,7 +101,9 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         if number > 10:
             return await qembed(ctx, 'No more than 10 please!')
 
-        stats = await self.bot.db.fetch("SELECT user_id, wallet+bank AS TOTAL, ROW_NUMBER () OVER (ORDER BY wallet+bank) FROM economy WHERE guild_id = $1 ORDER BY bank+wallet DESC LIMIT $2", ctx.guild.id, number)
+        stats = await self.bot.db.fetch(
+            "SELECT user_id, wallet+bank AS TOTAL, ROW_NUMBER () OVER (ORDER BY wallet+bank) FROM economy WHERE guild_id = $1 ORDER BY bank+wallet DESC LIMIT $2",
+            ctx.guild.id, number)
 
         lb = [
             f'{stats[number]["row_number"]}.) {await self.bot.try_user(stats[number]["user_id"])} » ${stats[number]["total"]}'
@@ -115,6 +117,28 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
         lb.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=lb)
+
+    @commands.command()
+    async def lbtest(self, ctx, page: int = 1):
+        count = await self.bot.db.fetchval("SELECT COUNT(user_id) FROM economy WHERE guild_id = $1", ctx.guild.id)
+        max_pages = math.ceil(count / 10)
+        if page > math.ceil(count / 10):
+            raise commands.BadArgument(f"That's more pages than exists! ({page}/{max_pages})")
+        query = (
+            """
+            SELECT ROW_NUMBER() OVER (ORDER BY wallet + bank DESC) AS number, user_id, wallet + bank AS total
+            FROM economy WHERE guild_id = $1 ORDER BY wallet + bank DESC OFFSET $2 LIMIT 10
+            """
+        )
+        data = await self.bot.db.fetch(query, ctx.guild.id, (page * 10) - 10)
+        lb = []
+
+        for num, user in data:
+            item = f"{user['row_number']}) {await self.bot.try_user(user['user_id'])} » ${user['total']}"
+            lb.append(item)
+
+        table = "\n".join(lb)
+        await ctx.send("```yaml\n" + table + "```")
 
     @commands.command(help='Deposits a set amount into your bank', aliases=['dep'])
     async def deposit(self, ctx, amount: str):
@@ -165,8 +189,10 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         author_wallet -= amount
         target_wallet += amount
 
-        await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE guild_id = $2 AND user_id = $3", author_wallet, ctx.guild.id, ctx.author.id)
-        await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE guild_id = $2 AND user_id = $3", target_wallet, ctx.guild.id, user.id)
+        await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE guild_id = $2 AND user_id = $3", author_wallet,
+                                  ctx.guild.id, ctx.author.id)
+        await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE guild_id = $2 AND user_id = $3", target_wallet,
+                                  ctx.guild.id, user.id)
 
         await qembed(ctx, f'You gave {user.mention} **${humanize.intcomma(amount)}**')
 
@@ -321,17 +347,17 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             """
         )
 
-
         self.bot.get_command(command).reset_cooldown(ctx)
         await self.bot.db.execute(query, wallet - 400, ctx.guild.id, ctx.author.id)
-        await qembed(ctx, f'Reset the command cooldown for the command `{command}` and subtracted **$400** from your account.')
-        
+        await qembed(ctx,
+                     f'Reset the command cooldown for the command `{command}` and subtracted **$400** from your account.')
+
     @commands.is_owner()
     @commands.group(name='set', hidden=True)
     async def _set(self, ctx):
         if not ctx.invoked_subcommand:
             await ctx.send_help(ctx.command)
-            
+
     @_set.command()
     async def wallet(self, ctx, user: discord.User, amount: str):
         amount = amount.replace(",", "")
@@ -347,7 +373,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         )
         await self.bot.db.execute(query, amount, ctx.guild.id, user.id)
         await ctx.send(f"Set {user.name}'s wallet to **{amount}**")
-        
+
     @_set.command()
     async def bank(self, ctx, user: discord.User, amount: str):
         amount = amount.replace(",", "")
@@ -363,7 +389,6 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         )
         await self.bot.db.execute(query, amount, ctx.guild.id, user.id)
         await ctx.send(f"Set {user.name}'s bank to **{amount}**")
-        
 
 
 def setup(bot):
