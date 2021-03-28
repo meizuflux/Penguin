@@ -96,7 +96,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         e.set_thumbnail(url=user.avatar_url if user else ctx.author.avatar_url)
         await ctx.send(embed=e)
 
-    @commands.command(aliases={"lb", "top"})
+    @commands.command(aliases=("lb", "top"))
     async def leaderboard(self, ctx, page: int = 1):
         """
         Sends the economy leaderboard.
