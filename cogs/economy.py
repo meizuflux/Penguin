@@ -96,7 +96,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         e.set_thumbnail(url=user.avatar_url if user else ctx.author.avatar_url)
         await ctx.send(embed=e)
 
-    @commands.command(aliases=["lb", "top"])
+    @commands.command(aliases={"lb", "top"})
     async def leaderboard(self, ctx, page: int = 1):
         """
         Sends the economy leaderboard.
@@ -107,7 +107,9 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         """
         count = await self.bot.db.fetchval("SELECT COUNT(user_id) FROM economy WHERE guild_id = $1", ctx.guild.id)
         max_pages = math.ceil(count / 10)
+        # need to check if the page is more than the amount allowed
         page = min(page, max_pages)
+
 
         query = (
             """
@@ -119,7 +121,9 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
         lb = []
         for user in data:
+            # Need to escape markdown
             name = discord.utils.escape_markdown(str(await self.bot.try_user(user['user_id'])))
+            # Add a rickroll cause I'm lazy
             item = f"**{user['number']}.** [{name}](https://www.youtube.com/watch?v=dQw4w9WgXcQ, \"seriously, don't click.\") » 💸{user['total']}"
             lb.append(item)
         lb.append(f"\nPage {page}/{max_pages}")
