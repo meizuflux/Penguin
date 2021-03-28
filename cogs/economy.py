@@ -133,7 +133,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         data = await self.bot.db.fetch(query, ctx.guild.id, (page * 10) - 10)
         lb = []
 
-        for num, user in data:
+        for num, user in enumerate(data, start=1):
             item = f"{user['row_number']}) {await self.bot.try_user(user['user_id'])} » ${user['total']}"
             lb.append(item)
 
