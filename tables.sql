@@ -46,8 +46,9 @@ CREATE TABLE IF NOT EXISTS stocks (
 CREATE TABLE IF NOT EXISTS todos (
     user_id BIGINT,
     todo VARCHAR,
+    jump_url VARCHAR,
     sort_date TIMESTAMP,
-    jump_url VARCHAR
+    time TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS blacklist (
