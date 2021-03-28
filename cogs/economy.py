@@ -137,7 +137,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             name = discord.utils.escape_markdown(str(await self.bot.try_user(user['user_id'])))
             item = f"**{user['number']}.** [{name}](https://www.youtube.com/watch?v=dQw4w9WgXcQ, \"seriously, don't click.\") » 💸{user['total']}"
             lb.append(item)
-        lb.append(f"Page {page}/{max_pages}")
+        lb.append(f"\nPage {page}/{max_pages}")
 
         table = "\n".join(lb)
         embed = ctx.embed(title=f"{ctx.guild.name} Leaderboard", description=table)
