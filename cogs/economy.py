@@ -27,7 +27,7 @@ from utils.default import qembed
 
 
 async def get_stats(ctx, user_id: int):
-    await ctx.bot.db.execute("INSERT INTO economy VALUES ($1, $2)", ctx.guild.id, user_id)
+    await ctx.bot.db.execute("INSERT INTO economy VALUES ($1, $2) ON CONFLICT DO NOTHING", ctx.guild.id, user_id)
     data = await ctx.bot.db.fetchrow("SELECT wallet, bank FROM economy WHERE guild_id = $1 AND user_id = $2", ctx.guild.id, user_id)
     
     return data["wallet"], data["bank"]
