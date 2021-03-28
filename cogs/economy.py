@@ -122,8 +122,8 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
     async def lbtest(self, ctx, page: int = 1):
         count = await self.bot.db.fetchval("SELECT COUNT(user_id) FROM economy WHERE guild_id = $1", ctx.guild.id)
         max_pages = math.ceil(count / 10)
-        if page > math.ceil(count / 10):
-            raise commands.BadArgument(f"That's more pages than what exists! ({page}/{max_pages})")
+        if page > max_pages:
+            page = max_pages
         query = (
             """
             SELECT ROW_NUMBER() OVER (ORDER BY wallet + bank DESC) AS number, user_id, wallet + bank AS total
@@ -137,6 +137,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             name = discord.utils.escape_markdown(str(await self.bot.try_user(user['user_id'])))
             item = f"**{user['number']}.** [{name}](https://www.youtube.com/watch?v=dQw4w9WgXcQ, \"seriously, don't click.\") » 💸{user['total']}"
             lb.append(item)
+        lb.append(f"Page {page}/{max_pages}")
 
         table = "\n".join(lb)
         embed = ctx.embed(title=f"{ctx.guild.name} Leaderboard", description=table)
