@@ -28,16 +28,19 @@ CREATE TABLE IF NOT EXISTS prefixes (
 );
 
 CREATE TABLE IF NOT EXISTS economy (
+    guild_id BIGINT REFERENCES guilds ON DELETE CASCADE,
     user_id BIGINT PRIMARY KEY,
-    wallet BIGINT,
-    BANK BIGINT
+    wallet BIGINT DEFAULT 100,
+    BANK BIGINT DEFAULT 100,
+    PRIMARY KEY (guild_id, user_id)
 );
 
 CREATE TABLE IF NOT EXISTS stocks (
+    guild_id BIGINT REFERENCES guilds ON DELETE CASCADE,
     user_id BIGINT,
     ticker VARCHAR,
     amount BIGINT,
-    PRIMARY KEY (user_id, ticker)
+    PRIMARY KEY (guild_id, user_id, ticker)
 );
 
 CREATE TABLE IF NOT EXISTS todos (
