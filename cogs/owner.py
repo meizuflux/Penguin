@@ -103,7 +103,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
 
         if error_collection:
             output = "\n".join(
-                f"**{g[0]}** ```diff\n- {g[1]}```" for g in error_collection
+                f"**{g[0]}** ```yaml\n- {g[1]}```" for g in error_collection
             )
 
             embed.add_field(name='Cog Reloading', value=f"Attempted to reload all extensions, was able to reload, "
@@ -111,7 +111,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         else:
             embed.add_field(name='Cog Reloading', value='```\nAll cogs were loaded successfully```')
 
-        await ctx.send(embed=embed)
+        await ctx.remove(embed=embed)
 
     @dev.command()
     async def reboot(self, ctx):
