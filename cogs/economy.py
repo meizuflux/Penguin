@@ -123,7 +123,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         count = await self.bot.db.fetchval("SELECT COUNT(user_id) FROM economy WHERE guild_id = $1", ctx.guild.id)
         max_pages = math.ceil(count / 10)
         if page > math.ceil(count / 10):
-            raise commands.BadArgument(f"That's more pages than exists! ({page}/{max_pages})")
+            raise commands.BadArgument(f"That's more pages than what exists! ({page}/{max_pages})")
         query = (
             """
             SELECT ROW_NUMBER() OVER (ORDER BY wallet + bank DESC) AS number, user_id, wallet + bank AS total
@@ -134,11 +134,12 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         lb = []
 
         for num, user in enumerate(data, start=1):
-            item = f"{user['number']}) {await self.bot.try_user(user['user_id'])} » ${user['total']}"
+            item = f"**{user['number']}.** {await self.bot.try_user(user['user_id'])} » 💸{user['total']}"
             lb.append(item)
 
         table = "\n".join(lb)
-        await ctx.send("```yaml\n" + table + "```")
+        embed = ctx.embed(title=f"{ctx.guild.name} Leaderboard", description=table)
+        await ctx.send(embed=embed)
 
     @commands.command(help='Deposits a set amount into your bank', aliases=['dep'])
     async def deposit(self, ctx, amount: str):
