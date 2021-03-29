@@ -313,6 +313,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             if content == correct_word:
                 embed.description = "You got it! Transfering money now."
                 await message.edit(embed=embed)
+                await asyncio.sleep(0.75)
             if content == "cancel":
                 embed.description = "Cancelled."
                 return await message.edit(embed=embed)
@@ -334,7 +335,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
         await self.bot.db.execute(query, author_cash + cash, ctx.guild.id, ctx.author.id)
         
-        embed.description = f"I transfered *${cash}* to you."
+        embed.description = f"I transfered **${cash}** to you."
         await message.edit(embed=embed)
 
     @commands.command(help='Daily reward')
