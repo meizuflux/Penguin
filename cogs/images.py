@@ -15,10 +15,10 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
+import io
 import typing
 
 import discord
-import io
 from discord.ext import commands
 
 from cogs.polaroid_manipulation import get_image_url
@@ -80,28 +80,28 @@ class Images(commands.Cog):
     async def fakecat(self, ctx):
         async with self.bot.session.get("https://thiscatdoesnotexist.com/") as resp:
             file = discord.File(io.BytesIO(await resp.read()), "fake.png")
-        embed=ctx.embed(title='This cat does not exist.').set_image(url="attachment://fake.png")
+        embed = ctx.embed(title='This cat does not exist.').set_image(url="attachment://fake.png")
         await ctx.send(embed=embed, file=file)
 
     @commands.command()
     async def fakeperson(self, ctx):
         async with self.bot.session.get("https://thispersondoesnotexist.com/image") as resp:
             file = discord.File(io.BytesIO(await resp.read()), "fake.png")
-        embed=ctx.embed(title='This person does not exist.').set_image(url="attachment://fake.png")
+        embed = ctx.embed(title='This person does not exist.').set_image(url="attachment://fake.png")
         await ctx.send(embed=embed, file=file)
 
     @commands.command()
     async def fakeartwork(self, ctx):
         async with self.bot.session.get("https://thisartworkdoesnotexist.com/") as resp:
             file = discord.File(io.BytesIO(await resp.read()), "fake.png")
-        embed=ctx.embed(title='This artwork does not exist.').set_image(url="attachment://fake.png")
+        embed = ctx.embed(title='This artwork does not exist.').set_image(url="attachment://fake.png")
         await ctx.send(embed=embed, file=file)
 
     @commands.command()
     async def fakehorse(self, ctx):
         async with self.bot.session.get("https://thishorsedoesnotexist.com/") as resp:
             file = discord.File(io.BytesIO(await resp.read()), "fake.png")
-        embed=ctx.embed(title='This horse does not exist.').set_image(url="attachment://fake.png")
+        embed = ctx.embed(title='This horse does not exist.').set_image(url="attachment://fake.png")
         await ctx.send(embed=embed, file=file)
 
     @commands.command(usage='[text] [--dark|--light]')
@@ -111,7 +111,7 @@ class Images(commands.Cog):
         example: {prefix}supreme ppotatoo --dark
         """
         parser = Arguments(allow_abbrev=False, add_help=False)
-        parser.add_argument("input", nargs="*", default = None)
+        parser.add_argument("input", nargs="*", default="supreme")
         parser.add_argument('--dark', action='store_true', default=False)
         parser.add_argument('--light', action='store_true', default=False)
 
