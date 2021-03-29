@@ -509,7 +509,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             await final.edit(content=f"✅ The key matches! You enter the vault.\n💰 You gather **${amount}**")
             
         if var != result:
-            return await final.edit(content="❌ The patterns do not match, leaving you with nothing.")
+            return await final.edit(content="❌ The patterns do not match and the vault door stays shut.")
         
         valid_options = ("leave", "stay")
         
