@@ -300,11 +300,13 @@ class Utilities(commands.Cog):
             tables[table] = tabulate((dict(item) for item in response),
                                      headers="keys",
                                      tablefmt="github")
+
+        await ctx.send(tables)
         p = "".join(
             "\n\n" + str(name.upper()) + ":\n" + table
             for name, table in tables.items()
         )
-        await ctx.send(tables)
+
 
         await ctx.send(file=discord.File(io.BytesIO(p.encode("utf-8")), f"{ctx.author.name}_userdata.txt"))
 
