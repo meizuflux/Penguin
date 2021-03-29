@@ -87,8 +87,10 @@ class CogSource(menus.ListPageSource):
                 add_formatting(menu.ctx, command) for command in cmds
             ),
         )
+        await ctx.send(menu.current_page)
         if menu.current_page == 0:
             embed.description = cmds[0].description + "\n" + embed.description
+            await ctx.send(embed.description)
         return embed 
 
 
