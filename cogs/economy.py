@@ -481,7 +481,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         """
         numbers = ["<:better1:826124826493190175>", "<:better2:826124826456227870>", "<:better3:826124826401177640>", "<:better4:826124826228817950>"]
 
-        result = random.sample(numbers, 4)
+        result = "".join(random.sample(numbers, 4))
 
         text = f"React to this in the same order as this: {result}"
         msg = await ctx.send(text, delete_after=60)
@@ -497,12 +497,12 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             try:
                 reaction, _ = await self.bot.wait_for("reaction_add", timeout=15, check=terms)
             except asyncio.TimeoutError:
-                await ctx.send("You didn't pick fast enough.", delete_after=15)
+                return await ctx.send("You didn't pick fast enough.", delete_after=15)
             else:
                 var += str(reaction.emoji)
                 await msg.edit(content=f"{text}\n{var}")
-        text = "<a:loading:747680523459231834> Attempting to enter the vault..."
-        final = await ctx.send(text, delete_after=15)
+                
+        final = await ctx.send("<a:loading:747680523459231834> Attempting to enter the vault...", delete_after=15)
         await asyncio.sleep(1.5)
         if var == result:
             amount = random.randint(200, 656)
