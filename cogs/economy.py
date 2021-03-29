@@ -538,7 +538,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
                     text = "You need to send either `stay` or `leave`."
                     await ctx.send(text)
                     continue
-            if content == "stay":
+            if choice == "stay":
                 if random.choice((True, False)):
                     text = "You pushed your luck too far and the cops catch you, leaving you with nothing!"
                     return await message.edit(content=text)
@@ -546,7 +546,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
                 amount += grabbed_amount
                 await ctx.send(f"You grab another **${grabbed_amount}** to add to your moneybag.")
                 
-            if content == "leave":
+            if choice == "leave":
                 break
                 
         cash, _ = await get_stats(ctx, ctx.author.id)
