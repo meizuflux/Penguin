@@ -30,9 +30,6 @@ from jishaku.paginators import PaginatorInterface, WrappedPaginator
 from utils.default import qembed
 
 
-# from prettytable import PrettyTable
-
-
 class Owner(commands.Cog, command_attrs=dict(hidden=True)):
     def __init__(self, bot):
         self.bot = bot

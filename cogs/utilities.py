@@ -23,11 +23,11 @@ import secrets
 import string
 
 import discord
-import humanize
 import numpy as np
-from discord.ext import commands, flags, tasks
+from discord.ext import commands, flags
 from jishaku.functools import executor_function
 from jishaku.paginators import PaginatorInterface, WrappedPaginator
+from tabulate import tabulate
 
 from utils.default import qembed
 from utils.fuzzy import finder
@@ -284,6 +284,28 @@ class Utilities(commands.Cog):
             result = await f.text()
         await ctx.send(f"```yaml\n{result}```")
 
+    @commands.command()
+    async def userdata(self, ctx):
+        """
+        A large text file of all the data that I have collected of you.
+        Just SQL stuff.
+
+        No arguments are needed for this command. I could put a user, but I feel like not everyone would be comfortable with that.
+        """
+        tables = {"todos": None, "economy": None}
+        for table in tables:
+            response = await self.bot.db.fetch(f"SELECT * FROM {table} WHERE user_id = $1", ctx.author.id)
+            if len(response) == 0:
+                continue
+            tables[table] = tabulate((dict(item) for item in response),
+                                     headers="keys",
+                                     tablefmt="github")
+        p = "".join(
+            "\n\n" + str(name.upper()) + ":\n" + table
+            for name, table in tables.items()
+        )
+
+        await ctx.send(file=discord.File(io.BytesIO(p.encode("utf-8")), f"{ctx.author.name}_userdata.txt"))
 
 def setup(bot):
     bot.add_cog(Utilities(bot))
