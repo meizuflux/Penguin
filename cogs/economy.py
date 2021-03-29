@@ -505,7 +505,6 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             else:
                 var += str(reaction.emoji)
                 await msg.edit(content=f"{text}\n{var}")
-        await asyncio.sleep(0.3)
         text = "<a:loading:747680523459231834> Attempting to enter the vault..."
         final = await ctx.send(text)
         await asyncio.sleep(1.5)
@@ -530,14 +529,13 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
                 choice = random.choice(valid_options)
                 text = f"You didn't respond in time, so I picked {choice} for you."
                 await message.edit(content=text)
-            if msg:
-                content = msg.content.lower()
-                if content in valid_options:
-                    choice = content
-                else:
-                    text = "You need to send either `stay` or `leave`."
-                    await ctx.send(text)
-                    continue
+            content = msg.content.lower()
+            if content in valid_options:
+                choice = content
+            elif not choice:
+                text = "You need to send either `stay` or `leave`."
+                await ctx.send(text)
+                continue
             if choice == "stay":
                 if random.choice((True, False)):
                     text = "You pushed your luck too far and the cops catch you, leaving you with nothing!"
