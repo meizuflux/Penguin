@@ -503,13 +503,49 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         await asyncio.sleep(0.3)
         text = "<a:loading:747680523459231834> Attempting to enter the vault..."
         final = await ctx.send(text)
-        await asyncio.sleep(1)
+        await asyncio.sleep(1.5)
         if var == result:
-            await final.edit(content="✅ The key matches! You enter the vault.\n💰 You start collecting money.")
+            amount = random.randint(645, 1185)
+            await final.edit(content=f"✅ The key matches! You enter the vault.\n💰 You gather **${amount}**")
             
         if var != result:
             return await final.edit("❌ The patterns do not match, leaving you with nothing.")
-
+        
+        valid_options = ("leave", "stay")
+        
+        while True:
+            await message.delete()
+            message = await ctx.send(f"Would you like to stay in the vault and collect more money or would you like to leave? (`stay`/`leave`)\nYou currently have {amount} in your moneybag.")
+            try:
+                msg = await self.bot.wait_for("message", timeout=15, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
+            except asyncio.TimeoutError:
+                choice = random.choice(valid_options)
+                text = f"You didn't respond in time, so I picked {choice} for you."
+                await message.edit(content=text)
+            if msg:
+                content = msg.content.lower()
+                if content in valid_options:
+                    choice = content
+                else:
+                    text = "You need to send either `stay` or `leave`."
+                    await ctx.send(text)
+                    continue
+            if content == "stay":
+                if random.choice((True, False)):
+                    text = "You pushed your luck too far and the cops catch you, leaving you with nothing!"
+                    return await message.edit(content=text)
+                grabbed_amount = amount = random.randint(400, 1200)
+                amount += grabbed_amount
+                await ctx.send(f"You grab another **${grabbed_amount}** to add to your moneybag.")
+                
+            if content == "leave":
+                text = f"You leave the bank vault with **${amount}** in hand."
+                await message.edit(content=text)
+                
+        await ctx.send(f"You make off with a total of **${amount}** in your bag.")
+                
+                
+                
     @commands.is_owner()
     @commands.group(name='set', hidden=True)
     async def _set(self, ctx):
