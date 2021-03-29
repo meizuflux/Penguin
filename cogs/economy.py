@@ -125,7 +125,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             parser.add_argument("-b", "--bank", action="store_true", default=False)
             
             try:
-                args = parser.parse_args(text.split())
+                args = parser.parse_args(item.split())
             except RuntimeError as e:
                 return await ctx.send(str(e))
             
