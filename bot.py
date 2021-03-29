@@ -31,7 +31,7 @@ import discord
 from discord.ext import commands
 
 from cogs.useful import ChuckContext
-from utils.default import Maintenance, Blacklisted
+from utils.default import Blacklisted, Maintenance
 
 
 class Chuck(commands.Bot):
@@ -67,9 +67,6 @@ class Chuck(commands.Bot):
         self.usage_counter = 0
         self.command_usage = collections.Counter()
         self.maintenance = False
-        
-        
-
 
     @staticmethod
     def get_config(item: str):
@@ -130,6 +127,7 @@ class Chuck(commands.Bot):
 
     async def create_cache(self):
         await self.wait_until_ready()
+        self.mention_match = re.compile(fr"^(<@!?{self.user.id}>)\s*")
         for guild in self.guilds:
             await self.db.execute("INSERT INTO guilds (guild_id) VALUES ($1) ON CONFLICT (guild_id) DO NOTHING",
                                   guild.id)
@@ -138,7 +136,14 @@ class Chuck(commands.Bot):
             self.prefixes[guild['guild_id']].append(guild['prefix'])
         blacklist = await self.db.fetch('SELECT user_id, reason FROM blacklist')
         self.blacklist = dict(blacklist)
-        self.mention_match = re.compile(fr"^(<@!?{self.user.id}>)\s*")
+
+
+    def create_command_list(self):
+        for command in self.commands:
+            self.command_list.append(str(command))
+            self.command_list.extend(list(command.aliases))
+            if isinstance(command, commands.Group):
+                self.command_list.extend(self.get_subcommands(command))
 
     def get_subcommands(self, command):
         gotten_subcommands = []
@@ -149,24 +154,6 @@ class Chuck(commands.Bot):
                 gotten_subcommands.extend(self.get_subcommands(command))
         return gotten_subcommands
 
-    def create_command_list(self):
-        for command in self.commands:
-            self.command_list.append(str(command))
-            self.command_list.extend(list(command.aliases))
-            if isinstance(command, commands.Group):
-                self.command_list.extend(self.get_subcommands(command))
-
-    # https://github.com/InterStella0/stella_bot/blob/4636627b2f99b7f58260869f020e5adebb62e27d/main.py
-    async def process_commands(self, message):
-        """Override process_commands to call typing every invoke"""
-        if message.author.bot:
-            return
-
-        ctx = await self.get_context(message)
-        if ctx.valid:
-            await ctx.trigger_typing()
-        await self.invoke(ctx)
-        
     def check_owner(self, user: discord.User):
         return user.id in self.owner_ids
 
@@ -180,9 +167,21 @@ class Chuck(commands.Bot):
         """Method to override "ctx"."""
         return await super().get_context(message, cls=cls or ChuckContext)
 
+    # https://github.com/InterStella0/stella_bot/blob/4636627b2f99b7f58260869f020e5adebb62e27d/main.py
+    async def process_commands(self, message):
+        """Override process_commands to call typing every invoke"""
+        if message.author.bot:
+            return
+
+        ctx = await self.get_context(message)
+        if ctx.valid:
+            await ctx.trigger_typing()
+        await self.invoke(ctx)
+
     async def on_message(self, message: discord.Message):
         """Checking if someone pings the bot."""
-        perms = message.channel.permissions_for(message.guild.me).send_messages + message.channel.permissions_for(message.guild.me).embed_links if message.guild else 2
+        perms = message.channel.permissions_for(message.guild.me).send_messages + message.channel.permissions_for(
+            message.guild.me).embed_links if message.guild else 2
         if message.author.bot or not self.is_ready() or perms != 2:
             return
         if self.mention_match.fullmatch(message.content):
@@ -220,7 +219,8 @@ async def on_ready():
     print(f'{bot.user} has connected to Discord!\n'
           f'Guilds: {len(bot.guilds)}\n'
           f'Members: {str(sum([guild.member_count for guild in bot.guilds]))}')
-    
+
+
 @bot.check
 async def is_maintenance(ctx):
     if bot.maintenance and not bot.check_owner(ctx.author):
@@ -228,12 +228,14 @@ async def is_maintenance(ctx):
         return False
     return True
 
+
 @bot.check
 async def is_blacklisted(ctx):
     if ctx.author.id in bot.blacklist:
         raise Blacklisted()
         return False
     return True
+
 
 if __name__ == "__main__":
     bot.starter()

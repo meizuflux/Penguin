@@ -227,8 +227,6 @@ class Utilities(commands.Cog):
                     decoded_message = message.decode("utf-8")
                     result = f'{await ctx.mystbin(decoded_message)}.{syntax}'
 
-
-
         await qembed(ctx, result)
 
     # from pb https://github.com/PB4162/PB-Bot
@@ -349,6 +347,7 @@ class Utilities(commands.Cog):
         async with self.bot.session.get("https://api.mathjs.org/v4/", params=params) as f:
             result = await f.text()
         await ctx.send(f"```yaml\n{result}```")
+
 
 def setup(bot):
     bot.add_cog(Utilities(bot))

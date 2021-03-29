@@ -15,17 +15,17 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-import random
-import math
-import typing
 import asyncio
+import math
+import random
+import typing
 
 import discord
 import humanize
 from discord.ext import commands
 
-from utils.default import qembed
 from utils.argparse import Arguments
+from utils.default import qembed
 
 
 async def get_stats(ctx, user_id: int):
@@ -142,13 +142,12 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             parser = Arguments(allow_abbrev=False, add_help=False)
             parser.add_argument("-cash", "--cash", action="store_true", default=False)
             parser.add_argument("-bank", "--bank", action="store_true", default=False)
-            
+
             try:
                 args = parser.parse_args(item.split())
             except RuntimeError as e:
                 return await ctx.send(embed=ctx.embed(description=str(e)))
-            
-            
+
             if args.cash:
                 lb_query = (
                     """
@@ -175,14 +174,11 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
                     WHERE guild_id = $1 AND bank > 0
                     """
                 )
-                
-            
+
         count = await self.bot.db.fetchval(count_query, ctx.guild.id)
         max_pages = math.ceil(count / 10)
         # need to check if the page is more than the amount allowed
         page = min(page, max_pages)
-
-
 
         data = await self.bot.db.fetch(lb_query, ctx.guild.id, (page * 10) - 10)
 
@@ -203,7 +199,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         cash, bank = await get_stats(ctx, ctx.author.id)
 
         amount = self.get_number(amount, cash)
-        
+
         if amount == 0:
             return await ctx.send(embed=ctx.embed(description="You have no cash."))
 
@@ -302,13 +298,14 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             words = [word.strip() for word in f]
         word = str(random.choice(words).lower().replace("'", ""))
         correct_word = word[::-1]
-        
+
         embed = ctx.embed(description=f"In 30 seconds, type this backwards: \n`{word}`\nType `cancel` to cancel.")
-        
+
         message = await ctx.send(embed=embed)
-        
+
         try:
-            user_msg = await self.bot.wait_for("message", timeout=30, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
+            user_msg = await self.bot.wait_for("message", timeout=30,
+                                               check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
         except asyncio.TimeoutError:
             embed.description = f"You didn't respond in time, the answer was `{correct_word}`"
             await message.edit(embed=embed)
@@ -327,8 +324,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
                 embed.description = f"That's not the right word! The answer was `{correct_word}`"
                 await message.delete()
                 return await ctx.send(embed=embed)
-        
-        
+
         author_cash, author_bank = await get_stats(ctx, ctx.author.id)
 
         cash = random.randint(100, 500)
@@ -341,7 +337,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         )
 
         await self.bot.db.execute(query, author_cash + cash, ctx.guild.id, ctx.author.id)
-        
+
         embed.description = f"I transfered **${cash}** to you."
         await m.edit(embed=embed)
 
@@ -373,10 +369,10 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         valid_fish.append("❌")
         for fish in valid_fish:
             await message.add_reaction(fish)
-        
+
         def terms(reaction, user):
             return user == ctx.author and reaction.message == message and str(reaction.emoji) in valid_fish
-        
+
         try:
             reaction, _ = await self.bot.wait_for("reaction_add", timeout=10, check=terms)
         except asyncio.TimeoutError:
@@ -398,9 +394,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             if emoji in valid_fish and emoji != correct_fish:
                 embed.description = f"Wrong fish. The answer was {correct_fish}"
                 return await message.edit(embed=embed)
-        
-        
-        
+
         user_cash, _ = await get_stats(ctx, ctx.author.id)
 
         price = random.randint(20, 35)
@@ -415,7 +409,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         )
 
         await self.bot.db.execute(query, user_cash + cash, ctx.guild.id, ctx.author.id)
-        
+
         embed.description = f'You travel to the local lake and catch **{fish}** fish {correct_fish}.\nThen you sell them to the market at a price of **${price}**, totaling in at **${cash}** for a days work.'
 
         await m.edit(embed=embed)
@@ -475,7 +469,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         await self.bot.db.execute(query, cash - 400, ctx.guild.id, ctx.author.id)
         await qembed(ctx,
                      f'Reset the command cooldown for the command `{command}` and subtracted **$400** from your account.')
-        
+
     @commands.command(aliases=("bankrob", "bank-rob"))
     @commands.cooldown(rate=1, per=300, type=commands.BucketType.user)
     async def bank_rob(self, ctx):
@@ -484,7 +478,8 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         
         This command takes no arguments.
         """
-        numbers = ["<:better1:826124826493190175>", "<:better2:826124826456227870>", "<:better3:826124826401177640>", "<:better4:826124826228817950>"]
+        numbers = ["<:better1:826124826493190175>", "<:better2:826124826456227870>", "<:better3:826124826401177640>",
+                   "<:better4:826124826228817950>"]
 
         result = "".join(random.sample(numbers, 4))
 
@@ -506,53 +501,56 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             else:
                 var += str(reaction.emoji)
                 await msg.edit(content=f"{text}\n{var}")
-                
+
         final = await ctx.send("<a:loading:747680523459231834> Attempting to enter the vault...", delete_after=15)
         await asyncio.sleep(1.5)
         if var == result:
             await final.edit(content=f"✅ The key matches! You enter the vault.")
-            
+
         if var != result:
             return await final.edit(content="❌ The patterns do not match and the vault door stays shut.")
-        
+
         valid_options = ("leave", "stay")
         choice = None
-        
+
         amount = 0
-        
-        
+
         while True:
-            message = await ctx.send(f"Would you like to stay in the vault and collect more money or would you like to leave? (`stay`/`leave`)\n💰 You currently have **${amount}** in your moneybag.", delete_after=15)
-            
+            message = await ctx.send(
+                f"Would you like to stay in the vault and collect more money or would you like to leave? (`stay`/`leave`)\n💰 You currently have **${amount}** in your moneybag.",
+                delete_after=15)
+
             try:
-                msg = await self.bot.wait_for("message", timeout=15, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
+                msg = await self.bot.wait_for("message", timeout=15,
+                                              check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
             except asyncio.TimeoutError:
                 choice = random.choice(valid_options)
                 await ctx.send(f"You didn't respond in time, so I picked {choice} for you.", delete_after=15)
-                
+
             content = msg.content.lower()
             if content in valid_options:
                 choice = content
-                
+
             elif not choice:
                 await ctx.send("You need to send either `stay` or `leave`.")
                 continue
-                
+
             if choice == "stay":
                 if random.choice((True, False)):
-                    return await message.edit(content="You push your luck too far and the cops catch you, leaving you with nothing!")
-                
+                    return await message.edit(
+                        content="You push your luck too far and the cops catch you, leaving you with nothing!")
+
                 grabbed_amount = random.randint(400, 1200)
                 amount += grabbed_amount
                 await ctx.send(f"💰 You grab another **${grabbed_amount}** to add to your moneybag.", delete_after=15)
-                
+
             if choice == "leave":
                 if amount == 0:
                     return await ctx.send(":( You have no money in your moneybag, I guess that's sad.")
                 break
-                
+
         cash, _ = await get_stats(ctx, ctx.author.id)
-        
+
         query = (
             """
             UPDATE economy SET cash = $1
@@ -560,9 +558,9 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             """
         )
         await self.bot.db.execute(query, cash + amount, ctx.guild.id, ctx.author.id)
-                
+
         await ctx.send(f"💰 You make off with a total of **${amount}** in your bag.")
-                
+
     @commands.is_owner()
     @commands.group(name='set', hidden=True)
     async def _set(self, ctx):

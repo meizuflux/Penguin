@@ -278,7 +278,8 @@ class Fun(commands.Cog):
         random.seed(int(user_1.id) + int(user_2.id))
         love = random.randint(1, 100)
 
-        embed = ctx.embed(description=f'**I calculate that the love between {user_1.mention} and {user_2.mention} is {str(love)[:2]}%.**')
+        embed = ctx.embed(
+            description=f'**I calculate that the love between {user_1.mention} and {user_2.mention} is {str(love)[:2]}%.**')
         embed.set_image(url="attachment://love.png")
 
         m = await self.bot.alex.ship(user_1.avatar_url, user_2.avatar_url)
@@ -674,7 +675,8 @@ class Fun(commands.Cog):
         await ctx.send("type rock, paper, or scissors")
         allowed = {'rock', 'paper', 'scissors'}
         try:
-            msg = await self.bot.wait_for('message', timeout = 60, check = lambda m: m.channel == ctx.channel and m.author == ctx.author)
+            msg = await self.bot.wait_for('message', timeout=60,
+                                          check=lambda m: m.channel == ctx.channel and m.author == ctx.author)
         except asyncio.TimeoutError:
             await ctx.send('yu didn\'t send rock, paper, or scissors')
         else:
@@ -719,6 +721,7 @@ class Fun(commands.Cog):
         result_embed.set_thumbnail(url=attrs["posterImage"]["medium"])
 
         await ctx.send(embed=result_embed)
+
 
 def setup(bot):
     bot.add_cog(Fun(bot))

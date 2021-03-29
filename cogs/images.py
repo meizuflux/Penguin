@@ -109,8 +109,8 @@ class Images(commands.Cog):
         await ctx.send(embed=embed, file=file)
 
     @commands.command(usage='[text] [--dark|--light]')
-    @commands.cooldown(rate=1, per=5, type=commands.BucketType.guild) 
-    async def supreme(self, ctx, *, text: str="supreme"):
+    @commands.cooldown(rate=1, per=5, type=commands.BucketType.guild)
+    async def supreme(self, ctx, *, text: str = "supreme"):
         """
         Makes a custom supreme logo.
         example: {prefix}supreme ppotatoo --dark

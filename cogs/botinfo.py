@@ -26,6 +26,7 @@ from discord.ext import commands, menus
 
 from cogs.useful import TodoPages
 
+
 class CommandSource(menus.ListPageSource):
     def __init__(self, cmds):
         super().__init__(cmds, per_page=10)

@@ -473,7 +473,8 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         params = {"platform": "discord", "id": user.id}
         async with self.bot.session.get("https://pronoundb.org/api/v1/lookup", params=params) as f:
             if f.status == 404:
-                embed = ctx.embed(title=f"{user.name} hasn't registered yet!", description="You can tell them to sign up [here](https://pronoundb.org)")
+                embed = ctx.embed(title=f"{user.name} hasn't registered yet!",
+                                  description="You can tell them to sign up [here](https://pronoundb.org)")
                 return await ctx.send(embed=embed)
             data = await f.json()
         pronoun = pronouns[data['pronouns']]
