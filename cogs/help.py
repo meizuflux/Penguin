@@ -89,8 +89,9 @@ class CogSource(menus.ListPageSource):
             ),
         )
         if menu.current_page == 0:
-            await ctx.send(cmds[0])
-            embed.description = cmds[0].description + "\n" + embed.description
+            cog = ctx.bot.get_cog(cmds[0].cog_name)
+            await ctx.send(cog)
+            embed.description = cog.description + "\n" + embed.description
             await ctx.send(embed.description)
         return embed 
 
