@@ -110,6 +110,7 @@ class Images(commands.Cog):
         Makes a custom supreme logo
         example: {prefix}supreme ppotatoo --dark
         """
+        text = text or "supreme"
         parser = Arguments(allow_abbrev=False, add_help=False)
         parser.add_argument("input", nargs="*", default="supreme")
         parser.add_argument('--dark', action='store_true', default=False)
