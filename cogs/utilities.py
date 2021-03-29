@@ -302,7 +302,7 @@ class Utilities(commands.Cog):
                                      tablefmt="github")
 
         p = "".join(
-            "\n\n" + str(name.upper()) + ":\n" + table if table else "No data."
+            "\n\n" + str(name.upper()) + ":\n" + (table if table else f"No data.")
             for name, table in tables.items()
         )
 
