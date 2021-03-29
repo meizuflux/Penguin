@@ -382,6 +382,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
                 embed.description = "You got it! Transfering money to your account now."
                 m = await ctx.send(embed=embed)
                 await message.delete()
+                await asyncio.sleep(0.75)
             if emoji == "❌":
                 embed.description = "Cancelled."
                 await ctx.send(embed=embed)
