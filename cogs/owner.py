@@ -19,6 +19,7 @@ import asyncio
 import inspect
 import os
 import traceback
+from time import perf_counter
 
 import aiohttp
 import asyncpg
@@ -45,14 +46,16 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
     @dev.command()
     async def sql(self, ctx, *, query):
         """Execute SQL commands."""
+        start = perf_counter()
         response = await self.bot.db.fetch(query)
+        end = perf_counter()
         if len(response) == 0:
             return await ctx.message.add_reaction('✅')
         table = tabulate.tabulate((dict(item) for item in response),
                                   headers="keys",
                                   tablefmt="github")
         if len(table) > 2000: table = await ctx.mystbin(table)
-        await ctx.send(embed=ctx.embed(description=f'```py\n{table}```'))
+        await ctx.send(embed=ctx.embed(description=f'Query took {(end - start) * 1000} ms\n```yaml\n{table}```'))
 
     @sql.error
     async def sql_error_handling(self, ctx, error):
@@ -62,9 +65,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
                 return await qembed(ctx, "This table does not exist.")
             if isinstance(error, asyncpg.exceptions.PostgresSyntaxError):
                 return await qembed(ctx, f"There was a syntax error:```\n {error} ```")
-            await ctx.send(error)
-        else:
-            await ctx.send(error)
+        await ctx.send(error)
 
     @dev.command(help='Syncs with GitHub and reloads all cogs')
     async def sync(self, ctx):
