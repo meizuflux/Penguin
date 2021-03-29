@@ -470,6 +470,12 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         await self.bot.db.execute(query, cash - 400, ctx.guild.id, ctx.author.id)
         await qembed(ctx,
                      f'Reset the command cooldown for the command `{command}` and subtracted **$400** from your account.')
+        
+    @commands.command(hidden=True)
+    @commands.is_owner()
+    async def robbank(self, ctx):
+        numbers = ["<:better1:826124826493190175>", "<:better2:826124826456227870>", "<:better3:826124826401177640>", "<:better4:826124826228817950>"]
+        await ctx.send("\n".join(numbers))
 
     @commands.is_owner()
     @commands.group(name='set', hidden=True)
