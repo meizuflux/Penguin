@@ -463,7 +463,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         await ctx.send(f'OK, I have set your AFK status to `{reason}`')
 
     @commands.command()
-    async def pronoun(self, ctx, user: discord.User = None):
+    async def pronoun(self, ctx, *, user: discord.Member = None):
         """Checks the pronouns of another user.
         You can sign up to record your pronouns at https://pronoundb.org
 
