@@ -484,7 +484,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         result = "".join(random.sample(numbers, 4))
 
         text = f"React to this in the same order as this: {result}"
-        msg = await ctx.send(text, delete_after=60)
+        msg = await ctx.send(text, delete_after=30)
 
         for i in numbers:
             await msg.add_reaction(i)
@@ -497,7 +497,8 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             try:
                 reaction, _ = await self.bot.wait_for("reaction_add", timeout=15, check=terms)
             except asyncio.TimeoutError:
-                return await ctx.send("You didn't pick fast enough.", delete_after=15)
+                await self.message.clear_reactions()
+                return await msg.edit(content="You didn't pick fast enough.", delete_after=15)
             else:
                 var += str(reaction.emoji)
                 await msg.edit(content=f"{text}\n{var}")
