@@ -481,16 +481,12 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         """
         numbers = ["<:better1:826124826493190175>", "<:better2:826124826456227870>", "<:better3:826124826401177640>", "<:better4:826124826228817950>"]
 
-        result = ""
-        for i in range(4):
-            choice = random.choice(numbers)
-            result += choice
-            numbers.remove(choice)
+        result = random.sample(numbers, 4)
 
         text = f"React to this in the same order as this: {result}"
         msg = await ctx.send(text, delete_after=60)
 
-        for i in ["<:better1:826124826493190175>", "<:better2:826124826456227870>", "<:better3:826124826401177640>", "<:better4:826124826228817950>"]:
+        for i in numbers:
             await msg.add_reaction(i)
 
         def terms(reaction, user):
