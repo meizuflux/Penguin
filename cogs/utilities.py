@@ -304,6 +304,7 @@ class Utilities(commands.Cog):
             "\n\n" + str(name.upper()) + ":\n" + table
             for name, table in tables.items()
         )
+        await ctx.send(tables)
 
         await ctx.send(file=discord.File(io.BytesIO(p.encode("utf-8")), f"{ctx.author.name}_userdata.txt"))
 
