@@ -34,8 +34,7 @@ def get_sig(ctx, command):
         return f'`{ctx.clean_prefix}{command.name}` `{sig}`'
     if not sig:
         return f'`{ctx.clean_prefix}{command.parent}` `{command.name}`'
-    else:
-        return f'`{ctx.clean_prefix}{command.parent}` `{command.name}` `{sig}`'
+    return f'`{ctx.clean_prefix}{command.parent}` `{command.name}` `{sig}`'
 
 
 def add_formatting(ctx, command):
@@ -110,8 +109,7 @@ class PaginatedHelp(commands.MinimalHelpCommand):
             return f'`{self.clean_prefix}{command.name}` `{sig}`'
         if not sig:
             return f'`{self.clean_prefix}{command.parent}` `{command.name}`'
-        else:
-            return f'`{self.clean_prefix}{command.parent}` `{command.name}` `{sig}`'
+        return f'`{self.clean_prefix}{command.parent}` `{command.name}` `{sig}`'
 
     async def send_error_message(self, error):
         ctx = self.context

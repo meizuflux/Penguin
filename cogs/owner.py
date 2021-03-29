@@ -63,10 +63,9 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
             error = error.original
             if isinstance(error, asyncpg.exceptions.UndefinedTableError):
                 return await qembed(ctx, "This table does not exist.")
-            elif isinstance(error, asyncpg.exceptions.PostgresSyntaxError):
+            if isinstance(error, asyncpg.exceptions.PostgresSyntaxError):
                 return await qembed(ctx, f"There was a syntax error:```\n {error} ```")
-            else:
-                await ctx.send(error)
+            await ctx.send(error)
         else:
             await ctx.send(error)
 
