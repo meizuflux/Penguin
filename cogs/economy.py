@@ -494,7 +494,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         var = []
         for i in range(4):
             try:
-                reaction, _ = await bot.wait_for("reaction_add", timeout=15, check=terms)
+                reaction, _ = await self.bot.wait_for("reaction_add", timeout=15, check=terms)
             except asyncio.TimeoutError:
                 await ctx.send("You didn't make your move fast enough.")
             else:
