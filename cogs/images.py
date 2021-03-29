@@ -111,9 +111,9 @@ class Images(commands.Cog):
         example: {prefix}supreme ppotatoo --dark
         """
         parser = Arguments(allow_abbrev=False, add_help=False)
-        parser.add_argument("input", nargs="*", default="supreme")
-        parser.add_argument('--dark', action='store_true', default=False)
-        parser.add_argument('--light', action='store_true', default=False)
+        parser.add_argument('input', nargs="+", default=None)
+        parser.add_argument('-d', '--dark', action='store_true')
+        parser.add_argument('-l', '--light', action='store_true')
 
         try:
             args = parser.parse_args(text.split())
