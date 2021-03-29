@@ -482,7 +482,8 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             result.append(choice)
             numbers.remove(choice)
 
-        msg = await ctx.send(f"React to this in the same order as this: {' '.join(result)}")
+        text = f"React to this in the same order as this: {' '.join(result)}"
+        msg = await ctx.send(text)
 
         for i in ["<:better1:826124826493190175>", "<:better2:826124826456227870>", "<:better3:826124826401177640>", "<:better4:826124826228817950>"]:
             await msg.add_reaction(i)
@@ -498,7 +499,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
                 await ctx.send("You didn't make your move fast enough.")
             else:
                 var.append(str(reaction.emoji))
-                await msg.edit(content=f"{msg.content}\n{' '.join(var)}")
+                await msg.edit(content=f"{text}\n{' '.join(var)}")
 
     @commands.is_owner()
     @commands.group(name='set', hidden=True)
