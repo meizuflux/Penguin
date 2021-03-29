@@ -542,7 +542,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
                 if random.choice((True, False)):
                     return await message.edit(content="You push your luck too far and the cops catch you, leaving you with nothing!")
                 
-                grabbed_amount = amount = random.randint(400, 1200)
+                grabbed_amount = random.randint(400, 1200)
                 amount += grabbed_amount
                 await ctx.send(f"💰 You grab another **${grabbed_amount}** to add to your moneybag.", delete_after=15)
                 
