@@ -497,7 +497,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             try:
                 reaction, _ = await self.bot.wait_for("reaction_add", timeout=15, check=terms)
             except asyncio.TimeoutError:
-                await self.message.clear_reactions()
+                await msg.clear_reactions()
                 return await msg.edit(content="You didn't pick fast enough.", delete_after=15)
             else:
                 var += str(reaction.emoji)
