@@ -112,7 +112,7 @@ class Images(commands.Cog):
         example: {prefix}supreme ppotatoo --dark
         """
         if len(text) > 500:
-            raise commands.BadArgument("You are limited to 500 characters only, sorry."
+            raise commands.BadArgument("You are limited to 500 characters only, sorry.")
         if text in {"-d", "--dark", "-l", "--light"}:
             text = "supreme " + text
         parser = Arguments(allow_abbrev=False, add_help=False)
