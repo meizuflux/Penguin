@@ -225,7 +225,6 @@ async def on_ready():
 async def is_maintenance(ctx):
     if bot.maintenance and not bot.check_owner(ctx.author):
         raise Maintenance()
-        return False
     return True
 
 
@@ -233,7 +232,6 @@ async def is_maintenance(ctx):
 async def is_blacklisted(ctx):
     if ctx.author.id in bot.blacklist:
         raise Blacklisted()
-        return False
     return True
 
 
