@@ -55,7 +55,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
                                   headers="keys",
                                   tablefmt="github")
         if len(table) > 2000: table = await ctx.mystbin(table)
-        await ctx.send(embed=ctx.embed(description=f'Query took {(end - start) * 1000} ms\n```yaml\n{table}```'))
+        await ctx.send(embed=ctx.embed(description=f'Query took {(end - start) * 1000} ms to execute.\n```yaml\n{table}```'))
 
     @sql.error
     async def sql_error_handling(self, ctx, error):
