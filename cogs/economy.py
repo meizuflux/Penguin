@@ -147,6 +147,9 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             except RuntimeError as e:
                 return await ctx.send(str(e))
             
+            if args.cash and args.bank:
+                raise commands.BadArgument("You can't have both cash and bank, sorry. If you want total just provide no flags.")
+            
             if args.cash:
                 lb_query = (
                     """
@@ -189,7 +192,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             # Need to escape markdown
             name = discord.utils.escape_markdown(str(await self.bot.try_user(user['user_id'])))
             # Add a rickroll cause I'm lazy
-            item = f"**{user['number']}.** [{name}](https://www.youtube.com/watch?v=dQw4w9WgXcQ, 'seriously, don\'t click.') » ${humanize.intcomma(user['total'])}"
+            item = f"**{user['number']}.** [{name}](https://www.youtube.com/watch?v=dQw4w9WgXcQ, 'seriously, don\'t click.') » **${humanize.intcomma(user['total'])}**"
             lb.append(item)
         lb.append(f"\nPage {page}/{max_pages}")
 
