@@ -388,7 +388,10 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
                 await ctx.send(embed=embed)
                 return await message.edit(embed=embed)
             if emoji not in valid_fish:
-                embed.description = "That's not the correct answer."
+                embed.description = "That's not the fish I told to to react with."
+                return await message.edit(embed=embed)
+            if emoji in valid_fish and emoji != correct_fish:
+                embed.description = f"Wrong fish. The answer was {correct_fish}"
                 return await message.edit(embed=embed)
         
         
