@@ -303,7 +303,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         message = await ctx.send(embed=embed)
         
         try:
-            user_msg = await bot.wait_for("message", timeout=30, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
+            user_msg = await self.bot.wait_for("message", timeout=30, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
         except asyncio.TimeoutError:
             embed.description = f"You didn't respond in time, the answer was `{correct_word}`"
             await message.edit(embed=embed)
