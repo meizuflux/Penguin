@@ -213,8 +213,7 @@ class Fun(commands.Cog):
     def bottoms(mode, text):
         if mode == "to_bottom":
             return to_bottom(text)
-        else:
-            return from_bottom(text)
+        return from_bottom(text)
 
     async def check_mystbin(self, text):
         if match := mystbin_url.match(text):
