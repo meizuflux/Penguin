@@ -679,8 +679,8 @@ class Fun(commands.Cog):
         except asyncio.TimeoutError:
             await ctx.send('yu didn\'t send rock, paper, or scissors')
         else:
-            if msg.content in allowed:
-                await ctx.send('i also picked {}'.format(msg.content))
+            if msg.content.lower() in allowed:
+                await ctx.send('i also picked {}'.format(msg.content.lower()))
             else:
                 await msg.add_reaction("<:bonk:759934836193361991>")
 
