@@ -18,6 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import random
 import math
 import typing
+import asyncio
 
 import discord
 import humanize
@@ -292,6 +293,33 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(help='Work for some $$$')
     @commands.cooldown(rate=1, per=7200, type=commands.BucketType.user)
     async def work(self, ctx):
+        with open('/usr/share/dict/words') as f:
+            words = [word.strip() for word in f]
+        word = random.choice(words)    
+        correct_word = word[::-1].lower().replace("'", "")
+        
+        embed = ctx.embed(description=f"In 30 seconds, type this backwards: \n`{word}`\nType `cancel` to cancel.")
+        
+        message = await ctx.send(embed=embed)
+        
+        try:
+            user_msg = await bot.wait_for("message", timeout=30, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
+        except asyncio.TimeoutError:
+            embed.description = f"You didn't respond in time, the answer was `{correct_word}`"
+            await message.edit(embed=embed)
+        else:
+            content = user_msg.content.lower()
+            if content == correct_word:
+                embed.description = "You got it! Transfering money now."
+                await message.edit(embed=embed)
+            if content == "cancel":
+                embed.description = "Cancelled."
+                return await message.edit(embed=embed)
+            else:
+                embed.description = f"That's not the right word! The answer was `{correct_word}`"
+                return await message.edit(embed=embed)
+        
+        
         author_cash, author_bank = await get_stats(ctx, ctx.author.id)
 
         cash = random.randint(100, 500)
@@ -309,8 +337,10 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
         if cash <= 249:
             amount = 'meager'
+        
+        embed.description = f"I transfered *${cash}* to you."
 
-        await qembed(ctx, f'You work and get paid a {amount} amount of **${cash}**.')
+        await message.edit(embed=embed)
 
     @commands.command(help='Daily reward')
     @commands.cooldown(rate=1, per=86400, type=commands.BucketType.user)
