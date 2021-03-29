@@ -105,11 +105,14 @@ class Images(commands.Cog):
         await ctx.send(embed=embed, file=file)
 
     @commands.command(usage='[text] [--dark|--light]')
+    @commands.cooldown(rate=1, per=5, commands.BucketType.guild) 
     async def supreme(self, ctx, *, text: str="supreme"):
         """
         Makes a custom supreme logo
         example: {prefix}supreme ppotatoo --dark
         """
+        if len(text) > 500:
+            raise commands.BadArgument("You are limited to 500 characters only, sorry."
         if text in {"-d", "--dark", "-l", "--light"}:
             text = "supreme " + text
         parser = Arguments(allow_abbrev=False, add_help=False)
