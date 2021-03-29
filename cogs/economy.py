@@ -513,8 +513,11 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         
         valid_options = ("leave", "stay")
         
+        message = None
+        
         while True:
-            await message.delete()
+            if message:
+                await message.delete()
             message = await ctx.send(f"Would you like to stay in the vault and collect more money or would you like to leave? (`stay`/`leave`)\nYou currently have {amount} in your moneybag.")
             try:
                 msg = await self.bot.wait_for("message", timeout=15, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
