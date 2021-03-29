@@ -471,9 +471,14 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         await qembed(ctx,
                      f'Reset the command cooldown for the command `{command}` and subtracted **$400** from your account.')
         
-    @commands.command(hidden=True, aliases=("bankrob", "bank-rob"))
-    @commands.is_owner()
+    @commands.command(aliases=("bankrob", "bank-rob"))
+    @commands.cooldown(rate=1, per=300, type=commands.BucketType.user)
     async def bank_rob(self, ctx):
+        """
+        Starts an interactive bank robbing session.
+        
+        This command takes no arguments.
+        """
         numbers = ["<:better1:826124826493190175>", "<:better2:826124826456227870>", "<:better3:826124826401177640>", "<:better4:826124826228817950>"]
 
         result = ""
@@ -505,7 +510,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         final = await ctx.send(text)
         await asyncio.sleep(1.5)
         if var == result:
-            amount = random.randint(645, 1185)
+            amount = random.randint(200, 656)
             await final.edit(content=f"✅ The key matches! You enter the vault.\n💰 You gather **${amount}**")
             
         if var != result:
@@ -542,9 +547,17 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
                 await ctx.send(f"You grab another **${grabbed_amount}** to add to your moneybag.")
                 
             if content == "leave":
-                text = f"You leave the bank vault with **${amount}** in hand."
-                await message.edit(content=text)
                 break
+                
+        cash, _ = await get_stats(ctx, ctx.author.id)
+        
+        query = (
+            """
+            UPDATE economy SET cash = $1
+            WHERE guild_id = $2 AND user_id = $3
+            """
+        )
+        await self.bot.db.execute(query, cash + amount, ctx.guild.id, ctx.author.id)
                 
         await ctx.send(f"You make off with a total of **${amount}** in your bag.")
                 
