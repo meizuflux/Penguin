@@ -36,7 +36,18 @@ async def get_stats(ctx, user_id: int):
 
 
 class Economy(commands.Cog, command_attrs=dict(hidden=False)):
-    """Earn some money. This ties in directly to the stock category."""
+    """
+    A unique Economy system. This is per-server specific, so your money will not carry over from server to server.
+    Kicking the bot will reset the leaderboard, and all data will be lost.
+    
+    For all the commands that ask you to provide an amount, there are some different ways you can use it. 
+    You can call `all` or `max` to provide the max amount possible to use.
+    You can say `half`, which is, well half.
+    You can give a percentage, like `50%` to provide 50% of the max amount possible.
+    Lastly, you can just provide a number.
+    
+    If any of those methods result in a number that is negative, more than you have, or more than 100 billion, it will raise an error.
+    """
 
     def __init__(self, bot):
         self.bot = bot
