@@ -510,8 +510,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         final = await ctx.send("<a:loading:747680523459231834> Attempting to enter the vault...", delete_after=15)
         await asyncio.sleep(1.5)
         if var == result:
-            amount = random.randint(200, 656)
-            await final.edit(content=f"✅ The key matches! You enter the vault.\n💰 You gather **${amount}**")
+            await final.edit(content=f"✅ The key matches! You enter the vault.")
             
         if var != result:
             return await final.edit(content="❌ The patterns do not match and the vault door stays shut.")
@@ -519,9 +518,11 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         valid_options = ("leave", "stay")
         choice = None
         
+        amount = 0
+        
         
         while True:
-            message = await ctx.send(f"Would you like to stay in the vault and collect more money or would you like to leave? (`stay`/`leave`)\nYou currently have **${amount}** in your moneybag.", delete_after=15)
+            message = await ctx.send(f"Would you like to stay in the vault and collect more money or would you like to leave? (`stay`/`leave`)\n💰 You currently have **${amount}** in your moneybag.", delete_after=15)
             
             try:
                 msg = await self.bot.wait_for("message", timeout=15, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
@@ -543,9 +544,11 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
                 
                 grabbed_amount = amount = random.randint(400, 1200)
                 amount += grabbed_amount
-                await ctx.send(f"You grab another **${grabbed_amount}** to add to your moneybag.", delete_after=15)
+                await ctx.send(f"💰 You grab another **${grabbed_amount}** to add to your moneybag.", delete_after=15)
                 
             if choice == "leave":
+                if amount == 0:
+                    return await ctx.send(":( You have no money in your moneybag, I guess that's sad.")
                 break
                 
         cash, _ = await get_stats(ctx, ctx.author.id)
@@ -558,7 +561,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         )
         await self.bot.db.execute(query, cash + amount, ctx.guild.id, ctx.author.id)
                 
-        await ctx.send(f"You make off with a total of **${amount}** in your bag.")
+        await ctx.send(f"💰 You make off with a total of **${amount}** in your bag.")
                 
     @commands.is_owner()
     @commands.group(name='set', hidden=True)
