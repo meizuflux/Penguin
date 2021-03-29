@@ -33,7 +33,11 @@ class Images(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def do_alex_image(self, ctx, method, args: list = [], kwargs: dict = {}):
+    async def do_alex_image(self, ctx, method, args: list = None, kwargs: dict = None):
+        if args is None:
+            args = []
+        if kwargs is None:
+            kwargs = {}
         alex = getattr(self.bot.alex, method)
         m = await alex(*args, **kwargs)
         file = discord.File(await m.read(), filename=f"{method}.png")
