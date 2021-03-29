@@ -300,7 +300,10 @@ class Utilities(commands.Cog):
             tables[table] = tabulate((dict(item) for item in response),
                                      headers="keys",
                                      tablefmt="github")
-
+        for key, value in tables.items():
+            if value:
+                continue
+            del tables[key]
         await ctx.send(tables)
         p = "".join(
             "\n\n" + str(name.upper()) + ":\n" + table
