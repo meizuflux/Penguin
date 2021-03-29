@@ -307,7 +307,7 @@ class Utilities(commands.Cog):
         )
 
 
-        await ctx.send(file=discord.File(io.BytesIO(p.encode("utf-8")), f"{ctx.author.name}_userdata.txt"))
+        await ctx.send(file=discord.File(io.BytesIO(p.strip().encode("utf-8")), f"{ctx.author.name}_userdata.txt"))
 
 def setup(bot):
     bot.add_cog(Utilities(bot))
