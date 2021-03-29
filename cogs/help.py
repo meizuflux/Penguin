@@ -48,7 +48,7 @@ class HelpSource(menus.GroupByPageSource):
 
         cmds = []
         for cog in data:
-            _commands = [command for command in cog.get_commands()]
+            _commands = list(cog.get_commands())
             for command in _commands:
                 if not command.hidden:
                     cmds.append(command)
@@ -79,7 +79,7 @@ class HelpSource(menus.GroupByPageSource):
 
 class CogSource(menus.ListPageSource):
     def __init__(self, cog):
-        _commands = [command for command in cog.get_commands()]
+        _commands = list(cog.get_commands())
         cmds = sorted([command for command in _commands if not command.hidden], key=lambda c: c.qualified_name)
         super().__init__(cmds, per_page=20)
 
