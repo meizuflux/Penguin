@@ -471,9 +471,9 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         await qembed(ctx,
                      f'Reset the command cooldown for the command `{command}` and subtracted **$400** from your account.')
         
-    @commands.command(hidden=True)
+    @commands.command(hidden=True, aliases=("bankrob", "bank-rob"))
     @commands.is_owner()
-    async def robbank(self, ctx):
+    async def bank_rob(self, ctx):
         numbers = ["<:better1:826124826493190175>", "<:better2:826124826456227870>", "<:better3:826124826401177640>", "<:better4:826124826228817950>"]
 
         result = ""
