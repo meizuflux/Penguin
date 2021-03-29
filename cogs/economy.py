@@ -475,7 +475,6 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.is_owner()
     async def robbank(self, ctx):
         numbers = ["<:better1:826124826493190175>", "<:better2:826124826456227870>", "<:better3:826124826401177640>", "<:better4:826124826228817950>"]
-        cache = numbers
 
         result = []
         for i in range(4):
@@ -485,7 +484,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
         msg = await ctx.send(f"React to this in the same order as this: {' '.join(result)}")
 
-        for i in cache:
+        for i in ["<:better1:826124826493190175>", "<:better2:826124826456227870>", "<:better3:826124826401177640>", "<:better4:826124826228817950>"]:
             await msg.add_reaction(i)
 
         def terms(reaction, user):
