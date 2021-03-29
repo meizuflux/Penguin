@@ -30,8 +30,8 @@ CREATE TABLE IF NOT EXISTS prefixes (
 CREATE TABLE IF NOT EXISTS economy (
     guild_id BIGINT REFERENCES guilds ON DELETE CASCADE,
     user_id BIGINT,
-    wallet BIGINT DEFAULT 100,
-    BANK BIGINT DEFAULT 100,
+    cash BIGINT DEFAULT 100,
+    bank BIGINT DEFAULT 100,
     PRIMARY KEY (guild_id, user_id)
 );
 
