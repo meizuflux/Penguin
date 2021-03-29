@@ -98,12 +98,19 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         e.set_thumbnail(url=user.avatar_url if user else ctx.author.avatar_url)
         await ctx.send(embed=e)
 
-    @commands.command(aliases=("lb", "top"))
+    @commands.command(aliases=("lb", "top", "server-leaderboard", "server-lb"), usage="[page=1] [--wallet | --bank]")
     async def leaderboard(self, ctx, page: typing.Optional[int] = 1, item: str = None):
         """
         Sends the economy leaderboard.
         Server specific.
         If the page you provide is higher than the total amount of pages, it defaults to the last page.
+        
+        Optional Flags:
+            `--wallet`: Orders by users with the most money in their wallet.
+            `--bank`: Orders by users with the most money in their bank.
+            
+        If no flag is provided, it defaults to ordering by the total amount of money.
+        
         Arguments:
             `page`: [Optional] The leaderboard page you would like to see. If not provided, it will send the first page.
         """
@@ -121,8 +128,8 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         )
         if item:
             parser = Arguments(allow_abbrev=False, add_help=False)
-            parser.add_argument("-w", "--wallet", action="store_true", default=False)
-            parser.add_argument("-b", "--bank", action="store_true", default=False)
+            parser.add_argument("-wallet", "--wallet", action="store_true", default=False)
+            parser.add_argument("-bank", "--bank", action="store_true", default=False)
             
             try:
                 args = parser.parse_args(item.split())
