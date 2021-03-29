@@ -500,8 +500,15 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             else:
                 var += str(reaction.emoji)
                 await msg.edit(content=f"{text}\n{var}")
-        if result == var:
-            await ctx.send("They match!")
+        await asyncio.sleep(0.3)
+        text = "<a:loading:747680523459231834> Attempting to enter the vault..."
+        final = await ctx.send(text)
+        await asyncio.sleep(1)
+        if var == result:
+            await final.edit(content="✅ The key matches! You enter the vault.\nYou start collecting money.")
+            
+        if var != result:
+            return await final.edit("❌ The patterns do not match, leaving you with nothing.")
 
     @commands.is_owner()
     @commands.group(name='set', hidden=True)
