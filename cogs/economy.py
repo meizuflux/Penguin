@@ -475,7 +475,31 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.is_owner()
     async def robbank(self, ctx):
         numbers = ["<:better1:826124826493190175>", "<:better2:826124826456227870>", "<:better3:826124826401177640>", "<:better4:826124826228817950>"]
-        await ctx.send("\n".join(numbers))
+        cache = numbers
+
+        result = []
+        for i in range(4):
+            choice = random.choice(numbers)
+            result.append(choice)
+            numbers.remove(choice)
+
+        msg = await ctx.send(f"React to this in the same order as this: {' '.join(result)}")
+
+        for i in cache:
+            await msg.add_reaction(i)
+
+        def terms(reaction, user):
+            return user == ctx.author and reaction.message == msg
+
+        var = []
+        for i in range(4):
+            try:
+                reaction, _ = await bot.wait_for("reaction_add", timeout=15, check=terms)
+            except asyncio.TimeoutError:
+                await ctx.send("You didn't make your move fast enough.")
+            else:
+                var.append(str(reaction.emoji))
+                await msg.edit(content=f"{msg.content}\n{' '.join(var)}")
 
     @commands.is_owner()
     @commands.group(name='set', hidden=True)
