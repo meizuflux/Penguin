@@ -159,31 +159,6 @@ class Fun(commands.Cog):
         embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed, file=discord.File(BytesIO(buffer), filename=f"{code}.png"))
 
-    @flags.add_flag("--dark", action='store_true', default=False)
-    @flags.add_flag("--light", action='store_true', default=False)
-    @flags.add_flag("--text", default="supreme")
-    @commands.command(usage='[--text "supreme"] [--dark|--light]', cls=flags.FlagCommand)
-    async def supreme(self, ctx, **flags):
-        """
-        Makes a custom supreme logo
-        example: supreme --text "hey guys" --dark
-        """
-        if flags["dark"] and flags["light"]:
-            return await qembed(ctx, "You can't have both dark and light, sorry.")
-        image = await self.bot.alex.supreme(text=flags["text"],
-                                            dark=flags["dark"],
-                                            light=flags["light"])
-        image_bytes = await image.read()
-        file = discord.File(image_bytes, "supreme.png")
-        embed = discord.Embed(colour=self.bot.embed_color,
-                              timestamp=ctx.message.created_at).set_footer(
-            text=f"Requested by {ctx.author}",
-            icon_url=ctx.author.avatar_url)
-        embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
-        embed.set_image(url="attachment://supreme.png")
-
-        await ctx.send(embed=embed, file=file)
-
     @commands.command(help='Replaces the spaces in a string with a character')
     async def replacespace(self, ctx, char, *, text):
         await qembed(ctx, text.replace(' ', f' {char} '))

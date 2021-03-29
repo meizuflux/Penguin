@@ -18,11 +18,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import typing
 
 import discord
-import asyncio
 import io
 from discord.ext import commands
 
 from cogs.polaroid_manipulation import get_image_url
+from utils.argparse import Arguments
 
 NEKOBOT_URL = 'https://nekobot.xyz/api'
 
@@ -103,6 +103,27 @@ class Images(commands.Cog):
             file = discord.File(io.BytesIO(await resp.read()), "fake.png")
         embed=ctx.embed(title='This horse does not exist.').set_image(url="attachment://fake.png")
         await ctx.send(embed=embed, file=file)
+
+    @commands.command(usage='[text] [--dark|--light]')
+    async def supreme(self, ctx, text: str = None):
+        """
+        Makes a custom supreme logo
+        example: {prefix}supreme ppotatoo --dark
+        """
+        parser = Arguments(allow_abbrev=False, add_help=False)
+        parser.add_argument("input", nargs="*", default="supreme")
+        parser.add_argument('--dark', action='store_true', default=False)
+        parser.add_argument('--light', action='store_true', default=False)
+
+        try:
+            args = parser.parse_args(text.split())
+        except RuntimeError as e:
+            return await ctx.send(str(e))
+
+        if args.dark and args.light:
+            return await ctx.send("You can't have both dark and light, sorry.")
+
+        await self.do_alex_image(ctx, method="supreme", args=[" ".join(args.input), args.dark, args.light])
 
 
 def setup(bot):
