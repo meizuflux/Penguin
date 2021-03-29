@@ -407,8 +407,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
         await self.bot.db.execute(query, user_cash + cash, ctx.guild.id, ctx.author.id)
         
-        embed.description = f'You travel to the local lake and catch **{fish}** fish {correct_fish}.\n'
-                            f'Then you sell them to the market at a price of **${price}**, totaling in at **${cash}** for a days work.'
+        embed.description = f'You travel to the local lake and catch **{fish}** fish {correct_fish}.\nThen you sell them to the market at a price of **${price}**, totaling in at **${cash}** for a days work.'
 
         await m.edit(embed=embed)
 
