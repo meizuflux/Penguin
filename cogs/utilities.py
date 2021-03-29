@@ -300,12 +300,9 @@ class Utilities(commands.Cog):
             tables[table] = tabulate((dict(item) for item in response),
                                      headers="keys",
                                      tablefmt="github")
-        for key, value in tables.items():
-            if not value:
-                del tables[key]
 
         p = "".join(
-            "\n\n" + str(name.upper()) + ":\n" + table
+            "\n\n" + str(name.upper()) + ":\n" + table if table else "No data."
             for name, table in tables.items()
         )
 
