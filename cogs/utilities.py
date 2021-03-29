@@ -302,12 +302,12 @@ class Utilities(commands.Cog):
                                      tablefmt="github")
 
         p = "".join(
-            "\n\n" + str(name.upper()) + ":\n" + (table if table else f"No data.")
+            "\n\n" + str(name.upper()) + ":\n" + (table or f"No data.")
             for name, table in tables.items()
         )
 
-
         await ctx.send(file=discord.File(io.BytesIO(p.strip().encode("utf-8")), f"{ctx.author.name}_userdata.txt"))
+
 
 def setup(bot):
     bot.add_cog(Utilities(bot))
