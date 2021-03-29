@@ -203,6 +203,9 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         cash, bank = await get_stats(ctx, ctx.author.id)
 
         amount = self.get_number(amount, cash)
+        
+        if amount == 0:
+            return await ctx.send(embed=ctx.embed(description="You have no cash."))
 
         updated_cash = cash - amount
         bank += amount
@@ -223,6 +226,8 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         cash, bank = await get_stats(ctx, ctx.author.id)
 
         amount = self.get_number(amount, bank)
+        if amount == 0:
+            return await ctx.send(embed=ctx.embed(description="You have no cash."))
 
         cash += amount
         updated_bank = bank - amount
