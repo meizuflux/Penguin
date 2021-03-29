@@ -105,14 +105,13 @@ class Images(commands.Cog):
         await ctx.send(embed=embed, file=file)
 
     @commands.command(usage='[text] [--dark|--light]')
-    async def supreme(self, ctx, text: str = None):
+    async def supreme(self, ctx, text: str = "supreme"):
         """
         Makes a custom supreme logo
         example: {prefix}supreme ppotatoo --dark
         """
-        text = text or "supreme"
         parser = Arguments(allow_abbrev=False, add_help=False)
-        parser.add_argument("input", nargs="*")
+        parser.add_argument("input", nargs="+")
         parser.add_argument('--dark', action='store_true', default=False)
         parser.add_argument('--light', action='store_true', default=False)
 
