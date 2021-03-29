@@ -30,7 +30,7 @@ from io import BytesIO
 import discord
 from PIL import Image, ImageDraw, ImageFont
 from bs4 import BeautifulSoup
-from discord.ext import commands, flags
+from discord.ext import commands
 from discord.ext.commands.cooldowns import BucketType
 from jishaku.functools import executor_function
 

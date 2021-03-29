@@ -22,8 +22,6 @@ import difflib
 import discord
 from discord.ext import commands, menus
 
-from utils.default import qembed
-
 
 def get_sig(ctx, command):
     """Method to return a commands name and signature."""
