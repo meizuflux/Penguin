@@ -497,7 +497,6 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             try:
                 reaction, _ = await self.bot.wait_for("reaction_add", timeout=15, check=terms)
             except asyncio.TimeoutError:
-                await msg.clear_reactions()
                 return await msg.edit(content="You didn't pick fast enough.", delete_after=15)
             else:
                 var += str(reaction.emoji)
@@ -513,6 +512,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             return await final.edit(content="❌ The patterns do not match and the vault door stays shut.")
         
         valid_options = ("leave", "stay")
+        choice = None
         
         
         while True:
