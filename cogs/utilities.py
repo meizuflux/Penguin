@@ -54,40 +54,6 @@ class Utilities(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.match = re.compile(r"(?P<name>(?<=;{1})[\w]+)")
-        self.clear_message.start()
-
-    def cog_unload(self):
-        self.clear_message.cancel()
-
-    @tasks.loop(hours=1)
-    async def clear_message(self):
-        for channel_id in self.bot.deleted_messages:
-            if len(self.bot.deleted_messages[channel_id]) > 250:
-                dele = len(self.bot.deleted_messages[channel_id]) - 250
-                for number in range(dele):
-                    del self.bot.deleted_messages[channel_id][number]
-
-    def deleted_message_for(self, index: int, channel_id: int):
-        try:
-            if index > len(self.bot.deleted_messages[channel_id]):
-                return None
-        except KeyError:
-            return None
-
-        readable_order = list(reversed(self.bot.deleted_messages[channel_id]))
-        try:
-            result = readable_order[index]
-        except KeyError:
-            return None
-        else:
-            return result
-
-    @commands.Cog.listener()
-    async def on_message_delete(self, message):
-        b = [479359598730674186]
-        if message.author.id in b:
-            return
-        self.bot.deleted_messages[message.channel.id].append(DeletedMessage(message))
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -156,36 +122,6 @@ class Utilities(commands.Cog):
     @fuzzy.error
     async def fuzzy_error(self, ctx, error):
         await qembed(ctx, "Invalid string provided.")
-
-    @commands.guild_only()
-    @commands.command(help='Views up to the last 500 deleted messages')
-    async def snipe(self, ctx, index: int = 1, channel: discord.TextChannel = None):
-        if ctx.author.id not in self.bot.owner_ids:
-            raise commands.CheckFailure()
-        if channel and channel.is_nsfw():
-            return await qembed(ctx, 'no sorry')
-        if not channel:
-            channel = ctx.channel
-        try:
-            msg = self.deleted_message_for(index - 1, channel.id)
-            try:
-                await ctx.send(embed=msg.del_embed)
-                content = 'Bot deleted an embed which was sent above.' if not msg.content else msg.content
-            except AttributeError:
-                content = msg.content
-        except IndexError:
-            return await qembed(ctx, 'Nothing to snipe!')
-        snipe = discord.Embed(title='Content:', description=content, color=self.bot.embed_color,
-                              timestamp=ctx.message.created_at)
-        if msg.attachment:
-            snipe.add_field(name='Attachment', value=msg.attachment, inline=False)
-        snipe.add_field(name='Message Stats:', value=
-        f"**Created At:** {humanize.naturaldelta(msg.created_at - datetime.datetime.utcnow())} ago\n"
-        f"**Deleted At:** {humanize.naturaldelta(msg.deleted_at - datetime.datetime.utcnow())} ago\n"
-        f"**Index:** {index} / {len(self.bot.deleted_messages[channel.id])}", inline=False)
-        snipe.set_author(name=f'{str(msg.author)} said in #{channel.name}:', icon_url=str(msg.author.avatar_url))
-        snipe.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
-        await ctx.send(embed=snipe)
 
     @commands.command(help='Posts text to https://mystb.in', aliases=['paste'])
     async def mystbin(self, ctx, *, text=None):

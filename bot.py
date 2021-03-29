@@ -53,7 +53,6 @@ class Chuck(commands.Bot):
         self.embed_color = 0x89CFF0  # discord.Color.green()  # 0x9c5cb4
         self.prefixes = collections.defaultdict(list)
         self.command_list = []
-        self.deleted_messages = collections.defaultdict(list)
         self.default_prefix = 'p!'
         self.config = config
         self.support_invite = "https://discord.gg/NTNgvHkjSp"
@@ -100,7 +99,6 @@ class Chuck(commands.Bot):
     def starter(self):
         """Runs the bot."""
         try:
-            # dsn = os.environ['dsn'] or self.get_config('DSN')
             print("Connecting to database ...")
             pool_pg = self.loop.run_until_complete(asyncpg.create_pool(dsn=self.get_config('DSN')))
             print("Connected to PostgreSQL server!")
