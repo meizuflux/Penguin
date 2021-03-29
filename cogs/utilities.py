@@ -301,10 +301,9 @@ class Utilities(commands.Cog):
                                      headers="keys",
                                      tablefmt="github")
         for key, value in tables.items():
-            if value:
-                continue
-            del tables[key]
-        await ctx.send(tables)
+            if not value:
+                del tables[key]
+
         p = "".join(
             "\n\n" + str(name.upper()) + ":\n" + table
             for name, table in tables.items()
