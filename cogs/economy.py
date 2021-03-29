@@ -518,7 +518,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         while True:
             if message:
                 await message.delete()
-            message = await ctx.send(f"Would you like to stay in the vault and collect more money or would you like to leave? (`stay`/`leave`)\nYou currently have {amount} in your moneybag.")
+            message = await ctx.send(f"Would you like to stay in the vault and collect more money or would you like to leave? (`stay`/`leave`)\nYou currently have **${amount}** in your moneybag.")
             try:
                 msg = await self.bot.wait_for("message", timeout=15, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
             except asyncio.TimeoutError:
@@ -544,6 +544,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             if content == "leave":
                 text = f"You leave the bank vault with **${amount}** in hand."
                 await message.edit(content=text)
+                break
                 
         await ctx.send(f"You make off with a total of **${amount}** in your bag.")
                 
