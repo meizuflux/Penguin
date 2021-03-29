@@ -316,7 +316,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             if content == "cancel":
                 embed.description = "Cancelled."
                 return await message.edit(embed=embed)
-            else:
+            elif content not in (correct_word, "cancel"):
                 embed.description = f"That's not the right word! The answer was `{correct_word}`"
                 return await message.edit(embed=embed)
         
@@ -333,14 +333,8 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         )
 
         await self.bot.db.execute(query, author_cash + cash, ctx.guild.id, ctx.author.id)
-        if cash >= 250:
-            amount = 'handsome'
-
-        if cash <= 249:
-            amount = 'meager'
         
         embed.description = f"I transfered *${cash}* to you."
-
         await message.edit(embed=embed)
 
     @commands.command(help='Daily reward')
