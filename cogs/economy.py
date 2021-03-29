@@ -242,7 +242,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         await self.bot.db.execute(query, cash, updated_bank, ctx.guild.id, ctx.author.id)
         await qembed(ctx, f'You withdrew **${humanize.intcomma(amount)}** from your bank.')
 
-    @commands.command(help='Lets you send money over to another user', alises=['send', 'pay', 'give'])
+    @commands.command(help='Lets you send money over to another user', alises=('send', 'pay'))
     async def transfer(self, ctx, user: discord.Member, amount: str):
         author_cash, _ = await get_stats(ctx, ctx.author.id)
         target_cash, _ = await get_stats(ctx, user.id)
