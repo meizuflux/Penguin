@@ -361,6 +361,37 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(help='Fish in order to get some money.')
     @commands.cooldown(rate=1, per=7200, type=commands.BucketType.user)
     async def fish(self, ctx):
+        valid_fish = ['🐟', '🐠', '🐡']
+        correct_fish = random.choice(valid_fish)
+        embed = ctx.embed(description=f"React with {correct_fish} in 10 seconds.")
+        message = await ctx.send(embed=embed)
+        valid_fish.append("❌")
+        for fish in valid_fish:
+            await message.add_reaction(fish)
+        
+        def terms(reaction, user):
+            return user == ctx.author and reaction.message == message and str(reaction.emoji) in valid_fish
+        
+        try:
+            reaction, _ = await self.bot.wait_for("reaction_add", timeout=10, check=terms)
+        except asyncio.TimeoutError:
+            embed.description = "You did not react in time."
+        else:
+            emoji = str(reaction.emoji)
+            if emoji == correct_fish:
+                embed.description = "You got it! Transfering money to your account now."
+                m = await ctx.send(embed=embed)
+                await message.delete()
+            if emoji == "❌":
+                embed.description = "Cancelled."
+                await ctx.send(embed=embed)
+                return await message.edit(embed=embed)
+            if emoji not in valid_fish:
+                embed.description = "That's not the correct answer."
+                return await message.edit(embed=embed)
+        
+        
+        
         user_cash, _ = await get_stats(ctx, ctx.author.id)
 
         price = random.randint(20, 35)
@@ -375,11 +406,11 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         )
 
         await self.bot.db.execute(query, user_cash + cash, ctx.guild.id, ctx.author.id)
+        
+        embed.description = f'You travel to the local lake and catch **{fish}** fish {correct_fish}.\n'
+                            f'Then you sell them to the market at a price of **${price}**, totaling in at **${cash}** for a days work.'
 
-        emoji = ['🐟', '🐠', '🐡']
-        await qembed(ctx,
-                     f'You travel to the local lake and catch **{fish}** fish {random.choice(emoji)}.'
-                     f'Then you sell them to the market at a price of **${price}**, totaling in at **${cash}** for a days work.')
+        await m.edit(embed=embed)
 
     @commands.command(help='Beg in the street')
     @commands.cooldown(rate=1, per=200, type=commands.BucketType.user)
