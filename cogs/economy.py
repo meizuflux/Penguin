@@ -145,10 +145,8 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             try:
                 args = parser.parse_args(item.split())
             except RuntimeError as e:
-                return await ctx.send(str(e))
+                return await ctx.send(embed=ctx.embed(description=str(e)))
             
-            if args.cash and args.bank:
-                raise commands.BadArgument("You can't have both cash and bank, sorry. If you want total just provide no flags.")
             
             if args.cash:
                 lb_query = (
