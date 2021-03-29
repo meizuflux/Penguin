@@ -17,12 +17,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import random
 import math
+import typing
 
 import discord
 import humanize
 from discord.ext import commands
 
 from utils.default import qembed
+from utils.argparse import Arguments
 
 
 async def get_stats(ctx, user_id: int):
@@ -97,7 +99,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         await ctx.send(embed=e)
 
     @commands.command(aliases=("lb", "top"))
-    async def leaderboard(self, ctx, page: int = 1):
+    async def leaderboard(self, ctx, page: typing.Optional[int] = 1, item: str = None):
         """
         Sends the economy leaderboard.
         Server specific.
@@ -105,26 +107,71 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         Arguments:
             `page`: [Optional] The leaderboard page you would like to see. If not provided, it will send the first page.
         """
-        count = await self.bot.db.fetchval("SELECT COUNT(user_id) FROM economy WHERE guild_id = $1", ctx.guild.id)
-        max_pages = math.ceil(count / 10)
-        # need to check if the page is more than the amount allowed
-        page = min(page, max_pages)
-
-
-        query = (
+        lb_query = (
             """
             SELECT ROW_NUMBER() OVER (ORDER BY wallet + bank DESC) AS number, user_id, wallet + bank AS total
             FROM economy WHERE guild_id = $1 ORDER BY wallet + bank DESC OFFSET $2 LIMIT 10
             """
         )
-        data = await self.bot.db.fetch(query, ctx.guild.id, (page * 10) - 10)
+        count_query = (
+            """
+            SELECT COUNT(user_id) FROM economy
+            WHERE guild_id = $1
+            """
+        )
+        if item:
+            parser = Arguments(allow_abbrev=False, add_help=False)
+            parser.add_argument("-w", "--wallet", action="store_true", default=False)
+            parser.add_argument("-b", "--bank", action="store_true", default=False)
+            
+            try:
+                args = parser.parse_args(text.split())
+            except RuntimeError as e:
+                return await ctx.send(str(e))
+            
+            if args.wallet:
+                lb_query = (
+                    """
+                    SELECT ROW_NUMBER() OVER (ORDER BY wallet DESC) AS number, user_id, wallet AS total
+                    FROM economy WHERE guild_id = $1 ORDER BY wallet DESC OFFSET $2 LIMIT 10
+                    """
+                )
+                count_query = (
+                    """
+                    SELECT COUNT(user_id) FROM economy
+                    WHERE guild_id = $1 AND wallet > 0
+                    """
+                )
+            if args.bank:
+                lb_query = (
+                    """
+                    SELECT ROW_NUMBER() OVER (ORDER BY bank DESC) AS number, user_id, bank AS total
+                    FROM economy WHERE guild_id = $1 ORDER BY bank DESC OFFSET $2 LIMIT 10
+                    """
+                )
+                count_query = (
+                    """
+                    SELECT COUNT(user_id) FROM economy
+                    WHERE guild_id = $1 AND bank > 0
+                    """
+                )
+                
+            
+        count = await self.bot.db.fetchval(count_query, ctx.guild.id)
+        max_pages = math.ceil(count / 10)
+        # need to check if the page is more than the amount allowed
+        page = min(page, max_pages)
+
+
+
+        data = await self.bot.db.fetch(lb_query, ctx.guild.id, (page * 10) - 10)
 
         lb = []
         for user in data:
             # Need to escape markdown
             name = discord.utils.escape_markdown(str(await self.bot.try_user(user['user_id'])))
             # Add a rickroll cause I'm lazy
-            item = f"**{user['number']}.** [{name}](https://www.youtube.com/watch?v=dQw4w9WgXcQ, \"seriously, don't click.\") » 💸{user['total']}"
+            item = f"**{user['number']}.** [{name}](https://www.youtube.com/watch?v=dQw4w9WgXcQ, \"seriously, don't click.\") » ${user['total']}"
             lb.append(item)
         lb.append(f"\nPage {page}/{max_pages}")
 
