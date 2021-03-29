@@ -295,7 +295,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
     async def work(self, ctx):
         with open('/usr/share/dict/words') as f:
             words = [word.strip() for word in f]
-        word = random.choice(words).lower().replace("'", "")
+        word = str(random.choice(words).lower().replace("'", ""))
         correct_word = word[::-1]
         
         embed = ctx.embed(description=f"In 30 seconds, type this backwards: \n`{word}`\nType `cancel` to cancel.")
@@ -309,6 +309,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             await message.edit(embed=embed)
         else:
             content = user_msg.content.lower()
+            await ctx.send(content + " " + correct_word)
             if content == correct_word:
                 embed.description = "You got it! Transfering money now."
                 await message.edit(embed=embed)
