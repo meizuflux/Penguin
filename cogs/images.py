@@ -112,7 +112,7 @@ class Images(commands.Cog):
         """
         text = text or "supreme"
         parser = Arguments(allow_abbrev=False, add_help=False)
-        parser.add_argument("input", nargs="*", default="supreme")
+        parser.add_argument("input", nargs="*")
         parser.add_argument('--dark', action='store_true', default=False)
         parser.add_argument('--light', action='store_true', default=False)
 
