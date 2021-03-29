@@ -108,7 +108,7 @@ class ChuckContext(commands.Context):
     def clean_prefix(self):
         return re.sub(f"<@!?{self.bot.user.id}>", f"@{self.bot.user.name}", self.prefix)
 
-    def codeblock(text: str, lang=None):
+    def codeblock(self, text: str, lang=""):
         """Method for enclosing text inside a codeblock."""
         return f"```{lang}\n{text}```"
 
