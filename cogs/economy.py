@@ -309,17 +309,19 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             await message.edit(embed=embed)
         else:
             content = user_msg.content.lower()
-            await ctx.send(content + " " + correct_word)
             if content == correct_word:
                 embed.description = "You got it! Transfering money now."
-                await message.edit(embed=embed)
+                m = await ctx.send(embed=embed)
+                await message.delete()
                 await asyncio.sleep(0.75)
             if content == "cancel":
                 embed.description = "Cancelled."
-                return await message.edit(embed=embed)
+                await message.delete()
+                return await ctx.send(embed=embed)
             elif content not in (correct_word, "cancel"):
                 embed.description = f"That's not the right word! The answer was `{correct_word}`"
-                return await message.edit(embed=embed)
+                await message.delete()
+                return await ctx.send(embed=embed)
         
         
         author_cash, author_bank = await get_stats(ctx, ctx.author.id)
@@ -336,7 +338,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         await self.bot.db.execute(query, author_cash + cash, ctx.guild.id, ctx.author.id)
         
         embed.description = f"I transfered **${cash}** to you."
-        await message.edit(embed=embed)
+        await m.edit(embed=embed)
 
     @commands.command(help='Daily reward')
     @commands.cooldown(rate=1, per=86400, type=commands.BucketType.user)
