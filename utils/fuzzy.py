@@ -26,5 +26,4 @@ def finder(text, collection, *, key=None, lazy=True):
 
     if lazy:
         return (z for _, _, z in sorted(suggestions, key=sort_key))
-    else:
-        return [z for _, _, z in sorted(suggestions, key=sort_key)]
+    return [z for _, _, z in sorted(suggestions, key=sort_key)]
