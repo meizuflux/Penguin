@@ -91,7 +91,7 @@ class CogSource(menus.ListPageSource):
         if menu.current_page == 0:
             cog = ctx.bot.get_cog(cmds[0].cog_name)
             embed.description = cog.description + "\n\n" + embed.description
-        return embed 
+        return embed
 
 
 class HelpPages(menus.MenuPages):

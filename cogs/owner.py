@@ -18,11 +18,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import asyncio
 import inspect
 import os
+import traceback
 
 import aiohttp
 import asyncpg
 import discord
-import traceback
 import tabulate
 from discord.ext import commands
 from jishaku.paginators import PaginatorInterface, WrappedPaginator

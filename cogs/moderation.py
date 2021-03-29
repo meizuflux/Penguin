@@ -15,9 +15,10 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
+import contextlib
+
 import discord
 from discord.ext import commands
-import contextlib
 
 
 class Target(commands.Converter):
@@ -43,15 +44,16 @@ class Target(commands.Converter):
             raise commands.BadArgument(f"You can't {ctx.invoked_with} the server owner.")
         return user
 
+
 class Reason(commands.Converter):
     async def convert(self, ctx, argument):
-
         default = f"{str(ctx.author)}: {argument}"
 
         if len(default) > 500:
             raise commands.BadArgument("The provided reason is too long")
-        
+
         return default
+
 
 def get_reason(ctx, argument):
     if not argument: argument = "No reason."
@@ -59,7 +61,7 @@ def get_reason(ctx, argument):
 
     if len(default) > 500:
         raise commands.BadArgument("The provided reason is too long")
-        
+
     return default
 
 
@@ -101,7 +103,6 @@ class Moderation(commands.Cog):
         await ctx.guild.unban(member, reason=f"Softban by {ctx.author}")
         await ctx.message.add_reaction("<:check:314349398811475968>")
 
-
     @commands.group(name="remove")
     @commands.guild_only()
     @commands.has_permissions(manage_messages=True)
@@ -128,8 +129,6 @@ class Moderation(commands.Cog):
     async def user(self, ctx, user: discord.Member, limit=100):
         await self.do_remove(ctx, limit, lambda m: m.author == user)
 
-    
-        
 
 def setup(bot):
     bot.add_cog(Moderation(bot))
