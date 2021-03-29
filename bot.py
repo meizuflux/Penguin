@@ -68,7 +68,7 @@ class Chuck(commands.Bot):
         self.command_usage = collections.Counter()
         self.maintenance = False
         
-        self.mention_match = re.compile(fr"^(<@!?{self.user.id}>)\s*")
+        
 
 
     @staticmethod
@@ -138,6 +138,7 @@ class Chuck(commands.Bot):
             self.prefixes[guild['guild_id']].append(guild['prefix'])
         blacklist = await self.db.fetch('SELECT user_id, reason FROM blacklist')
         self.blacklist = dict(blacklist)
+        self.mention_match = re.compile(fr"^(<@!?{self.user.id}>)\s*")
 
     def get_subcommands(self, command):
         gotten_subcommands = []
