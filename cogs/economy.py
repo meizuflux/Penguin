@@ -488,7 +488,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             numbers.remove(choice)
 
         text = f"React to this in the same order as this: {result}"
-        msg = await ctx.send(text)
+        msg = await ctx.send(text, delete_after=60)
 
         for i in ["<:better1:826124826493190175>", "<:better2:826124826456227870>", "<:better3:826124826401177640>", "<:better4:826124826228817950>"]:
             await msg.add_reaction(i)
@@ -501,12 +501,12 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             try:
                 reaction, _ = await self.bot.wait_for("reaction_add", timeout=15, check=terms)
             except asyncio.TimeoutError:
-                await ctx.send("You didn't make your move fast enough.")
+                await ctx.send("You didn't pick fast enough.", delete_after=15)
             else:
                 var += str(reaction.emoji)
                 await msg.edit(content=f"{text}\n{var}")
         text = "<a:loading:747680523459231834> Attempting to enter the vault..."
-        final = await ctx.send(text)
+        final = await ctx.send(text, delete_after=15)
         await asyncio.sleep(1.5)
         if var == result:
             amount = random.randint(200, 656)
@@ -517,32 +517,31 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         
         valid_options = ("leave", "stay")
         
-        message = None
         
         while True:
-            if message:
-                await message.delete()
-            message = await ctx.send(f"Would you like to stay in the vault and collect more money or would you like to leave? (`stay`/`leave`)\nYou currently have **${amount}** in your moneybag.")
+            message = await ctx.send(f"Would you like to stay in the vault and collect more money or would you like to leave? (`stay`/`leave`)\nYou currently have **${amount}** in your moneybag.", delete_after=15)
+            
             try:
                 msg = await self.bot.wait_for("message", timeout=15, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
             except asyncio.TimeoutError:
                 choice = random.choice(valid_options)
-                text = f"You didn't respond in time, so I picked {choice} for you."
-                await message.edit(content=text)
+                await ctx.send(f"You didn't respond in time, so I picked {choice} for you.", delete_after=15)
+                
             content = msg.content.lower()
             if content in valid_options:
                 choice = content
+                
             elif not choice:
-                text = "You need to send either `stay` or `leave`."
-                await ctx.send(text)
+                await ctx.send("You need to send either `stay` or `leave`.")
                 continue
+                
             if choice == "stay":
                 if random.choice((True, False)):
-                    text = "You pushed your luck too far and the cops catch you, leaving you with nothing!"
-                    return await message.edit(content=text)
+                    return await message.edit(content="You push your luck too far and the cops catch you, leaving you with nothing!")
+                
                 grabbed_amount = amount = random.randint(400, 1200)
                 amount += grabbed_amount
-                await ctx.send(f"You grab another **${grabbed_amount}** to add to your moneybag.")
+                await ctx.send(f"You grab another **${grabbed_amount}** to add to your moneybag.", delete_after=15)
                 
             if choice == "leave":
                 break
@@ -558,8 +557,6 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         await self.bot.db.execute(query, cash + amount, ctx.guild.id, ctx.author.id)
                 
         await ctx.send(f"You make off with a total of **${amount}** in your bag.")
-                
-                
                 
     @commands.is_owner()
     @commands.group(name='set', hidden=True)
