@@ -109,7 +109,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
             eco_values = (cash - total, ctx.author.id, ctx.guild.id)
 
             await self.bot.db.execute("UPDATE economy SET cash = $1 WHERE user_id = $2 AND guild_id = $3", *eco_values)
-            await self.bot.db.execute(stock_sql, ctx.guild.id, ctx.guild.id, ticker, amount)
+            await self.bot.db.execute(stock_sql, ctx.guild.id, ctx.author.id, ticker, amount)
 
             await message.edit(content=f'Purchased **{amount}** {share} of **{ticker}** for **${humanized_total}**.')
 
