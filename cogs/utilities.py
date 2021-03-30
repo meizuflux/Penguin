@@ -292,7 +292,7 @@ class Utilities(commands.Cog):
 
         No arguments are needed for this command. I could put a user, but I feel like not everyone would be comfortable with that.
         """
-        tables = {"todos": None, "economy": None}
+        tables = {"todos": None, "economy": None, "highlights": None, "stocks": None}
         for table in tables:
             response = await self.bot.db.fetch(f"SELECT * FROM {table} WHERE user_id = $1", ctx.author.id)
             if len(response) == 0:
@@ -316,7 +316,7 @@ class Utilities(commands.Cog):
 
         No arguments are needed for this command.
         """
-        tables = {"prefixes": None, "economy": None, "guilds": None}
+        tables = {"prefixes": None, "economy": None, "guilds": None, "highlights": None, "stocks": None}
         for table in tables:
             response = await self.bot.db.fetch(f"SELECT * FROM {table} WHERE guild_id = $1", ctx.author.id)
             if len(response) == 0:
@@ -329,7 +329,7 @@ class Utilities(commands.Cog):
             "\n\n" + str(name.upper()) + ":\n" + (table or f"No data.")
             for name, table in tables.items()
         )
-
+        await ctx.send(file=discord.File(io.BytesIO(p.strip().encode("utf-8")), f"{ctx.guild.name}_userdata.txt"))
                 
 
 
