@@ -318,7 +318,7 @@ class Utilities(commands.Cog):
         """
         tables = {"prefixes": None, "economy": None, "guilds": None, "highlights": None}
         for table in tables:
-            response = await self.bot.db.fetch(f"SELECT * FROM {table} WHERE guild_id = $1", ctx.author.id)
+            response = await self.bot.db.fetch(f"SELECT * FROM {table} WHERE guild_id = $1", ctx.guild.id)
             if len(response) == 0:
                 continue
             tables[table] = tabulate((dict(item) for item in response),
