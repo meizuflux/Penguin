@@ -307,6 +307,30 @@ class Utilities(commands.Cog):
         )
 
         await ctx.send(file=discord.File(io.BytesIO(p.strip().encode("utf-8")), f"{ctx.author.name}_userdata.txt"))
+                                  
+    @commands.command()
+    async def serverdata(self, ctx):
+        """
+        A large text file of all the data that I have collected of this guild.
+        Just SQL stuff.
+
+        No arguments are needed for this command.
+        """
+        tables = {"prefixes": None, "economy": None, "guilds": None}
+        for table in tables:
+            response = await self.bot.db.fetch(f"SELECT * FROM {table} WHERE guild_id = $1", ctx.author.id)
+            if len(response) == 0:
+                continue
+            tables[table] = tabulate((dict(item) for item in response),
+                                     headers="keys",
+                                     tablefmt="github")
+
+        p = "".join(
+            "\n\n" + str(name.upper()) + ":\n" + (table or f"No data.")
+            for name, table in tables.items()
+        )
+
+                
 
 
 def setup(bot):
