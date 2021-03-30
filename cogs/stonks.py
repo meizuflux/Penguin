@@ -101,9 +101,9 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
 
         if answer:
             stock_sql = (
-                "INSERT INTO stocks VALUES($1, $2, $3) "
+                "INSERT INTO stocks VALUES($1, $2, $3, $4) "
                 "ON CONFLICT (guild_id, user_id, ticker) "
-                "DO UPDATE SET amount = stocks.amount + $3"
+                "DO UPDATE SET amount = stocks.amount + $4"
             )
 
             eco_values = (cash - total, ctx.author.id, ctx.guild.id)
