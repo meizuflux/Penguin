@@ -118,7 +118,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         If the page you provide is higher than the total amount of pages, it defaults to the last page.
         
         Optional Flags:
-            `--cash`: Orders by users with the most cash.
+            `--cash`: Orders by users with the most cash (so you can rob them).
             `--bank`: Orders by users with the most money in the bank.
             
         If no flag is provided, it defaults to ordering by the total amount of money.
@@ -186,8 +186,9 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         for user in data:
             # Need to escape markdown
             name = discord.utils.escape_markdown(str(await self.bot.try_user(user['user_id'])))
-            # Add a rickroll cause I'm lazy
-            item = f"**{user['number']}.** [{name}](https://www.youtube.com/watch?v=dQw4w9WgXcQ, 'seriously, don\'t click.') » **${humanize.intcomma(user['total'])}**"
+            # Add a rickroll cuz I'm lazy and the formatting makes it look nice
+            with_link = f" [{name}](https://www.youtube.com/watch?v=dQw4w9WgXcQ, 'seriously, don\'t click.') "
+            item = f"**{user['number']}.**{with_link}» **${humanize.intcomma(user['total'])}**"
             lb.append(item)
         lb.append(f"\nPage {page}/{max_pages}")
 
