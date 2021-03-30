@@ -161,7 +161,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
             stock_sql = (
                 "UPDATE stocks "
                 "SET amount = stocks.amount - $1 "
-                "WHERE user_id = $3 AND guild_id = $4 AND ticker = $2"
+                "WHERE user_id = $3 AND guild_id = $4 AND ticker = $2 AND amount > 0"
             )
             stock_values = (amount, ticker, ctx.author.id, ctx.guild.id)
 
