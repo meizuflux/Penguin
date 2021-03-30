@@ -180,7 +180,14 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         if not user:
             user = ctx.author
 
-        stuff = await self.bot.db.fetch("SELECT ticker, amount FROM stocks WHERE user_id = $1", user.id)
+        query = (
+            """
+            SELECT ticker, amount FROM stocks 
+            WHERE user_id = $1 AND guild_id = $2
+            """
+        )
+
+        stuff = await self.bot.db.fetch(query, user.id, ctx.guild.id)
         if len(stuff) == 0:
             return await ctx.send(f'{user.mention} has no stocks', allowed_mentions=discord.AllowedMentions().none())
         table = tabulate.tabulate((dict(thing) for thing in stuff if thing["amount"] != 0), headers="keys",
