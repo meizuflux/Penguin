@@ -61,7 +61,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         """Buys a stock
         You can view a list of all stocks at https://stockanalysis.com/stocks/
         """
-        wallet, _ = await get_stats(ctx, ctx.author.id)
+        cash, _ = await get_stats(ctx, ctx.author.id)
         ticker = ticker.upper()
 
         async with self.bot.session.get(f'{FINNHUB_URL}/quote?symbol={ticker}&token={self.finnhub}') as data:
@@ -74,10 +74,10 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         humanized_price: str = humanize.intcomma(price)
 
         if amount == 'max':
-            amount = math.floor(wallet / price)
+            amount = math.floor(cash / price)
             if amount == 0:
                 return await ctx.send(f'You don\'t have enough money to buy a share of {ticker}. '
-                                      f'You need **${humanize.intcomma(price - wallet)}** more in order to purchase a share of {ticker}.')
+                                      f'You need **${humanize.intcomma(price - cash)}** more in order to purchase a share of {ticker}.')
 
         try:
             if int(amount):
@@ -90,8 +90,8 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
 
         share: str = ctx.plural("share(s)", amount)
 
-        if total > wallet:
-            return await ctx.send(f'You need **${humanize.intcomma(total - wallet)}** more in order to purchase'
+        if total > cash:
+            return await ctx.send(f'You need **${humanize.intcomma(total - cash)}** more in order to purchase'
                                   f' **{amount}** {share} of **{ticker}**')
 
         answer, message = await ctx.confirm(
@@ -101,21 +101,15 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
 
         if answer:
             stock_sql = (
-                "INSERT INTO stocks(user_id, ticker, amount) VALUES($1, $2, $3) "
-                "ON CONFLICT (user_id, ticker) "
+                "INSERT INTO stocks VALUES($1, $2, $3) "
+                "ON CONFLICT (guild_id, user_id, ticker) "
                 "DO UPDATE SET amount = stocks.amount + $3"
             )
-            stock_values = (ctx.author.id, ticker, amount)
 
-            eco_sql = (
-                "UPDATE economy "
-                "SET wallet = $1 "
-                "WHERE user_id = $2"
-            )
-            eco_values = (wallet - total, ctx.author.id)
+            eco_values = (cash - total, ctx.author.id, ctx.guild.id)
 
-            await self.bot.db.execute(stock_sql, *stock_values)
-            await self.bot.db.execute(eco_sql, *eco_values)
+            await self.bot.db.execute("UPDATE economy SET cash = $1 WHERE user_id = $2 AND guild_id = $3", *eco_values)
+            await self.bot.db.execute(stock_sql, ctx.guild.id, ctx.guild.id, ticker, amount)
 
             await message.edit(content=f'Purchased **{amount}** {share} of **{ticker}** for **${humanized_total}**.')
 
@@ -127,9 +121,9 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         ticker = ticker.upper()
 
         sql = (
-            "SELECT amount FROM stocks WHERE user_id = $1 AND ticker = $2"
+            "SELECT amount FROM stocks WHERE user_id = $1 AND guild_id = $2 AND ticker = $3"
         )
-        check = await ctx.bot.db.fetchval(sql, ctx.author.id, ticker)
+        check = await ctx.bot.db.fetchval(sql, ctx.author.id, ctx.guild.id, ticker)
         if not check:
             return await ctx.send(f'You don\'t have any shares of **{ticker}**')
 
@@ -166,15 +160,15 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
         if answer:
             stock_sql = (
                 "UPDATE stocks "
-                "SET amount = stocks.amount - $3 "
-                "WHERE user_id = $1 AND ticker = $2"
+                "SET amount = stocks.amount - $1 "
+                "WHERE user_id = $3 AND guild_id = $4 AND ticker = $2"
             )
-            stock_values = (ctx.author.id, ticker, amount)
+            stock_values = (amount, ticker, ctx.author.id, ctx.guild.id)
 
             wallet, _ = await get_stats(ctx, ctx.author.id)
-            eco_values = (wallet + total, ctx.author.id)
+            eco_values = (wallet + total, ctx.author.id, ctx.guild.id)
 
-            await self.bot.db.execute("UPDATE economy SET wallet = $1 WHERE user_id = $2", *eco_values)
+            await self.bot.db.execute("UPDATE economy SET cash = $1 WHERE user_id = $2 AND guild_id = $3", *eco_values)
             await self.bot.db.execute(stock_sql, *stock_values)
 
             await message.edit(content=f'Sold **{amount}** {share} of **{ticker}** for **${humanized_total}**.')
