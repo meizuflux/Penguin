@@ -27,13 +27,26 @@ from discord.ext import commands
 from utils.argparse import Arguments
 from utils.default import qembed
 
+class NotRegistered(commands.CommandError):
+    def __init__(self, message="You are not registered! Use the register command to start a balance.")
+        super().__init__(self, message)
+        
+class UserNotRegistered(NotRegistered):
+    def __init__(self, message="This user is not registered! Tell them to use the register command to start a balance.")
+        super().__init__(self, message)
 
-async def get_stats(ctx, user_id: int):
+
+async def get_stats(ctx, user_id: int, not_author=False):
+    values = (ctx.guild.id, ctx.author.id)
     async with ctx.bot.db.acquire() as conn:
         async with conn.transaction():
-            await conn.execute("INSERT INTO economy VALUES ($1, $2) ON CONFLICT DO NOTHING", ctx.guild.id, user_id)
-            data = await conn.fetchrow("SELECT cash, bank FROM economy WHERE guild_id = $1 AND user_id = $2",
-                                     ctx.guild.id, user_id)
+            registered = await conn.fetchval("SELECT 1 FROM economy WHERE guild_id = $1 AND user_id = $2", *values)
+            if not registered:
+                if not_author:
+                    raise UserNotRegistered()
+                raise NotRegistered()
+                
+            data = await conn.fetchrow("SELECT cash, bank FROM economy WHERE guild_id = $1 AND user_id = $2", *values)
 
     return data["cash"], data["bank"]
 
@@ -90,15 +103,29 @@ class Economy(commands.Cog):
             raise commands.BadArgument("Transfers of money over one hundred billion are prohibited.")
 
         return amount
+    
+    async def cog_command_error(self, ctx, error):
+        if isinstance(error, (NotRegistered, UserNotRegistered)):
+            return await ctx.send(str(error))
+        raise error
 
     @commands.command(help='Registers you into the database')
     async def register(self, ctx):
-        await get_stats(ctx, ctx.author.id)
+        query = (
+            """
+            INSERT INTO economy VALUES ($1, $2)
+            """
+        )
+        await self.bot.db.execute(query, ctx.guild.id, ctx.author.id)
         await ctx.send("k its done")
 
     @commands.command(help='View yours or someone else\'s balance', aliases=['bal'])
     async def balance(self, ctx, user: discord.Member = None):
-        cash, bank = await get_stats(ctx, user.id if user else ctx.author.id)
+        auth = True
+        if not user:
+            user = ctx.author
+            auth = False
+        cash, bank = await get_stats(ctx, user.id, auth)
         green_arrow = "<:green_arrow:811052039416447027>"
         e = discord.Embed(title=f'{user.name if user else ctx.author.name}\'s balance',
                           description=
@@ -207,17 +234,14 @@ class Economy(commands.Cog):
         if amount == 0:
             return await ctx.send(embed=ctx.embed(description="You have no cash."))
 
-        updated_cash = cash - amount
-        bank += amount
-
         query = (
             """
-            UPDATE economy SET cash = $1, bank = $2
-            WHERE guild_id = $3 AND user_id = $4
+            UPDATE economy SET cash = cash - $1, bank = bank + $1
+            WHERE guild_id = $2 AND user_id = $3
             """
         )
 
-        await self.bot.db.execute(query, updated_cash, bank, ctx.guild.id, ctx.author.id)
+        await self.bot.db.execute(query, amount, ctx.guild.id, ctx.author.id)
 
         await qembed(ctx, f'You deposited **${humanize.intcomma(amount)}** into your bank.')
 
@@ -229,36 +253,28 @@ class Economy(commands.Cog):
         if amount == 0:
             return await ctx.send(embed=ctx.embed(description="You have no cash."))
 
-        cash += amount
-        updated_bank = bank - amount
-
         query = (
             """
-            UPDATE economy SET cash = $1, bank = $2
-            WHERE guild_id = $3 AND user_id = $4
+            UPDATE economy SET cash = cash + $1, bank = bank - $1
+            WHERE guild_id = $2 AND user_id = $3
             """
         )
 
-        await self.bot.db.execute(query, cash, updated_bank, ctx.guild.id, ctx.author.id)
+        await self.bot.db.execute(query, amount, ctx.guild.id, ctx.author.id)
         await qembed(ctx, f'You withdrew **${humanize.intcomma(amount)}** from your bank.')
 
     @commands.command(help='Lets you send money over to another user', aliases=('send', 'pay', 'give'))
     async def transfer(self, ctx, user: discord.Member, amount: str):
         author_cash, _ = await get_stats(ctx, ctx.author.id)
-        target_cash, _ = await get_stats(ctx, user.id)
+        target_cash, _ = await get_stats(ctx, user.id, True)
 
         amount = self.get_number(amount, author_cash)
-
-        author_cash -= amount
-        target_cash += amount
 
         async with self.bot.db.acquire() as conn:
             async with conn.transaction():
 
-                await self.bot.db.execute("UPDATE economy SET cash = $1 WHERE guild_id = $2 AND user_id = $3", author_cash,
-                                  ctx.guild.id, ctx.author.id)
-                await self.bot.db.execute("UPDATE economy SET cash = $1 WHERE guild_id = $2 AND user_id = $3", target_cash,
-                                  ctx.guild.id, user.id)
+                await self.bot.db.execute("UPDATE economy SET cash = cash - $1 WHERE guild_id = $2 AND user_id = $3", amount, ctx.guild.id, ctx.author.id)
+                await self.bot.db.execute("UPDATE economy SET cash = cash + $1 WHERE guild_id = $2 AND user_id = $3", amount, ctx.guild.id, user.id)
 
         await qembed(ctx, f'You gave {user.mention} **${humanize.intcomma(amount)}**')
 
@@ -269,7 +285,7 @@ class Economy(commands.Cog):
             desc = f"You try to rob {user.mention}, but the police see you and let you go with a warning."
             return await ctx.send(embed=ctx.embed(description=desc))
 
-        target_cash, target_bank = await get_stats(ctx, user.id)
+        target_cash, _ = await get_stats(ctx, user.id, True)
 
         if target_cash == 0:
             return await qembed(ctx, 'That user has no cash. Shame on you for trying to rob them.')
