@@ -98,7 +98,7 @@ class Casino(commands.Cog):
         embed = ctx.embed(description=f"Type `hit` to hit, `stand` to stand.\n {total_cards} cards left.")
         embed.add_field(
             name="Your hand:",
-            value=self.list_cards(player.cards) + f"\nValue: {player.value}"
+            value=self.list_cards(player.cards) + f"\n\nValue: **{player.value}**"
         )
         embed.add_field(
             name="Dealer's hand:",
@@ -118,7 +118,7 @@ class Casino(commands.Cog):
 
         message = await ctx.send("test")
 
-        message = await self.show_some(ctx, player_hand, dealer_hand, len(deck.deck))
+        message = await self.show_some(ctx, player_hand, dealer_hand, len(deck.deck), message)
 
 
 def setup(bot):
