@@ -154,7 +154,7 @@ class Casino(commands.Cog):
         )
         await self.bot.db.execute(query, amount, ctx.guild.id, ctx.author.id)
 
-        bj = Blackjack(ctx, bet)
+        bj = Blackjack(ctx, amount)
         await bj.start()
 
 
