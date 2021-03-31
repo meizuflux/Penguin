@@ -96,14 +96,12 @@ class Blackjack:
     def list_cards(cards):
         return "\n".join(str(card) for card in cards)
 
-    async def player_bust(self):
-        self.embed.description = f"You bust! **-${self.bet.bet}**."
-        self.bet.lose_bet()
-        await self.message.edit(embed=self.embed)
-
     async def show_some(self, message=None):
         dealer_card = self.dealer.cards[1]
         self.embed = self.ctx.embed(description=f"Type `hit` to hit, `stand` to stand.\n {len(self.deck.deck)} cards left.")
+        if self.player.value > 21:
+            self.bet.lose_bet()
+            self.embed.description = f"You bust! **-${self.bet.bet}**"
         self.embed.add_field(
             name="Your hand:",
             value=self.list_cards(self.player.cards) + f"\n\nValue: **{self.player.value}**"
@@ -122,8 +120,6 @@ class Blackjack:
         hand.add_card(deck.deal())
         hand.adjust_for_ace()
         await self.show_some(self.message)
-        if hand.value > 21:
-            await self.player_bust()
 
     async def hit_or_stand(self):
         valid_options = ("hit", "stand")
