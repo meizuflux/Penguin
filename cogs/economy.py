@@ -29,14 +29,16 @@ from utils.default import qembed
 
 
 async def get_stats(ctx, user_id: int):
-    await ctx.bot.db.execute("INSERT INTO economy VALUES ($1, $2) ON CONFLICT DO NOTHING", ctx.guild.id, user_id)
-    data = await ctx.bot.db.fetchrow("SELECT cash, bank FROM economy WHERE guild_id = $1 AND user_id = $2",
+    async with ctx.bot.db.acquire() as conn:
+        async with conn.transaction():
+            await conn.execute("INSERT INTO economy VALUES ($1, $2) ON CONFLICT DO NOTHING", ctx.guild.id, user_id)
+            data = await conn.fetchrow("SELECT cash, bank FROM economy WHERE guild_id = $1 AND user_id = $2",
                                      ctx.guild.id, user_id)
 
     return data["cash"], data["bank"]
 
 
-class Economy(commands.Cog, command_attrs=dict(hidden=False)):
+class Economy(commands.Cog):
     """
     A unique Economy system. This is per-server specific, so your money will not carry over from server to server.
     Kicking the bot will reset the leaderboard, and all data will be lost.
@@ -49,7 +51,6 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
     
     If any of those methods result in a number that is negative, more than you have, or more than 100 billion, it will raise an error.
     """
-
     def __init__(self, bot):
         self.bot = bot
 
@@ -175,12 +176,13 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
                     """
                 )
 
-        count = await self.bot.db.fetchval(count_query, ctx.guild.id)
-        max_pages = math.ceil(count / 10)
-        # need to check if the page is more than the amount allowed
-        page = min(page, max_pages)
+        async with self.bot.db.acquire() as conn:
+            async with conn.transaction():
+                count = await conn.fetchval(count_query, ctx.guild.id)
+                # need to check if the page is more than the amount allowed
+                page = min(page, math.ceil(count / 10))
 
-        data = await self.bot.db.fetch(lb_query, ctx.guild.id, (page * 10) - 10)
+                data = await conn.fetch(lb_query, ctx.guild.id, (page * 10) - 10)
 
         lb = []
         for user in data:
@@ -249,7 +251,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         author_cash -= amount
         target_cash += amount
 
-        async with self.bot.db.acuire() as conn:
+        async with self.bot.db.acquire() as conn:
             async with conn.transaction():
 
                 await self.bot.db.execute("UPDATE economy SET cash = $1 WHERE guild_id = $2 AND user_id = $3", author_cash,
@@ -273,7 +275,7 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
         amount = random.randint(1, target_cash)
 
-        async with self.bot.db.acuire() as conn:
+        async with self.bot.db.acquire() as conn:
             async with conn.transaction():
                 author_query = (
                     """
