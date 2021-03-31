@@ -144,7 +144,8 @@ class Blackjack:
             value=self.list_cards(self.dealer.cards) + f"\n\nValue: **{self.dealer.value}**"
         )
         self.determine_outcome()
-        await self.message.edit(content=self.bet.total, embed=self.embed)
+        self.embed.description = self.embed.description + dir(self.bet)
+        await self.message.edit(content=None, embed=self.embed)
 
     async def hit(self, hand):
         hand.add_card(self.deck.deal())
