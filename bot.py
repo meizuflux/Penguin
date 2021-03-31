@@ -81,8 +81,8 @@ class Chuck(commands.Bot):
             return commands.when_mentioned_or(*self.prefixes[message.guild.id])(self, message)
 
         if not self.prefixes[message.guild.id]:
-            await self.db.execute("INSERT INTO prefixes(guild_id,prefix) VALUES($1,$2)", message.guild.id,
-                                  self.default_prefix)
+            if self.is_ready():
+                await self.db.execute("INSERT INTO prefixes(guild_id,prefix) VALUES($1,$2)", message.guild.id, self.default_prefix)
             self.prefixes[message.guild.id].append(self.default_prefix)
 
             return commands.when_mentioned_or(*self.prefixes[message.guild.id])(self, message)
