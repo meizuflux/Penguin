@@ -112,7 +112,7 @@ class Blackjack:
             break
 
     async def start(self):
-        cash, _ = await get_stats(self.ctx.author.id)
+        cash, _ = await get_stats(self.ctx, self.ctx.author.id)
         self.message = await self.show_some()
 
         while self.playing:
