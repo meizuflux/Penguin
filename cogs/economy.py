@@ -41,8 +41,8 @@ async def get_stats(ctx, user_id: int, not_author=False):
             registered = await conn.fetchval("SELECT 1 FROM economy WHERE guild_id = $1 AND user_id = $2", *values)
             if not registered:
                 if not_author:
-                    raise UserNotRegistered()
-                raise NotRegistered()
+                    raise UserNotRegistered("This user is not registered! Tell them to use the register command.")
+                raise NotRegistered("You are not registered! Use the register command to set up an account at the bank.")
                 
             data = await conn.fetchrow("SELECT cash, bank FROM economy WHERE guild_id = $1 AND user_id = $2", *values)
 
