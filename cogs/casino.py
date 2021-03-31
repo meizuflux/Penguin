@@ -145,6 +145,9 @@ class Blackjack:
 
         self.message = await self.show_some()
 
+        while self.playing:
+            await self.hit_or_stand(self.player)
+
 
 class Casino(commands.Cog):
     def __init__(self, bot):
