@@ -9,6 +9,7 @@ from discord.ext import commands
 
 from utils.default import Blacklisted, Maintenance
 from utils.fuzzy import finder
+from cogs.economy import NotRegistered
 
 
 class CommandErrorHandler(commands.Cog):
@@ -30,6 +31,9 @@ class CommandErrorHandler(commands.Cog):
                 return await ctx.author.send(embed=embed)
             except discord.Forbidden:
                 await ctx.send(embed=embed)
+
+        if isinstance(error, NotRegistered):
+            return await ctx.send(str(error))
 
         # This prevents any commands with local handlers being handled here in on_command_error.
         if hasattr(ctx.command, 'on_error'):
