@@ -2,6 +2,7 @@ import asyncio
 import random
 
 from discord.ext import commands
+import humanize
 
 from utils.blackjack import Deck, Gamble, Hand
 from utils.eco import get_number, get_stats
@@ -56,6 +57,8 @@ class Blackjack:
     def determine_outcome(self):
         dealer = self.dealer.value
         player = self.player.value
+
+        bet = humanize.intcomma()
 
         if dealer > 21:
             self.bet.win_bet()

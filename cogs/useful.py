@@ -83,7 +83,7 @@ class Context(commands.Context):
         color = kwargs.pop("color", self.bot.embed_color)
         embed = discord.Embed(**kwargs, color=color)
         embed.timestamp = self.message.created_at
-        embed.set_footer(text=f"Requested by {self.author}", icon_url=self.author.avatar_url)
+        embed.set_author(name=self.author, icon_url=self.author.avatar_url)
         return embed
 
     def escape(self, text: str):
