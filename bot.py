@@ -30,7 +30,6 @@ import config
 import discord
 from discord.ext import commands
 
-from cogs.useful import ChuckContext
 from utils.default import Blacklisted, Maintenance
 
 
@@ -65,6 +64,7 @@ class Chuck(commands.Bot):
         self.usage_counter = 0
         self.command_usage = collections.Counter()
         self.maintenance = False
+        self.context = commands.Context
 
     @staticmethod
     def get_config(item: str):
@@ -162,7 +162,7 @@ class Chuck(commands.Bot):
 
     async def get_context(self, message: discord.Message, *, cls=None):
         """Method to override "ctx"."""
-        return await super().get_context(message, cls=cls or ChuckContext)
+        return await super().get_context(message, cls=cls or self.context)
 
     # https://github.com/InterStella0/stella_bot/blob/4636627b2f99b7f58260869f020e5adebb62e27d/main.py
     async def process_commands(self, message):

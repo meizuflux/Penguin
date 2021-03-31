@@ -32,7 +32,7 @@ from discord.ext import commands, menus
 from utils.default import qembed
 
 
-class ChuckContext(commands.Context):
+class Context(commands.Context):
 
     @property
     def secret(self):
@@ -496,3 +496,7 @@ class AAAAAA(commands.Cog):
 def setup(bot):
     bot.add_cog(Useful(bot))
     bot.add_cog(AAAAAA(bot))
+    bot.context = Context
+
+def teardown(bot):
+    bot.context = commands.Context
