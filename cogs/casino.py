@@ -115,7 +115,7 @@ class Blackjack:
         hand.adjust_for_ace()
         await self.show_some(self.message)
 
-    async def hit_or_stand(self, deck, hand, message):
+    async def hit_or_stand(self):
         valid_options = ("hit", "stand")
         while True:
             try:
@@ -130,7 +130,7 @@ class Blackjack:
                 choice = content
 
             if choice == "hit":
-                await self.hit(deck, hand)
+                await self.hit(self.deck, self.player)
                 continue
 
             if choice == "stand":
@@ -146,7 +146,7 @@ class Blackjack:
         self.message = await self.show_some()
 
         while self.playing:
-            await self.hit_or_stand(self.player)
+            await self.hit_or_stand()
 
 
 class Casino(commands.Cog):
