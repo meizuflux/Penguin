@@ -27,26 +27,7 @@ from discord.ext import commands
 
 from utils.argparse import Arguments
 from utils.default import qembed
-
-
-class NotRegistered(commands.CommandError):
-    pass
-
-
-async def get_stats(ctx, user_id: int, not_author=False):
-    values = (ctx.guild.id, user_id)
-    async with ctx.bot.db.acquire() as conn:
-        async with conn.transaction():
-            registered = await conn.fetchval("SELECT 1 FROM economy WHERE guild_id = $1 AND user_id = $2", *values)
-            if not registered:
-                if not_author:
-                    raise NotRegistered("This user is not registered! Tell them to use the register command.")
-                raise NotRegistered(
-                    "You are not registered! Use the register command to set up an account at the bank.")
-
-            data = await conn.fetchrow("SELECT cash, bank FROM economy WHERE guild_id = $1 AND user_id = $2", *values)
-
-    return data["cash"], data["bank"]
+from utils.eco import get_number, get_stats
 
 
 class Economy(commands.Cog):
@@ -69,40 +50,6 @@ class Economy(commands.Cog):
     async def cog_check(self, ctx):
         return ctx.guild is not None
 
-    def get_number(self, number: str, total: int):
-        number = number.replace(",", "")
-        if number.endswith("%"):
-            number = number.strip("%")
-            if not number.isdigit():
-                raise commands.BadArgument("That's... not a valid percentage.")
-            number = round(float(number))
-            if number > 100:
-                raise commands.BadArgument("You can't do more than 100%.")
-            percentage = lambda percent, total_amount: (percent * total_amount) / 100
-            amount = percentage(number, total)
-
-        elif number == 'half':
-            amount = total / 2
-
-        elif number in ('max', 'all'):
-            amount = total
-        elif number.isdigit():
-            amount = int(number)
-            if amount == 0:
-                raise commands.BadArgument("You need to provide an amount that results in over $0")
-        else:
-            raise commands.BadArgument("Invalid amount provided.")
-
-        amount = round(amount)
-
-        if amount > total:
-            raise commands.BadArgument("That's more money than you have...")
-
-        if amount > 100000000000:
-            raise commands.BadArgument("Transfers of money over one hundred billion are prohibited.")
-
-        return amount
-
     @commands.command(help='Registers you into the database')
     async def register(self, ctx):
         query = (
@@ -113,8 +60,22 @@ class Economy(commands.Cog):
         try:
             await self.bot.db.execute(query, ctx.guild.id, ctx.author.id)
         except UniqueViolationError:
-            return await ctx.send("You are already registered weirdo")
-        await ctx.send("k its done")
+            return await ctx.send("You are already registered!")
+        await ctx.send("Registered you into the database.")
+
+    @commands.command()
+    async def unregister(self, ctx):
+        """Wipes your economy data on this server clean."""
+        answer, message = await ctx.confirm("React to confirm before doing this. This action is irreversible.")
+        if answer:
+            query = (
+                """
+                DELETE FROM economy WHERE guild_id = $1 AND user_id = $2
+                """
+            )
+            await self.bot.db.execute(query, ctx.guild.id, ctx.author.id)
+            return await message.edit(content="Successfully unregistered you on this server.")
+        await message.edit(content="Cancelling.")
 
     @commands.command(help='View yours or someone else\'s balance', aliases=['bal'])
     async def balance(self, ctx, user: discord.Member = None):
@@ -226,7 +187,7 @@ class Economy(commands.Cog):
     async def deposit(self, ctx, amount: str):
         cash, bank = await get_stats(ctx, ctx.author.id)
 
-        amount = self.get_number(amount, cash)
+        amount = get_number(amount, cash)
 
         if amount == 0:
             return await ctx.send(embed=ctx.embed(description="You have no cash."))
@@ -246,7 +207,7 @@ class Economy(commands.Cog):
     async def withdraw(self, ctx, amount: str):
         cash, bank = await get_stats(ctx, ctx.author.id)
 
-        amount = self.get_number(amount, bank)
+        amount = get_number(amount, bank)
         if amount == 0:
             return await ctx.send(embed=ctx.embed(description="You have no cash."))
 
@@ -265,7 +226,7 @@ class Economy(commands.Cog):
         author_cash, _ = await get_stats(ctx, ctx.author.id)
         target_cash, _ = await get_stats(ctx, user.id, True)
 
-        amount = self.get_number(amount, author_cash)
+        amount = get_number(amount, author_cash)
 
         async with self.bot.db.acquire() as conn:
             async with conn.transaction():

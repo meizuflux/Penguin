@@ -9,7 +9,7 @@ from discord.ext import commands
 
 from utils.default import Blacklisted, Maintenance
 from utils.fuzzy import finder
-from cogs.economy import NotRegistered
+from utils.eco import NotRegistered
 
 
 class CommandErrorHandler(commands.Cog):
