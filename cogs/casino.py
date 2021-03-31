@@ -141,7 +141,7 @@ class Casino(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(aliases=['bj'])
     async def blackjack(self, ctx, bet: str):
         """Play a game of blackjack."""
         cash, _ = await get_stats(ctx, ctx.author.id)
