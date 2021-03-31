@@ -22,29 +22,28 @@ import typing
 
 import discord
 import humanize
-from discord.ext import commands
 from asyncpg import UniqueViolationError
+from discord.ext import commands
 
 from utils.argparse import Arguments
 from utils.default import qembed
 
+
 class NotRegistered(commands.CommandError):
-    pass
-        
-class UserNotRegistered(NotRegistered):
     pass
 
 
 async def get_stats(ctx, user_id: int, not_author=False):
-    values = (ctx.guild.id, ctx.author.id)
+    values = (ctx.guild.id, user_id)
     async with ctx.bot.db.acquire() as conn:
         async with conn.transaction():
             registered = await conn.fetchval("SELECT 1 FROM economy WHERE guild_id = $1 AND user_id = $2", *values)
             if not registered:
                 if not_author:
-                    raise UserNotRegistered("This user is not registered! Tell them to use the register command.")
-                raise NotRegistered("You are not registered! Use the register command to set up an account at the bank.")
-                
+                    raise NotRegistered("This user is not registered! Tell them to use the register command.")
+                raise NotRegistered(
+                    "You are not registered! Use the register command to set up an account at the bank.")
+
             data = await conn.fetchrow("SELECT cash, bank FROM economy WHERE guild_id = $1 AND user_id = $2", *values)
 
     return data["cash"], data["bank"]
@@ -63,6 +62,7 @@ class Economy(commands.Cog):
     
     If any of those methods result in a number that is negative, more than you have, or more than 100 billion, it will raise an error.
     """
+
     def __init__(self, bot):
         self.bot = bot
 
@@ -102,11 +102,6 @@ class Economy(commands.Cog):
             raise commands.BadArgument("Transfers of money over one hundred billion are prohibited.")
 
         return amount
-    
-    @commands.Cog.listener()
-    async def on_error(self, ctx, error):
-        if isinstance(error, (NotRegistered, UserNotRegistered)):
-            return await ctx.send(str(error))
 
     @commands.command(help='Registers you into the database')
     async def register(self, ctx):
@@ -274,9 +269,10 @@ class Economy(commands.Cog):
 
         async with self.bot.db.acquire() as conn:
             async with conn.transaction():
-
-                await self.bot.db.execute("UPDATE economy SET cash = cash - $1 WHERE guild_id = $2 AND user_id = $3", amount, ctx.guild.id, ctx.author.id)
-                await self.bot.db.execute("UPDATE economy SET cash = cash + $1 WHERE guild_id = $2 AND user_id = $3", amount, ctx.guild.id, user.id)
+                await self.bot.db.execute("UPDATE economy SET cash = cash - $1 WHERE guild_id = $2 AND user_id = $3",
+                                          amount, ctx.guild.id, ctx.author.id)
+                await self.bot.db.execute("UPDATE economy SET cash = cash + $1 WHERE guild_id = $2 AND user_id = $3",
+                                          amount, ctx.guild.id, user.id)
 
         await qembed(ctx, f'You gave {user.mention} **${humanize.intcomma(amount)}**')
 
