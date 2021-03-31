@@ -1,5 +1,6 @@
 import asyncio
 import random
+from utils.eco import get_stats
 
 suits = ('Hearts', 'Diamonds', 'Spades', 'Clubs')
 values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'Jack': 10,
@@ -176,6 +177,7 @@ class Blackjack:
             break
 
     async def start(self):
+        cash, _ = await get_stats(self.ctx.author.id)
         self.message = await self.show_some()
 
         while self.playing:
@@ -186,3 +188,5 @@ class Blackjack:
                 await self.hit(self.dealer)
 
             await self.show_all()
+
+        await self.ctx.send(self.bet.total)

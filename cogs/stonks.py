@@ -23,7 +23,7 @@ import humanize
 import tabulate
 from discord.ext import commands, tasks
 
-from cogs.economy import get_stats
+from utils.eco import get_stats
 
 FINNHUB_URL = "https://finnhub.io/api/v1/"
 
