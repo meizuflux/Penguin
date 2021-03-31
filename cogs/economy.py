@@ -28,12 +28,10 @@ from utils.argparse import Arguments
 from utils.default import qembed
 
 class NotRegistered(commands.CommandError):
-    def __init__(self, message="You are not registered! Use the register command to start a balance.")
-        super().__init__(self, message)
+    pass
         
 class UserNotRegistered(NotRegistered):
-    def __init__(self, message="This user is not registered! Tell them to use the register command to start a balance.")
-        super().__init__(self, message)
+    pass
 
 
 async def get_stats(ctx, user_id: int, not_author=False):
@@ -41,7 +39,6 @@ async def get_stats(ctx, user_id: int, not_author=False):
     async with ctx.bot.db.acquire() as conn:
         async with conn.transaction():
             registered = await conn.fetchval("SELECT 1 FROM economy WHERE guild_id = $1 AND user_id = $2", *values)
-            await ctx.send("registered: {}".format(registered))
             if not registered:
                 if not_author:
                     raise UserNotRegistered()
