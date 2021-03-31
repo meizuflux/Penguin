@@ -103,8 +103,8 @@ class Casino(commands.Cog):
         embed.add_field(
             name="Dealer's hand:",
             value=f"<hidden>\n"
-                  f"{dealer_card}\n"
-                  f"Value: {int(dealer_card)}"
+                  f"{dealer_card}\n\n"
+                  f"Value: **{int(dealer_card)}**"
         )
         if message:
             return await message.edit(content=None, embed=embed)
