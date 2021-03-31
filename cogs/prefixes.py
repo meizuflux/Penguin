@@ -79,7 +79,7 @@ class Prefixes(commands.Cog):
             return await ctx.send(embed=ctx.embed(description="Nice try, but you can't edit this."))
         insertion_sql = (
             "INSERT INTO prefixes (guild_id, prefix) "
-            "VALUES ($1, $2) ON CONFLICT DO UPDATE SET prefix = $2"
+            "VALUES ($1, $2) ON CONFLICT (guild_id, prefix) DO UPDATE SET prefix = $2"
         )
         await self.bot.db.execute(insertion_sql, ctx.guild.id, prefix)
         self.bot.prefixes[ctx.guild.id].remove(ctx.prefix)
