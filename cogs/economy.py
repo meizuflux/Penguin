@@ -180,7 +180,8 @@ class Economy(commands.Cog):
             async with conn.transaction():
                 count = await conn.fetchval(count_query, ctx.guild.id)
                 # need to check if the page is more than the amount allowed
-                page = min(page, math.ceil(count / 10))
+                max_pages = math.ceil(count / 10)
+                page = min(page, max_pages)
 
                 data = await conn.fetch(lb_query, ctx.guild.id, (page * 10) - 10)
 
