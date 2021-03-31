@@ -90,6 +90,7 @@ class Casino(commands.Cog):
 
         return deck, player_hand, dealer_hand, player_bet
 
+    @staticmethod
     def list_cards(cards):
         return "\n".join(str(card) for card in cards)
 
