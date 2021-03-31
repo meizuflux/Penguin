@@ -1,3 +1,4 @@
+import asyncio
 import random
 
 from discord.ext import commands
@@ -72,33 +73,32 @@ class Gamble:
 class Blackjack:
     def __init__(self, ctx):
         self.ctx = ctx
+        self.playing = True
 
-    def setup(self, bet: int = 100):
-        deck = Deck()
-        deck.shuffle()
+        self.message = None
 
-        player_hand = Hand()
-        player_hand.add_card(deck.deal())
-        player_hand.add_card(deck.deal())
+        self.deck = Deck()
+        self.deck.shuffle()
 
-        dealer_hand = Hand()
-        dealer_hand.add_card(deck.deal())
-        dealer_hand.add_card(deck.deal())
+        self.player = Hand()
+        self.player.add_card(self.deck.deal())
+        self.player.add_card(self.deck.deal())
 
-        player_bet = Gamble(bet)
+        self.dealer = Hand()
+        self.dealer.add_card(self.deck.deal())
+        self.dealer.add_card(self.deck.deal())
 
-        return deck, player_hand, dealer_hand, player_bet
 
     @staticmethod
     def list_cards(cards):
         return "\n".join(str(card) for card in cards)
 
-    async def show_some(self, player, dealer, total_cards, message=None):
-        dealer_card = dealer.cards[1]
-        embed = self.ctx.embed(description=f"Type `hit` to hit, `stand` to stand.\n {total_cards} cards left.")
+    async def show_some(self, message=None):
+        dealer_card = self.dealer.cards[1]
+        embed = self.ctx.embed(description=f"Type `hit` to hit, `stand` to stand.\n {len(self.deck.deck)} cards left.")
         embed.add_field(
             name="Your hand:",
-            value=self.list_cards(player.cards) + f"\n\nValue: **{player.value}**"
+            value=self.list_cards(self.player.cards) + f"\n\nValue: **{self.player.value}**"
         )
         embed.add_field(
             name="Dealer's hand:",
@@ -110,10 +110,40 @@ class Blackjack:
             return await message.edit(content=None, embed=embed)
         return await self.ctx.send(embed=embed)
 
-    async def start(self, bet: int = 100):
-        deck, player_hand, dealer_hand, player_bet = self.setup(bet)
+    async def hit(self, deck, hand):
+        hand.add_card(deck.deal())
+        hand.adjust_for_ace()
+        await self.show_some(self.message)
 
-        message = await self.show_some(player_hand, dealer_hand, len(deck.deck))
+    async def hit_or_stand(self, deck, hand, message):
+        valid_options = ("hit", "stand")
+        while True:
+            try:
+                message = await self.ctx.bot.wait_for("message",
+                                                      timeout=30,
+                                                      check=lambda m: m.author == self.ctx.author and m.channel == self.ctx.channel and m.content.lower() in valid_options)
+            except asyncio.TimeoutError:
+                choice = random.choice(valid_options)
+
+            content = message.content.lower()
+            if content in valid_options:
+                choice = content
+
+            if choice == "hit":
+                await self.hit(deck, hand)
+                continue
+
+            if choice == "stand":
+                self.playing = False
+
+            break
+
+
+
+    async def start(self, bet: int = 100):
+        player_bet = Gamble(bet)
+
+        self.message = await self.show_some()
 
 
 class Casino(commands.Cog):

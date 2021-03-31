@@ -464,7 +464,7 @@ class Economy(commands.Cog):
         if self.bot.get_command(command) not in eco.walk_commands():
             return await qembed(ctx,
                                 f'You can only reset the cooldown for commands in this category. You can do `{ctx.clean_prefix}help Economy` to see all the commands.')
-
+        cash, _ = await get_stats(ctx, ctx.author.id)
         if command == 'daily':
             return await qembed(ctx,
                                 'You can\'t reset the daily command, sorry. '
