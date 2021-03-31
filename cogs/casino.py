@@ -1,6 +1,8 @@
 from discord.ext import commands
 from utils.blackjack import Hand, Deck, Gamble
 from utils.eco import get_stats
+import asyncio
+import random
 
 class Blackjack:
     def __init__(self, ctx, bet: int = 100):
