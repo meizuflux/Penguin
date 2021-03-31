@@ -1,12 +1,14 @@
-from discord.ext import commands
-from utils.blackjack import Hand, Deck, Gamble
-from utils.eco import get_stats, get_number
 import asyncio
 import random
 
+from discord.ext import commands
+
+from utils.blackjack import Deck, Gamble, Hand
+from utils.eco import get_number, get_stats
+
+
 class Blackjack:
     def __init__(self, ctx, bet: int):
-        print(type(bet))
         self.ctx = ctx
         self.playing = True
 
