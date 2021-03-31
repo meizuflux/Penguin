@@ -145,7 +145,7 @@ class Blackjack:
         )
         self.determine_outcome()
         await self.message.edit(content=None, embed=self.embed)
-        await self.ctx.send(self.bet.total)
+        await self.ctx.send("idk" + self.bet)
 
     async def hit(self, hand):
         hand.add_card(self.deck.deal())
