@@ -722,7 +722,7 @@ class Fun(commands.Cog):
 
         stats = (
             f"**Rating:** {attrs['averageRating']}/100",
-            f"**Episode Count:** {attrs['episodeCount']}"
+            f"**Episode Count:** {attrs['episodeCount']}",
             f"**Episode Length:** {attrs['episodeLength']}"
         )
 
