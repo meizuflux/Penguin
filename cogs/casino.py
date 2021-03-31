@@ -71,7 +71,7 @@ class Gamble:
 
 
 class Blackjack:
-    def __init__(self, ctx, bet: int=100):
+    def __init__(self, ctx, bet: int = 100):
         self.ctx = ctx
         self.playing = True
 
@@ -91,17 +91,17 @@ class Blackjack:
 
         self.bet = Gamble(bet)
 
-
     @staticmethod
     def list_cards(cards):
         return "\n".join(str(card) for card in cards)
 
     async def show_some(self, message=None):
         dealer_card = self.dealer.cards[1]
-        self.embed = self.ctx.embed(description=f"Type `hit` to hit, `stand` to stand.\n {len(self.deck.deck)} cards left.")
+        self.embed = self.ctx.embed(
+            description=f"Type `hit` to hit, `stand` to stand.\n {len(self.deck.deck)} cards left.")
         if self.player.value > 21:
             self.bet.lose_bet()
-            self.embed.description = f"You bust! **-${self.bet.bet}**"
+            self.embed.description = f"Result: Bust **-${self.bet.bet}**"
         self.embed.add_field(
             name="Your hand:",
             value=self.list_cards(self.player.cards) + f"\n\nValue: **{self.player.value}**"
@@ -116,10 +116,43 @@ class Blackjack:
             return await message.edit(content=None, embed=self.embed)
         return await self.ctx.send(embed=self.embed)
 
-    async def hit(self, deck, hand):
-        hand.add_card(deck.deal())
+    def determine_outcome(self):
+        dealer = self.dealer.value
+        player = self.player.value
+
+        if dealer > 21:
+            self.bet.win_bet()
+            self.embed.description = f"Result: Dealer bust **${self.bet.bet}**"
+
+        elif dealer > player:
+            self.bet.lose_bet()
+            self.embed.description = f"Result: Loss **-${self.bet.bet}**"
+
+        elif player > dealer:
+            self.bet.win_bet()
+            self.embed.description = f"Result: Win **${self.bet.bet}**"
+
+        else:
+            self.embed.description = f"Result: Push, money back."
+
+    async def show_all(self):
+        self.embed = self.ctx.embed(description=f"{len(self.deck.deck)} cards left.")
+        self.embed.add_field(
+            name="Your hand:",
+            value=self.list_cards(self.player.cards) + f"\n\nValue: **{self.player.value}**"
+        )
+        self.embed.add_field(
+            name="Dealer's hand:",
+            value=self.list_cards(self.dealer.cards) + f"\n\nValue: **{self.dealer.value}**"
+        )
+        self.determine_outcome()
+        await self.message.edit(content=None, embed=self.embed)
+
+    async def hit(self, hand):
+        hand.add_card(self.deck.deal())
         hand.adjust_for_ace()
-        await self.show_some(self.message)
+        if hand != self.dealer:
+            await self.show_some(self.message)
 
     async def hit_or_stand(self):
         valid_options = ("hit", "stand")
@@ -127,7 +160,8 @@ class Blackjack:
             try:
                 message = await self.ctx.bot.wait_for("message",
                                                       timeout=30,
-                                                      check=lambda m: m.author == self.ctx.author and m.channel == self.ctx.channel and m.content.lower() in valid_options)
+                                                      check=lambda
+                                                          m: m.author == self.ctx.author and m.channel == self.ctx.channel and m.content.lower() in valid_options)
             except asyncio.TimeoutError:
                 choice = random.choice(valid_options)
 
@@ -136,7 +170,7 @@ class Blackjack:
                 choice = content
 
             if choice == "hit":
-                await self.hit(self.deck, self.player)
+                await self.hit(self.player)
                 continue
 
             if choice == "stand":
@@ -144,13 +178,17 @@ class Blackjack:
 
             break
 
-
-
-    async def start(self, bet: int = 100):
+    async def start(self):
         self.message = await self.show_some()
 
         while self.playing:
             await self.hit_or_stand()
+
+        if self.player.value <= 21:
+            while self.dealer.value < 17:
+                await self.hit(self.dealer)
+
+            await self.show_all()
 
 
 class Casino(commands.Cog):
