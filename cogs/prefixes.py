@@ -77,16 +77,11 @@ class Prefixes(commands.Cog):
         """Edits the prefix being used to invoke the command."""
         if ctx.prefix in ("<@!810570659968057384> ", "<@!810570659968057384>"):
             return await ctx.send(embed=ctx.embed(description="Nice try, but you can't edit this."))
-        deletion_sql = (
-            "DELETE FROM prefixes "
-            "WHERE guild_id = $1 AND prefix = $2"
-        )
         insertion_sql = (
             "INSERT INTO prefixes (guild_id, prefix) "
-            "VALUES ($1, $2)"
+            "VALUES ($1, $2) ON CONFLICT DO UPDATE SET prefix = $2"
         )
-        await self.bot.db.execute(deletion_sql, ctx.guild.id, prefix)
-        await self.bot.db.execute(insertion_sql, ctx.guild.id, ctx.prefix)
+        await self.bot.db.execute(insertion_sql, ctx.guild.id, prefix)
         self.bot.prefixes[ctx.guild.id].remove(ctx.prefix)
         self.bot.prefixes[ctx.guild.id].append(prefix)
         await ctx.send(embed=ctx.embed(description=f"Edited `{ctx.prefix}` to `{prefix}`"))
