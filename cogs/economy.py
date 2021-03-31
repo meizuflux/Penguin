@@ -249,9 +249,12 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         author_cash -= amount
         target_cash += amount
 
-        await self.bot.db.execute("UPDATE economy SET cash = $1 WHERE guild_id = $2 AND user_id = $3", author_cash,
+        async with self.bot.db.acuire() as conn:
+            async with conn.transaction():
+
+                await self.bot.db.execute("UPDATE economy SET cash = $1 WHERE guild_id = $2 AND user_id = $3", author_cash,
                                   ctx.guild.id, ctx.author.id)
-        await self.bot.db.execute("UPDATE economy SET cash = $1 WHERE guild_id = $2 AND user_id = $3", target_cash,
+                await self.bot.db.execute("UPDATE economy SET cash = $1 WHERE guild_id = $2 AND user_id = $3", target_cash,
                                   ctx.guild.id, user.id)
 
         await qembed(ctx, f'You gave {user.mention} **${humanize.intcomma(amount)}**')
@@ -263,7 +266,6 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             desc = f"You try to rob {user.mention}, but the police see you and let you go with a warning."
             return await ctx.send(embed=ctx.embed(description=desc))
 
-        author_cash, author_bank = await get_stats(ctx, ctx.author.id)
         target_cash, target_bank = await get_stats(ctx, user.id)
 
         if target_cash == 0:
@@ -271,24 +273,23 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
         amount = random.randint(1, target_cash)
 
-        author_cash += amount
-        target_cash -= amount
+        async with self.bot.db.acuire() as conn:
+            async with conn.transaction():
+                author_query = (
+                    """
+                    UPDATE economy SET cash = cash + $1
+                    WHERE guild_id = $2 AND user_id = $3
+                    """
+                )
+                target_query = (
+                    """
+                    UPDATE economy SET cash = cash - $1
+                    WHERE guild_id = $2 AND user_id = $3
+                    """
+                )
 
-        author_query = (
-            """
-            UPDATE economy SET cash = $1
-            WHERE guild_id = $2 AND user_id = $3
-            """
-        )
-        target_query = (
-            """
-            UPDATE economy SET cash = $1
-            WHERE guild_id = $2 AND user_id = $3
-            """
-        )
-
-        await self.bot.db.execute(author_query, author_cash, ctx.guild.id, ctx.author.id)
-        await self.bot.db.execute(target_query, target_cash, ctx.guild.id, user.id)
+                await conn.execute(target_query, amount, ctx.guild.id, user.id)
+                await conn.execute(author_query, amount, ctx.guild.id, ctx.author.id)
 
         await qembed(ctx, f'You stole **${humanize.intcomma(amount)}** from {user.mention}!')
 
@@ -326,18 +327,16 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
                 await message.delete()
                 return await ctx.send(embed=embed)
 
-        author_cash, author_bank = await get_stats(ctx, ctx.author.id)
-
         cash = random.randint(100, 500)
 
         query = (
             """
-            UPDATE economy SET cash = $1
+            UPDATE economy SET cash = cash + $1
             WHERE guild_id = $2 AND user_id = $3
             """
         )
 
-        await self.bot.db.execute(query, author_cash + cash, ctx.guild.id, ctx.author.id)
+        await self.bot.db.execute(query, cash, ctx.guild.id, ctx.author.id)
 
         embed.description = f"I transfered **${cash}** to you."
         await m.edit(embed=embed)
@@ -345,18 +344,16 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.command(help='Daily reward')
     @commands.cooldown(rate=1, per=86400, type=commands.BucketType.user)
     async def daily(self, ctx):
-        cash, _ = await get_stats(ctx, ctx.author.id)
-
         cash = random.randint(500, 1000)
 
         query = (
             """
-            UPDATE economy SET cash = $1
+            UPDATE economy SET cash = cash + $1
             WHERE guild_id = $2 AND user_id = $3
             """
         )
 
-        await self.bot.db.execute(query, cash + cash, ctx.guild.id, ctx.author.id)
+        await self.bot.db.execute(query, cash, ctx.guild.id, ctx.author.id)
 
         await qembed(ctx, f'You\'ve collected **${cash}** from the daily gift!')
 
@@ -396,20 +393,18 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
                 embed.description = f"Wrong fish. The answer was {correct_fish}"
                 return await message.edit(embed=embed)
 
-        user_cash, _ = await get_stats(ctx, ctx.author.id)
-
         price = random.randint(20, 35)
         fish = random.randint(5, 20)
         cash = price * fish
 
         query = (
             """
-            UPDATE economy SET cash = $1
+            UPDATE economy SET cash = cash + $1
             WHERE guild_id = $2 AND user_id = $3
             """
         )
 
-        await self.bot.db.execute(query, user_cash + cash, ctx.guild.id, ctx.author.id)
+        await self.bot.db.execute(query, cash, ctx.guild.id, ctx.author.id)
 
         embed.description = f'You travel to the local lake and catch **{fish}** fish {correct_fish}.\nThen you sell them to the market at a price of **${price}**, totaling in at **${cash}** for a days work.'
 
@@ -426,18 +421,17 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
             return await ctx.send('You sit all day on the street, but collect no money.')
         async with self.bot.session.get('https://pipl.ir/v1/getPerson') as f:
             cities = await f.json()
-        author_cash, _ = await get_stats(ctx, ctx.author.id)
 
         cash = random.randint(0, 500)
 
         query = (
             """
-            UPDATE economy SET cash = $1
+            UPDATE economy SET cash = cash + $1
             WHERE guild_id = $2 AND user_id = $3
             """
         )
 
-        await self.bot.db.execute(query, author_cash + cash, ctx.guild.id, ctx.author.id)
+        await self.bot.db.execute(query, cash, ctx.guild.id, ctx.author.id)
         city = cities["person"]["personal"]["city"]
         msg = f'You sit on the streets of {city} and a nice {random.choice(["man", "woman"])} hands you ${cash}.'
         await ctx.send(embed=ctx.embed(description=msg))
@@ -446,7 +440,6 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
     @commands.cooldown(rate=1, per=300, type=commands.BucketType.user)
     async def resetcooldown(self, ctx, command):
         eco = self.bot.get_cog("Economy")
-        cash, _ = await get_stats(ctx, ctx.author.id)
         if self.bot.get_command(command) not in eco.walk_commands():
             return await qembed(ctx,
                                 f'You can only reset the cooldown for commands in this category. You can do `{ctx.clean_prefix}help Economy` to see all the commands.')
@@ -461,13 +454,13 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
 
         query = (
             """
-            UPDATE economy SET cash = $1
+            UPDATE economy SET cash = cash - $1
             WHERE guild_id = $2 AND user_id = $3
             """
         )
 
         self.bot.get_command(command).reset_cooldown(ctx)
-        await self.bot.db.execute(query, cash - 400, ctx.guild.id, ctx.author.id)
+        await self.bot.db.execute(query, 400, ctx.guild.id, ctx.author.id)
         await qembed(ctx,
                      f'Reset the command cooldown for the command `{command}` and subtracted **$400** from your account.')
 
@@ -550,15 +543,13 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
                     return await ctx.send(":( You have no money in your moneybag, I guess that's sad.")
                 break
 
-        cash, _ = await get_stats(ctx, ctx.author.id)
-
         query = (
             """
-            UPDATE economy SET cash = $1
+            UPDATE economy SET cash = cash + $1
             WHERE guild_id = $2 AND user_id = $3
             """
         )
-        await self.bot.db.execute(query, cash + amount, ctx.guild.id, ctx.author.id)
+        await self.bot.db.execute(query, amount, ctx.guild.id, ctx.author.id)
 
         await ctx.send(f"💰 You make off with a total of **${amount}** in your bag.")
 
@@ -574,7 +565,6 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         if not amount.isdigit():
             raise commands.BadArgument("Amount must be a number.")
         amount = int(amount)
-        await get_stats(ctx, user.id)
         query = (
             """
             UPDATE economy SET cash = $1
@@ -590,7 +580,6 @@ class Economy(commands.Cog, command_attrs=dict(hidden=False)):
         if not amount.isdigit():
             raise commands.BadArgument("Amount must be a number.")
         amount = int(amount)
-        await get_stats(ctx, user.id)
         query = (
             """
             UPDATE economy SET bank = $1
