@@ -3,7 +3,7 @@ import random
 from discord.ext import commands
 
 suits = ('Hearts', 'Diamonds', 'Spades', 'Clubs')
-ranks = ('2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A')
+#ranks = ('2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace')
 values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'Jack': 10,
           'Queen': 10, 'King': 10, 'Ace': 11}
 
@@ -26,7 +26,7 @@ class Deck:
     def __init__(self):
         self.deck = []
         for suit in suits:
-            for rank in ranks:
+            for rank in values:
                 self.deck.append(Card(suit, rank))
 
     def shuffle(self):
@@ -45,7 +45,7 @@ class Hand:
     def add_card(self, card):
         self.cards.append(card)
         self.value += values[card.rank]
-        if card.rank == 'A':
+        if card.rank == 'Ace':
             self.aces += 1
 
     def adjust_for_ace(self):
