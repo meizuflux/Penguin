@@ -5,7 +5,8 @@ import asyncio
 import random
 
 class Blackjack:
-    def __init__(self, ctx, bet: int = 100):
+    def __init__(self, ctx, bet: int):
+        print(type(bet))
         self.ctx = ctx
         self.playing = True
 
