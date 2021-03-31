@@ -3,7 +3,7 @@ import random
 from discord.ext import commands
 
 suits = ('Hearts', 'Diamonds', 'Spades', 'Clubs')
-#ranks = ('2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace')
+# ranks = ('2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace')
 values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'Jack': 10,
           'Queen': 10, 'King': 10, 'Ace': 11}
 
@@ -56,7 +56,7 @@ class Hand:
 
 class Gamble:
     def __init__(self, bet):
-        self.total = 100
+        self.total = bet
         self.bet = bet
 
     def win_bet(self):
@@ -69,9 +69,9 @@ class Gamble:
         self.total += (self.bet + (self.bet / 2))
 
 
-class Casino(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
+class Blackjack:
+    def __init__(self, ctx):
+        self.ctx = ctx
 
     def setup(self, bet: int = 100):
         deck = Deck()
@@ -85,7 +85,7 @@ class Casino(commands.Cog):
         dealer_hand.add_card(deck.deal())
         dealer_hand.add_card(deck.deal())
 
-        player_bet = bet
+        player_bet = Gamble(bet)
 
         return deck, player_hand, dealer_hand, player_bet
 
@@ -93,9 +93,9 @@ class Casino(commands.Cog):
     def list_cards(cards):
         return "\n".join(str(card) for card in cards)
 
-    async def show_some(self, ctx, player, dealer, total_cards, message=None):
+    async def show_some(self, player, dealer, total_cards, message=None):
         dealer_card = dealer.cards[1]
-        embed = ctx.embed(description=f"Type `hit` to hit, `stand` to stand.\n {total_cards} cards left.")
+        embed = self.ctx.embed(description=f"Type `hit` to hit, `stand` to stand.\n {total_cards} cards left.")
         embed.add_field(
             name="Your hand:",
             value=self.list_cards(player.cards) + f"\n\nValue: **{player.value}**"
@@ -108,17 +108,22 @@ class Casino(commands.Cog):
         )
         if message:
             return await message.edit(content=None, embed=embed)
-        return await ctx.send(embed=embed)
+        return await self.ctx.send(embed=embed)
+
+    async def start(self, bet: int = 100):
+        deck, player_hand, dealer_hand, player_bet = self.setup(bet)
+
+        message = await self.show_some(player_hand, dealer_hand, len(deck.deck))
+
+
+class Casino(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
 
     @commands.command()
     async def bj(self, ctx):
-        bet = 100
-
-        deck, player_hand, dealer_hand, player_bet = self.setup(bet)
-
-        message = await ctx.send("test")
-
-        message = await self.show_some(ctx, player_hand, dealer_hand, len(deck.deck), message)
+        bj = Blackjack(ctx)
+        await bj.start()
 
 
 def setup(bot):
