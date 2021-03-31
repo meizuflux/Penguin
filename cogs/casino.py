@@ -71,11 +71,12 @@ class Gamble:
 
 
 class Blackjack:
-    def __init__(self, ctx):
+    def __init__(self, ctx, bet: int=100):
         self.ctx = ctx
         self.playing = True
 
         self.message = None
+        self.embed = None
 
         self.deck = Deck()
         self.deck.shuffle()
@@ -88,31 +89,40 @@ class Blackjack:
         self.dealer.add_card(self.deck.deal())
         self.dealer.add_card(self.deck.deal())
 
+        self.bet = Gamble(bet)
+
 
     @staticmethod
     def list_cards(cards):
         return "\n".join(str(card) for card in cards)
 
+    async def player_bust(self):
+        self.embed.description = f"You bust! **-${self.bet.bet}**."
+        self.bet.lose_bet()
+        await self.message.edit(embed=self.embed)
+
     async def show_some(self, message=None):
         dealer_card = self.dealer.cards[1]
-        embed = self.ctx.embed(description=f"Type `hit` to hit, `stand` to stand.\n {len(self.deck.deck)} cards left.")
-        embed.add_field(
+        self.embed = self.ctx.embed(description=f"Type `hit` to hit, `stand` to stand.\n {len(self.deck.deck)} cards left.")
+        self.embed.add_field(
             name="Your hand:",
             value=self.list_cards(self.player.cards) + f"\n\nValue: **{self.player.value}**"
         )
-        embed.add_field(
+        self.embed.add_field(
             name="Dealer's hand:",
             value=f"<hidden>\n"
                   f"{dealer_card}\n\n"
                   f"Value: **{int(dealer_card)}**"
         )
         if message:
-            return await message.edit(content=None, embed=embed)
-        return await self.ctx.send(embed=embed)
+            return await message.edit(content=None, embed=self.embed)
+        return await self.ctx.send(embed=self.embed)
 
     async def hit(self, deck, hand):
         hand.add_card(deck.deal())
         hand.adjust_for_ace()
+        if hand.value > 21:
+            return await self.player_bust()
         await self.show_some(self.message)
 
     async def hit_or_stand(self):
@@ -141,8 +151,6 @@ class Blackjack:
 
 
     async def start(self, bet: int = 100):
-        player_bet = Gamble(bet)
-
         self.message = await self.show_some()
 
         while self.playing:
