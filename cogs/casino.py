@@ -121,9 +121,9 @@ class Blackjack:
     async def hit(self, deck, hand):
         hand.add_card(deck.deal())
         hand.adjust_for_ace()
-        if hand.value > 21:
-            return await self.player_bust()
         await self.show_some(self.message)
+        if hand.value > 21:
+            await self.player_bust()
 
     async def hit_or_stand(self):
         valid_options = ("hit", "stand")
