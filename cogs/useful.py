@@ -166,18 +166,20 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         start = time.perf_counter()
         message = await ctx.send("Pinging ...")
         duration = (time.perf_counter() - start) * 1000
-        poststart = time.perf_counter()
-        await self.bot.db.fetch("SELECT 1")
-        postduration = (time.perf_counter() - poststart) * 1000
-        pong = discord.Embed(title='Ping', color=self.bot.embed_color, timestamp=ctx.message.created_at).set_footer(
-            text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+                       
+        db_start = time.perf_counter()
+        async with self.bot.db.acquire() as conn:
+            async with conn.transaction():
+                await self.bot.db.fetch("SELECT 1")
+        db_duration = (time.perf_counter() - db_start) * 1000
+                       
+        pong = ctx.embed(title='Ping')
         pong.add_field(name='Typing Latency',
-                       value=f'```python\n{round(duration)} ms```', inline=False)
-        pong.add_field(
-            name='Websocket Latency',
-            value=f'```python\n{round(self.bot.latency * 1000)} ms```', inline=False)
-        pong.add_field(name='SQL Latency',
-                       value=f'```python\n{round(postduration)} ms```', inline=False)
+                       value=f'```py\n{round(duration)} ms```', inline=False)
+        pong.add_field(name='Websocket Latency',
+                       value=f'```py\n{round(self.bot.latency * 1000)} ms```', inline=False)
+        pong.add_field(name='Database Latency',
+                       value=f'```py\n{round(db_duration)} ms```', inline=False)
         await message.edit(content=None, embed=pong)
 
     @commands.command(aliases=['a', 'pfp'])
