@@ -53,4 +53,4 @@ def get_number(number: str, total: int):
     if amount > 100000000000:
         raise commands.BadArgument("Transfers of money over one hundred billion are prohibited.")
 
-    return amount
+    return int(amount)
