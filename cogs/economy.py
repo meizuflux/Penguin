@@ -23,6 +23,7 @@ import typing
 import discord
 import humanize
 from discord.ext import commands
+from asyncpg import UniqueViolationError
 
 from utils.argparse import Arguments
 from utils.default import qembed
@@ -114,7 +115,10 @@ class Economy(commands.Cog):
             INSERT INTO economy VALUES ($1, $2)
             """
         )
-        await self.bot.db.execute(query, ctx.guild.id, ctx.author.id)
+        try:
+            await self.bot.db.execute(query, ctx.guild.id, ctx.author.id)
+        except UniqueViolationError:
+            return await ctx.send("You are already registered weirdo")
         await ctx.send("k its done")
 
     @commands.command(help='View yours or someone else\'s balance', aliases=['bal'])
