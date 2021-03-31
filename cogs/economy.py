@@ -41,6 +41,7 @@ async def get_stats(ctx, user_id: int, not_author=False):
     async with ctx.bot.db.acquire() as conn:
         async with conn.transaction():
             registered = await conn.fetchval("SELECT 1 FROM economy WHERE guild_id = $1 AND user_id = $2", *values)
+            await ctx.send("registered: {}".format(registered))
             if not registered:
                 if not_author:
                     raise UserNotRegistered()
