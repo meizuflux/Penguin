@@ -719,15 +719,17 @@ class Fun(commands.Cog):
 
         result_embed = ctx.embed(title=attrs["canonicalTitle"], description=synopsis)
         result_embed.set_thumbnail(url=attrs["posterImage"]["medium"])
-        await ctx.send(attrs['posterImage']['episodeCount'])
+        await ctx.send(attrs['episodeCount'])
 
         stats = (
-            f"**Rating:** {attrs['averageRating']}/100"
+            f"**Rating:** {attrs['averageRating']}/100",
+            f"**Episode Count:** {attrs['episodeCount']}"
+            f"**Episode Length:** {attrs['episodeLength']}"
         )
 
         result_embed.add_field(
             name="Stats",
-            value=""
+            value="\n".join(stats)
         )
 
         await ctx.send(embed=result_embed)
