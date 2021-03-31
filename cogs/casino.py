@@ -1,6 +1,6 @@
 from discord.ext import commands
 from utils.blackjack import Hand, Deck, Gamble
-from utils.eco import get_stats
+from utils.eco import get_stats, get_number
 import asyncio
 import random
 
@@ -80,7 +80,6 @@ class Blackjack:
             value=self.list_cards(self.dealer.cards) + f"\n\nValue: **{self.dealer.value}**"
         )
         self.determine_outcome()
-        print(self.bet.total)
         await self.message.edit(content=None, embed=self.embed)
 
     async def hit(self, hand):
@@ -114,7 +113,7 @@ class Blackjack:
             break
 
     async def start(self):
-        cash, _ = await get_stats(self.ctx, self.ctx.author.id)
+
         self.message = await self.show_some()
 
         while self.playing:
@@ -126,15 +125,33 @@ class Blackjack:
 
             await self.show_all()
 
+            query = (
+                """
+                UPDATE economy SET cash = cash + $1
+                WHERE guild_id = $2 AND user_id = $3
+                """
+            )
+            await self.ctx.bot.db.execute(query, self.bet.total, self.ctx.guild.id, self.ctx.author.id)
+
 
 class Casino(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command()
-    async def blackjack(self, ctx):
+    async def blackjack(self, ctx, bet: int=100):
         """Play a game of blackjack."""
-        bj = Blackjack(ctx)
+        cash, _ = await get_stats(self.ctx, self.ctx.author.id)
+        amount = get_number(bet, cash)
+        query = (
+            """
+            UPDATE economy SET cash = cash - $1
+            WHERE guild_id = $2 AND user_id = $3
+            """
+        )
+        await self.bot.db.execute(query, amount, ctx.guild.id, ctx.author.id)
+
+        bj = Blackjack(ctx, bet)
         await bj.start()
 
 
