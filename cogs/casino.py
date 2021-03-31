@@ -116,6 +116,8 @@ class Casino(commands.Cog):
 
         deck, player_hand, dealer_hand, player_bet = self.setup(bet)
 
+        message = await ctx.send("test")
+
         message = await self.show_some(ctx, player_hand, dealer_hand, len(deck.deck))
 
 
