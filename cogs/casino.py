@@ -141,7 +141,7 @@ class Casino(commands.Cog):
     @commands.command()
     async def blackjack(self, ctx, bet: int=100):
         """Play a game of blackjack."""
-        cash, _ = await get_stats(self.ctx, self.ctx.author.id)
+        cash, _ = await get_stats(ctx, self.ctx.author.id)
         amount = get_number(bet, cash)
         query = (
             """
