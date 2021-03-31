@@ -105,7 +105,7 @@ class Economy(commands.Cog):
     async def cog_command_error(self, ctx, error):
         if isinstance(error, (NotRegistered, UserNotRegistered)):
             return await ctx.send(str(error))
-        await bot.dispatch("error", ctx, error)
+        await self.bot.dispatch("error", ctx, error)
 
     @commands.command(help='Registers you into the database')
     async def register(self, ctx):
