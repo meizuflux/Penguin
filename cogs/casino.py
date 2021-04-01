@@ -110,7 +110,7 @@ class Blackjack:
         if hand != self.dealer:
             await self.show_some(self.message)
             if hand.value > 21:
-                return "Push"
+                return True
             return None
 
     async def hit_or_stand(self):
@@ -130,7 +130,7 @@ class Blackjack:
 
             if choice == "hit":
                 stay = await self.hit(self.player)
-                if stay == "Push":
+                if stay:
                     self.playing = False
                     break
                 continue
@@ -151,15 +151,15 @@ class Blackjack:
             while self.dealer.value < 17:
                 await self.hit(self.dealer)
 
-            await self.show_all()
+        await self.show_all()
 
-            query = (
-                """
-                UPDATE economy SET cash = cash + $1
-                WHERE guild_id = $2 AND user_id = $3
-                """
-            )
-            await self.ctx.bot.db.execute(query, self.bet.total, self.ctx.guild.id, self.ctx.author.id)
+        query = (
+            """
+            UPDATE economy SET cash = cash + $1
+            WHERE guild_id = $2 AND user_id = $3
+            """
+        )
+        await self.ctx.bot.db.execute(query, self.bet.total, self.ctx.guild.id, self.ctx.author.id)
 
 
 class Casino(commands.Cog):
