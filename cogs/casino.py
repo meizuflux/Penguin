@@ -37,17 +37,17 @@ class Blackjack:
     async def show_some(self, message=None):
         dealer_card = self.dealer.cards[1]
 
-        self.embed.clear_fields()
-        self.embed.set_footer(text=f"Cards remaining: {len(self.deck.deck)}/52")
+        embed = self.ctx.embed(description=f"Type `hit` to draw another card or `stand` to pass.", color=discord.Color.green())
+        embed.set_footer(text=f"Cards remaining: {len(self.deck.deck)}/52")
 
         if self.player.value > 21:
             self.bet.lose_bet()
             self.embed.description = f"Result: Bust **-${self.bet.bet}**"
-        self.embed.add_field(
+        embed.add_field(
             name="Your hand:",
             value=self.list_cards(self.player.cards) + f"\n\nValue: **{self.player.value}**"
         )
-        self.embed.add_field(
+        embed.add_field(
             name="Dealer's hand:",
             value=f"<hidden>\n"
                   f"{dealer_card}\n\n"
@@ -55,11 +55,11 @@ class Blackjack:
         )
 
         if message:
-            return await message.edit(content=None, embed=self.embed)
+            return await message.edit(content=None, embed=embed)
 
-        return await self.ctx.send(embed=self.embed)
+        return await self.ctx.send(embed=embed)
 
-    def determine_outcome(self):
+    def determine_outcome(self, embed):
         dealer = self.dealer.value
         player = self.player.value
 
@@ -67,34 +67,34 @@ class Blackjack:
 
         if dealer > 21:
             self.bet.win_bet()
-            self.embed.description = f"Result: Dealer bust **${bet}**"
+            embed.description = f"Result: Dealer bust **${bet}**"
 
         elif dealer > player:
             self.bet.lose_bet()
-            self.embed.description = f"Result: Loss **$-{bet}**"
-            self.embed.color = discord.Color.red()
+            embed.description = f"Result: Loss **$-{bet}**"
+            embed.color = discord.Color.red()
 
         elif player > dealer:
             self.bet.win_bet()
-            self.embed.description = f"Result: Win **${bet}**"
+            embed.description = f"Result: Win **${bet}**"
 
         else:
-            self.embed.description = f"Result: Push, money back."
-            self.embed.color = discord.Color.gold()
+            embed.description = f"Result: Push, money back."
+            embed.color = discord.Color.gold()
 
     async def show_all(self):
-        self.embed.clear_fields()
-        self.embed.set_footer(text=f"Cards remaining: {len(self.deck.deck)}/52")
-        self.embed.add_field(
+        embed = self.ctx.embed(color=discord.Color.green())
+        embed.set_footer(text=f"Cards remaining: {len(self.deck.deck)}/52")
+        embed.add_field(
             name="Your hand:",
             value=self.list_cards(self.player.cards) + f"\n\nValue: **{self.player.value}**"
         )
-        self.embed.add_field(
+        embed.add_field(
             name="Dealer's hand:",
             value=self.list_cards(self.dealer.cards) + f"\n\nValue: **{self.dealer.value}**"
         )
-        self.determine_outcome()
-        await self.message.edit(content=None, embed=self.embed)
+        self.determine_outcome(embed)
+        await self.message.edit(content=None, embed=embed)
 
     async def hit(self, hand):
         hand.add_card(self.deck.deal())
