@@ -121,14 +121,12 @@ class Blackjack:
     async def hit_or_stand(self):
         valid_options = ("hit", "stand")
         iteration = 1
-        self.player.value = 21
         while True:
-            if iteration == 1 and self.player.value == 21:
+            if iteration == 1:
                 self.blackjack = True
                 iteration += 1
                 self.playing = False
                 break
-            await self.ctx.send(self.player.value)
             try:
                 message = await self.ctx.bot.wait_for("message",
                                                       timeout=30,
