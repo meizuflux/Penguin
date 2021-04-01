@@ -88,6 +88,7 @@ class Blackjack:
         if self.blackjack:
             self.bet.win_blackjack()
             description = f"Result: Blackjack! **${humanize.intcomma(self.bet.bet)}**"
+            color = discord.Color.green()
 
         else:
             description = f"Result: Push, money back."
@@ -122,7 +123,7 @@ class Blackjack:
         valid_options = ("hit", "stand")
         iteration = 1
         while True:
-            if iteration == 1:
+            if iteration == 1 and self.player.value == 21:
                 self.blackjack = True
                 iteration += 1
                 self.playing = False
