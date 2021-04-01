@@ -87,7 +87,7 @@ class Blackjack:
 
         if self.blackjack:
             self.bet.win_blackjack()
-            description = f"Result: Blackjack! **${int(bet * 1.5)}**"
+            description = f"Result: Blackjack! **${humanize.intcomma(self.bet.bet)}**"
 
         else:
             description = f"Result: Push, money back."
