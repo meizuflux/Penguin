@@ -100,7 +100,6 @@ class Blackjack:
             name="Dealer's hand:",
             value=self.list_cards(self.dealer.cards) + f"\n\nValue: **{self.dealer.value}**"
         )
-        self.determine_outcome(embed)
         await self.message.edit(content=None, embed=embed)
 
     async def hit(self, hand):
