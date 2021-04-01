@@ -36,6 +36,8 @@ class Blackjack:
 
     async def show_some(self, message=None):
         dealer_card = self.dealer.cards[1]
+
+        self.embed.clear_fields()
         self.embed.set_footer(text=f"Cards remaining: {len(self.deck.deck)}/52")
 
         if self.player.value > 21:
@@ -81,6 +83,7 @@ class Blackjack:
             self.embed.color = discord.Color.gold()
 
     async def show_all(self):
+        self.embed.clear_fields()
         self.embed.set_footer(text=f"Cards remaining: {len(self.deck.deck)}/52")
         self.embed.add_field(
             name="Your hand:",
