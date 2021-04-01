@@ -71,7 +71,7 @@ class Chuck(commands.Bot):
         self.maintenance = False
         self.context = commands.Context
 
-        self.embed_color = embeds(self.settings["embed_colors"]["default"], self.settings["embed_colors"]["red"], self.settings["embed_colors"]["green"], self.settings["embed_colors"]["orange"])
+        self.embed_colors = embeds(self.settings["embed_colors"]["default"], self.settings["embed_colors"]["red"], self.settings["embed_colors"]["green"], self.settings["embed_colors"]["orange"])
 
     @staticmethod
     def get_config(item: str):
