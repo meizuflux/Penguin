@@ -130,6 +130,7 @@ class Blackjack:
                 stay = await self.hit(self.player)
                 if stay:
                     self.playing = False
+                    break
                 continue
 
             if choice == "stand":
