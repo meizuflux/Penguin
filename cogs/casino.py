@@ -130,7 +130,7 @@ class Blackjack:
 
             if choice == "hit":
                 stay = await self.hit(self.player)
-                await ctx.send("stay: " + stay)
+                await self.ctx.send("stay: " + stay)
                 if stay:
                     self.playing = False
                     break
