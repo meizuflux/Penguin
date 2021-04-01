@@ -135,7 +135,9 @@ class Blackjack:
                                                       check=lambda
                                                           m: m.author == self.ctx.author and m.channel == self.ctx.channel and m.content.lower() in valid_options)
             except asyncio.TimeoutError:
-                choice = random.choice(valid_options)
+                choice = "stand"
+                if self.player.value < 17:
+                    choice = "hit"
 
             if message:
                 content = message.content.lower()
