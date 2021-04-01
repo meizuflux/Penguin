@@ -3,6 +3,7 @@ import random
 
 from discord.ext import commands
 import humanize
+import discord
 
 from utils.blackjack import Deck, Gamble, Hand
 from utils.eco import get_number, get_stats
@@ -36,7 +37,8 @@ class Blackjack:
     async def show_some(self, message=None):
         dealer_card = self.dealer.cards[1]
         self.embed = self.ctx.embed(
-            description=f"Type `hit` to hit, `stand` to stand.\n {len(self.deck.deck)} cards left.")
+            description=f"Type `hit` to draw another card or `stand` to pass.")
+
         if self.player.value > 21:
             self.bet.lose_bet()
             self.embed.description = f"Result: Bust **-${self.bet.bet}**"
@@ -50,8 +52,11 @@ class Blackjack:
                   f"{dealer_card}\n\n"
                   f"Value: **{int(dealer_card)}**"
         )
+
         if message:
             return await message.edit(content=None, embed=self.embed)
+
+        self.embed.set_footer(text=f"Cards remaining: {len(self.deck.deck)}/52")
         return await self.ctx.send(embed=self.embed)
 
     def determine_outcome(self):
@@ -62,21 +67,23 @@ class Blackjack:
 
         if dealer > 21:
             self.bet.win_bet()
-            self.embed.description = f"Result: Dealer bust **${self.bet.bet}**"
+            self.embed.description = f"Result: Dealer bust **${bet}**"
 
         elif dealer > player:
             self.bet.lose_bet()
-            self.embed.description = f"Result: Loss **-${self.bet.bet}**"
+            self.embed.description = f"Result: Loss **$-{bet}**"
+            self.embed.color = discord.Color.red()
 
         elif player > dealer:
             self.bet.win_bet()
-            self.embed.description = f"Result: Win **${self.bet.bet}**"
+            self.embed.description = f"Result: Win **${bet}**"
 
         else:
             self.embed.description = f"Result: Push, money back."
+            self.embed.color = discord.Color.gold()
 
     async def show_all(self):
-        self.embed = self.ctx.embed(description=f"{len(self.deck.deck)} cards left.")
+        self.embed = self.ctx.embed(color=discord.Color.green())
         self.embed.add_field(
             name="Your hand:",
             value=self.list_cards(self.player.cards) + f"\n\nValue: **{self.player.value}**"
@@ -86,6 +93,7 @@ class Blackjack:
             value=self.list_cards(self.dealer.cards) + f"\n\nValue: **{self.dealer.value}**"
         )
         self.determine_outcome()
+        self.embed.set_footer(text=f"Cards remaining: {len(self.deck.deck)}/52")
         await self.message.edit(content=None, embed=self.embed)
 
     async def hit(self, hand):
