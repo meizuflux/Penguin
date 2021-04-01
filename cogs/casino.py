@@ -82,6 +82,8 @@ class Blackjack:
             self.embed.description = f"Result: Push, money back."
             self.embed.color = discord.Color.gold()
 
+        self.embed.set_footer(text=f"Cards remaining: {len(self.deck.deck)}/52")
+
     async def show_all(self):
         self.embed = self.ctx.embed(color=discord.Color.green())
         self.embed.add_field(
@@ -93,7 +95,6 @@ class Blackjack:
             value=self.list_cards(self.dealer.cards) + f"\n\nValue: **{self.dealer.value}**"
         )
         self.determine_outcome()
-        self.embed.set_footer(text=f"Cards remaining: {len(self.deck.deck)}/52")
         await self.message.edit(content=None, embed=self.embed)
 
     async def hit(self, hand):
