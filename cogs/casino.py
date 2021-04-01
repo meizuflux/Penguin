@@ -60,31 +60,36 @@ class Blackjack:
 
         return await self.ctx.send(embed=embed)
 
-    def determine_outcome(self, embed):
+    def determine_outcome(self):
         dealer = self.dealer.value
         player = self.player.value
 
         bet = humanize.intcomma(self.bet.bet)
 
+        color = None
+
         if dealer > 21:
             self.bet.win_bet()
-            embed.description = f"Result: Dealer bust **${bet}**"
+            description = f"Result: Dealer bust **${bet}**"
 
         elif dealer > player:
             self.bet.lose_bet()
-            embed.description = f"Result: Loss **$-{bet}**"
-            embed.color = discord.Color.red()
+            description = f"Result: Loss **$-{bet}**"
+            color = discord.Color.red()
 
         elif player > dealer:
             self.bet.win_bet()
-            embed.description = f"Result: Win **${bet}**"
+            description = f"Result: Win **${bet}**"
 
         else:
-            embed.description = f"Result: Push, money back."
-            embed.color = discord.Color.gold()
+            description = f"Result: Push, money back."
+            color = discord.Color.gold()
+
+        return description, color
 
     async def show_all(self):
-        embed = self.ctx.embed(color=discord.Color.green())
+        desc, c = self.determine_outcome()
+        embed = self.ctx.embed(description=desc, color=c or discord.Color.green())
         embed.set_footer(text=f"Cards remaining: {len(self.deck.deck)}/52")
         embed.add_field(
             name="Your hand:",
