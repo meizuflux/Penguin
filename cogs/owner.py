@@ -80,11 +80,8 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         if stderr:
             shell = f'[stderr]\n{stderr.decode()}'
 
-        embed = discord.Embed(title="Pulling from GitHub",
-                              description=f"```\nppotatoo@36vp:~/SYSTEM32$ git pull\n{shell}\n```",
-                              color=self.bot.embed_color,
-                              timestamp=ctx.message.created_at).set_footer(text=f"Requested by {ctx.author}",
-                                                                           icon_url=ctx.author.avatar_url)
+        embed = ctx.embed(title="Pulling from GitHub", description=f"```\nppotatoo@36vp:~/Walrus$ git pull\n{shell}\n```")
+
         error_collection = []
         for file in os.listdir("cogs"):
             if file.endswith(".py"):
