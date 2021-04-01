@@ -85,15 +85,12 @@ class Economy(commands.Cog):
             auth = False
         cash, bank = await get_stats(ctx, user.id, auth)
         green_arrow = "<:green_arrow:811052039416447027>"
-        e = discord.Embed(title=f'{user.name if user else ctx.author.name}\'s balance',
+        e = ctx.embed(title=f'{user.name}\'s balance',
                           description=
                           f"{green_arrow} **Cash:** ${humanize.intcomma(cash)}\n"
                           f"{green_arrow} **Bank:** ${humanize.intcomma(bank)}\n"
-                          f"{green_arrow} **Total:** ${humanize.intcomma(cash + bank)}",
-                          color=self.bot.embed_color, timestamp=ctx.message.created_at)
-
-        e.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
-        e.set_thumbnail(url=user.avatar_url if user else ctx.author.avatar_url)
+                          f"{green_arrow} **Total:** ${humanize.intcomma(cash + bank)}")
+        e.set_thumbnail(url=user.avatar_url)
         await ctx.send(embed=e)
 
     @commands.command(aliases=("lb", "top", "server-leaderboard", "server-lb"), usage="[page=1] [--cash | --bank]")
