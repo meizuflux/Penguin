@@ -1,9 +1,9 @@
 import asyncio
 import random
 
-from discord.ext import commands
-import humanize
 import discord
+import humanize
+from discord.ext import commands
 
 from utils.blackjack import Deck, Gamble, Hand
 from utils.eco import get_number, get_stats
@@ -15,7 +15,7 @@ class Blackjack:
         self.playing = True
 
         self.message = None
-        self.embed = None
+        self.embed = self.ctx.embed(description=f"Type `hit` to draw another card or `stand` to pass.", color=discord.Color.green())
 
         self.deck = Deck()
         self.deck.shuffle()
@@ -36,8 +36,7 @@ class Blackjack:
 
     async def show_some(self, message=None):
         dealer_card = self.dealer.cards[1]
-        self.embed = self.ctx.embed(
-            description=f"Type `hit` to draw another card or `stand` to pass.")
+        self.embed.set_footer(text=f"Cards remaining: {len(self.deck.deck)}/52")
 
         if self.player.value > 21:
             self.bet.lose_bet()
@@ -56,7 +55,6 @@ class Blackjack:
         if message:
             return await message.edit(content=None, embed=self.embed)
 
-        self.embed.set_footer(text=f"Cards remaining: {len(self.deck.deck)}/52")
         return await self.ctx.send(embed=self.embed)
 
     def determine_outcome(self):
@@ -82,10 +80,7 @@ class Blackjack:
             self.embed.description = f"Result: Push, money back."
             self.embed.color = discord.Color.gold()
 
-
-
     async def show_all(self):
-        self.embed = self.ctx.embed(color=discord.Color.green())
         self.embed.set_footer(text=f"Cards remaining: {len(self.deck.deck)}/52")
         self.embed.add_field(
             name="Your hand:",
