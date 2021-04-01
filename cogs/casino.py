@@ -108,9 +108,9 @@ class Blackjack:
         hand.add_card(self.deck.deal())
         hand.adjust_for_ace()
         if hand != self.dealer:
-            await self.show_some(self.message)
             if hand.value > 21:
                 return True
+            await self.show_some(self.message)
             return None
 
     async def hit_or_stand(self):
