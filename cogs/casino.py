@@ -185,7 +185,11 @@ class Casino(commands.Cog):
 
     @commands.command(aliases=['bj'])
     async def blackjack(self, ctx, bet: str):
-        """Play a game of blackjack."""
+        """Play a game of blackjack.
+        If you do not respond, the bot will choose hit if your value is under 17, and hit otherwise.
+
+        Arguments:
+            `bet`: The bet you want to play. This takes from your wallet."""
         cash, _ = await get_stats(ctx, ctx.author.id)
         amount = get_number(bet, cash)
         query = (
