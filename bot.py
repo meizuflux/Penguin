@@ -21,7 +21,7 @@ import datetime
 import json
 import os
 import re
-import time
+import typing
 
 import aiohttp
 import alexflipnote
@@ -31,6 +31,9 @@ import discord
 from discord.ext import commands
 
 from utils.default import Blacklisted, Maintenance
+
+embeds = typing.NamedTuple("Embeds", [("default", int), ("red", int), ("green", int), ("orange", int)])
+
 
 
 class Chuck(commands.Bot):
@@ -67,6 +70,8 @@ class Chuck(commands.Bot):
         self.command_usage = collections.Counter()
         self.maintenance = False
         self.context = commands.Context
+
+        self.embed_color = embeds(self.settings["embed_colors"]["default"], self.settings["embed_colors"]["red"], self.settings["embed_colors"]["green"], self.settings["embed_colors"]["orange"])
 
     @staticmethod
     def get_config(item: str):
