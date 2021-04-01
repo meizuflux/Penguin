@@ -43,6 +43,7 @@ class Blackjack:
         if self.player.value > 21:
             self.bet.lose_bet()
             embed.description = f"Result: Bust **-${self.bet.bet}**"
+            embed.color = discord.Color.red()
 
         embed.add_field(
             name="Your hand:",
