@@ -123,8 +123,9 @@ class Blackjack:
         iteration = 1
         while True:
             if iteration == 1 and self.player.value == 21:
-                print("blackjack!")
                 self.blackjack = True
+                iteration += 1
+                self.playing = False
                 break
             await self.ctx.send(self.player.value)
             try:
