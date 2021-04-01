@@ -55,7 +55,8 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
                                   headers="keys",
                                   tablefmt="github")
         if len(table) > 2000: table = await ctx.mystbin(table)
-        await ctx.send(embed=ctx.embed(description=f'Query took {(end - start) * 1000} ms to execute.\n```yaml\n{table}```'))
+        await ctx.send(
+            embed=ctx.embed(description=f'Query took {(end - start) * 1000} ms to execute.\n```yaml\n{table}```'))
 
     @sql.error
     async def sql_error_handling(self, ctx, error):
@@ -69,7 +70,6 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
 
     @dev.command(help='Syncs with GitHub and reloads all cogs')
     async def sync(self, ctx):
-        await ctx.trigger_typing()
         proc = await asyncio.create_subprocess_shell("git pull", stdout=asyncio.subprocess.PIPE,
                                                      stderr=asyncio.subprocess.PIPE)
 
@@ -80,7 +80,8 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         if stderr:
             shell = f'[stderr]\n{stderr.decode()}'
 
-        embed = ctx.embed(title="Pulling from GitHub", description=f"```\nppotatoo@36vp:~/Walrus$ git pull\n{shell}\n```")
+        embed = ctx.embed(title="Pulling from GitHub",
+                          description=f"```\nppotatoo@36vp:~/Walrus$ git pull\n{shell}\n```")
 
         error_collection = []
         for file in os.listdir("cogs"):
@@ -111,11 +112,11 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
     @dev.command()
     async def reboot(self, ctx):
         """Calls bot.close() and lets the systems service handler restart it."""
-        this = await ctx.confirm('Click to confirm.')
-        if this[0] is not True:
-            return await this[1].edit(content='Cancelled.')
+        answer, message = await ctx.confirm('Click to confirm.')
+        if not answer:
+            return await message.edit(content='Cancelled.')
 
-        await this[1].edit(content='Shutting down.')
+        await message.edit(content='Shutting down.')
         await self.bot.close()
 
     @dev.command(aliases=['del'])
@@ -202,7 +203,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         except aiohttp.InvalidURL:
             await qembed(ctx, "The URL is invalid...")
         except discord.InvalidArgument:
-            await qembed(ctx, "This URL does not contain a useable image")
+            await qembed(ctx, "This URL does not contain a usable image")
         except discord.HTTPException as err:
             await qembed(ctx, err)
         except TypeError:
