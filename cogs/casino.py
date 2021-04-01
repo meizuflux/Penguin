@@ -30,7 +30,8 @@ class Blackjack:
 
         self.bet = Gamble(bet)
 
-        self.valid = True
+        self.blackjack = False
+
 
     @staticmethod
     def list_cards(cards):
@@ -84,6 +85,10 @@ class Blackjack:
             self.bet.win_bet()
             description = f"Result: Win **${bet}**"
 
+        elif self.blackjack:
+            self.bet.win_blackjack()
+            description = f"Result: Blackjack! **${int(bet * 1.5)}**"
+
         else:
             description = f"Result: Push, money back."
             color = discord.Color.gold()
@@ -115,7 +120,11 @@ class Blackjack:
 
     async def hit_or_stand(self):
         valid_options = ("hit", "stand")
+        iteration = 1
         while True:
+            if iteration == 1 and self.player.value == 21:
+                self.blackjack = True
+                break
             try:
                 message = await self.ctx.bot.wait_for("message",
                                                       timeout=30,
@@ -133,6 +142,7 @@ class Blackjack:
                 if stay:
                     self.playing = False
                     break
+                iteration += 1
                 continue
 
             if choice == "stand":
