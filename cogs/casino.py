@@ -160,7 +160,7 @@ class Blackjack:
         while self.playing:
             await self.hit_or_stand()
 
-        if self.player.value <= 21:
+        if self.player.value <= 21 and not self.blackjack:
             while self.dealer.value < 17:
                 await self.hit(self.dealer)
 
