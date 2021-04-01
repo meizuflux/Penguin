@@ -85,7 +85,7 @@ class Blackjack:
             self.bet.win_bet()
             description = f"Result: Win **${bet}**"
 
-        elif self.blackjack:
+        if self.blackjack:
             self.bet.win_blackjack()
             description = f"Result: Blackjack! **${int(bet * 1.5)}**"
 
