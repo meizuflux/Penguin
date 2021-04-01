@@ -1,6 +1,6 @@
 {
     "default_prefix": "p!",
-    "latest_update": "All economy/stocks are now server specific and the data has been reset.\nAlso a working blackjack game. Currently working on adding more descriptive docs too all commands.",
+    "latest_update": "All economy/stock systems are now server specific. A working blackjack game has been created, now you can do stuff like lose all your money. Working on creating better descriptions for commands.",
     "version": "0.7",
     "invite": "https://discord.com/oauth2/authorize?client_id=810570659968057384&scope=bot&permissions=201452550",
     "support_invite": "https://discord.gg/NTNgvHkjSp",
