@@ -109,7 +109,7 @@ class Blackjack:
         hand.adjust_for_ace()
         if hand != self.dealer:
             await self.show_some(self.message)
-            return hand <= 21
+            return hand.value <= 21
 
     async def hit_or_stand(self):
         valid_options = ("hit", "stand")
