@@ -63,4 +63,4 @@ class Gamble:
         self.total -= self.bet
 
     def win_blackjack(self):
-        self.total += (self.bet + (self.bet / 2))
+        self.total += int(self.bet * 1.5)
