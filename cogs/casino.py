@@ -123,6 +123,7 @@ class Blackjack:
         valid_options = ("hit", "stand")
         iteration = 1
         while True:
+            message = None
             if iteration == 1 and self.player.value == 21:
                 self.blackjack = True
                 iteration += 1
@@ -136,9 +137,10 @@ class Blackjack:
             except asyncio.TimeoutError:
                 choice = random.choice(valid_options)
 
-            content = message.content.lower()
-            if content in valid_options:
-                choice = content
+            if message:
+                content = message.content.lower()
+                if content in valid_options:
+                    choice = content
 
             if choice == "hit":
                 stay = await self.hit(self.player)
