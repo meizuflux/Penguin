@@ -121,6 +121,7 @@ class Blackjack:
     async def hit_or_stand(self):
         valid_options = ("hit", "stand")
         iteration = 1
+        self.player.value = 21
         while True:
             if iteration == 1 and self.player.value == 21:
                 self.blackjack = True
