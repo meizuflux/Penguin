@@ -65,14 +65,14 @@ class HelpSource(menus.GroupByPageSource):
                 f"You can also type `{ctx.clean_prefix}help` `[category]` for more info on a category.\n"
             )
             embed = menu.ctx.embed(title=f'{ctx.bot.user.name} Help Command | Page {current_page}',
-                                   description=description + "testing")
+                                   description=description)
             embed.add_field(name="About", value=f"```yaml\n{ctx.bot.description}```", inline=False)
 
             embed.add_field(name="Useful Links",
                             value=f"[Invite Link]({ctx.bot.invite})\n"
                                   f"[Support Server Invite]({ctx.bot.support_invite})", inline=False)
             embed.add_field(
-                name="Latest updates", value=ctx.bot.config.get("latest_update")
+                name="Latest updates", value=ctx.bot.settings.get("latest_update")
             )
         return embed
 
