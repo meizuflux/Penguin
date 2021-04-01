@@ -42,12 +42,6 @@ class Blackjack:
         embed = self.ctx.embed(description=f"Type `hit` to draw another card or `stand` to pass.", color=discord.Color.green())
         embed.set_footer(text=f"Cards remaining: {len(self.deck.deck)}/52")
 
-        if self.player.value > 21:
-            self.bet.lose_bet()
-            embed.description = f"Result: Bust **-${self.bet.bet}**"
-            embed.color = discord.Color.red()
-            self.valid = False
-
         embed.add_field(
             name="Your hand:",
             value=self.list_cards(self.player.cards) + f"\n\nValue: **{self.player.value}**"
@@ -75,6 +69,11 @@ class Blackjack:
         if dealer > 21:
             self.bet.win_bet()
             description = f"Result: Dealer bust **${bet}**"
+
+        elif player > 21:
+            self.bet.lose_bet()
+            description = f"Result: Player bust **$-{bet}**"
+            color = discord.Color.red()
 
         elif dealer > player:
             self.bet.lose_bet()
@@ -110,10 +109,11 @@ class Blackjack:
         hand.adjust_for_ace()
         if hand != self.dealer:
             await self.show_some(self.message)
+            return hand <= 21
 
     async def hit_or_stand(self):
         valid_options = ("hit", "stand")
-        while self.valid:
+        while True:
             try:
                 message = await self.ctx.bot.wait_for("message",
                                                       timeout=30,
@@ -127,7 +127,9 @@ class Blackjack:
                 choice = content
 
             if choice == "hit":
-                await self.hit(self.player)
+                stay = await self.hit(self.player)
+                if stay:
+                    self.playing = False
                 continue
 
             if choice == "stand":
