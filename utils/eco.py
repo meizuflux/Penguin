@@ -47,7 +47,10 @@ def get_number(number: str, total: int):
 
     amount = round(amount)
 
-    if amount > total or amount == 0:
+    if amount == 0:
+        raise commands.BadArgument("The amount you provided resulted in 0..")
+
+    if amount > total:
         raise commands.BadArgument("That's more money than you have...")
 
     if amount > 100000000000:
