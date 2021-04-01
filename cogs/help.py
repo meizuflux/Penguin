@@ -71,6 +71,9 @@ class HelpSource(menus.GroupByPageSource):
             embed.add_field(name="Useful Links",
                             value=f"[Invite Link]({ctx.bot.invite})\n"
                                   f"[Support Server Invite]({ctx.bot.support_invite})", inline=False)
+            embed.add_field(
+                name="Latest updates", value=ctx.bot.config.get("latest_update")
+            )
         return embed
 
 
