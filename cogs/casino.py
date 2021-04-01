@@ -109,7 +109,9 @@ class Blackjack:
         hand.adjust_for_ace()
         if hand != self.dealer:
             await self.show_some(self.message)
-            return hand.value <= 21
+            if hand.value > 21:
+                return "Push"
+            return None
 
     async def hit_or_stand(self):
         valid_options = ("hit", "stand")
@@ -128,6 +130,7 @@ class Blackjack:
 
             if choice == "hit":
                 stay = await self.hit(self.player)
+                await ctx.send("stay: " + stay)
                 if stay:
                     self.playing = False
                     break
