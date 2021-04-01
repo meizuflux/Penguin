@@ -67,7 +67,12 @@ class Blackjack:
 
         color = None
 
-        if dealer > 21:
+        if self.blackjack:
+            self.bet.win_blackjack()
+            description = f"Result: Blackjack! **${humanize.intcomma(self.bet.bet)}**"
+            color = discord.Color.green()
+
+        elif dealer > 21:
             self.bet.win_bet()
             description = f"Result: Dealer bust **${bet}**"
 
@@ -84,11 +89,6 @@ class Blackjack:
         elif player > dealer:
             self.bet.win_bet()
             description = f"Result: Win **${bet}**"
-
-        if self.blackjack:
-            self.bet.win_blackjack()
-            description = f"Result: Blackjack! **${humanize.intcomma(self.bet.bet)}**"
-            color = discord.Color.green()
 
         else:
             description = f"Result: Push, money back."
