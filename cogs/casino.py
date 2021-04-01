@@ -42,7 +42,8 @@ class Blackjack:
 
         if self.player.value > 21:
             self.bet.lose_bet()
-            self.embed.description = f"Result: Bust **-${self.bet.bet}**"
+            embed.description = f"Result: Bust **-${self.bet.bet}**"
+
         embed.add_field(
             name="Your hand:",
             value=self.list_cards(self.player.cards) + f"\n\nValue: **{self.player.value}**"
