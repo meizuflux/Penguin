@@ -30,6 +30,8 @@ class Blackjack:
 
         self.bet = Gamble(bet)
 
+        self.valid = True
+
     @staticmethod
     def list_cards(cards):
         return "\n".join(str(card) for card in cards)
@@ -44,6 +46,7 @@ class Blackjack:
             self.bet.lose_bet()
             embed.description = f"Result: Bust **-${self.bet.bet}**"
             embed.color = discord.Color.red()
+            self.valid = False
 
         embed.add_field(
             name="Your hand:",
@@ -110,7 +113,7 @@ class Blackjack:
 
     async def hit_or_stand(self):
         valid_options = ("hit", "stand")
-        while True:
+        while self.valid:
             try:
                 message = await self.ctx.bot.wait_for("message",
                                                       timeout=30,
