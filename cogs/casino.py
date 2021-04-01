@@ -123,8 +123,10 @@ class Blackjack:
         iteration = 1
         while True:
             if iteration == 1 and self.player.value == 21:
+                print("blackjack!")
                 self.blackjack = True
                 break
+            await self.ctx.send(self.player.value)
             try:
                 message = await self.ctx.bot.wait_for("message",
                                                       timeout=30,
