@@ -47,15 +47,17 @@ class Chuck(commands.Bot):
             description="Walrus is a simple and easy-to-use Discord bot"
         )
         self._BotBase__cogs = commands.core._CaseInsensitiveDict()
+        bot.settings = json.load(open("settings.json", "r"))
         self.author_id = 809587169520910346
         self.session = aiohttp.ClientSession()
         self.embed_color = 0x89CFF0  # discord.Color.green()  # 0x9c5cb4
+
         self.prefixes = collections.defaultdict(list)
         self.command_list = []
-        self.default_prefix = 'p!'
+        self.default_prefix = bot.settings.get("default_prefix", "p!")
         self.config = config
-        self.support_invite = "https://discord.gg/NTNgvHkjSp"
-        self.invite = "https://discord.com/oauth2/authorize?client_id=810570659968057384&scope=bot&permissions=70646849"
+        self.support_invite = bot.settings.get("support_invite")
+        self.invite = bot.settings.get("invite")
         self.alex = alexflipnote.Client(self.get_config('alex_api_key'))
         self.case_insensitive = True
         self.perspective = self.get_config("perspective_key")
