@@ -32,7 +32,8 @@ class CommandErrorHandler(commands.Cog):
             except discord.Forbidden:
                 await ctx.send(embed=embed)
 
-        ctx.command.reset_cooldown(ctx)
+        if not isinstance(error, commands.CommandNotFound):
+            ctx.command.reset_cooldown(ctx)
 
         if isinstance(error, NotRegistered):
             return await ctx.send(str(error))

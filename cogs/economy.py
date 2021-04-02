@@ -534,6 +534,17 @@ class Economy(commands.Cog):
         if not ctx.invoked_subcommand:
             await ctx.send_help(ctx.command)
 
+    @commands.command()
+    async def cooldowns(self, ctx):
+        eco_commands = {"rob": None, "daily": None, "bank_rob": None, "resetcooldown": None, "work": None, "beg": None, "fish": None}
+        for command in eco_commands:
+            cmd = self.bot.get_command(command).is_on_cooldown(ctx)
+            eco_commands[command] = "✅" if cmd else "❌"
+
+        desc = "\n".join(f"{name}: {on_cooldown}" for name, on_cooldown in eco_commands)
+        await ctx.send(embed=ctx.embed(title="Cooldowns", description=desc))
+
+
     @_set.command()
     async def cash(self, ctx, user: discord.User, amount: str):
         amount = amount.replace(",", "")
