@@ -84,12 +84,11 @@ class Economy(commands.Cog):
             user = ctx.author
             auth = False
         cash, bank = await get_stats(ctx, user.id, auth)
-        green_arrow = "<:green_arrow:811052039416447027>"
         e = ctx.embed(title=f'{user.name}\'s balance',
-                          description=
-                          f"{green_arrow} **Cash:** ${humanize.intcomma(cash)}\n"
-                          f"{green_arrow} **Bank:** ${humanize.intcomma(bank)}\n"
-                          f"{green_arrow} **Total:** ${humanize.intcomma(cash + bank)}")
+                      description=
+                      f"💸 **Cash:** ${humanize.intcomma(cash)}\n"
+                      f"🏦 **Bank:** ${humanize.intcomma(bank)}\n"
+                      f"💰 **Total:** ${humanize.intcomma(cash + bank)}")
         e.set_thumbnail(url=user.avatar_url)
         await ctx.send(embed=e)
 
@@ -536,14 +535,14 @@ class Economy(commands.Cog):
 
     @commands.command()
     async def cooldowns(self, ctx):
-        eco_commands = {"rob": None, "daily": None, "bank_rob": None, "resetcooldown": None, "work": None, "beg": None, "fish": None}
+        eco_commands = {"rob": None, "daily": None, "bank_rob": None, "resetcooldown": None, "work": None, "beg": None,
+                        "fish": None}
         for command in eco_commands:
             cmd = self.bot.get_command(command).is_on_cooldown(ctx)
             eco_commands[command] = "❌""✅" if cmd else "✅"
 
         desc = "\n".join(f"{name}: {on_cooldown}" for name, on_cooldown in eco_commands.items())
         await ctx.send(embed=ctx.embed(title="Cooldowns", description=desc))
-
 
     @_set.command()
     async def cash(self, ctx, user: discord.User, amount: str):
