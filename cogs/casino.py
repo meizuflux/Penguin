@@ -205,7 +205,7 @@ class Casino(commands.Cog):
 
     @commands.command()
     async def slots(self, ctx, bet: str):
-        cash, _ = await get_stats(ctx.author.id)
+        cash, _ = await get_stats(ctx, ctx.author.id)
         amount = get_number(bet, cash)
 
         emojis = ("⭐", "🎖️", "🎁")
