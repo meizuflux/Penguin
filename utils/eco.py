@@ -23,16 +23,15 @@ async def get_stats(ctx, user_id: int, not_author=False):
 
 def get_number(number: str, total: int):
     number = number.replace(",", "")
-    if "e" in number:
-        if number.replace("e", "").isdigit():
-            parts = number.split("e")
-            try:
-                num = "0" * int(parts[1])
-                amount = parts[0] + num
-            except ValueError:
-                pass
+    if "e" in number and number.replace("e", "").isdigit():
+        parts = number.split("e")
+        try:
+            num = "0" * int(parts[1])
+            amount = int(parts[0] + num)
+        except ValueError:
+            pass
 
-    elif number.endswith("%"):
+    if number.endswith("%"):
         number = number.strip("%")
         if not number.isdigit():
             raise commands.BadArgument("That's... not a valid percentage.")
