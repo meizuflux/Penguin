@@ -541,7 +541,7 @@ class Economy(commands.Cog):
             cmd = self.bot.get_command(command).is_on_cooldown(ctx)
             eco_commands[command] = "✅" if cmd else "❌"
 
-        desc = "\n".join(f"{name}: {on_cooldown}" for name, on_cooldown in eco_commands)
+        desc = "\n".join(f"{name}: {on_cooldown}" for name, on_cooldown in eco_commands.items())
         await ctx.send(embed=ctx.embed(title="Cooldowns", description=desc))
 
 
