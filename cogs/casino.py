@@ -203,6 +203,34 @@ class Casino(commands.Cog):
         bj = Blackjack(ctx, amount)
         await bj.start()
 
+    @commands.command()
+    async def slots(self, ctx, bet: str):
+        cash, _ = await get_stats(ctx.author.id)
+        amount = get_number(bet, cash)
+
+        emojis = ("⭐", "🎖️", "🎁")
+        e = random.choices(emojis, k=3)
+
+        if e[0] == e[1] == e[2]:
+            total = int(amount * 2)
+            result = f"🎉 All three match!  **${total}**"
+        elif (e[0] == e[1]) or (e[0] == e[2]) or (e[1] == e[2]):
+            total = int(amount * 1.5)
+            result = f"🎉 Two in a row! **${total}**"
+        else:
+            total = -amount
+            result = f"😥 No match. **${total}**"
+
+        query = (
+            """
+            UPDATE economy SET cash = cash + $1
+            WHERE guild_id = $2 AND user_id = $3
+            """
+        )
+        await self.bot.db.execute(query, total, ctx.guild.id, ctx.author.id)
+        await ctx.send(embed=ctx.embed(description=f"[ {' '.join(e)} ]\n{result}"))
+
+
 
 def setup(bot):
     bot.add_cog(Casino(bot))
