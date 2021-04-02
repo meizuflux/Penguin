@@ -159,7 +159,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
 
     @dev.command()
     async def util(self, ctx, util: str):
-        name = "utils" + util
+        name = "utils." + util
         try:
             module_name = importlib.import_module(name)
             importlib.reload(module_name)
