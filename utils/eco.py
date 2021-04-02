@@ -40,18 +40,16 @@ def get_number(number: str, total: int):
         amount = total
     elif number.isdigit():
         amount = int(number)
-        if amount == 0:
-            raise commands.BadArgument("You need to provide an amount that results in over $0")
     else:
         raise commands.BadArgument("Invalid amount provided.")
 
     amount = round(amount)
 
     if amount == 0:
-        raise commands.BadArgument("The amount you provided resulted in 0..")
+        raise commands.BadArgument("The amount you provided resulted in 0.")
 
     if amount > total:
-        raise commands.BadArgument("That's more money than you have...")
+        raise commands.BadArgument("That's more money than you have.")
 
     if amount > 100000000000:
         raise commands.BadArgument("Transfers of money over one hundred billion are prohibited.")
