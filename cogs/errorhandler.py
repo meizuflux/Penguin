@@ -8,8 +8,8 @@ import prettify_exceptions
 from discord.ext import commands
 
 from utils.default import Blacklisted, Maintenance
-from utils.fuzzy import finder
 from utils.eco import NotRegistered
+from utils.fuzzy import finder
 
 
 class CommandErrorHandler(commands.Cog):
@@ -31,6 +31,8 @@ class CommandErrorHandler(commands.Cog):
                 return await ctx.author.send(embed=embed)
             except discord.Forbidden:
                 await ctx.send(embed=embed)
+
+        ctx.command.reset_cooldown(ctx)
 
         if isinstance(error, NotRegistered):
             return await ctx.send(str(error))

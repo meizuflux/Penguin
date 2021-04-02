@@ -20,6 +20,7 @@ import inspect
 import os
 import traceback
 from time import perf_counter
+import importlib
 
 import aiohttp
 import asyncpg
@@ -155,6 +156,18 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
 
         interface = PaginatorInterface(ctx.bot, paginator, owner=ctx.author)
         await interface.send_to(ctx)
+
+    @dev.command()
+    async def util(self, ctx, util: str):
+        name = "utils" + util
+        try:
+            module_name = importlib.import_module(name)
+            importlib.reload(module_name)
+        except ModuleNotFoundError:
+            return await ctx.send(f"Couldn't find **{name}**")
+        except Exception as err:
+            return await ctx.send(str(err))
+        await ctx.send(f"Successfully reloaded {name}")
 
     @commands.group()
     @commands.is_owner()
