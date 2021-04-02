@@ -228,7 +228,7 @@ class Casino(commands.Cog):
             """
         )
         await self.bot.db.execute(query, total, ctx.guild.id, ctx.author.id)
-        await ctx.send(embed=ctx.embed(description=f"[ {' '.join(e)} ]\n{result}"))
+        await ctx.send(embed=ctx.embed(description=f"{' '.join(e)}\n\n{result}"))
 
 
 
