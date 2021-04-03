@@ -88,9 +88,12 @@ class CommandErrorHandler(commands.Cog):
 
         if isinstance(error, commands.CommandOnCooldown):
             retry = humanize.precisedelta(error.retry_after, minimum_unit='seconds')
-            return await ctx.send(embed=ctx.embed(
-                description=f"<a:countdown:827916388659363870>{command} is on cooldown. Try again in {retry}"
-            ))
+            embed = ctx.embed(
+                description=f"<a:countdown:827916388659363870> **{command}** is on cooldown. Try again in {retry}."
+            )
+            cd = error.cooldown()
+            embed.set_footer(text=f"You can use this command {cd.rate} {ctx.plural('time(s)', cd.rate)} in {cd.per} {ctx.plural('second(s)', cd.per)}.")
+            return await ctx.send(embed=embed)
 
         if isinstance(error, commands.NoPrivateMessage):
             try:
