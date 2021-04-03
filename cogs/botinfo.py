@@ -148,9 +148,7 @@ class BotInfo(commands.Cog):
                 for _ in of.readlines():
                     ls += 1
 
-        emb = discord.Embed(description=self.bot.description, colour=self.bot.embed_color,
-                            timestamp=ctx.message.created_at).set_footer(text=f"Requested by {ctx.author}",
-                                                                         icon_url=ctx.author.avatar_url)
+        emb = ctx.embed(description=self.bot.description)
         emb.set_author(name=self.bot.user.name, icon_url=self.bot.user.avatar_url)
         emb.add_field(name='Developer', value=f'```ppotatoo#9688 ({self.bot.author_id})```', inline=False)
         emb.add_field(name='Line Count', value=f'```{ls:,} lines```', inline=True)
