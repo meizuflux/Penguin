@@ -2,6 +2,7 @@ import re
 import sys
 import traceback
 
+import aiohttp
 import discord
 import humanize
 import prettify_exceptions
@@ -116,6 +117,9 @@ class CommandErrorHandler(commands.Cog):
         if isinstance(error, commands.BadArgument):
             return await ctx.send(embed=ctx.embed(title=str(error),
                                                   description=f'You provided a bad argument to `{command}`! View `{ctx.clean_prefix}help {command}` for more info on how to use this command.'))
+
+        if isinstance(error, aiohttp.TimeoutError):
+            return await ctx.send(embed=ctx.embed(description=f"{command} timed out."))
 
         print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
         traceback.print_exception(type(error),
