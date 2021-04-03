@@ -212,10 +212,10 @@ class Casino(commands.Cog):
         e = random.choices(emojis, k=3)
 
         if e[0] == e[1] == e[2]:
-            total = int(amount * 2)
+            total = amount
             result = f"🎉 All three match!  **${total}**"
         elif (e[0] == e[1]) or (e[0] == e[2]) or (e[1] == e[2]):
-            total = int(amount * 1.5)
+            total = int(amount * 0.5)
             result = f"🎉 Two in a row! **${total}**"
         else:
             total = -amount
