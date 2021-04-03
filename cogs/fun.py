@@ -154,9 +154,8 @@ class Fun(commands.Cog):
         async with self.bot.session.get(
                 f"https://http.cat/{code}") as resp:
             buffer = await resp.read()
-        embed = discord.Embed(colour=self.bot.embed_color, timestamp=ctx.message.created_at)
+        embed = ctx.embed()
         embed.set_image(url=f"attachment://{code}.png")
-        embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed, file=discord.File(BytesIO(buffer), filename=f"{code}.png"))
 
     @commands.command(help='Replaces the spaces in a string with a character')
@@ -174,9 +173,7 @@ class Fun(commands.Cog):
         emg = str(random.choice(self.bot.emojis))
         if not seconds:
             seconds = 5
-        embed = discord.Embed(description=f'React to this message with {emg} in {seconds} seconds.',
-                              timestamp=ctx.message.created_at, color=self.bot.embed_color).set_footer(
-            text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+        embed = ctx.embed(description=f'React to this message with {emg} in {seconds} seconds.')
         msg = await ctx.send(embed=embed)
         await msg.add_reaction(emg)
         start = time.perf_counter()
@@ -187,12 +184,12 @@ class Fun(commands.Cog):
         try:
             _, _ = await self.bot.wait_for('reaction_add', timeout=seconds * 1.5, check=gcheck)
         except asyncio.TimeoutError:
-            embed = ctx.embed(description='You did not react in time')
+            embed.description = 'You did not react in time'
             await msg.edit(embed=embed)
         else:
             end = time.perf_counter()
             tim = end - start
-            embed = discord.Embed(description=f'You reacted in **{tim:.2f}** seconds, **{seconds - tim:.2f}** off.')
+            embed.description = f'You reacted in **{tim:.2f}** seconds, **{seconds - tim:.2f}** off.'
             await msg.edit(embed=embed)
 
     @commands.command(name='chucknorris', aliases=['norris', 'chucknorrisjoke'])
@@ -201,11 +198,11 @@ class Fun(commands.Cog):
         data = await self.bot.session.get(
             'https://api.chucknorris.io/jokes/random')
         joke = await data.json()
-        e = discord.Embed(title='Chuck Norris Joke',
-                          url=joke['url'],
-                          description=joke['value'],
-                          color=self.bot.embed_color, timestamp=ctx.message.created_at).set_footer(
-            text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+        e = ctx.embed(
+            title='Chuck Norris Joke',
+            url=joke['url'],
+            description=joke['value']
+        )
         e.set_thumbnail(url=joke['icon_url'])
         await ctx.send(embed=e)
 

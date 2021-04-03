@@ -120,9 +120,7 @@ class PaginatedHelp(commands.MinimalHelpCommand):
     async def send_error_message(self, error):
         ctx = self.context
         destination = self.get_destination()
-        embed = discord.Embed(description=error, color=ctx.bot.embed_color,
-                              timestamp=ctx.message.created_at).set_footer(
-            text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+        embed = ctx.embed(description=error)
         await destination.send(embed=embed)
 
     def get_opening_note(self):

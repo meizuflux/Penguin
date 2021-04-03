@@ -102,10 +102,8 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         file = discord.File(BytesIO(img.save_bytes()),
                             filename=f"{method}.png")
 
-        embed = discord.Embed(colour=self.bot.embed_color,
-                              timestamp=ctx.message.created_at)
+        embed = ctx.embed()
         embed.set_image(url=f"attachment://{method}.png")
-        embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed, file=file)
 
     @commands.command(help='Makes an image rainbowey')
