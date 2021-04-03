@@ -92,7 +92,7 @@ class CommandErrorHandler(commands.Cog):
                 description=f"<a:countdown:827916388659363870> **{command}** is on cooldown. Try again in {retry}."
             )
             cd = error.cooldown
-            embed.set_footer(text=f"You can use this command {cd.rate} {ctx.plural('time(s)', cd.rate)} in {cd.per} {ctx.plural('second(s)', cd.per)}.")
+            embed.set_footer(text=f"You can use this command {cd.rate} {ctx.plural('time(s)', cd.rate)} in {humanize.naturaltime(cd.per)} {ctx.plural('second(s)', cd.per)} per {cd.per.name}.")
             return await ctx.send(embed=embed)
 
         if isinstance(error, commands.NoPrivateMessage):
