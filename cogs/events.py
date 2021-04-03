@@ -15,6 +15,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
+import json
+
 import discord
 from discord.ext import commands, tasks
 
@@ -50,6 +52,23 @@ class Events(commands.Cog):
 
             await self.bot.change_presence(activity=activity)
             self.activity_type = 1
+            return
+
+    @tasks.loop(minutes=5)
+    async def top_gg(self):
+        payload = {
+            'server_count': len(self.bot.guilds)
+        }
+
+        headers = {
+            'User-Agent': f"Walrus Discord Bot ({self.bot.user.id})",
+            'Content-Type': 'application/json',
+            'Authorization': None
+        }
+
+        api_url = "https://top.gg/api"
+
+        async with self.bot.session.post(api_url + "/bots/stats", json=json.dumps(payload, ensure_ascii=True), headers=headers):
             return
 
 

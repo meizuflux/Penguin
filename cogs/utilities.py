@@ -22,6 +22,7 @@ import re
 import secrets
 import string
 
+import aiohttp as aiohttp
 import discord
 import numpy as np
 from discord.ext import commands, flags
@@ -253,6 +254,8 @@ class Utilities(commands.Cog):
         You can use codeblocks, or you can just use plain-text.
         Don't try to do something stupid, it won't work.
 
+        If the output takes longer than 1 minute it will time out.
+
         Available languages:
         `awk`, `bash`, `brainfuck`, `c`, `cpp`, `clojure`, `crystal`, `csharp`, `d`, `dash`, `deno`, `elixir`, `emacs`, `elisp`, `go`, `haskell`, `java`, `jelly`, `julia`, `kotlin`, `lisp`, `lolcode`, `lua`, `nasm`, `nasm64`, `nim`, `node`, `osabie`, `paradoc`, `perl`, `php`, `python2`, `python3`, `ruby`, `rust`, `scala`, `swift`, `typescript`, and `zig`.
 
@@ -268,7 +271,8 @@ class Utilities(commands.Cog):
             "language": f"{lang}",
             "source": "{}".format(code)
         }
-        async with self.bot.session.post("https://emkc.org/api/v1/piston/execute", json=params) as resp:
+        timeout = aiohttp.ClientTimeout(total=60)
+        async with self.bot.session.post("https://emkc.org/api/v1/piston/execute", json=params, timeout=timeout) as resp:
             res = await resp.json()
             if resp.status == 400:
                 return await ctx.send(embed=ctx.embed(title='Error:', description=res['message']))
