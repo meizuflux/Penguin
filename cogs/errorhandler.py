@@ -89,7 +89,7 @@ class CommandErrorHandler(commands.Cog):
         if isinstance(error, commands.CommandOnCooldown):
             retry = humanize.precisedelta(error.retry_after, minimum_unit='seconds')
             return await ctx.send(embed=ctx.embed(
-                description=f"{command} is on cooldown.\nTry again in {retry}"
+                description=f"<a:countdown:827916388659363870>{command} is on cooldown. Try again in {retry}"
             ))
 
         if isinstance(error, commands.NoPrivateMessage):
