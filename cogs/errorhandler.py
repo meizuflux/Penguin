@@ -91,7 +91,7 @@ class CommandErrorHandler(commands.Cog):
             embed = ctx.embed(
                 description=f"<a:countdown:827916388659363870> **{command}** is on cooldown. Try again in {retry}."
             )
-            cd = error.cooldown()
+            cd = error.cooldown
             embed.set_footer(text=f"You can use this command {cd.rate} {ctx.plural('time(s)', cd.rate)} in {cd.per} {ctx.plural('second(s)', cd.per)}.")
             return await ctx.send(embed=embed)
 
