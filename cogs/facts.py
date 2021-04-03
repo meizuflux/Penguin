@@ -48,10 +48,10 @@ class Facts(commands.Cog):
         """Sends a fox fact."""
         await self.animal_fact(ctx, "fox")
 
-    @commands.command(aliases=['birbfact'])
-    async def birb_fact(self, ctx):
-        """Sends a birb fact."""
-        await self.animal_fact(ctx, "birb")
+    @commands.command(aliases=['birdfact'])
+    async def bird_fact(self, ctx):
+        """Sends a bird fact."""
+        await self.animal_fact(ctx, "bird")
 
     @commands.command(aliases=['koalafact'])
     async def koala_fact(self, ctx):
