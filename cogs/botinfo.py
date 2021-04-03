@@ -167,6 +167,10 @@ class BotInfo(commands.Cog):
 
         await msg.edit(content=None, embed=emb)
 
+    @commands.command()
+    async def vote(self, ctx):
+        await ctx.send(embed=ctx.embed(description=f"Vote for {self.bot.user.name} [here](https://top.gg/bot/810570659968057384/vote)!"))
+
 
 def setup(bot):
     bot.add_cog(BotInfo(bot))
