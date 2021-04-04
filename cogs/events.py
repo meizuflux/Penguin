@@ -40,15 +40,41 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
         await self.bot.db.execute("DELETE FROM guilds WHERE guild_id = $1", guild.id)
-        self.bot.prefixes.pop(guild.id, None)
+        del self.bot.prefixes[guild.id]
+
+        stats = (
+            f"Name: {guild.name}\n"
+            f"Owner: {guild.owner}\n"
+            f"Boosts: {guild.premium_subscription_count}\n"
+            f"Members: {sum(not i.bot for i in guild.members)}\n"
+            f"Bots: {sum(not i.bot for i in guild.members)}"
+        )
+
+        message = (
+            "I got kicked from a server:\n"
+            f"```yaml\n{stats}```"
+        )
+        await self.bot.guild_webhook.send(message)
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
         await self.bot.db.execute("INSERT INTO guilds (guild_id) VALUES ($1)", guild.id)
-        await self.bot.db.execute(
-            "INSERT INTO prefixes(guild_id,prefix) VALUES($1,$2)",
-            guild.id, self.bot.default_prefix)
+        await self.bot.db.execute("INSERT INTO prefixes VALUES($1,$2)", guild.id, self.bot.default_prefix)
         self.bot.prefixes[guild.id].append(self.bot.default_prefix)
+
+        stats = (
+            f"Name: {guild.name}\n"
+            f"Owner: {guild.owner}\n"
+            f"Boosts: {guild.premium_subscription_count}\n"
+            f"Members: {sum(not i.bot for i in guild.members)}\n"
+            f"Bots: {sum(not i.bot for i in guild.members)}"
+        )
+
+        message = (
+            "I joined a new server:\n"
+            f"```yaml\n{stats}```"
+        )
+        await self.bot.guild_webhook.send(message)
 
     @tasks.loop(minutes=5)
     async def change_presence(self):
