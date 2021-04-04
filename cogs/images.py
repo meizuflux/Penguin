@@ -22,7 +22,7 @@ import discord
 from discord.ext import commands
 
 from cogs.polaroid_manipulation import get_image_url
-from utils.argparser import Arguments
+from utils.argparse import Arguments
 
 NEKOBOT_URL = 'https://nekobot.xyz/api'
 
