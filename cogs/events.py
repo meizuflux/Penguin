@@ -71,6 +71,7 @@ class Events(commands.Cog):
 
     @tasks.loop(minutes=10)
     async def top_gg(self):
+        await self.bot.wait_until_ready()
         payload = {
             'server_count': len(self.bot.guilds)
         }
