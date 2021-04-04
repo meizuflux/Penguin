@@ -43,6 +43,7 @@ else:
 class Walrus(commands.Bot):
     """Subclassed Bot."""
     def __init__(self):
+        self.bot = None
         intents = discord.Intents.all()
         super().__init__(
             command_prefix=self.get_prefix,
@@ -54,7 +55,6 @@ class Walrus(commands.Bot):
         self._BotBase__cogs = commands.core._CaseInsensitiveDict()
 
         # Base variables for core functionality
-        self.settings = json.load(open("settings.json", "r"))
         self.settings = toml.loads(open("config.toml").read())
         self.author_id = 809587169520910346
         self.session = aiohttp.ClientSession()
