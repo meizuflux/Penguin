@@ -37,7 +37,7 @@ class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
     def __init__(self, bot):
         """Creates the cog."""
         self.bot = bot
-        self.finnhub = self.bot.config.finnhub
+        self.finnhub = self.bot.settings['keys']['finnhub']
         self.del_none.start()
 
     @tasks.loop(hours=12)
