@@ -16,31 +16,33 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
+import asyncio
 import collections
 import datetime
 import json
 import os
 import re
-import typing
 
 import aiohttp
 import alexflipnote
 import asyncpg
-import config
 import discord
+import toml
 from discord.ext import commands
 
 from utils.default import Blacklisted, Maintenance
 
-embeds = typing.NamedTuple("Embeds", [("default", int), ("red", int), ("green", int), ("orange", int)])
+try:
+    import uvloop
+except ImportError:
+    pass
+else:
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
-
-class Chuck(commands.Bot):
+class Walrus(commands.Bot):
     """Subclassed Bot."""
-
     def __init__(self):
-        self.bot = None
         intents = discord.Intents.all()
         super().__init__(
             command_prefix=self.get_prefix,
@@ -50,49 +52,57 @@ class Chuck(commands.Bot):
             description="Walrus is a simple and easy-to-use Discord bot"
         )
         self._BotBase__cogs = commands.core._CaseInsensitiveDict()
+
+        # Base variables for core functionality
         self.settings = json.load(open("settings.json", "r"))
+        self.settings = toml.loads(open("config.toml").read())
         self.author_id = 809587169520910346
         self.session = aiohttp.ClientSession()
-        self.embed_color = 0x89CFF0  # discord.Color.green()  # 0x9c5cb4
+        self.embed_color = 0x89CFF0
+        self.support_invite = self.settings['misc']['support_server_invite']
+        self.invite = self.settings['misc']['invite']
 
+        # Cache so I don't have to use DB
         self.prefixes = collections.defaultdict(list)
         self.command_list = []
-        self.default_prefix = self.settings.get("default_prefix", "p!")
-        self.config = config
-        self.support_invite = self.settings.get("support_invite")
-        self.invite = self.settings.get("invite")
-        self.alex = alexflipnote.Client(self.get_config('alex_api_key'))
-        self.case_insensitive = True
-        self.perspective = self.get_config("perspective_key")
+        self.default_prefix = "p!"
         self.afk = {}
         self.highlights = {}
+        self.blacklist = {}
         self.usage_counter = 0
         self.command_usage = collections.Counter()
+
+        # Webhook
+        self.error_webhook = discord.Webhook.from_url(
+            self.settings["misc"]["error_webhook"],
+            adapter=discord.AsyncWebhookAdapter(self.session)
+        )
+        self.guild_webhook = discord.Webhook.from_url(
+            self.settings["misc"]["guild_webhook"],
+            adapter=discord.AsyncWebhookAdapter(self.session)
+        )
+
+        # API stuff
+        self.alex = alexflipnote.Client(self.settings['keys']['alexflipnote'])
+        self.perspective = self.settings['keys']['perspective']
+
+        # Bot management
         self.maintenance = False
         self.context = commands.Context
 
-        self.embed_colors = embeds(self.settings["embed_colors"]["default"], self.settings["embed_colors"]["red"], self.settings["embed_colors"]["green"], self.settings["embed_colors"]["orange"])
-
-    @staticmethod
-    def get_config(item: str):
-        """Gets an item from the config."""
-        with open('config.json', 'r') as f:
-            f = json.load(f)
-        return f[item]
-
     async def get_prefix(self, message):
         """Function for getting the command prefix."""
+
         if message.guild is None:
             return commands.when_mentioned_or(self.default_prefix)(self, message)
+
         if self.prefixes[message.guild.id]:
             return commands.when_mentioned_or(*self.prefixes[message.guild.id])(self, message)
 
         if not self.prefixes[message.guild.id]:
-            if self.is_ready():
-                await self.db.execute("INSERT INTO prefixes(guild_id,prefix) VALUES($1,$2)", message.guild.id, self.default_prefix)
             self.prefixes[message.guild.id].append(self.default_prefix)
-
             return commands.when_mentioned_or(*self.prefixes[message.guild.id])(self, message)
+
         return commands.when_mentioned_or(self.default_prefix)(self, message)
 
     async def try_user(self, user_id: int) -> discord.User:
@@ -106,13 +116,13 @@ class Chuck(commands.Bot):
         """Runs the bot."""
         try:
             print("Connecting to database ...")
-            pool_pg = self.loop.run_until_complete(asyncpg.create_pool(dsn=self.get_config('DSN')))
+            pool_pg = self.loop.run_until_complete(asyncpg.create_pool(dsn=self.settings['tokens']['dsn']))
             print("Connected to PostgreSQL server!")
         except Exception as e:
             print("Could not connect to database:", e)
         else:
             print("Connecting to Discord ...")
-            self.uptime = datetime.datetime.utcnow()
+
             self.db = pool_pg
 
             for file in os.listdir("cogs"):
@@ -121,7 +131,8 @@ class Chuck(commands.Bot):
             self.load_extension("jishaku")
             self.create_command_list()
 
-            self.run(self.get_config('token'))
+            self.uptime = datetime.datetime.utcnow()
+            self.run(self.settings['tokens']['bot'])
 
     async def create_tables(self):
         """Creates the needed SQL tables for this bot."""
@@ -129,18 +140,20 @@ class Chuck(commands.Bot):
         with open("tables.sql") as f:
             await self.db.execute(f.read())
 
-    async def create_cache(self):
+    async def prep(self):
         await self.wait_until_ready()
-        self.mention_match = re.compile(fr"^(<@!?{self.user.id}>)\s*")
-        for guild in self.guilds:
-            await self.db.execute("INSERT INTO guilds (guild_id) VALUES ($1) ON CONFLICT (guild_id) DO NOTHING",
-                                  guild.id)
-        guilds = await self.db.fetch("SELECT * FROM prefixes")
-        for guild in guilds:
-            self.prefixes[guild['guild_id']].append(guild['prefix'])
-        blacklist = await self.db.fetch('SELECT user_id, reason FROM blacklist')
-        self.blacklist = dict(blacklist)
+        with open("tables.sql") as f:
+            await self.db.execute(f.read())
 
+        self.mention_match = re.compile(fr"^(<@!?{self.user.id}>)\s*")
+
+        for guild in self.guilds:
+            await self.db.execute("INSERT INTO guilds VALUES ($1) ON CONFLICT (guild_id) DO NOTHING", guild.id)
+
+        for guild in await self.db.fetch("SELECT * FROM prefixes"):
+            self.prefixes[guild['guild_id']].append(guild['prefix'])
+
+        self.blacklist = dict(await self.db.fetch('SELECT user_id, reason FROM blacklist'))
 
     def create_command_list(self):
         for command in self.commands:
@@ -157,9 +170,6 @@ class Chuck(commands.Bot):
             if isinstance(command, commands.Group):
                 gotten_subcommands.extend(self.get_subcommands(command))
         return gotten_subcommands
-
-    def check_owner(self, user: discord.User):
-        return user.id in self.owner_ids
 
     async def close(self):
         await self.alex.close()
@@ -205,9 +215,9 @@ class Chuck(commands.Bot):
             await self.process_commands(after)
 
 
-bot = Chuck()
+bot = Walrus()
 bot.loop.create_task(bot.create_tables())
-bot.loop.create_task(bot.create_cache())
+bot.loop.create_task(bot.prep())
 
 os.environ['JISHAKU_NO_UNDERSCORE'] = 'True'
 os.environ['JISHAKU_NO_DM_TRACEBACK'] = 'True'
@@ -227,7 +237,7 @@ async def on_ready():
 
 @bot.check
 async def is_maintenance(ctx):
-    if bot.maintenance and not bot.check_owner(ctx.author):
+    if bot.maintenance and not await ctx.bot.is_owner(ctx.author):
         raise Maintenance()
     return True
 

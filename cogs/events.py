@@ -26,14 +26,29 @@ class Events(commands.Cog):
         self.bot = bot
         self.activity_type = 1
         self.change_presence.start()
+        self.top_gg.start()
 
     def cog_unload(self):
         self.change_presence.cancel()
+        self.top_gg.cancel()
 
     @commands.Cog.listener()
     async def on_command(self, ctx):
         self.bot.usage_counter += 1
         self.bot.command_usage[ctx.command.qualified_name] += 1
+
+    @commands.Cog.listener()
+    async def on_guild_remove(self, guild):
+        await self.bot.db.execute("DELETE FROM guilds WHERE guild_id = $1", guild.id)
+        self.bot.prefixes.pop(guild.id, None)
+
+    @commands.Cog.listener()
+    async def on_guild_join(self, guild):
+        await self.bot.db.execute("INSERT INTO guilds (guild_id) VALUES ($1)", guild.id)
+        await self.bot.db.execute(
+            "INSERT INTO prefixes(guild_id,prefix) VALUES($1,$2)",
+            guild.id, self.bot.default_prefix)
+        self.bot.prefixes[guild.id].append(self.bot.default_prefix)
 
     @tasks.loop(minutes=5)
     async def change_presence(self):
@@ -54,7 +69,7 @@ class Events(commands.Cog):
             self.activity_type = 1
             return
 
-    @tasks.loop(minutes=5)
+    @tasks.loop(minutes=10)
     async def top_gg(self):
         payload = {
             'server_count': len(self.bot.guilds)
@@ -63,7 +78,7 @@ class Events(commands.Cog):
         headers = {
             'User-Agent': f"Walrus Discord Bot ({self.bot.user.id})",
             'Content-Type': 'application/json',
-            'Authorization': None
+            'Authorization': self.bot.settings['keys']['top_gg']
         }
 
         api_url = "https://top.gg/api"

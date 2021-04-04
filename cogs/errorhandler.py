@@ -131,9 +131,7 @@ class CommandErrorHandler(commands.Cog):
         pretty_traceback = "".join(
             prettify_exceptions.DefaultFormatter().format_exception(type(error), error, error.__traceback__)
         )
-        log_channel = await self.bot.fetch_channel(817433615473311744)
-        webhook = await log_channel.webhooks()
-        msg = (
+        desc = (
             f"Command: {ctx.invoked_with}\n"
             f"Full content: {ctx.escape(ctx.message.content)}\n"
             f"Guild: {ctx.guild.name} ({ctx.guild.id})\n"
@@ -141,10 +139,8 @@ class CommandErrorHandler(commands.Cog):
             f"User: {ctx.author.name} ({ctx.author.id})\n"
             f"Jump URL: {ctx.message.jump_url}"
         )
-        embed = ctx.embed(title='AN ERROR OCCURED', url=await ctx.mystbin(pretty_traceback) + '.py',
-                          description=f"```yaml\n{msg}```")
-        await next((x for x in webhook if x.name == "Error Collector"), None).send(f"```py\n{''.join(formatted)}```",
-                                                                                   embed=embed)
+        embed = ctx.embed(title='AN ERROR OCCURED', url=await ctx.mystbin(pretty_traceback) + '.py', description=desc)
+        await self.bot.error_webhook.send(f"```py\n{''.join(formatted)}```", embed=embed)
 
         error = "".join(formatted)
         if len(error) > 1700:

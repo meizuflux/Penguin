@@ -1,6 +1,6 @@
-import argparse
+import argparser
 
 
-class Arguments(argparse.ArgumentParser):
+class Arguments(argparser.ArgumentParser):
     def error(self, message):
         raise RuntimeError(message)
