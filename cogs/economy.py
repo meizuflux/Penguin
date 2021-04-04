@@ -25,7 +25,7 @@ import humanize
 from asyncpg import UniqueViolationError
 from discord.ext import commands
 
-from utils.argparser import Arguments
+from utils.argparse import Arguments
 from utils.default import qembed
 from utils.eco import get_number, get_stats
 
