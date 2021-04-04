@@ -1,6 +1,8 @@
 # Config
 config.json
 config.py
+config.toml
+
 # pycharm stuff
 .idea/
 
