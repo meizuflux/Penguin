@@ -24,7 +24,6 @@ import polaroid
 from discord.ext import commands
 from jishaku.functools import executor_function
 
-from utils.default import qembed
 
 
 async def get_image_object(ctx, image):
@@ -97,7 +96,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
         try:
             image = await get_image_object(ctx, image)
         except:
-            await qembed(ctx, 'Invalid URL provided.')
+            await ctx.send(embed=ctx.embed(description='Invalid URL provided.'))
         img = await self.do_polaroid(image, method, *args, **kwargs)
         file = discord.File(BytesIO(img.save_bytes()),
                             filename=f"{method}.png")

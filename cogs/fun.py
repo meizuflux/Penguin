@@ -36,7 +36,6 @@ from jishaku.functools import executor_function
 
 from cogs.polaroid_manipulation import get_image_url
 from utils.bottom import from_bottom, to_bottom
-from utils.default import qembed
 
 mystbin_url = re.compile(
     r"(?:(?:https?://)?mystb\.in/)?(?P<ID>[a-zA-Z]+)(?:\.(?P<syntax>[a-zA-Z0-9]+))?"
@@ -160,16 +159,16 @@ class Fun(commands.Cog):
 
     @commands.command(help='Replaces the spaces in a string with a character')
     async def replacespace(self, ctx, char, *, text):
-        await qembed(ctx, text.replace(' ', f' {char} '))
+        await ctx.send(embed=ctx.embed(description=text.replace(' ', f' {char} ')))
 
     @commands.command(help='Reverses some text')
     async def reverse(self, ctx, *, text):
-        await qembed(ctx, text[::-1])
+        await ctx.send(embed=ctx.embed(description=text[::-1]))
 
     @commands.command(help='Checks your speed.')
     async def react(self, ctx, seconds: int = None):
         if seconds and seconds > 31:
-            return await qembed(ctx, 'You cannot specify more than 30 seconds. Sorry.')
+            return await ctx.send(embed=ctx.embed(description='You cannot specify more than 30 seconds. Sorry.'))
         emg = str(random.choice(self.bot.emojis))
         if not seconds:
             seconds = 5
@@ -229,8 +228,8 @@ class Fun(commands.Cog):
         bottoms = self.bottoms("from_bottom", text)
 
         if len(bottoms) > 500:
-            return await qembed(ctx, str(await ctx.mystbin(bottoms)))
-        await qembed(ctx, bottoms)
+            return await ctx.send(embed=ctx.embed(description=str(await ctx.mystbin(bottoms))))
+        await ctx.send(embed=ctx.embed(description=bottoms))
 
     @commands.command(aliases=['bottom_encode'])
     async def bottomencode(self, ctx, *, text):
@@ -238,8 +237,8 @@ class Fun(commands.Cog):
         bottoms = self.bottoms("to_bottom", text)
 
         if len(bottoms) > 500:
-            return await qembed(ctx, str(await ctx.mystbin(bottoms)))
-        await qembed(ctx, bottoms)
+            return await ctx.send(embed=ctx.embed(description=str(await ctx.mystbin(bottoms))))
+        await ctx.send(embed=ctx.embed(description=bottoms))
 
     @commands.command()
     async def spoiler(self, ctx, *, text):
@@ -293,7 +292,7 @@ class Fun(commands.Cog):
         if not user:
             user = ctx.author
         random.seed(int(user.id))
-        await qembed(ctx, f'8{"=" * random.randint(1, 25)}D')
+        await ctx.send(embed=ctx.embed(description=f'8{"=" * random.randint(1, 25)}D'))
 
     @commands.command()
     async def roo(self, ctx):
@@ -318,7 +317,7 @@ class Fun(commands.Cog):
             `b64_string`: The base 64 string you want to decode."""
         decoded_string = base64.b64decode(b64_string)
         decoded = decoded_string.decode('utf-8')
-        await qembed(ctx, decoded)
+        await ctx.send(embed=ctx.embed(description=decoded))
 
     @base64.command()
     async def encode(self, ctx, *, text):
@@ -328,7 +327,7 @@ class Fun(commands.Cog):
             `text`: The text you want to encode into base 64."""
         encoded_encoded_string = base64.b64encode(text.encode('utf-8'))
         decoded = encoded_encoded_string.decode('utf-8')
-        await qembed(ctx, decoded)
+        await ctx.send(embed=ctx.embed(description=decoded))
 
     @commands.group(help='Some functions with binary.')
     async def binary(self, ctx):

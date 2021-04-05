@@ -26,7 +26,6 @@ from asyncpg import UniqueViolationError
 from discord.ext import commands
 
 from utils.argparse import Arguments
-from utils.default import qembed
 from utils.eco import get_number, get_stats
 
 
@@ -197,7 +196,7 @@ class Economy(commands.Cog):
 
         await self.bot.db.execute(query, amount, ctx.guild.id, ctx.author.id)
 
-        await qembed(ctx, f'You deposited **${humanize.intcomma(amount)}** into your bank.')
+        await ctx.send(embed=ctx.embed(description=f'You deposited **${humanize.intcomma(amount)}** into your bank.'))
 
     @commands.command(help='Withdraws a set amount from your bank', aliases=['wd', 'with'])
     async def withdraw(self, ctx, amount: str):
@@ -215,7 +214,7 @@ class Economy(commands.Cog):
         )
 
         await self.bot.db.execute(query, amount, ctx.guild.id, ctx.author.id)
-        await qembed(ctx, f'You withdrew **${humanize.intcomma(amount)}** from your bank.')
+        await ctx.send(embed=ctx.embed(description=f'You withdrew **${humanize.intcomma(amount)}** from your bank.'))
 
     @commands.command(help='Lets you send money over to another user', aliases=('send', 'pay', 'give'))
     async def transfer(self, ctx, user: discord.Member, amount: str):
@@ -231,7 +230,7 @@ class Economy(commands.Cog):
                 await self.bot.db.execute("UPDATE economy SET cash = cash + $1 WHERE guild_id = $2 AND user_id = $3",
                                           amount, ctx.guild.id, user.id)
 
-        await qembed(ctx, f'You gave {user.mention} **${humanize.intcomma(amount)}**')
+        await ctx.send(embed=ctx.embed(description=f'You gave {user.mention} **${humanize.intcomma(amount)}**'))
 
     @commands.command(help='Takes a random amount of $ from someone', alises=['mug', 'steal'])
     async def rob(self, ctx, user: discord.Member):
@@ -243,7 +242,8 @@ class Economy(commands.Cog):
         target_cash, _ = await get_stats(ctx, user.id, True)
 
         if target_cash == 0:
-            return await qembed(ctx, 'That user has no cash. Shame on you for trying to rob them.')
+            return await ctx.send(
+                embed=ctx.embed(description='That user has no cash. Shame on you for trying to rob them.'))
 
         amount = random.randint(1, target_cash)
 
@@ -265,7 +265,7 @@ class Economy(commands.Cog):
                 await conn.execute(target_query, amount, ctx.guild.id, user.id)
                 await conn.execute(author_query, amount, ctx.guild.id, ctx.author.id)
 
-        await qembed(ctx, f'You stole **${humanize.intcomma(amount)}** from {user.mention}!')
+        await ctx.send(embed=ctx.embed(description=f'You stole **${humanize.intcomma(amount)}** from {user.mention}!'))
 
     @commands.command(help='Work for some $$$')
     @commands.cooldown(rate=1, per=7200, type=commands.BucketType.user)
@@ -329,7 +329,7 @@ class Economy(commands.Cog):
 
         await self.bot.db.execute(query, cash, ctx.guild.id, ctx.author.id)
 
-        await qembed(ctx, f'You\'ve collected **${cash}** from the daily gift!')
+        await ctx.send(embed=ctx.embed(description=f'You\'ve collected **${cash}** from the daily gift!'))
 
     @commands.command(help='Fish in order to get some money.')
     @commands.cooldown(rate=1, per=7200, type=commands.BucketType.user)
@@ -415,16 +415,16 @@ class Economy(commands.Cog):
     async def resetcooldown(self, ctx, command):
         eco = self.bot.get_cog("Economy")
         if self.bot.get_command(command) not in eco.walk_commands():
-            return await qembed(ctx,
-                                f'You can only reset the cooldown for commands in this category. You can do `{ctx.clean_prefix}help Economy` to see all the commands.')
+            return await ctx.send(embed=ctx.embed(
+                description=f'You can only reset the cooldown for commands in this category. You can do `{ctx.clean_prefix}help Economy` to see all the commands.'))
         cash, _ = await get_stats(ctx, ctx.author.id)
         if command == 'daily':
-            return await qembed(ctx,
-                                'You can\'t reset the daily command, sorry. '
-                                'The whole point is that, well, it\'s meant to be once a day.')
+            return await ctx.send(embed=ctx.embed(description=
+                                                  'You can\'t reset the daily command, sorry. '
+                                                  'The whole point is that, well, it\'s meant to be once a day.'))
 
         if cash < 400:
-            return await qembed(ctx, 'You need at least 400 dollars.')
+            return ctx.send(embed=ctx.embed(description='You need at least 400 dollars.'))
 
         query = (
             """
@@ -435,8 +435,7 @@ class Economy(commands.Cog):
 
         self.bot.get_command(command).reset_cooldown(ctx)
         await self.bot.db.execute(query, 400, ctx.guild.id, ctx.author.id)
-        await qembed(ctx,
-                     f'Reset the command cooldown for the command `{command}` and subtracted **$400** from your account.')
+        await ctx.send(embed=ctx.embed(description=f'Reset the command cooldown for the command `{command}` and subtracted **$400** from your account.'))
 
     @commands.command(aliases=("bankrob", "bank-rob"))
     @commands.cooldown(rate=1, per=300, type=commands.BucketType.user)
