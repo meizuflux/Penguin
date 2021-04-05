@@ -30,7 +30,6 @@ from jishaku.functools import executor_function
 from jishaku.paginators import PaginatorInterface, WrappedPaginator
 from tabulate import tabulate
 
-from utils.default import qembed
 from utils.fuzzy import finder
 
 
@@ -118,11 +117,11 @@ class Utilities(commands.Cog):
     @commands.command(help='Compares the similarity of two strings')
     async def fuzzy(self, ctx, string1, string2):
         result = await self.levenshtein_match_calc(string1, string2)
-        await qembed(ctx, f'`{string1}` and `{string2}` are `{result}%` similar.')
+        await ctx.send(embed=ctx.embed(description=f'`{string1}` and `{string2}` are `{result}%` similar.'))
 
     @fuzzy.error
     async def fuzzy_error(self, ctx, error):
-        await qembed(ctx, "Invalid string provided.")
+        await ctx.send(embed=ctx.embed(description="Invalid string provided."))
 
     @commands.command(help='Posts text to https://mystb.in', aliases=['paste'])
     async def mystbin(self, ctx, *, text=None):
@@ -164,7 +163,7 @@ class Utilities(commands.Cog):
                     decoded_message = message.decode("utf-8")
                     result = f'{await ctx.mystbin(decoded_message)}.{syntax}'
 
-        await qembed(ctx, result)
+        await ctx.send(embed=ctx.embed(description=result))
 
     # from pb https://github.com/PB4162/PB-Bot
     @commands.command(aliases=["rawmessage", "rawmsg"])
@@ -181,17 +180,17 @@ class Utilities(commands.Cog):
         try:
             msg = await self.bot.http.get_message(ctx.channel.id, message.id)
         except discord.NotFound:
-            return await qembed(ctx, "Sorry, I couldn't find that message.")
+            return await ctx.send(embed=ctx.embed(description="Sorry, I couldn't find that message."))
 
         raw = json.dumps(msg, indent=4)
         if len(raw) > 1989:
-            return await qembed(ctx, f'{await ctx.mystbin(raw)}.json')
-        await qembed(ctx, f"```json\n{ctx.escape(raw)}```")
+            return await ctx.send(embed=ctx.embed(description=f'{await ctx.mystbin(raw)}.json'))
+        await ctx.send(embed=ctx.embed(description=f"```json\n{ctx.escape(raw)}```"))
 
     @commands.command(help='Randomly generates a password', aliases=['pw', 'pwd'])
     async def password(self, ctx, length=16):
         if length > 94:
-            return await qembed(ctx, 'Sorry, 94 characters is the limit.')
+            return await ctx.send(embed=ctx.embed(description='Sorry, 94 characters is the limit.'))
         lower = string.ascii_lowercase
         upper = string.ascii_uppercase
         num = string.digits
@@ -202,7 +201,7 @@ class Utilities(commands.Cog):
         password = ''.join(secrets.choice(total) for i in range(length))
         embed = ctx.embed(description=f'{length} digit random password:```\n{ctx.escape(password)}```')
         await ctx.author.send(embed=embed)
-        await qembed(ctx, f'Messaged you with the password, {ctx.author.mention}')
+        await ctx.send(embed=ctx.embed(description=f'Messaged you with the password, {ctx.author.mention}'))
 
     @commands.command(help='Checks where a URL redirects. WARNING NOT 100% ACCURATE',
                       aliases=['redirectchecker', 'redirectcheck', 'redirect_check'])
@@ -212,7 +211,7 @@ class Utilities(commands.Cog):
         if not match:
             raise commands.BadArgument('Invalid URL provided.')
         async with self.bot.session.get(url) as redirect:
-            await qembed(ctx, f'`{str(redirect.real_url)}`')
+            await ctx.send(embed=ctx.embed(description=f'`{str(redirect.real_url)}`'))
 
     @commands.command(aliases=['ip', 'iplookup'])
     async def ipcheck(self, ctx, ip):

@@ -29,8 +29,6 @@ import discord
 import humanize
 from discord.ext import commands, menus
 
-from utils.default import qembed
-
 
 class Context(commands.Context):
 
@@ -306,7 +304,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         try:
             await ctx.send(embed=discord.Embed().from_dict(embed))
         except:
-            await qembed(ctx, 'You clearly don\'t know what this is')
+            await ctx.send(embed=ctx.embed(description='You clearly don\'t know what this is'))
 
     @commands.command(help='Sends the 5 most recent commits to the bot.')
     async def recent_commits(self, ctx):

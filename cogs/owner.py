@@ -29,8 +29,6 @@ import tabulate
 from discord.ext import commands
 from jishaku.paginators import PaginatorInterface, WrappedPaginator
 
-from utils.default import qembed
-
 
 class Owner(commands.Cog, command_attrs=dict(hidden=True)):
     def __init__(self, bot):
@@ -64,9 +62,9 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         if isinstance(error, commands.CommandInvokeError):
             error = error.original
             if isinstance(error, asyncpg.exceptions.UndefinedTableError):
-                return await qembed(ctx, "This table does not exist.")
+                return await ctx.send(embed=ctx.embed(description="This table does not exist."))
             if isinstance(error, asyncpg.exceptions.PostgresSyntaxError):
-                return await qembed(ctx, f"There was a syntax error:```\n {error} ```")
+                return await ctx.send(embed=ctx.embed(description=f"There was a syntax error:```\n {error} ```"))
         await ctx.send(error)
 
     @dev.command(help='Syncs with GitHub and reloads all cogs')
@@ -182,9 +180,9 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         """ Change username."""
         try:
             await self.bot.user.edit(username=name)
-            await qembed(ctx, f"Successfully changed username to **{name}**")
+            await ctx.send(embed=ctx.embed(description=f"Successfully changed username to **{name}**"))
         except discord.HTTPException as err:
-            await qembed(ctx, err)
+            await ctx.send(embed=ctx.embed(description=err))
 
     @change.command(name="nickname")
     @commands.is_owner()
@@ -193,9 +191,9 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         try:
             await ctx.guild.me.edit(nick=name)
             if name:
-                await qembed(ctx, f"Successfully changed nickname to **{name}**")
+                await ctx.send(embed=ctx.embed(description=f"Successfully changed nickname to **{name}**"))
             else:
-                await qembed(ctx, "Successfully removed nickname")
+                await ctx.send(embed=ctx.embed(description="Successfully removed nickname"))
         except Exception as err:
             await ctx.send(err)
 
@@ -212,15 +210,15 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         try:
             bio = await cs.get(url, res_method="read")
             await self.bot.user.edit(avatar=bio)
-            await qembed(ctx, f"Successfully changed the avatar. Currently using:\n{url}")
+            await ctx.send(embed=ctx.embed(description=f"Successfully changed the avatar. Currently using:\n{url}"))
         except aiohttp.InvalidURL:
-            await qembed(ctx, "The URL is invalid...")
+            await ctx.send(embed=ctx.embed(description="The URL is invalid..."))
         except discord.InvalidArgument:
-            await qembed(ctx, "This URL does not contain a usable image")
+            await ctx.send(embed=ctx.embed(description="This URL does not contain a usable image"))
         except discord.HTTPException as err:
-            await qembed(ctx, err)
+            await ctx.send(embed=ctx.embed(description=err))
         except TypeError:
-            await qembed(ctx, "You need to either provide an image URL or upload one with the command")
+            await ctx.send(embed=ctx.embed(description="You need to either provide an image URL or upload one with the command"))
 
 
 def setup(bot):
