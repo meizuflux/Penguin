@@ -16,6 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import json
+import logging
 
 import discord
 from discord.ext import commands, tasks
@@ -109,9 +110,9 @@ class Events(commands.Cog):
         }
 
         api_url = "https://top.gg/api"
-
-        async with self.bot.session.post(api_url + "/bots/stats", json=json.dumps(payload, ensure_ascii=True), headers=headers):
-            return
+        async with self.bot.session.post(api_url + "/bots/stats", json=json.dumps(payload, ensure_ascii=True),
+                                         headers=headers):
+            logging.debug("Posted stats to top.gg")
 
 
 def setup(bot):

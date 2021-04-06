@@ -16,11 +16,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import asyncio
+import importlib
 import inspect
 import os
 import traceback
 from time import perf_counter
-import importlib
 
 import aiohttp
 import asyncpg
@@ -35,7 +35,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         self.bot = bot
 
     async def cog_check(self, ctx):
-        return ctx.author.id == self.bot.author_id
+        return ctx.author.id in self.bot.owner_ids
 
     @commands.group(help='Some developer commands')
     async def dev(self, ctx):
@@ -218,7 +218,8 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         except discord.HTTPException as err:
             await ctx.send(embed=ctx.embed(description=err))
         except TypeError:
-            await ctx.send(embed=ctx.embed(description="You need to either provide an image URL or upload one with the command"))
+            await ctx.send(
+                embed=ctx.embed(description="You need to either provide an image URL or upload one with the command"))
 
 
 def setup(bot):

@@ -15,7 +15,6 @@ class Blackjack:
         self.playing = True
 
         self.message = None
-        self.embed = self.ctx.embed(description=f"Type `hit` to draw another card or `stand` to pass.", color=discord.Color.green())
 
         self.deck = Deck()
         self.deck.shuffle()
@@ -32,7 +31,6 @@ class Blackjack:
 
         self.blackjack = False
 
-
     @staticmethod
     def list_cards(cards):
         return "\n".join(str(card) for card in cards)
@@ -40,7 +38,8 @@ class Blackjack:
     async def show_some(self, message=None):
         dealer_card = self.dealer.cards[1]
 
-        embed = self.ctx.embed(description=f"Type `hit` to draw another card or `stand` to pass.", color=discord.Color.green())
+        embed = self.ctx.embed(description=f"Type `hit` to draw another card or `stand` to pass.",
+                               color=discord.Color.green())
         embed.set_footer(text=f"Cards remaining: {len(self.deck.deck)}/52")
 
         embed.add_field(
@@ -229,7 +228,6 @@ class Casino(commands.Cog):
         )
         await self.bot.db.execute(query, total, ctx.guild.id, ctx.author.id)
         await ctx.send(embed=ctx.embed(description=f"{' '.join(e)}\n\n{result}"))
-
 
 
 def setup(bot):

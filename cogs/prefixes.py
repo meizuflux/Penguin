@@ -63,7 +63,8 @@ class Prefixes(commands.Cog):
     async def edit(self, ctx, prefix):
         """Edits the prefix being used to invoke the command."""
         if str(ctx.prefix).strip().replace('!', '') == self.bot.user.mention:
-            return await ctx.send(embed=ctx.embed(description="You can't edit this. You can add a new prefix, but you can't delete the mention as a prefix."))
+            return await ctx.send(embed=ctx.embed(
+                description="You can't edit this. You can add a new prefix, but you can't delete the mention as a prefix."))
         insertion_sql = (
             "INSERT INTO prefixes (guild_id, prefix) "
             "VALUES ($1, $2) ON CONFLICT (guild_id, prefix) DO UPDATE SET prefix = $2"

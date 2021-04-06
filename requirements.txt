@@ -1,9 +1,9 @@
 discord.py
 asyncpg
 aiohttp
-jishaku~=1.20.0.220
-psutil~=5.8.0
-humanize~=3.2.0
+jishaku
+psutil
+humanize
 alexflipnote.py
 discord-flags
 git+https://github.com/Rapptz/discord-ext-menus

@@ -19,7 +19,6 @@ import datetime
 import pathlib
 import platform
 
-import discord
 import humanize
 import psutil
 from discord.ext import commands, menus
@@ -81,7 +80,7 @@ class BotInfo(commands.Cog):
     @commands.command()
     async def uptime(self, ctx):
         """Returns the uptime of the bot."""
-        uptime = humanize.precisedelta(self.bot.uptime - datetime.datetime.utcnow(), format='%0.0f')
+        uptime = humanize.precisedelta(self.bot.start_time - datetime.datetime.utcnow(), format='%0.0f')
         await ctx.send(embed=ctx.embed(description=f"I've been up for {uptime}"))
 
     @commands.command(aliases=['codestats'])
@@ -150,7 +149,7 @@ class BotInfo(commands.Cog):
 
         emb = ctx.embed(description=self.bot.description)
         emb.set_author(name=self.bot.user.name, icon_url=self.bot.user.avatar_url)
-        emb.add_field(name='Developer', value=f'```ppotatoo#9688 ({self.bot.author_id})```', inline=False)
+        emb.add_field(name='Developer', value=f'```ppotatoo#9688```', inline=False)
         emb.add_field(name='Line Count', value=f'```{ls:,} lines```', inline=True)
         emb.add_field(name='Command Count', value=f'```{len(set(self.bot.walk_commands())) - 31} commands```',
                       inline=True)
@@ -167,7 +166,8 @@ class BotInfo(commands.Cog):
 
     @commands.command()
     async def vote(self, ctx):
-        await ctx.send(embed=ctx.embed(description=f"Vote for {self.bot.user.name} [here](https://top.gg/bot/810570659968057384/vote)!"))
+        await ctx.send(embed=ctx.embed(
+            description=f"Vote for {self.bot.user.name} [here](https://top.gg/bot/810570659968057384/vote)!"))
 
 
 def setup(bot):

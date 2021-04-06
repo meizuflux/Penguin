@@ -25,7 +25,6 @@ from discord.ext import commands
 from jishaku.functools import executor_function
 
 
-
 async def get_image_object(ctx, image):
     if ctx.message.attachments:
         img = await ctx.message.attachments[0].read()

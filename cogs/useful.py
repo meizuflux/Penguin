@@ -164,13 +164,13 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         start = time.perf_counter()
         message = await ctx.send("Pinging ...")
         duration = (time.perf_counter() - start) * 1000
-                       
+
         db_start = time.perf_counter()
         async with self.bot.db.acquire() as conn:
             async with conn.transaction():
                 await self.bot.db.fetch("SELECT 1")
         db_duration = (time.perf_counter() - db_start) * 1000
-                       
+
         pong = ctx.embed(title='Ping')
         pong.add_field(name='Typing Latency',
                        value=f'```py\n{round(duration)} ms```', inline=False)
@@ -495,6 +495,7 @@ def setup(bot):
     bot.add_cog(Useful(bot))
     bot.add_cog(AAAAAA(bot))
     bot.context = Context
+
 
 def teardown(bot):
     bot.context = commands.Context

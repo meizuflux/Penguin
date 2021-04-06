@@ -435,7 +435,8 @@ class Economy(commands.Cog):
 
         self.bot.get_command(command).reset_cooldown(ctx)
         await self.bot.db.execute(query, 400, ctx.guild.id, ctx.author.id)
-        await ctx.send(embed=ctx.embed(description=f'Reset the command cooldown for the command `{command}` and subtracted **$400** from your account.'))
+        await ctx.send(embed=ctx.embed(
+            description=f'Reset the command cooldown for the command `{command}` and subtracted **$400** from your account.'))
 
     @commands.command(aliases=("bankrob", "bank-rob"))
     @commands.cooldown(rate=1, per=300, type=commands.BucketType.user)
