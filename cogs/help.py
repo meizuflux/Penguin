@@ -19,7 +19,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import difflib
 
-import discord
 from discord.ext import commands, menus
 
 

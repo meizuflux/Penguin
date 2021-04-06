@@ -19,7 +19,6 @@ import math
 
 import discord
 import humanize
-# from prettytable import PrettyTable
 import tabulate
 from discord.ext import commands, tasks
 

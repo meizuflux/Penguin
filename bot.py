@@ -19,7 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import asyncio
 import collections
 import datetime
-import json
+import logging
 import os
 import re
 
@@ -30,7 +30,14 @@ import discord
 import toml
 from discord.ext import commands
 
+from utils import Formatter
 from utils.default import Blacklisted, Maintenance
+
+logger = logging.getLogger("Walrus")
+logger.setLevel(logging.INFO)
+ch = logging.StreamHandler()
+ch.setFormatter(Formatter())
+logger.addHandler(ch)
 
 try:
     import uvloop
@@ -40,22 +47,27 @@ else:
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
+async def get_prefix(bot, message):
+    """Function for getting the command prefix."""
+    if not message.guild:
+        return commands.when_mentioned_or(bot.default_prefix)(bot, message)
+
+    if bot.prefixes[message.guild.id]:
+        return commands.when_mentioned_or(*bot.prefixes[message.guild.id])(bot, message)
+
+    bot.prefixes[message.guild.id].append(bot.default_prefix)
+    return commands.when_mentioned_or(*bot.prefixes[message.guild.id])(bot, message)
+
+
 class Walrus(commands.Bot):
-    """Subclassed Bot."""
-    def __init__(self):
-        self.bot = None
-        intents = discord.Intents.all()
-        super().__init__(
-            command_prefix=self.get_prefix,
-            case_insensitive=True,
-            intents=intents,
-            owner_ids={809587169520910346},
-            description="Walrus is a simple and easy-to-use Discord bot"
-        )
+    """Custom bot."""
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self._BotBase__cogs = commands.core._CaseInsensitiveDict()
 
         # Base variables for core functionality
-        self.settings = toml.loads(open("config.toml").read())
+        with open("config.toml") as f:
+            self.settings = toml.loads(f.read())
         self.author_id = 809587169520910346
         self.session = aiohttp.ClientSession()
         self.embed_color = 0x89CFF0
@@ -64,15 +76,15 @@ class Walrus(commands.Bot):
 
         # Cache so I don't have to use DB
         self.prefixes = collections.defaultdict(list)
-        self.command_list = []
         self.default_prefix = "p!"
+        self.command_list = []
         self.afk = {}
         self.highlights = {}
         self.blacklist = {}
         self.usage_counter = 0
         self.command_usage = collections.Counter()
 
-        # Webhook
+        # Webhooks
         self.error_webhook = discord.Webhook.from_url(
             self.settings["misc"]["error_webhook"],
             adapter=discord.AsyncWebhookAdapter(self.session)
@@ -90,21 +102,6 @@ class Walrus(commands.Bot):
         self.maintenance = False
         self.context = commands.Context
 
-    async def get_prefix(self, message):
-        """Function for getting the command prefix."""
-
-        if message.guild is None:
-            return commands.when_mentioned_or(self.default_prefix)(self, message)
-
-        if self.prefixes[message.guild.id]:
-            return commands.when_mentioned_or(*self.prefixes[message.guild.id])(self, message)
-
-        if not self.prefixes[message.guild.id]:
-            self.prefixes[message.guild.id].append(self.default_prefix)
-            return commands.when_mentioned_or(*self.prefixes[message.guild.id])(self, message)
-
-        return commands.when_mentioned_or(self.default_prefix)(self, message)
-
     async def try_user(self, user_id: int) -> discord.User:
         """Method to try and fetch a user from cache then fetch from API."""
         user = self.get_user(user_id)
@@ -112,37 +109,36 @@ class Walrus(commands.Bot):
             user = await self.fetch_user(user_id)
         return user
 
-    def starter(self):
+    def embed(self, ctx, **kwargs):
+        color = kwargs.pop("color", self.embed_color)
+        embed = discord.Embed(**kwargs, color=color)
+        embed.timestamp = ctx.message.created_at
+        embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
+        return embed
+
+    def run(self, *args, **kwargs):
         """Runs the bot."""
         try:
-            print("Connecting to database ...")
             pool_pg = self.loop.run_until_complete(asyncpg.create_pool(dsn=self.settings['tokens']['dsn']))
-            print("Connected to PostgreSQL server!")
+            logger.info("Connected to database")
         except Exception as e:
-            print("Could not connect to database:", e)
+            logger.error("Could not connect to database: %s", e)
         else:
-            print("Connecting to Discord ...")
-
             self.db = pool_pg
 
             for file in os.listdir("cogs"):
-                if not file.startswith("_"):
-                    self.load_extension(f'cogs.{file[:-3]}')
+                self.load_extension(f'cogs.{file[:-3]}')
             self.load_extension("jishaku")
+            logger.info("Loaded extensions")
+
             self.create_command_list()
 
-            self.uptime = datetime.datetime.utcnow()
-            self.run(self.settings['tokens']['bot'])
-
-    async def create_tables(self):
-        """Creates the needed SQL tables for this bot."""
-        await self.wait_until_ready()
-        with open("tables.sql") as f:
-            await self.db.execute(f.read())
+            self.start_time = datetime.datetime.utcnow()
+            super().run(*args, **kwargs)
 
     async def prep(self):
         await self.wait_until_ready()
-        with open("tables.sql") as f:
+        with open("schema.sql") as f:
             await self.db.execute(f.read())
 
         self.mention_match = re.compile(fr"^(<@!?{self.user.id}>)\s*")
@@ -150,10 +146,12 @@ class Walrus(commands.Bot):
         for guild in self.guilds:
             await self.db.execute("INSERT INTO guilds VALUES ($1) ON CONFLICT (guild_id) DO NOTHING", guild.id)
 
-        for guild in await self.db.fetch("SELECT * FROM prefixes"):
+        for guild in await self.db.fetch("SELECT guild_id, prefix FROM prefixes"):
             self.prefixes[guild['guild_id']].append(guild['prefix'])
 
         self.blacklist = dict(await self.db.fetch('SELECT user_id, reason FROM blacklist'))
+
+        logger.info("Created cache")
 
     def create_command_list(self):
         for command in self.commands:
@@ -211,28 +209,30 @@ class Walrus(commands.Bot):
 
     async def on_message_edit(self, before, after):
         """Check on command edit so that you don't have to retype your command."""
-        if before.author.id in self.owner_ids and not before.embeds and not after.embeds:
+        if before.author.id in self.owner_ids and before.content != after.content:
             await self.process_commands(after)
 
+    async def on_ready(self):
+        logger.info(f"Connected to Discord -> {str(self.user)} ({self.user.id})")
+        logger.info(f"Guilds -> {len(self.guilds)}\n")
+        logger.info(f"Commands -> {len(set(self.walk_commands()))}")
 
-bot = Walrus()
-bot.loop.create_task(bot.create_tables())
+
+intents = discord.Intents.default()
+intents.members = True
+bot = Walrus(
+    command_prefix=get_prefix,
+    case_insensitive=True,
+    intents=intents,
+    owner_ids={809587169520910346},
+    description="Walrus is a simple and easy-to-use Discord bot"
+)
 bot.loop.create_task(bot.prep())
 
 os.environ['JISHAKU_NO_UNDERSCORE'] = 'True'
 os.environ['JISHAKU_NO_DM_TRACEBACK'] = 'True'
 os.environ['JISHAKU_HIDE'] = 'True'
 os.environ["NO_COLOR"] = 'True'
-
-bot.loop.set_debug(True)
-
-
-@bot.event
-async def on_ready():
-    """Lets you know that the bot has run."""
-    print(f'{bot.user} has connected to Discord!\n'
-          f'Guilds: {len(bot.guilds)}\n'
-          f'Members: {str(sum([guild.member_count for guild in bot.guilds]))}')
 
 
 @bot.check
@@ -248,6 +248,5 @@ async def is_blacklisted(ctx):
         raise Blacklisted()
     return True
 
-
 if __name__ == "__main__":
-    bot.starter()
+    bot.run(bot.settings['tokens']['bot'])

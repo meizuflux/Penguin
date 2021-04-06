@@ -271,7 +271,8 @@ class Utilities(commands.Cog):
             "source": "{}".format(code)
         }
         timeout = aiohttp.ClientTimeout(total=60)
-        async with self.bot.session.post("https://emkc.org/api/v1/piston/execute", json=params, timeout=timeout) as resp:
+        async with self.bot.session.post("https://emkc.org/api/v1/piston/execute", json=params,
+                                         timeout=timeout) as resp:
             res = await resp.json()
             if resp.status == 400:
                 return await ctx.send(embed=ctx.embed(title='Error:', description=res['message']))
@@ -310,7 +311,7 @@ class Utilities(commands.Cog):
         )
 
         await ctx.send(file=discord.File(io.BytesIO(p.strip().encode("utf-8")), f"{ctx.author.name}_userdata.txt"))
-                                  
+
     @commands.command()
     async def serverdata(self, ctx):
         """
@@ -333,7 +334,6 @@ class Utilities(commands.Cog):
             for name, table in tables.items()
         )
         await ctx.send(file=discord.File(io.BytesIO(p.strip().encode("utf-8")), f"{ctx.guild.name}_userdata.txt"))
-                
 
 
 def setup(bot):
