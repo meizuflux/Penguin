@@ -46,8 +46,8 @@ class Events(commands.Cog):
             f"Name: {guild.name}\n"
             f"Owner: {guild.owner}\n"
             f"Boosts: {guild.premium_subscription_count}\n"
-            f"Members: {sum(not i.bot for i in guild.members)}\n"
-            f"Bots: {sum(not i.bot for i in guild.members)}"
+            f"Members: {len(tuple(i for i in guild.members if not i.bot))}\n"
+            f"Bots: {len(tuple(i for i in guild.members if i.bot))}"
         )
 
         message = (
@@ -66,8 +66,8 @@ class Events(commands.Cog):
             f"Name: {guild.name}\n"
             f"Owner: {guild.owner}\n"
             f"Boosts: {guild.premium_subscription_count}\n"
-            f"Members: {sum(not i.bot for i in guild.members)}\n"
-            f"Bots: {sum(not i.bot for i in guild.members)}"
+            f"Members: {len(tuple(i for i in guild.members if not i.bot))}\n"
+            f"Bots: {len(tuple(i for i in guild.members if i.bot))}"
         )
 
         message = (
