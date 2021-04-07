@@ -77,9 +77,35 @@ class CommandErrorHandler(commands.Cog):
 
         command = ctx.command.qualified_name
 
+        if isinstance(error, commands.MissingPermissions):
+            perms = "\n".join(error.missing_perms).replace("_", " ").replace("guild", "server").capitalize()
+            await ctx.send(f"You are missing permissions required for this command. "
+                           f"Check that you have these: {perms}")
+
+        if isinstance(error, commands.BotMissingPermissions):
+            perms = "\n".join(error.missing_perms).replace("_", " ").replace("guild", "server").capitalize()
+            await ctx.send(f"I am unable to run this command due to improper permissions. "
+                           f"Check that you have the following: \n{perms}")
+
         if isinstance(error, commands.CheckFailure):
+            if self.bot.maintenance:
+                return await ctx.send(embed=ctx.embed(title='⚠️ Maintenence mode is active.'))
+            if ctx.author.id in self.bot.blacklist:
+                reason = self.bot.blacklist.get(ctx.author.id, "No reason, you probably did something dumb.")
+                embed = ctx.embed(title='⚠️ You are blacklisted from using this bot globally.',
+                                  description=f'**Blacklisted For:** {reason}'
+                                              f'\n\nYou can join the support server [here]({self.bot.support_invite}) '
+                                              f'if you feel this is a mistake.')
+                try:
+                    await ctx.author.send(embed=embed)
+                except discord.Forbidden:
+                    await ctx.send(embed=embed)
+                finally:
+                    return
+
+
             return await ctx.send(embed=ctx.embed(
-                description=f'You do not have the correct permissions for `{command}`'
+                description=str(error)
             ))
 
         if isinstance(error, discord.Forbidden):
