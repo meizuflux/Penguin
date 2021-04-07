@@ -19,20 +19,6 @@ class CommandErrorHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        if isinstance(error, Maintenance):
-            return await ctx.send(embed=ctx.embed(title='⚠️ Maintenence mode is active.'))
-
-        if isinstance(error, Blacklisted):
-            reason = self.bot.blacklist.get(ctx.author.id, "No reason, you probably did something dumb.")
-            embed = ctx.embed(title='⚠️ You are blacklisted.',
-                              description=f'**Blacklisted For:** {reason}'
-                                          f'\n\nYou can join the support server [here]({self.bot.support_invite}) if you feel this is a mistake.')
-
-            try:
-                return await ctx.author.send(embed=embed)
-            except discord.Forbidden:
-                await ctx.send(embed=embed)
-
         if not isinstance(error, (commands.CommandNotFound, commands.CommandOnCooldown)):
             ctx.command.reset_cooldown(ctx)
 
@@ -49,7 +35,7 @@ class CommandErrorHandler(commands.Cog):
             return
 
         # ignored = (entry.CommandNotFound,)  # if you want to not send error messages
-        ignored = ()
+        ignored = (commands.CommandNotFound,)
 
         # Allows us to check for original exceptions raised and sent to CommandInvokeError.
         # If nothing is found. We keep the exception passed to on_command_error.
@@ -58,22 +44,6 @@ class CommandErrorHandler(commands.Cog):
         # Anything in ignored will return and prevent anything happening.
         if isinstance(error, ignored):
             return
-
-        if isinstance(error, commands.CommandNotFound):
-            failed_command = re.match(rf"^({ctx.prefix})\s*(.*)", ctx.message.content, flags=re.IGNORECASE).group(2)
-            matches = finder(failed_command, self.bot.command_list, lazy=False)
-            if not matches:
-                return
-            match = None
-            for command in matches:
-                cmd = self.bot.get_command(command)
-                if not await cmd.can_run(ctx):
-                    return
-                match = command
-                break
-            return await ctx.send(embed=ctx.embed(
-                description=f"No command called `{failed_command}` found. Did you mean `{match}`?"
-            ))
 
         command = ctx.command.qualified_name
 
@@ -130,22 +100,18 @@ class CommandErrorHandler(commands.Cog):
             return await ctx.send(embed=ctx.embed(description=f'`{command}` has been disabled.'))
 
         if isinstance(error, commands.BadArgument):
-            return await ctx.send(embed=ctx.embed(title=str(error),
-                                                  description=f'You provided a bad argument to `{command}`! View `{ctx.clean_prefix}help {command}` for more info on how to use this command.'))
+            return await ctx.send(embed=ctx.embed(title=str(error)))
 
         if isinstance(error, aiohttp.ServerTimeoutError):
             return await ctx.send(embed=ctx.embed(description=f"{command} timed out."))
 
-        print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
-        traceback.print_exception(type(error),
-                                  error,
-                                  error.__traceback__,
-                                  file=sys.stderr)
-
         formatted = traceback.format_exception(type(error), error, error.__traceback__)
         pretty_traceback = "".join(
-            prettify_exceptions.DefaultFormatter().format_exception(type(error), error, error.__traceback__)
+            prettify_exceptions.DefaultFormatter().format_exception(
+                type(error), error, error.__traceback__
+            )
         )
+
         desc = (
             f"Command: {ctx.invoked_with}\n"
             f"Full content: {ctx.escape(ctx.message.content)}\n"
@@ -157,13 +123,10 @@ class CommandErrorHandler(commands.Cog):
         embed = ctx.embed(title='AN ERROR OCCURED', url=await ctx.mystbin(pretty_traceback) + '.py', description=desc)
         await self.bot.error_webhook.send(f"```py\n{''.join(formatted)}```", embed=embed)
 
-        error = "".join(formatted)
-        if len(error) > 1700:
-            error = await ctx.mystbin(str(error)) + ".py"
-
         await ctx.send(
-            f"Something has gone wrong while executing `{command}`. You should not be seeing this, I have contacted my developer with information about this error.\n"
-            f"```py\n{error}\n```")
+            f"Oops, an error occured. Here's some info on it:"
+            f"```py\n{error}\n```"
+        )
 
 
 def setup(bot):
