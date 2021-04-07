@@ -14,6 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
+import discord
 
 """komodo stop stealing"""
 
@@ -167,8 +168,27 @@ class HelpCommand(commands.MinimalHelpCommand):
     async def on_help_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
             await self.send_error_message(await self.command_not_found(error))
-        else:
-            ctx.bot.dispatch("command_error", ctx, error)
+
+        if isinstance(error, commands.CheckFailure):
+            if ctx.bot.maintenance:
+                return await ctx.send(embed=ctx.embed(title='⚠️ Maintenence mode is active.'))
+            if ctx.author.id in self.ctx.blacklist:
+                reason = self.ctx.blacklist.get(ctx.author.id, "No reason, you probably did something dumb.")
+                embed = ctx.embed(
+                    title='⚠️ You are blacklisted from using this bot globally.',
+                    description=(f'**Blacklisted For:** {reason}'
+                                 f'\n\nYou can join the support server [here]({self.bot.support_invite}) '
+                                 f'if you feel this is a mistake.'
+                                 )
+                )
+                try:
+                    await ctx.author.send(embed=embed)
+                except discord.Forbidden:
+                    await ctx.send(embed=embed)
+                finally:
+                    return
+
+        await ctx.send(str(error))
 
     async def send_bot_help(self, mapping):
         ctx = self.context
