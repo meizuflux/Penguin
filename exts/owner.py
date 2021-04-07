@@ -37,14 +37,14 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
     async def cog_check(self, ctx):
         return ctx.author.id in self.bot.owner_ids
 
-    @commands.group(help='Some developer commands')
+    @commands.group(help='Some developer entry')
     async def dev(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(str(ctx.command))
 
     @dev.command()
     async def sql(self, ctx, *, query):
-        """Execute SQL commands."""
+        """Execute SQL entry."""
         start = perf_counter()
         response = await self.bot.db.fetch(query)
         end = perf_counter()
@@ -67,7 +67,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
                 return await ctx.send(embed=ctx.embed(description=f"There was a syntax error:```\n {error} ```"))
         await ctx.send(error)
 
-    @dev.command(help='Syncs with GitHub and reloads all cogs')
+    @dev.command(help='Syncs with GitHub and reloads all extensions')
     async def sync(self, ctx):
         proc = await asyncio.create_subprocess_shell("git pull", stdout=asyncio.subprocess.PIPE,
                                                      stderr=asyncio.subprocess.PIPE)
@@ -83,11 +83,11 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
                           description=f"```\nppotatoo@36vp:~/Walrus$ git pull\n{shell}\n```")
 
         error_collection = []
-        for file in os.listdir("cogs"):
+        for file in os.listdir("exts"):
             if file.endswith(".py"):
                 name = file[:-3]
                 try:
-                    self.bot.reload_extension(f"cogs.{name}")
+                    self.bot.reload_extension(f"exts.{name}")
                 except Exception as e:
                     _traceback = ''.join(traceback.format_tb(e.__traceback__))
                     error = '{1}{0}: {2}\n'.format(type(e).__name__, _traceback, e)
@@ -104,7 +104,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
             embed.add_field(name='Cog Reloading', value=f"Attempted to reload all extensions, was able to reload, "
                                                         f"however the following failed...\n\n{output}")
         else:
-            embed.add_field(name='Cog Reloading', value='```\nAll cogs were loaded successfully```')
+            embed.add_field(name='Ext Reloading', value='```\nAll extensions were loaded successfully```')
 
         await ctx.remove(embed=embed)
 

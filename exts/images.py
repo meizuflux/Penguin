@@ -21,14 +21,14 @@ import typing
 import discord
 from discord.ext import commands
 
-from cogs.polaroid_manipulation import get_image_url
+from exts.polaroid_manipulation import get_image_url
 from utils.argparse import Arguments
 
 NEKOBOT_URL = 'https://nekobot.xyz/api'
 
 
 class Images(commands.Cog):
-    """Some fun image commands."""
+    """Some fun image entry."""
 
     def __init__(self, bot):
         self.bot = bot

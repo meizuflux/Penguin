@@ -37,11 +37,11 @@ class Pictures(commands.Cog):
             purr = await resp.json()
         await ctx.send(embed=ctx.embed().set_image(url=purr.get('link')))
 
-    # @commands.command()
+    # @entry.command()
     # async def waifu(self, ctx):
     #     await self.send_waifu(ctx, "waifu")
 
-    # @commands.command()
+    # @entry.command()
     # async def neko(self, ctx):
     #     await self.send_waifu(ctx, "neko")
 

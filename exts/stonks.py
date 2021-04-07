@@ -30,7 +30,7 @@ FINNHUB_URL = "https://finnhub.io/api/v1/"
 class Stocks(commands.Cog, command_attrs=dict(hidden=False)):
     """
     Buy and sell stocks. Prices are directly related to real life prices.
-    This works with the Economy commands.
+    This works with the Economy entry.
     """
 
     def __init__(self, bot):

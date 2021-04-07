@@ -8,7 +8,7 @@ config.toml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
-/cogs/__pycache__/
+/exts/__pycache__/
 *.py[cod]
 *$py.class
 

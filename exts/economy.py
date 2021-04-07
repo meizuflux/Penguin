@@ -34,7 +34,7 @@ class Economy(commands.Cog):
     A unique Economy system. This is per-server specific, so your money will not carry over from server to server.
     Kicking the bot will reset the leaderboard, and all data will be lost.
     
-    For all the commands that ask you to provide an amount, there are some different ways you can use it. 
+    For all the entry that ask you to provide an amount, there are some different ways you can use it.
     You can call `all` or `max` to provide the max amount possible to use.
     You can say `half`, which is, well half.
     You can give a percentage, like `50%` to provide 50% of the max amount possible.
@@ -416,7 +416,7 @@ class Economy(commands.Cog):
         eco = self.bot.get_cog("Economy")
         if self.bot.get_command(command) not in eco.walk_commands():
             return await ctx.send(embed=ctx.embed(
-                description=f'You can only reset the cooldown for commands in this category. You can do `{ctx.clean_prefix}help Economy` to see all the commands.'))
+                description=f'You can only reset the cooldown for entry in this category. You can do `{ctx.clean_prefix}help Economy` to see all the entry.'))
         cash, _ = await get_stats(ctx, ctx.author.id)
         if command == 'daily':
             return await ctx.send(embed=ctx.embed(description=

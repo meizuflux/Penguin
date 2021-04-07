@@ -20,10 +20,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import difflib
 
 from discord.ext import commands, menus
+import utils
 
 
 def get_sig(ctx, command):
-    """Method to return a commands name and signature."""
+    """Method to return a entry name and signature."""
     sig = command.usage or command.signature
     if not sig and not command.parent:
         return f'`{ctx.clean_prefix}{command.name}`'
@@ -39,7 +40,7 @@ def add_formatting(ctx, command):
     return fmt.format(get_sig(ctx, command), command.short_doc)
 
 
-class HelpSource(menus.GroupByPageSource):
+class HelpSource(utils.HelpGroup):
     def __init__(self, ctx, data):
 
         cmds = []
@@ -49,27 +50,29 @@ class HelpSource(menus.GroupByPageSource):
                 if not command.hidden:
                     cmds.append(command)
 
-        super().__init__(cmds, key=lambda c: getattr(c.cog, 'qualified_name', 'Unsorted'), per_page=20)
+        super().__init__(cmds, per_page=20)
 
-    async def format_page(self, menu, commands):
+    async def format_page(self, menu, entry):
         ctx = menu.ctx
         current_page = f"{menu.current_page + 1}/{self.get_max_pages()}"
-        embed = menu.ctx.embed(title=f"{commands.key} | Page {current_page}",
-                               description="\n".join(add_formatting(ctx, command) for command in commands.items))
-        if commands.key == "AAAAAA":
+        embed = menu.ctx.embed(title=f"{entry.key} | Page {current_page}")
+
+        if menu.current_page == 0:
             description = (
                 "`<argument>` means the argument is required\n"
                 "`[argument]` means the argument is optional\n\n"
                 f"Type `{ctx.clean_prefix}help` `[command]` for more info on a command.\n"
                 f"You can also type `{ctx.clean_prefix}help` `[category]` for more info on a category.\n"
             )
-            embed = menu.ctx.embed(title=f'{ctx.bot.user.name} Help Command | Page {current_page}',
-                                   description=description)
+            embed.description = description
             embed.add_field(name="About", value=f"```yaml\n{ctx.bot.description}```", inline=False)
 
             embed.add_field(name="Useful Links",
                             value=f"[Invite Link]({ctx.bot.invite})\n"
                                   f"[Support Server Invite]({ctx.bot.support_invite})")
+        else:
+            embed.description = "\n".join(add_formatting(ctx, command) for command in entry.items)
+
         return embed
 
 
@@ -103,7 +106,7 @@ class HelpPages(menus.MenuPages):
 
 class HelpCommand(commands.MinimalHelpCommand):
     def get_command_signature(self, command):
-        """Method to return a commands name and signature."""
+        """Method to return a entry name and signature."""
         sig = command.usage or command.signature
         if not sig and not command.parent:
             return f'`{self.clean_prefix}{command.name}`'
