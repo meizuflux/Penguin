@@ -15,8 +15,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-import logging
-
 import discord
 from discord.ext import commands, tasks
 
@@ -123,3 +121,6 @@ class Events(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Events(bot))
+
+def teardown(bot):
+    logger = None
