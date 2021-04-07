@@ -101,7 +101,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
             )
             if len(output) > 1024: output = await ctx.mystbin(output.replace("`", "").replace("*", ""))
 
-            embed.add_field(name='Cog Reloading', value=f"Attempted to reload all extensions, was able to reload, "
+            embed.add_field(name='Ext Reloading', value=f"Attempted to reload all extensions, was able to reload, "
                                                         f"however the following failed...\n\n{output}")
         else:
             embed.add_field(name='Ext Reloading', value='```\nAll extensions were loaded successfully```')
