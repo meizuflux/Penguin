@@ -28,7 +28,7 @@ class Events(commands.Cog):
         self.change_presence.start()
         self.top_gg.start()
 
-        self.log = utils.create_logger("Events")
+        self.logger = utils.create_logger(self.__class__.__name__)
 
     def cog_unload(self):
         self.change_presence.cancel()
@@ -87,7 +87,7 @@ class Events(commands.Cog):
             await self.bot.change_presence(activity=activity)
 
             self.activity_type = 0
-            self.log.info(f"Set presence to Watching")
+            self.logger.info(f"Set presence to Watching")
 
             return  # need to return otherwise it just triggers the next if statement
 
@@ -97,7 +97,7 @@ class Events(commands.Cog):
             await self.bot.change_presence(activity=activity)
 
             self.activity_type = 1
-            self.log.info(f"Set presence to Listening")
+            self.logger.info(f"Set presence to Listening")
 
             return
 
@@ -115,10 +115,10 @@ class Events(commands.Cog):
 
             url = "https://top.gg/api/bots/810570659968057384/stats"
             await self.bot.session.post(url=url, headers=headers, data=payload)
-            self.log.info("Posted stats to top.gg")
+            self.logger.info("Posted stats to top.gg")
         except Exception as err:
             print(err)
-            self.log.error(f"Error when posting guild count: {err}")
+            self.logger.error(f"Error when posting guild count: {err}")
 
 
 def setup(bot):
