@@ -31,23 +31,18 @@ class CommandErrorHandler(commands.Cog):
         if isinstance(error, NotRegistered):
             return await ctx.send(str(error))
 
-        # This prevents any entry with local handlers being handled here in on_command_error.
         if hasattr(ctx.command, 'on_error'):
             return
 
-        # This prevents any cogs with an overwritten cog_command_error being handled here.
         cog = ctx.cog
         if cog and cog._get_overridden_method(cog.cog_command_error):
             return
 
-        # ignored = (entry.CommandNotFound,)  # if you want to not send error messages
+
         ignored = (commands.CommandNotFound,)
 
-        # Allows us to check for original exceptions raised and sent to CommandInvokeError.
-        # If nothing is found. We keep the exception passed to on_command_error.
         error = getattr(error, 'original', error)
 
-        # Anything in ignored will return and prevent anything happening.
         if isinstance(error, ignored):
             return
 
