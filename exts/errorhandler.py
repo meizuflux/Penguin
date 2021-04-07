@@ -38,7 +38,6 @@ class CommandErrorHandler(commands.Cog):
         if cog and cog._get_overridden_method(cog.cog_command_error):
             return
 
-
         ignored = (commands.CommandNotFound,)
 
         error = getattr(error, 'original', error)

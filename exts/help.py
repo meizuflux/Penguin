@@ -168,7 +168,7 @@ class HelpCommand(commands.MinimalHelpCommand):
         if isinstance(error, commands.CommandNotFound):
             await self.send_error_message(await self.command_not_found(error))
         else:
-            raise error
+            ctx.bot.dispatch("command_error", ctx, error)
 
     async def send_bot_help(self, mapping):
         ctx = self.context
