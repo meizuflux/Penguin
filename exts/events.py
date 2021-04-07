@@ -20,7 +20,7 @@ from discord.ext import commands, tasks
 
 import utils
 
-logger = utils.create_logger("Events")
+#logger = utils.create_logger("Events")
 
 
 class Events(commands.Cog):
@@ -87,7 +87,7 @@ class Events(commands.Cog):
             await self.bot.change_presence(activity=activity)
 
             self.activity_type = 0
-            logger.info(f"Set presence to Watching")
+            #logger.info(f"Set presence to Watching")
 
             return  # need to return otherwise it just triggers the next if statement
 
@@ -97,7 +97,7 @@ class Events(commands.Cog):
             await self.bot.change_presence(activity=activity)
 
             self.activity_type = 1
-            logger.info(f"Set presence to Listening")
+            #logger.info(f"Set presence to Listening")
 
             return
 
@@ -115,15 +115,13 @@ class Events(commands.Cog):
 
             url = "https://top.gg/api/bots/810570659968057384/stats"
             await self.bot.session.post(url=url, headers=headers, data=payload)
-            logger.info("Posted stats to top.gg")
+            #logger.info("Posted stats to top.gg")
         except Exception as err:
-            logger.error(f"Error when posting guild count: {err}")
+            print(err)
+            #logger.error(f"Error when posting guild count: {err}")
 
 
 def setup(bot):
     bot.add_cog(Events(bot))
 
-
-def teardown(bot):
-    logger = None
 
