@@ -118,7 +118,7 @@ class CommandErrorHandler(commands.Cog):
             return await ctx.send(embed=ctx.embed(title=str(error),
                                                   description=f'You provided a bad argument to `{command}`! View `{ctx.clean_prefix}help {command}` for more info on how to use this command.'))
 
-        if isinstance(error, aiohttp.TimeoutError):
+        if isinstance(error, aiohttp.ServerTimeoutError):
             return await ctx.send(embed=ctx.embed(description=f"{command} timed out."))
 
         print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
