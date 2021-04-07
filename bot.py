@@ -219,13 +219,13 @@ intents.invites = False
 intents.voice_states = False
 intents.typing = False
 
-flags = discord.MemberCacheFlags.from_intents()
+flags = discord.MemberCacheFlags.from_intents(intents)
 
 bot = Walrus(
     command_prefix=get_prefix,
     case_insensitive=True,
     intents=intents,
-    flags=flags,
+    member_cache_flags=flags,
     owner_ids={809587169520910346},
     description="Walrus is a simple and easy-to-use Discord bot"
 )
