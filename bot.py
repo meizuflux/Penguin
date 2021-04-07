@@ -226,6 +226,7 @@ bot = Walrus(
     case_insensitive=True,
     intents=intents,
     member_cache_flags=flags,
+    max_messages=250,
     owner_ids={809587169520910346},
     description="Walrus is a simple and easy-to-use Discord bot"
 )
