@@ -213,10 +213,19 @@ class Walrus(commands.Bot):
 
 intents = discord.Intents.default()
 intents.members = True
+intents.integrations = False
+intents.webhooks = False
+intents.invites = False
+intents.voice_states = False
+intents.typing = False
+
+flags = discord.MemberCacheFlags.from_intents()
+
 bot = Walrus(
     command_prefix=get_prefix,
     case_insensitive=True,
     intents=intents,
+    flags=flags,
     owner_ids={809587169520910346},
     description="Walrus is a simple and easy-to-use Discord bot"
 )
