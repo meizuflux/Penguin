@@ -226,7 +226,7 @@ bot = Walrus(
     case_insensitive=True,
     intents=intents,
     member_cache_flags=flags,
-    max_messages=250,
+    max_messages=750,
     owner_ids={809587169520910346},
     description="Walrus is a simple and easy-to-use Discord bot"
 )
@@ -240,16 +240,14 @@ os.environ["NO_COLOR"] = 'True'
 
 @bot.check
 async def is_maintenance(ctx):
-    if bot.maintenance and not await ctx.bot.is_owner(ctx.author):
-        raise Maintenance()
-    return True
+    if await ctx.bot.is_owner(ctx.author):
+        return True
+    return not ctx.bot.maintenance
 
 
 @bot.check
 async def is_blacklisted(ctx):
-    if ctx.author.id in bot.blacklist:
-        raise Blacklisted()
-    return True
+    return ctx.author.id not in ctx.bot.blacklist
 
 if __name__ == "__main__":
     bot.run(bot.settings['tokens']['bot'])
