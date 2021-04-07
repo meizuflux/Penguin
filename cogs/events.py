@@ -31,8 +31,6 @@ class Events(commands.Cog):
         self.change_presence.start()
         self.top_gg.start()
 
-        logger = utils.create_logger("Events")
-
     def cog_unload(self):
         self.change_presence.cancel()
         self.top_gg.cancel()
