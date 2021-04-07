@@ -1,16 +1,12 @@
-import re
-import sys
+import asyncio
 import traceback
 
-import aiohttp
 import discord
 import humanize
 import prettify_exceptions
 from discord.ext import commands
 
-from utils.default import Blacklisted, Maintenance
 from utils.eco import NotRegistered
-from utils.fuzzy import finder
 
 
 class CommandErrorHandler(commands.Cog):
@@ -19,6 +15,16 @@ class CommandErrorHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
+        owner_errors = (
+            commands.MissingAnyRole,
+            commands.MissingPermissions,
+            commands.MissingRole,
+            commands.CommandOnCooldown,
+            commands.DisabledCommand,
+        )
+        if await self.bot.is_owner(ctx.author.id) and isinstance(error, owner_errors):
+            return await ctx.reinvoke()
+
         if not isinstance(error, (commands.CommandNotFound, commands.CommandOnCooldown)):
             ctx.command.reset_cooldown(ctx)
 
@@ -31,7 +37,7 @@ class CommandErrorHandler(commands.Cog):
 
         # This prevents any cogs with an overwritten cog_command_error being handled here.
         cog = ctx.cog
-        if cog and cog._get_overridden_method(cog.cog_command_error) is not None:
+        if cog and cog._get_overridden_method(cog.cog_command_error):
             return
 
         # ignored = (entry.CommandNotFound,)  # if you want to not send error messages
@@ -52,10 +58,13 @@ class CommandErrorHandler(commands.Cog):
                 return await ctx.send(embed=ctx.embed(title='⚠️ Maintenence mode is active.'))
             if ctx.author.id in self.bot.blacklist:
                 reason = self.bot.blacklist.get(ctx.author.id, "No reason, you probably did something dumb.")
-                embed = ctx.embed(title='⚠️ You are blacklisted from using this bot globally.',
-                                  description=f'**Blacklisted For:** {reason}'
-                                              f'\n\nYou can join the support server [here]({self.bot.support_invite}) '
-                                              f'if you feel this is a mistake.')
+                embed = ctx.embed(
+                    title='⚠️ You are blacklisted from using this bot globally.',
+                    description=(f'**Blacklisted For:** {reason}'
+                                 f'\n\nYou can join the support server [here]({self.bot.support_invite}) '
+                                 f'if you feel this is a mistake.'
+                                 )
+                )
                 try:
                     await ctx.author.send(embed=embed)
                 except discord.Forbidden:
@@ -63,9 +72,11 @@ class CommandErrorHandler(commands.Cog):
                 finally:
                     return
 
-            return await ctx.send(embed=ctx.embed(
-                description=str(error)
-            ))
+            return await ctx.send(
+                embed=ctx.embed(
+                    description=str(error)
+                )
+            )
 
         if isinstance(error, discord.Forbidden):
             return await ctx.send(embed=ctx.embed(
@@ -76,9 +87,11 @@ class CommandErrorHandler(commands.Cog):
             retry = humanize.precisedelta(error.retry_after, minimum_unit='seconds')
             cd = error.cooldown
             embed = ctx.embed(
-                description=f"<a:countdown:827916388659363870> **{command}** is on cooldown. Try again in {retry}.\n"
-                            f"You can use this command **{cd.rate} {ctx.plural('time(s)', cd.rate)} every {humanize.precisedelta(cd.per, minimum_unit='seconds')}.\n"
-                            f"Type: {cd.type.name}"
+                description=(
+                    f"<a:countdown:827916388659363870> **{command}** is on cooldown. Try again in {retry}.\n"
+                    f"You can use this command **{cd.rate} {ctx.plural('time(s)', cd.rate)} every {humanize.precisedelta(cd.per, minimum_unit='seconds')}.\n"
+                    f"Type: {cd.type.name}"
+                )
             )
 
             return await ctx.send(embed=embed)
@@ -91,10 +104,14 @@ class CommandErrorHandler(commands.Cog):
 
         if isinstance(error, commands.MissingRequiredArgument):
             errors = str(error).split(" ", maxsplit=1)
-            return await ctx.send(embed=ctx.embed(
-                description=f'`{errors[0]}` {errors[1]}\n'
-                            f'You can view the help for this command with `{ctx.clean_prefix}help` `{command}`'
-            ))
+            return await ctx.send(
+                embed=ctx.embed(
+                    description=(
+                        f'`{errors[0]}` {errors[1]}\n'
+                        f'You can view the help for this command with `{ctx.clean_prefix}help` `{command}`'
+                    )
+                )
+            )
 
         if isinstance(error, commands.DisabledCommand):
             return await ctx.send(embed=ctx.embed(description=f'`{command}` has been disabled.'))
@@ -102,7 +119,7 @@ class CommandErrorHandler(commands.Cog):
         if isinstance(error, commands.BadArgument):
             return await ctx.send(embed=ctx.embed(title=str(error)))
 
-        if isinstance(error, aiohttp.ServerTimeoutError):
+        if isinstance(error, asyncio.TimeoutError):
             return await ctx.send(embed=ctx.embed(description=f"{command} timed out."))
 
         formatted = traceback.format_exception(type(error), error, error.__traceback__)
