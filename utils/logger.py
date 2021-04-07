@@ -25,7 +25,7 @@ class Formatter(logging.Formatter):
     red = "\x1b[31m"
     bold_red = "\x1b[31;1m"
     reset = "\x1b[0m"
-    _format = "%(asctime)s |:| LEVEL: %(levelname)s (%(name)s) |:| MESSAGE: %(message)s |:| FILE PATH: %(pathname)s LINE %(lineno)d"
+    _format = "LEVEL: %(levelname)s (%(name)s) |:| MESSAGE: %(message)s |:| FILE PATH: %(pathname)s LINE %(lineno)d"
 
     FORMATS = {
         logging.DEBUG: grey + _format + reset,
