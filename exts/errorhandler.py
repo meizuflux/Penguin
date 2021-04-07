@@ -77,16 +77,6 @@ class CommandErrorHandler(commands.Cog):
 
         command = ctx.command.qualified_name
 
-        if isinstance(error, commands.MissingPermissions):
-            perms = "\n".join(error.missing_perms).replace("_", " ").replace("guild", "server").capitalize()
-            await ctx.send(f"You are missing permissions required for this command. "
-                           f"Check that you have these: {perms}")
-
-        if isinstance(error, commands.BotMissingPermissions):
-            perms = "\n".join(error.missing_perms).replace("_", " ").replace("guild", "server").capitalize()
-            await ctx.send(f"I am unable to run this command due to improper permissions. "
-                           f"Check that you have the following: \n{perms}")
-
         if isinstance(error, commands.CheckFailure):
             if self.bot.maintenance:
                 return await ctx.send(embed=ctx.embed(title='⚠️ Maintenence mode is active.'))
@@ -102,7 +92,6 @@ class CommandErrorHandler(commands.Cog):
                     await ctx.send(embed=embed)
                 finally:
                     return
-
 
             return await ctx.send(embed=ctx.embed(
                 description=str(error)
