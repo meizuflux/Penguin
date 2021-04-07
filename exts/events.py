@@ -22,14 +22,13 @@ import utils
 
 logger = utils.create_logger("Events")
 
+
 class Events(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.activity_type = 1
         self.change_presence.start()
         self.top_gg.start()
-
-
 
     def cog_unload(self):
         self.change_presence.cancel()
@@ -124,5 +123,3 @@ class Events(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Events(bot))
-
-
