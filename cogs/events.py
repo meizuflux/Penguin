@@ -99,20 +99,22 @@ class Events(commands.Cog):
     @tasks.loop(minutes=10)
     async def top_gg(self):
         await self.bot.wait_until_ready()
-        payload = {
-            'server_count': len(self.bot.guilds)
-        }
+        try:
+            payload = {
+                'server_count': len(self.bot.guilds)
+            }
 
-        headers = {
-            'User-Agent': f"Walrus Discord Bot ({self.bot.user.id})",
-            'Content-Type': 'application/json',
-            'Authorization': self.bot.settings['keys']['top_gg']
-        }
+            headers = {
+                'User-Agent': f"Walrus Discord Bot ({self.bot.user.id})",
+                'Content-Type': 'application/json',
+                'Authorization': self.bot.settings['keys']['top_gg']
+            }
 
-        api_url = "https://top.gg/api"
-        async with self.bot.session.post(api_url + "/bots/stats", json=json.dumps(payload, ensure_ascii=True),
-                                         headers=headers):
-            logging.debug("Posted stats to top.gg")
+            url = "https://top.gg/api/bots/810570659968057384/stats"
+            await self.bot.session.post(url=url,headers=headers,data=payload)
+            logging.info("Posted stats to top.gg")
+        except Exception as err:
+            logging.warning(f"Error when posting guild count: {err}")
 
 
 def setup(bot):

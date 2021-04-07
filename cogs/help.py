@@ -101,7 +101,7 @@ class HelpPages(menus.MenuPages):
         self.stop()
 
 
-class PaginatedHelp(commands.MinimalHelpCommand):
+class HelpCommand(commands.MinimalHelpCommand):
     def get_command_signature(self, command):
         """Method to return a commands name and signature."""
         sig = command.usage or command.signature
@@ -228,17 +228,14 @@ class PaginatedHelp(commands.MinimalHelpCommand):
         return f"No command called `{string}` found. Did you mean `{match}`?"
 
 
-class Helpful(commands.Cog, command_attrs=dict(hidden=True)):
-    def __init__(self, bot):
-        self.bot = bot
-        self._original_help_command = bot.help_command
-        bot.help_command = PaginatedHelp(command_attrs=dict(hidden=True, aliases=['halp', 'h', 'help_command'],
-                                                            help='Literally shows this message. Jesus, do you really need this?'))
-        bot.help_command.cog = self
-
-    def cog_unload(self):
-        self.bot.help_command = self._original_help_command
-
-
 def setup(bot):
-    bot.add_cog(Helpful(bot))
+    bot.help_command = HelpCommand(
+        command_attrs=dict(
+            hidden=True,
+            aliases=['h']
+        )
+    )
+
+
+def teardown(bot):
+    bot.help_command = commands.MinimalHelpCommand()
