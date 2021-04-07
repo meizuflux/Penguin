@@ -74,7 +74,8 @@ class Utilities(commands.Cog):
                 return
             if e.is_usable():
                 emoji.append(str(e))
-        await message.channel.send(" ".join(emoji))
+        if emoji:
+            await message.channel.send(" ".join(emoji))
 
     @commands.command(help='Sends a list of the emojis that the bot can see.')
     async def emojis(self, ctx, search=None):
