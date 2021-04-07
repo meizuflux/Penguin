@@ -82,30 +82,6 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         embed = ctx.embed(title="Pulling from GitHub",
                           description=f"```\nppotatoo@36vp:~/Walrus$ git pull\n{shell}\n```")
 
-        error_collection = []
-        for file in os.listdir("exts"):
-            if file.endswith(".py"):
-                name = file[:-3]
-                try:
-                    self.bot.reload_extension(f"exts.{name}")
-                except Exception as e:
-                    _traceback = ''.join(traceback.format_tb(e.__traceback__))
-                    error = '{1}{0}: {2}\n'.format(type(e).__name__, _traceback, e)
-                    error_collection.append(
-                        [file, error]
-                    )
-
-        if error_collection:
-            output = "\n".join(
-                f"**{g[0]}** ```yaml\n{g[1].strip()}```" for g in error_collection
-            )
-            if len(output) > 1024: output = await ctx.mystbin(output.replace("`", "").replace("*", ""))
-
-            embed.add_field(name='Ext Reloading', value=f"Attempted to reload all extensions, was able to reload, "
-                                                        f"however the following failed...\n\n{output}")
-        else:
-            embed.add_field(name='Ext Reloading', value='```\nAll extensions were loaded successfully```')
-
         await ctx.remove(embed=embed)
 
     @dev.command()
