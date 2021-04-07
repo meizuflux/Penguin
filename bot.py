@@ -127,7 +127,8 @@ class Walrus(commands.Bot):
             self.db = pool_pg
 
             for file in os.listdir("cogs"):
-                self.load_extension(f'cogs.{file[:-3]}')
+                if not file.startswith("_"):
+                    self.load_extension(f'cogs.{file[:-3]}')
             self.load_extension("jishaku")
             logger.info("Loaded extensions")
 
