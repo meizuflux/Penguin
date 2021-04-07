@@ -34,7 +34,7 @@ from discord.ext import commands
 from discord.ext.commands.cooldowns import BucketType
 from jishaku.functools import executor_function
 
-from cogs.polaroid_manipulation import get_image_url
+from exts.polaroid_manipulation import get_image_url
 from utils.bottom import from_bottom, to_bottom
 
 mystbin_url = re.compile(
@@ -100,7 +100,7 @@ morse_dict = {
 
 
 class Fun(commands.Cog):
-    """For the fun commands."""
+    """For the fun entry."""
 
     def __init__(self, bot):
         self.bot = bot

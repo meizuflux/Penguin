@@ -180,7 +180,7 @@ class Polaroid(commands.Cog, command_attrs=dict(hidden=False)):
     async def oil(self, ctx, *, image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
         await self.send_polaroid(ctx, image, method='oil', args=[4, 55])
 
-    @commands.group(help='Some commands that apply simple filters.')
+    @commands.group(help='Some entry that apply simple filters.')
     async def filter(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(str(ctx.command))

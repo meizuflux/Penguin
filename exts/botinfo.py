@@ -23,7 +23,7 @@ import humanize
 import psutil
 from discord.ext import commands, menus
 
-from cogs.useful import TodoPages
+from exts.useful import TodoPages
 
 
 class CommandSource(menus.ListPageSource):
@@ -151,7 +151,7 @@ class BotInfo(commands.Cog):
         emb.set_author(name=self.bot.user.name, icon_url=self.bot.user.avatar_url)
         emb.add_field(name='Developer', value=f'```ppotatoo#9688```', inline=False)
         emb.add_field(name='Line Count', value=f'```{ls:,} lines```', inline=True)
-        emb.add_field(name='Command Count', value=f'```{len(set(self.bot.walk_commands())) - 31} commands```',
+        emb.add_field(name='Command Count', value=f'```{len(set(self.bot.walk_commands())) - 31} entry```',
                       inline=True)
         emb.add_field(name='Guild Count', value=f'```{str(len(self.bot.guilds))} guilds```', inline=True)
         emb.add_field(name='CPU Usage', value=f'```{cpu_usage:.2f}%```', inline=True)
