@@ -20,8 +20,6 @@ from discord.ext import commands, tasks
 
 import utils
 
-#logger = utils.create_logger("Events")
-
 
 class Events(commands.Cog):
     def __init__(self, bot):
@@ -29,6 +27,8 @@ class Events(commands.Cog):
         self.activity_type = 1
         self.change_presence.start()
         self.top_gg.start()
+
+        self.log = utils.create_logger("Events")
 
     def cog_unload(self):
         self.change_presence.cancel()
@@ -87,7 +87,7 @@ class Events(commands.Cog):
             await self.bot.change_presence(activity=activity)
 
             self.activity_type = 0
-            #logger.info(f"Set presence to Watching")
+            self.log.info(f"Set presence to Watching")
 
             return  # need to return otherwise it just triggers the next if statement
 
@@ -97,11 +97,11 @@ class Events(commands.Cog):
             await self.bot.change_presence(activity=activity)
 
             self.activity_type = 1
-            #logger.info(f"Set presence to Listening")
+            self.log.info(f"Set presence to Listening")
 
             return
 
-    @tasks.loop(minutes=10)
+    @tasks.loop(minutes=30)
     async def top_gg(self):
         await self.bot.wait_until_ready()
         try:
@@ -115,10 +115,10 @@ class Events(commands.Cog):
 
             url = "https://top.gg/api/bots/810570659968057384/stats"
             await self.bot.session.post(url=url, headers=headers, data=payload)
-            #logger.info("Posted stats to top.gg")
+            self.log.info("Posted stats to top.gg")
         except Exception as err:
             print(err)
-            #logger.error(f"Error when posting guild count: {err}")
+            self.log.error(f"Error when posting guild count: {err}")
 
 
 def setup(bot):
