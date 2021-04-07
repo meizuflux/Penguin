@@ -15,11 +15,12 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-import json
 import logging
 
 import discord
 from discord.ext import commands, tasks
+
+import utils
 
 
 class Events(commands.Cog):
@@ -28,6 +29,8 @@ class Events(commands.Cog):
         self.activity_type = 1
         self.change_presence.start()
         self.top_gg.start()
+
+        self.logger = utils.create_logger("Events")
 
     def cog_unload(self):
         self.change_presence.cancel()
@@ -105,16 +108,14 @@ class Events(commands.Cog):
             }
 
             headers = {
-                'User-Agent': f"Walrus Discord Bot ({self.bot.user.id})",
-                'Content-Type': 'application/json',
                 'Authorization': self.bot.settings['keys']['top_gg']
             }
 
             url = "https://top.gg/api/bots/810570659968057384/stats"
-            await self.bot.session.post(url=url,headers=headers,data=payload)
-            logging.info("Posted stats to top.gg")
+            await self.bot.session.post(url=url, headers=headers, data=payload)
+            self.logger.info("Posted stats to top.gg")
         except Exception as err:
-            logging.warning(f"Error when posting guild count: {err}")
+            self.logger.warning(f"Error when posting guild count: {err}")
 
 
 def setup(bot):

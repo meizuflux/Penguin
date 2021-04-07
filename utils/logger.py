@@ -39,3 +39,15 @@ class Formatter(logging.Formatter):
         log_fmt = self.FORMATS.get(record.levelno)
         formatter = logging.Formatter(log_fmt, "%m/%d/%Y %-I:%M:%S")
         return formatter.format(record)
+
+
+def create_logger(name: str) -> logging.Logger:
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.INFO)
+
+    ch = logging.StreamHandler()
+    ch.setFormatter(Formatter())
+
+    logger.addHandler(ch)
+
+    return logger
