@@ -22,6 +22,7 @@ class CommandErrorHandler(commands.Cog):
             commands.CommandOnCooldown,
             commands.DisabledCommand,
         )
+        await ctx.send(str(ctx.author))
         if await self.bot.is_owner(ctx.author) and isinstance(error, owner_errors):
             return await ctx.reinvoke()
 
