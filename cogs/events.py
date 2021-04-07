@@ -89,7 +89,7 @@ class Events(commands.Cog):
             await self.bot.change_presence(activity=activity)
 
             self.activity_type = 0
-            self.logger.info(f"Set presence to 'Watching {name}'")
+            self.logger.info(f"Set presence to Watching")
 
             return  # need to return otherwise it just triggers the next if statement
 
@@ -99,7 +99,7 @@ class Events(commands.Cog):
             await self.bot.change_presence(activity=activity)
 
             self.activity_type = 1
-            self.logger.info(f"Set presence to 'Listening to {name}'")
+            self.logger.info(f"Set presence to Listening")
 
             return
 
