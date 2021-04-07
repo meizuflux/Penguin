@@ -30,7 +30,7 @@ import discord
 import toml
 from discord.ext import commands
 
-from utils import Formatter
+from utils import Formatter, Timer
 from utils.default import Blacklisted, Maintenance
 
 logger = logging.getLogger("Walrus")
@@ -68,9 +68,9 @@ class Walrus(commands.Bot):
         # Base variables for core functionality
         with open("config.toml") as f:
             self.settings = toml.loads(f.read())
-        self.author_id = 809587169520910346
         self.session = aiohttp.ClientSession()
         self.embed_color = 0x89CFF0
+
         self.support_invite = self.settings['misc']['support_server_invite']
         self.invite = self.settings['misc']['invite']
 
@@ -214,8 +214,8 @@ class Walrus(commands.Bot):
             await self.process_commands(after)
 
     async def on_ready(self):
-        logger.info(f"Connected to Discord -> {str(self.user)} ({self.user.id})")
-        logger.info(f"Guilds -> {len(self.guilds)}\n")
+        logger.info(f"Connected to Discord -> {str(self.user)}")
+        logger.info(f"Guilds -> {len(self.guilds)}")
         logger.info(f"Commands -> {len(set(self.walk_commands()))}")
 
 
