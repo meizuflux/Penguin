@@ -1,2 +1,2 @@
-from .logger import Formatter
+from .logger import create_logger
 from .timer import Timer

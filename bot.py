@@ -19,7 +19,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import asyncio
 import collections
 import datetime
-import logging
 import os
 import re
 
@@ -30,14 +29,10 @@ import discord
 import toml
 from discord.ext import commands
 
-from utils import Formatter, Timer
+from utils import create_logger
 from utils.default import Blacklisted, Maintenance
 
-logger = logging.getLogger("Walrus")
-logger.setLevel(logging.INFO)
-ch = logging.StreamHandler()
-ch.setFormatter(Formatter())
-logger.addHandler(ch)
+logger = create_logger("Walrus")
 
 try:
     import uvloop
