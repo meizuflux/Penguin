@@ -85,18 +85,22 @@ class Events(commands.Cog):
         await self.bot.wait_until_ready()
         if self.activity_type == 1:
             name = f"{len(self.bot.guilds)} servers | {len(self.bot.users)} users"
-
             activity = discord.Activity(type=discord.ActivityType.watching, name=name)
             await self.bot.change_presence(activity=activity)
+
             self.activity_type = 0
-            return
+            self.logger.info(f"Set presence to 'Watching {name}'")
+
+            return  # need to return otherwise it just triggers the next if statement
 
         if self.activity_type == 0:
             name = f"@{self.bot.user.name}"
             activity = discord.Activity(type=discord.ActivityType.listening, name=name)
-
             await self.bot.change_presence(activity=activity)
+
             self.activity_type = 1
+            self.logger.info(f"Set presence to 'Listening to {name}'")
+
             return
 
     @tasks.loop(minutes=10)
