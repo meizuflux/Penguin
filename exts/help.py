@@ -172,12 +172,12 @@ class HelpCommand(commands.MinimalHelpCommand):
         if isinstance(error, commands.CheckFailure):
             if ctx.bot.maintenance:
                 return await ctx.send(embed=ctx.embed(title='⚠️ Maintenence mode is active.'))
-            if ctx.author.id in self.ctx.blacklist:
-                reason = self.ctx.blacklist.get(ctx.author.id, "No reason, you probably did something dumb.")
+            if ctx.author.id in ctx.bot.blacklist:
+                reason = ctx.bot.blacklist.get(ctx.author.id, "No reason, you probably did something dumb.")
                 embed = ctx.embed(
                     title='⚠️ You are blacklisted from using this bot globally.',
                     description=(f'**Blacklisted For:** {reason}'
-                                 f'\n\nYou can join the support server [here]({self.bot.support_invite}) '
+                                 f'\n\nYou can join the support server [here]({ctx.bot.support_invite}) '
                                  f'if you feel this is a mistake.'
                                  )
                 )
