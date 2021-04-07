@@ -193,14 +193,11 @@ class Walrus(commands.Bot):
         if message.author.bot or not self.is_ready() or perms != 2:
             return
         if self.mention_match.fullmatch(message.content):
-            if self.prefixes[message.guild.id]:
-                server_prefix = bot.prefixes[message.guild.id]
-            else:
-                await self.db.execute("INSERT INTO prefixes(guild_id,prefix) VALUES($1,$2)", message.guild.id,
-                                      self.default_prefix)
-                server_prefix = self.default_prefix
-            await message.channel.send(
-                "My prefixes on `{}` are \n[ `{}` ]".format(message.guild.name, "` | `".join(server_prefix)))
+            ctx = await self.get_context(message)
+            prefix_command = self.get_command("prefix all")
+
+            await prefix_command(ctx)
+
         await self.process_commands(message)
 
     async def on_message_edit(self, before, after):
