@@ -22,6 +22,7 @@ import utils
 
 logger = utils.create_logger("Events")
 
+
 class Events(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -121,6 +122,7 @@ class Events(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Events(bot))
+
 
 def teardown(bot):
     logger = None
