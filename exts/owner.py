@@ -79,8 +79,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         if stderr:
             shell = f'[stderr]\n{stderr.decode()}'
 
-        embed = ctx.embed(title="Pulling from GitHub",
-                          description=f"```\nppotatoo@36vp:~/Walrus$ git pull\n{shell}\n```")
+        embed = ctx.embed(description=f"```\nppotatoo@36vp:~/Walrus$ git pull\n{shell}\n```")
 
         await ctx.remove(embed=embed)
 
