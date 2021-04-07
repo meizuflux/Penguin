@@ -69,8 +69,10 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
 
     @dev.command(help='Syncs with GitHub and reloads all extensions')
     async def sync(self, ctx):
-        proc = await asyncio.create_subprocess_shell("git pull", stdout=asyncio.subprocess.PIPE,
-                                                     stderr=asyncio.subprocess.PIPE)
+        proc = await asyncio.create_subprocess_shell(
+            "git pull", stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE
+        )
 
         stdout, stderr = await proc.communicate()
 
@@ -79,7 +81,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         if stderr:
             shell = f'[stderr]\n{stderr.decode()}'
 
-        embed = ctx.embed(description=f"```\nppotatoo@36vp:~/Walrus$ git pull\n{shell}\n```")
+        embed = ctx.embed(description=f"```\n$ git pull\n{shell}\n```")
 
         await ctx.remove(embed=embed)
 
