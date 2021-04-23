@@ -402,8 +402,8 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
             "WHERE user_id = $1 ORDER BY sort_date"
         )
         todos = await self.bot.db.fetch(sql, ctx.author.id)
-        todo = todos[id - 1]["todo"]
-        pro = humanize.naturaltime(datetime.datetime.utcnow() - todos[id - 1]["time"])
+        todo = todos[task_id - 1]["todo"]
+        pro = humanize.naturaltime(datetime.datetime.utcnow() - todos[task_id - 1]["time"])
         embed = ctx.embed(title=f'Task `{task_id}`', description=todo)
         embed.add_field(name='Info',
                         value=f"This todo was created **{pro}**.\n[`Jump to the creation message`]({todos[task_id - 1]['jump_url']})")
@@ -436,7 +436,7 @@ class Useful(commands.Cog, command_attrs=dict(hidden=False)):
         )
 
         todos = await self.bot.db.fetch(sql, ctx.author.id)
-        if id > len(todos):
+        if task_id > len(todos):
             return await ctx.send(f"You only have {len(todos)} {ctx.plural('task(s)', len(todos))}")
         await ctx.send(todos[task_id - 1]['todo'], allowed_mentions=discord.AllowedMentions().none())
 
