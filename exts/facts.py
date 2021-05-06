@@ -31,13 +31,12 @@ class Facts(commands.Cog):
 
     @tasks.loop(seconds=20)
     async def insert(self):
+        cache = self.cached_facts
         with open("assets/facts.json") as facts:
-            if self.cached_facts == json.loads(facts.read()):
-                logging.info("weird")
+            if cache == json.loads(facts.read()):
                 return
         with open("assets/facts.json", "w") as f:
-            json.dump(self.cached_facts, f, indent=4)
-            logging.info("should be done now")
+            json.dump(cache, f, indent=4)
 
     async def animal_fact(self, ctx, animal):
         async with self.bot.session.get(f"https://some-random-api.ml/facts/{animal}") as f:
