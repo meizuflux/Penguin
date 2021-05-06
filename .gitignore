@@ -4,7 +4,7 @@ config.py
 config.toml
 
 #misc
-facts.json
+#facts.json
 
 # pycharm stuff
 .idea/
