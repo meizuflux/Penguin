@@ -40,6 +40,8 @@ class Facts(commands.Cog):
 
     async def animal_fact(self, ctx, animal):
         async with self.bot.session.get(f"https://some-random-api.ml/facts/{animal}") as f:
+            if not f.ok:
+                return await ctx.send(f"Error code {f.status}. Text: {await f.read()}")
             data = await f.json()
         fact = data.get("fact", ERROR_MESSAGE)
         embed = ctx.embed(title="Did you know...", description=fact)
