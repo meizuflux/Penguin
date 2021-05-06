@@ -14,19 +14,38 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
+import json
+from discord.ext import commands, tasks
 
-from discord.ext import commands
+ERROR_MESSAGE = "Sorry, it looks like something went wrong here."
 
 
 class Facts(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        with open("assets/facts.json") as facts:
+            self.cached_facts = json.loads(facts.read())
+
+        self.insert.start()
+
+    @tasks.loop(seconds=20)
+    async def insert(self):
+        with open("assets/facts.json") as facts:
+            if self.cached_facts == json.loads(facts.read()):
+                return
+        with open("assets/facts.json") as f:
+            json.dump(self.cached_facts, f, indent=4)
 
     async def animal_fact(self, ctx, animal):
         async with self.bot.session.get(f"https://some-random-api.ml/facts/{animal}") as f:
             data = await f.json()
-        embed = ctx.embed(title="Did you know...", description=data.get("fact", "The API isn't working right now."))
+        fact = data.get("fact", ERROR_MESSAGE)
+        embed = ctx.embed(title="Did you know...", description=fact)
         await ctx.send(embed=embed)
+
+        cached_facts = self.cached_facts[f"{animal}_facts"]
+        if fact not in cached_facts and fact != ERROR_MESSAGE:
+            cached_facts.append(fact)
 
     @commands.command(aliases=['dogfact'])
     async def dog_fact(self, ctx):

@@ -3,6 +3,9 @@ config.json
 config.py
 config.toml
 
+#misc
+facts.json
+
 # pycharm stuff
 .idea/
 
