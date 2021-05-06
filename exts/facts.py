@@ -16,6 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 import json
 from discord.ext import commands, tasks
+import logging
 
 ERROR_MESSAGE = "Sorry, it looks like something went wrong here."
 
@@ -32,9 +33,11 @@ class Facts(commands.Cog):
     async def insert(self):
         with open("assets/facts.json") as facts:
             if self.cached_facts == json.loads(facts.read()):
+                logging.info("weird")
                 return
         with open("assets/facts.json") as f:
             json.dump(self.cached_facts, f, indent=4)
+            logging.info("should be done now")
 
     async def animal_fact(self, ctx, animal):
         async with self.bot.session.get(f"https://some-random-api.ml/facts/{animal}") as f:
