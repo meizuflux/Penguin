@@ -262,14 +262,15 @@ class Utilities(commands.Cog):
         Arguments:
             `language`: The coding language you want to run code in. List is above.
             `code`: The code you want to execute."""
-        lang = language.lower()
+        lang = language.lower().strip('`')
         code = code.strip('`')
         first_line = code.splitlines()[0]
         if re.fullmatch(r'( |[\w]*)\b', first_line):
             code = code[len(first_line) + 1:]
         params = {
-            "language": f"{lang}",
-            "source": "{}".format(code)
+            "language": lang,
+            "source": code,
+            "log": 0
         }
         timeout = aiohttp.ClientTimeout(total=60)
         async with self.bot.session.post("https://emkc.org/api/v1/piston/execute", json=params,
