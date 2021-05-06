@@ -122,7 +122,7 @@ class Walrus(commands.Bot):
             self.db = pool_pg
 
             for file in os.listdir("exts"):
-                if not file.startswith("_"):
+                if not file.startswith("_") and file.endswith(".py"):
                     self.load_extension(f'exts.{file[:-3]}')
             self.load_extension("jishaku")
             logger.info("Loaded extensions")
