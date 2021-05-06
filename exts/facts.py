@@ -35,7 +35,7 @@ class Facts(commands.Cog):
             if self.cached_facts == json.loads(facts.read()):
                 logging.info("weird")
                 return
-        with open("assets/facts.json") as f:
+        with open("assets/facts.json", "w") as f:
             json.dump(self.cached_facts, f, indent=4)
             logging.info("should be done now")
 
