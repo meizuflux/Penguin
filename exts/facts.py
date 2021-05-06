@@ -43,7 +43,7 @@ class Facts(commands.Cog):
             if not f.ok:
                 return await ctx.send(f"Error code {f.status}. Text: {await f.read()}")
             data = await f.json()
-        fact = data.get("fact", ERROR_MESSAGE)
+        fact = str(data.get("fact", ERROR_MESSAGE))
         embed = ctx.embed(title="Did you know...", description=fact)
         await ctx.send(embed=embed)
 
