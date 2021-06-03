@@ -52,16 +52,15 @@ class Events(commands.Cog):
             f"Bots: {len(tuple(i for i in guild.members if i.bot))}"
         )
 
-        message = (
-            "I got kicked from a server:\n"
-            f"```yaml\n{stats}```"
-        )
+        message = "I got kicked from a server:\n" f"```yaml\n{stats}```"
         await self.bot.guild_webhook.send(message)
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
         await self.bot.db.execute("INSERT INTO guilds (guild_id) VALUES ($1)", guild.id)
-        await self.bot.db.execute("INSERT INTO prefixes VALUES($1,$2)", guild.id, self.bot.default_prefix)
+        await self.bot.db.execute(
+            "INSERT INTO prefixes VALUES($1,$2)", guild.id, self.bot.default_prefix
+        )
         self.bot.prefixes[guild.id].append(self.bot.default_prefix)
 
         stats = (
@@ -72,10 +71,7 @@ class Events(commands.Cog):
             f"Bots: {len(tuple(i for i in guild.members if i.bot))}"
         )
 
-        message = (
-            "I joined a new server:\n"
-            f"```yaml\n{stats}```"
-        )
+        message = "I joined a new server:\n" f"```yaml\n{stats}```"
         await self.bot.guild_webhook.send(message)
 
     @tasks.loop(minutes=5)
@@ -105,13 +101,9 @@ class Events(commands.Cog):
     async def top_gg(self):
         await self.bot.wait_until_ready()
         try:
-            payload = {
-                'server_count': len(self.bot.guilds)
-            }
+            payload = {"server_count": len(self.bot.guilds)}
 
-            headers = {
-                'Authorization': self.bot.settings['keys']['top_gg']
-            }
+            headers = {"Authorization": self.bot.settings["keys"]["top_gg"]}
 
             url = "https://top.gg/api/bots/810570659968057384/stats"
             await self.bot.session.post(url=url, headers=headers, data=payload)

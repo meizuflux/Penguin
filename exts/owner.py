@@ -37,7 +37,7 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
     async def cog_check(self, ctx):
         return ctx.author.id in self.bot.owner_ids
 
-    @commands.group(help='Some developer entry')
+    @commands.group(help="Some developer entry")
     async def dev(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(str(ctx.command))
@@ -49,37 +49,46 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         response = await self.bot.db.fetch(query)
         end = perf_counter()
         if len(response) == 0:
-            return await ctx.message.add_reaction('✅')
-        table = tabulate.tabulate((dict(item) for item in response),
-                                  headers="keys",
-                                  tablefmt="github")
-        if len(table) > 2000: table = await ctx.mystbin(table)
+            return await ctx.message.add_reaction("✅")
+        table = tabulate.tabulate(
+            (dict(item) for item in response), headers="keys", tablefmt="github"
+        )
+        if len(table) > 2000:
+            table = await ctx.mystbin(table)
         await ctx.send(
-            embed=ctx.embed(description=f'Query took {(end - start) * 1000} ms to execute.\n```yaml\n{table}```'))
+            embed=ctx.embed(
+                description=f"Query took {(end - start) * 1000} ms to execute.\n```yaml\n{table}```"
+            )
+        )
 
     @sql.error
     async def sql_error_handling(self, ctx, error):
         if isinstance(error, commands.CommandInvokeError):
             error = error.original
             if isinstance(error, asyncpg.exceptions.UndefinedTableError):
-                return await ctx.send(embed=ctx.embed(description="This table does not exist."))
+                return await ctx.send(
+                    embed=ctx.embed(description="This table does not exist.")
+                )
             if isinstance(error, asyncpg.exceptions.PostgresSyntaxError):
-                return await ctx.send(embed=ctx.embed(description=f"There was a syntax error:```\n {error} ```"))
+                return await ctx.send(
+                    embed=ctx.embed(
+                        description=f"There was a syntax error:```\n {error} ```"
+                    )
+                )
         await ctx.send(error)
 
-    @dev.command(help='Syncs with GitHub and reloads all extensions')
+    @dev.command(help="Syncs with GitHub and reloads all extensions")
     async def sync(self, ctx):
         proc = await asyncio.create_subprocess_shell(
-            "git pull", stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE
+            "git pull", stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
         )
 
         stdout, stderr = await proc.communicate()
 
         if stdout:
-            shell = f'[stdout]\n{stdout.decode()}'
+            shell = f"[stdout]\n{stdout.decode()}"
         if stderr:
-            shell = f'[stderr]\n{stderr.decode()}'
+            shell = f"[stderr]\n{stderr.decode()}"
 
         embed = ctx.embed(description=f"```\n$ git pull\n{shell}\n```")
 
@@ -88,14 +97,14 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
     @dev.command()
     async def reboot(self, ctx):
         """Calls bot.close() and lets the systems service handler restart it."""
-        answer, message = await ctx.confirm('Click to confirm.')
+        answer, message = await ctx.confirm("Click to confirm.")
         if not answer:
-            return await message.edit(content='Cancelled.')
+            return await message.edit(content="Cancelled.")
 
-        await message.edit(content='Shutting down.')
+        await message.edit(content="Shutting down.")
         await self.bot.close()
 
-    @dev.command(aliases=['del'])
+    @dev.command(aliases=["del"])
     async def delete(self, ctx, message: discord.Message = None):
         """Deletes the given message."""
         if ctx.message.reference:
@@ -120,12 +129,14 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         try:
             source_lines, _ = inspect.getsourcelines(command.callback)
         except (TypeError, OSError):
-            return await ctx.send(f"Was unable to retrieve the source for `{command}` for some reason.")
+            return await ctx.send(
+                f"Was unable to retrieve the source for `{command}` for some reason."
+            )
 
         # getsourcelines for some reason returns WITH line endings
-        source_lines = ''.join(source_lines).split('\n')
+        source_lines = "".join(source_lines).split("\n")
 
-        paginator = WrappedPaginator(prefix='```py', suffix='```', max_size=1985)
+        paginator = WrappedPaginator(prefix="```py", suffix="```", max_size=1985)
         for num, line in enumerate(source_lines, start=1):
             paginator.add_line(f"{str(num)} {ctx.escape(line)}")
 
@@ -154,10 +165,14 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
     @change.command(name="username")
     @commands.is_owner()
     async def change_username(self, ctx, *, name: str):
-        """ Change username."""
+        """Change username."""
         try:
             await self.bot.user.edit(username=name)
-            await ctx.send(embed=ctx.embed(description=f"Successfully changed username to **{name}**"))
+            await ctx.send(
+                embed=ctx.embed(
+                    description=f"Successfully changed username to **{name}**"
+                )
+            )
         except discord.HTTPException as err:
             await ctx.send(embed=ctx.embed(description=err))
 
@@ -168,9 +183,15 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         try:
             await ctx.guild.me.edit(nick=name)
             if name:
-                await ctx.send(embed=ctx.embed(description=f"Successfully changed nickname to **{name}**"))
+                await ctx.send(
+                    embed=ctx.embed(
+                        description=f"Successfully changed nickname to **{name}**"
+                    )
+                )
             else:
-                await ctx.send(embed=ctx.embed(description="Successfully removed nickname"))
+                await ctx.send(
+                    embed=ctx.embed(description="Successfully removed nickname")
+                )
         except Exception as err:
             await ctx.send(err)
 
@@ -182,21 +203,30 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         if url is None and len(ctx.message.attachments) == 1:
             url = ctx.message.attachments[0].url
         else:
-            url = url.strip('<>') if url else None
+            url = url.strip("<>") if url else None
 
         try:
             bio = await cs.get(url, res_method="read")
             await self.bot.user.edit(avatar=bio)
-            await ctx.send(embed=ctx.embed(description=f"Successfully changed the avatar. Currently using:\n{url}"))
+            await ctx.send(
+                embed=ctx.embed(
+                    description=f"Successfully changed the avatar. Currently using:\n{url}"
+                )
+            )
         except aiohttp.InvalidURL:
             await ctx.send(embed=ctx.embed(description="The URL is invalid..."))
         except discord.InvalidArgument:
-            await ctx.send(embed=ctx.embed(description="This URL does not contain a usable image"))
+            await ctx.send(
+                embed=ctx.embed(description="This URL does not contain a usable image")
+            )
         except discord.HTTPException as err:
             await ctx.send(embed=ctx.embed(description=err))
         except TypeError:
             await ctx.send(
-                embed=ctx.embed(description="You need to either provide an image URL or upload one with the command"))
+                embed=ctx.embed(
+                    description="You need to either provide an image URL or upload one with the command"
+                )
+            )
 
 
 def setup(bot):

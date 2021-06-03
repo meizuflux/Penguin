@@ -39,7 +39,9 @@ class Facts(commands.Cog):
             json.dump(cache, f, indent=4)
 
     async def animal_fact(self, ctx, animal):
-        async with self.bot.session.get(f"https://some-random-api.ml/facts/{animal}") as f:
+        async with self.bot.session.get(
+            f"https://some-random-api.ml/facts/{animal}"
+        ) as f:
             if not f.ok:
                 return await ctx.send(f"Error code {f.status}. Text: {await f.read()}")
             data = await f.json()
@@ -51,57 +53,57 @@ class Facts(commands.Cog):
         if fact not in cached_facts and fact != ERROR_MESSAGE:
             cached_facts.append(fact)
 
-    @commands.command(aliases=['dogfact'])
+    @commands.command(aliases=["dogfact"])
     async def dog_fact(self, ctx):
         """Sends a dog fact."""
         await self.animal_fact(ctx, "dog")
 
-    @commands.command(aliases=['catfact'])
+    @commands.command(aliases=["catfact"])
     async def cat_fact(self, ctx):
         """Sends a cat fact."""
         await self.animal_fact(ctx, "cat")
 
-    @commands.command(aliases=['pandafact'])
+    @commands.command(aliases=["pandafact"])
     async def panda_fact(self, ctx):
         """Sends a panda fact."""
         await self.animal_fact(ctx, "panda")
 
-    @commands.command(aliases=['foxfact'])
+    @commands.command(aliases=["foxfact"])
     async def fox_fact(self, ctx):
         """Sends a fox fact."""
         await self.animal_fact(ctx, "fox")
 
-    @commands.command(aliases=['birdfact'])
+    @commands.command(aliases=["birdfact"])
     async def bird_fact(self, ctx):
         """Sends a bird fact."""
         await self.animal_fact(ctx, "bird")
 
-    @commands.command(aliases=['koalafact'])
+    @commands.command(aliases=["koalafact"])
     async def koala_fact(self, ctx):
         """Sends a koala fact."""
         await self.animal_fact(ctx, "koala")
 
-    @commands.command(aliases=['kangaroofact'])
+    @commands.command(aliases=["kangaroofact"])
     async def kangaroo_fact(self, ctx):
         """Sends a kangaroo fact."""
         await self.animal_fact(ctx, "kangaroo")
 
-    @commands.command(aliases=['racoonfact'])
+    @commands.command(aliases=["racoonfact"])
     async def racoon_fact(self, ctx):
         """Sends a racoon fact."""
         await self.animal_fact(ctx, "racoon")
 
-    @commands.command(aliases=['elephantfact'])
+    @commands.command(aliases=["elephantfact"])
     async def elephant_fact(self, ctx):
         """Sends a elephant fact."""
         await self.animal_fact(ctx, "elephant")
 
-    @commands.command(aliases=['giraffefact'])
+    @commands.command(aliases=["giraffefact"])
     async def giraffe_fact(self, ctx):
         """Sends a giraffe fact."""
         await self.animal_fact(ctx, "giraffe")
 
-    @commands.command(aliases=['whalefact'])
+    @commands.command(aliases=["whalefact"])
     async def whale_fact(self, ctx):
         """Sends a whale fact."""
         await self.animal_fact(ctx, "whale")

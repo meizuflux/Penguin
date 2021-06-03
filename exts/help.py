@@ -28,16 +28,16 @@ def get_sig(ctx, command):
     """Method to return a entry name and signature."""
     sig = command.usage or command.signature
     if not sig and not command.parent:
-        return f'`{ctx.clean_prefix}{command.name}`'
+        return f"`{ctx.clean_prefix}{command.name}`"
     if not command.parent:
-        return f'`{ctx.clean_prefix}{command.name}` `{sig}`'
+        return f"`{ctx.clean_prefix}{command.name}` `{sig}`"
     if not sig:
-        return f'`{ctx.clean_prefix}{command.parent}` `{command.name}`'
-    return f'`{ctx.clean_prefix}{command.parent}` `{command.name}` `{sig}`'
+        return f"`{ctx.clean_prefix}{command.parent}` `{command.name}`"
+    return f"`{ctx.clean_prefix}{command.parent}` `{command.name}` `{sig}`"
 
 
 def add_formatting(ctx, command):
-    fmt = '{0} \N{EN DASH} {1}' if command.short_doc else '{0}'
+    fmt = "{0} \N{EN DASH} {1}" if command.short_doc else "{0}"
     return fmt.format(get_sig(ctx, command), command.short_doc)
 
 
@@ -66,13 +66,19 @@ class HelpSource(utils.HelpGroup):
                 f"You can also type `{ctx.clean_prefix}help` `[category]` for more info on a category.\n"
             )
             embed.description = description
-            embed.add_field(name="About", value=f"```yaml\n{ctx.bot.description}```", inline=False)
+            embed.add_field(
+                name="About", value=f"```yaml\n{ctx.bot.description}```", inline=False
+            )
 
-            embed.add_field(name="Useful Links",
-                            value=f"[Invite Link]({ctx.bot.invite})\n"
-                                  f"[Support Server Invite]({ctx.bot.support_invite})")
+            embed.add_field(
+                name="Useful Links",
+                value=f"[Invite Link]({ctx.bot.invite})\n"
+                f"[Support Server Invite]({ctx.bot.support_invite})",
+            )
         else:
-            embed.description = "\n".join(add_formatting(ctx, command) for command in entry.items)
+            embed.description = "\n".join(
+                add_formatting(ctx, command) for command in entry.items
+            )
 
         return embed
 
@@ -80,7 +86,10 @@ class HelpSource(utils.HelpGroup):
 class CogSource(menus.ListPageSource):
     def __init__(self, cog):
         _commands = list(cog.get_commands())
-        cmds = sorted([command for command in _commands if not command.hidden], key=lambda c: c.qualified_name)
+        cmds = sorted(
+            [command for command in _commands if not command.hidden],
+            key=lambda c: c.qualified_name,
+        )
         super().__init__(cmds, per_page=20)
 
     async def format_page(self, menu, cmds):
@@ -98,8 +107,7 @@ class CogSource(menus.ListPageSource):
 
 
 class HelpPages(menus.MenuPages):
-
-    @menus.button('\N{BLACK SQUARE FOR STOP}\ufe0f', position=menus.Last(2))
+    @menus.button("\N{BLACK SQUARE FOR STOP}\ufe0f", position=menus.Last(2))
     async def end_menu(self, _):
         await self.message.delete()
         self.stop()
@@ -110,12 +118,12 @@ class HelpCommand(commands.MinimalHelpCommand):
         """Method to return a entry name and signature."""
         sig = command.usage or command.signature
         if not sig and not command.parent:
-            return f'`{self.clean_prefix}{command.name}`'
+            return f"`{self.clean_prefix}{command.name}`"
         if not command.parent:
-            return f'`{self.clean_prefix}{command.name}` `{sig}`'
+            return f"`{self.clean_prefix}{command.name}` `{sig}`"
         if not sig:
-            return f'`{self.clean_prefix}{command.parent}` `{command.name}`'
-        return f'`{self.clean_prefix}{command.parent}` `{command.name}` `{sig}`'
+            return f"`{self.clean_prefix}{command.parent}` `{command.name}`"
+        return f"`{self.clean_prefix}{command.parent}` `{command.name}` `{sig}`"
 
     async def send_error_message(self, error):
         ctx = self.context
@@ -128,23 +136,23 @@ class HelpCommand(commands.MinimalHelpCommand):
 
     def add_bot_commands_formatting(self, commands, heading):
         if commands:
-            joined = '`,\u2002`'.join(c.name for c in commands)
+            joined = "`,\u2002`".join(c.name for c in commands)
             emoji_dict = {
-                'economy': "💵",
-                'fun': "<:hahayes:739613910180692020>",
-                'polaroid': "📸",
-                'prefixes': "<:shrug:747680403778699304>",
-                'useful': "<:bruhkitty:739613862302711840>",
-                'utilities': "⚙️",
+                "economy": "💵",
+                "fun": "<:hahayes:739613910180692020>",
+                "polaroid": "📸",
+                "prefixes": "<:shrug:747680403778699304>",
+                "useful": "<:bruhkitty:739613862302711840>",
+                "utilities": "⚙️",
                 "music": "<:bruhkitty:739613862302711840>",
                 "jishaku": "<:verycool:739613733474795520>",
                 "stocks": "<:stonks:817178220213567509>",
-                "animepics": "<:prettythumbsup:806390638044119050>"
+                "animepics": "<:prettythumbsup:806390638044119050>",
             }
             emoji = emoji_dict[heading.lower()]
             self.paginator.add_line(f'{emoji if emoji else ""}  **{heading}**')
 
-            self.paginator.add_line(f'> `{joined}`')
+            self.paginator.add_line(f"> `{joined}`")
 
     def get_ending_note(self):
         command_name = self.invoked_with
@@ -162,8 +170,14 @@ class HelpCommand(commands.MinimalHelpCommand):
             await destination.send(await ctx.remove(embed=ctx.embed(description=page)))
 
     def add_subcommand_formatting(self, command):
-        fmt = '{0} \N{EN DASH} {1}' if command.short_doc else '{0} \N{EN DASH} This command is not documented'
-        self.paginator.add_line(fmt.format(self.get_command_signature(command), command.short_doc))
+        fmt = (
+            "{0} \N{EN DASH} {1}"
+            if command.short_doc
+            else "{0} \N{EN DASH} This command is not documented"
+        )
+        self.paginator.add_line(
+            fmt.format(self.get_command_signature(command), command.short_doc)
+        )
 
     async def on_help_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
@@ -171,15 +185,20 @@ class HelpCommand(commands.MinimalHelpCommand):
 
         if isinstance(error, commands.CheckFailure):
             if ctx.bot.maintenance:
-                return await ctx.send(embed=ctx.embed(title='⚠️ Maintenence mode is active.'))
+                return await ctx.send(
+                    embed=ctx.embed(title="⚠️ Maintenence mode is active.")
+                )
             if ctx.author.id in ctx.bot.blacklist:
-                reason = ctx.bot.blacklist.get(ctx.author.id, "No reason, you probably did something dumb.")
+                reason = ctx.bot.blacklist.get(
+                    ctx.author.id, "No reason, you probably did something dumb."
+                )
                 embed = ctx.embed(
-                    title='⚠️ You are blacklisted from using this bot globally.',
-                    description=(f'**Blacklisted For:** {reason}'
-                                 f'\n\nYou can join the support server [here]({ctx.bot.support_invite}) '
-                                 f'if you feel this is a mistake.'
-                                 )
+                    title="⚠️ You are blacklisted from using this bot globally.",
+                    description=(
+                        f"**Blacklisted For:** {reason}"
+                        f"\n\nYou can join the support server [here]({ctx.bot.support_invite}) "
+                        f"if you feel this is a mistake."
+                    ),
                 )
                 try:
                     await ctx.author.send(embed=embed)
@@ -195,7 +214,9 @@ class HelpCommand(commands.MinimalHelpCommand):
         bot = ctx.bot
 
         nono = ["jishaku", "owner", "commanderrorhandler", "helpful"]
-        data = [cog for cog in bot.cogs.values() if cog.qualified_name.lower() not in nono]
+        data = [
+            cog for cog in bot.cogs.values() if cog.qualified_name.lower() not in nono
+        ]
         data = sorted(data, key=lambda c: c.qualified_name)
         pages = HelpPages(source=HelpSource(ctx, data))
 
@@ -209,7 +230,9 @@ class HelpCommand(commands.MinimalHelpCommand):
 
     async def send_cog_help(self, cog):
         if cog.qualified_name == "AAAAAA":
-            return await self.send_error_message(await self.command_not_found(cog.qualified_name))
+            return await self.send_error_message(
+                await self.command_not_found(cog.qualified_name)
+            )
         ctx = self.context
 
         pages = HelpPages(source=CogSource(cog))
@@ -218,18 +241,27 @@ class HelpCommand(commands.MinimalHelpCommand):
 
     def get_command_help(self, command):
         ctx = self.context
-        embed = ctx.embed(title=self.get_command_signature(command),
-                          description=self.get_help(command, brief=False))
+        embed = ctx.embed(
+            title=self.get_command_signature(command),
+            description=self.get_help(command, brief=False),
+        )
         if alias := command.aliases:
-            embed.add_field(name="Aliases", value=f"```{', '.join(alias)}```", inline=False)
+            embed.add_field(
+                name="Aliases", value=f"```{', '.join(alias)}```", inline=False
+            )
         if isinstance(command, commands.Group):
             subcommand = command.commands
             value = "\n".join(
                 f'{self.get_command_signature(c)} \N{EN DASH} {c.short_doc if c.short_doc else "This command is not documented"}'
-                for c in subcommand)
+                for c in subcommand
+            )
             if len(value) > 1024:
-                value = "\n".join(f'{self.get_command_signature(c)}' for c in subcommand)
-            embed.add_field(name=ctx.plural("Subcommand(s)", len(subcommand)), value=value)
+                value = "\n".join(
+                    f"{self.get_command_signature(c)}" for c in subcommand
+                )
+            embed.add_field(
+                name=ctx.plural("Subcommand(s)", len(subcommand)), value=value
+            )
 
         return embed
 
@@ -252,12 +284,7 @@ class HelpCommand(commands.MinimalHelpCommand):
 
 
 def setup(bot):
-    bot.help_command = HelpCommand(
-        command_attrs=dict(
-            hidden=True,
-            aliases=['h']
-        )
-    )
+    bot.help_command = HelpCommand(command_attrs=dict(hidden=True, aliases=["h"]))
 
 
 def teardown(bot):

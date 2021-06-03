@@ -34,7 +34,16 @@ from utils.fuzzy import finder
 
 
 class DeletedMessage:
-    __slots__ = ('author', 'content', 'channel', 'guild', 'created_at', 'deleted_at', 'del_embed', 'attachment')
+    __slots__ = (
+        "author",
+        "content",
+        "channel",
+        "guild",
+        "created_at",
+        "deleted_at",
+        "del_embed",
+        "attachment",
+    )
 
     def __init__(self, message):
         self.author = message.author
@@ -77,21 +86,26 @@ class Utilities(commands.Cog):
         if emoji:
             await message.channel.send(" ".join(emoji))
 
-    @commands.command(help='Sends a list of the emojis that the bot can see.')
+    @commands.command(help="Sends a list of the emojis that the bot can see.")
     async def emojis(self, ctx, search=None):
         emojis = []
         if search:
-            result = finder(text=search, collection=self.bot.emojis, key=lambda emoji: emoji.name, lazy=False)
+            result = finder(
+                text=search,
+                collection=self.bot.emojis,
+                key=lambda emoji: emoji.name,
+                lazy=False,
+            )
             if result == []:
                 return await ctx.send("Nothing found for your query.")
             for emoji in result:
                 emojis.append(f"{str(emoji)} `{emoji.name}`")
-            paginator = WrappedPaginator(prefix='', suffix='', max_size=500)
+            paginator = WrappedPaginator(prefix="", suffix="", max_size=500)
         else:
             for emoji in self.bot.emojis:
                 emojis.append(f"{str(emoji)} `{emoji.name}`")
-            paginator = WrappedPaginator(prefix='', suffix='', max_size=1000)
-        paginator.add_line('\n'.join(emojis))
+            paginator = WrappedPaginator(prefix="", suffix="", max_size=1000)
+        paginator.add_line("\n".join(emojis))
         interface = PaginatorInterface(ctx.bot, paginator, owner=ctx.author)
         await interface.send_to(ctx)
 
@@ -109,22 +123,28 @@ class Utilities(commands.Cog):
         for col in range(1, cols):
             for row in range(1, rows):
                 cost = 0 if s[row - 1] == t[col - 1] else 2
-                distance[row][col] = min(distance[row - 1][col] + 1,  # Cost of deletions
-                                         distance[row][col - 1] + 1,  # Cost of insertions
-                                         distance[row - 1][col - 1] + cost)  # Cost of substitutions
+                distance[row][col] = min(
+                    distance[row - 1][col] + 1,  # Cost of deletions
+                    distance[row][col - 1] + 1,  # Cost of insertions
+                    distance[row - 1][col - 1] + cost,
+                )  # Cost of substitutions
         Ratio = ((len(s) + len(t)) - distance[row][col]) / (len(s) + len(t))
         return int(Ratio * 100)
 
-    @commands.command(help='Compares the similarity of two strings')
+    @commands.command(help="Compares the similarity of two strings")
     async def fuzzy(self, ctx, string1, string2):
         result = await self.levenshtein_match_calc(string1, string2)
-        await ctx.send(embed=ctx.embed(description=f'`{string1}` and `{string2}` are `{result}%` similar.'))
+        await ctx.send(
+            embed=ctx.embed(
+                description=f"`{string1}` and `{string2}` are `{result}%` similar."
+            )
+        )
 
     @fuzzy.error
     async def fuzzy_error(self, ctx, error):
         await ctx.send(embed=ctx.embed(description="Invalid string provided."))
 
-    @commands.command(help='Posts text to https://mystb.in', aliases=['paste'])
+    @commands.command(help="Posts text to https://mystb.in", aliases=["paste"])
     async def mystbin(self, ctx, *, text=None):
         filenames = (".txt", ".py", ".json", ".html", ".csv")
 
@@ -137,32 +157,40 @@ class Utilities(commands.Cog):
                 try:
                     attachment = ref.cached_message.attachments[0]
                 except IndexError:
-                    return await ctx.send("The message you replied to did not have a valid attachment.")
-                if (ref.cached_message.attachments and attachment.filename.endswith(filenames)):
+                    return await ctx.send(
+                        "The message you replied to did not have a valid attachment."
+                    )
+                if ref.cached_message.attachments and attachment.filename.endswith(
+                    filenames
+                ):
                     syntax = attachment.filename.split(".")[1]
                     message = await attachment.read()
                     decoded_message = message.decode("utf-8")
-                    result = f'{await ctx.mystbin(decoded_message)}.{syntax}'
+                    result = f"{await ctx.mystbin(decoded_message)}.{syntax}"
 
             else:
-                message = await self.bot.get_channel(ctx.message.reference.channel_id).fetch_message(ref.message_id)
-                if message.attachments and message.attachments.filename.endswith(filenames):
+                message = await self.bot.get_channel(
+                    ctx.message.reference.channel_id
+                ).fetch_message(ref.message_id)
+                if message.attachments and message.attachments.filename.endswith(
+                    filenames
+                ):
                     syntax = message.attachments[0].filename.split(".")[1]
                     message_ = await message.attachments[0].read()
                     decoded_message = message_.decode("utf-8")
-                    result = f'{await ctx.mystbin(decoded_message)}.{syntax}'
+                    result = f"{await ctx.mystbin(decoded_message)}.{syntax}"
 
         if text is None:
             try:
                 attachment = ctx.message.attachments[0]
             except IndexError:
-                return await ctx.send('You need to provide text or an attachment.')
+                return await ctx.send("You need to provide text or an attachment.")
             if attachment:
                 syntax = attachment.filename.split(".")[1]
                 if attachment.filename.endswith(filenames):
                     message = await message.read()
                     decoded_message = message.decode("utf-8")
-                    result = f'{await ctx.mystbin(decoded_message)}.{syntax}'
+                    result = f"{await ctx.mystbin(decoded_message)}.{syntax}"
 
         await ctx.send(embed=ctx.embed(description=result))
 
@@ -181,17 +209,23 @@ class Utilities(commands.Cog):
         try:
             msg = await self.bot.http.get_message(ctx.channel.id, message.id)
         except discord.NotFound:
-            return await ctx.send(embed=ctx.embed(description="Sorry, I couldn't find that message."))
+            return await ctx.send(
+                embed=ctx.embed(description="Sorry, I couldn't find that message.")
+            )
 
         raw = json.dumps(msg, indent=4)
         if len(raw) > 1989:
-            return await ctx.send(embed=ctx.embed(description=f'{await ctx.mystbin(raw)}.json'))
+            return await ctx.send(
+                embed=ctx.embed(description=f"{await ctx.mystbin(raw)}.json")
+            )
         await ctx.send(embed=ctx.embed(description=f"```json\n{ctx.escape(raw)}```"))
 
-    @commands.command(help='Randomly generates a password', aliases=['pw', 'pwd'])
+    @commands.command(help="Randomly generates a password", aliases=["pw", "pwd"])
     async def password(self, ctx, length=16):
         if length > 94:
-            return await ctx.send(embed=ctx.embed(description='Sorry, 94 characters is the limit.'))
+            return await ctx.send(
+                embed=ctx.embed(description="Sorry, 94 characters is the limit.")
+            )
         lower = string.ascii_lowercase
         upper = string.ascii_uppercase
         num = string.digits
@@ -199,28 +233,40 @@ class Utilities(commands.Cog):
 
         total = lower + upper + num + symbols
 
-        password = ''.join(secrets.choice(total) for i in range(length))
-        embed = ctx.embed(description=f'{length} digit random password:```\n{ctx.escape(password)}```')
+        password = "".join(secrets.choice(total) for i in range(length))
+        embed = ctx.embed(
+            description=f"{length} digit random password:```\n{ctx.escape(password)}```"
+        )
         await ctx.author.send(embed=embed)
-        await ctx.send(embed=ctx.embed(description=f'Messaged you with the password, {ctx.author.mention}'))
+        await ctx.send(
+            embed=ctx.embed(
+                description=f"Messaged you with the password, {ctx.author.mention}"
+            )
+        )
 
-    @commands.command(help='Checks where a URL redirects. WARNING NOT 100% ACCURATE',
-                      aliases=['redirectchecker', 'redirectcheck', 'redirect_check'])
+    @commands.command(
+        help="Checks where a URL redirects. WARNING NOT 100% ACCURATE",
+        aliases=["redirectchecker", "redirectcheck", "redirect_check"],
+    )
     async def redirect_checker(self, ctx, url):
-        url_regex = re.compile(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+")
+        url_regex = re.compile(
+            r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
+        )
         match = url_regex.match(url)
         if not match:
-            raise commands.BadArgument('Invalid URL provided.')
+            raise commands.BadArgument("Invalid URL provided.")
         async with self.bot.session.get(url) as redirect:
-            await ctx.send(embed=ctx.embed(description=f'`{str(redirect.real_url)}`'))
+            await ctx.send(embed=ctx.embed(description=f"`{str(redirect.real_url)}`"))
 
-    @commands.command(aliases=['ip', 'iplookup'])
+    @commands.command(aliases=["ip", "iplookup"])
     async def ipcheck(self, ctx, ip):
-        async with self.bot.session.get(f'http://ip-api.com/json/{ip}?fields=16969727') as resp:
+        async with self.bot.session.get(
+            f"http://ip-api.com/json/{ip}?fields=16969727"
+        ) as resp:
             ip = await resp.json()
-        if ip["status"] == 'fail':
+        if ip["status"] == "fail":
             return await ctx.send(f'Invalid IP. Error message:\n`{ip["message"]}`')
-        await ctx.send(f'```json\n{json.dumps(ip, indent=4)}```')
+        await ctx.send(f"```json\n{json.dumps(ip, indent=4)}```")
 
     @commands.command()
     async def percentage(self, ctx, percentage: str, number: int):
@@ -232,23 +278,29 @@ class Utilities(commands.Cog):
     @commands.command(cls=flags.FlagCommand, usage='<text> [--ext ".py"]')
     async def text(self, ctx, text, **flags):
         """Writes text to a file."""
-        ext = flags['ext'] if flags['ext'].startswith(".") else "." + flags['ext']
+        ext = flags["ext"] if flags["ext"].startswith(".") else "." + flags["ext"]
         buffer = io.BytesIO(text.encode("utf8"))
 
         await ctx.send(file=discord.File(fp=buffer, filename=f"{ctx.author.name}{ext}"))
 
     @commands.command()
     async def shorten(self, ctx, url: str):
-        url_regex = re.compile(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+")
+        url_regex = re.compile(
+            r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
+        )
         match = url_regex.match(url)
         if not match:
-            raise commands.BadArgument('Invalid URL provided.')
+            raise commands.BadArgument("Invalid URL provided.")
         if match:
-            async with self.bot.session.get('https://clck.ru/--?url=' + match[0]) as f:
+            async with self.bot.session.get("https://clck.ru/--?url=" + match[0]) as f:
                 short = await f.text()
-                await ctx.send(embed=ctx.embed(description=f"<{short.strip()}> now redirects to <{url}>"))
+                await ctx.send(
+                    embed=ctx.embed(
+                        description=f"<{short.strip()}> now redirects to <{url}>"
+                    )
+                )
 
-    @commands.command(aliases=['execute'])
+    @commands.command(aliases=["execute"])
     async def run(self, ctx, language: str, *, code: str):
         """Runs code in a language.
         You can use codeblocks, or you can just use plain-text.
@@ -262,31 +314,34 @@ class Utilities(commands.Cog):
         Arguments:
             `language`: The coding language you want to run code in. List is above.
             `code`: The code you want to execute."""
-        lang = language.lower().strip('`')
-        code = code.strip('`')
+        lang = language.lower().strip("`")
+        code = code.strip("`")
         first_line = code.splitlines()[0]
-        if re.fullmatch(r'( |[\w]*)\b', first_line):
-            code = code[len(first_line) + 1:]
-        params = {
-            "language": lang,
-            "source": code,
-            "log": 0
-        }
+        if re.fullmatch(r"( |[\w]*)\b", first_line):
+            code = code[len(first_line) + 1 :]
+        params = {"language": lang, "source": code, "log": 0}
         timeout = aiohttp.ClientTimeout(total=60)
-        async with self.bot.session.post("https://emkc.org/api/v1/piston/execute", json=params,
-                                         timeout=timeout) as resp:
+        async with self.bot.session.post(
+            "https://emkc.org/api/v1/piston/execute", json=params, timeout=timeout
+        ) as resp:
             res = await resp.json()
             if resp.status == 400:
-                return await ctx.send(embed=ctx.embed(title='Error:', description=res['message']))
-        result = res['output'].strip()
+                return await ctx.send(
+                    embed=ctx.embed(title="Error:", description=res["message"])
+                )
+        result = res["output"].strip()
         if len(result) > 2000 or len(result.split("\n")) > 15:
-            return await ctx.send(f'Output was too long so I put it here => {await ctx.mystbin(result)}')
+            return await ctx.send(
+                f"Output was too long so I put it here => {await ctx.mystbin(result)}"
+            )
         await ctx.send(f"```\n{result}```")
 
-    @commands.command(aliases=['calc'])
+    @commands.command(aliases=["calc"])
     async def math(self, ctx, *, expr: str):
         params = {"expr": expr}
-        async with self.bot.session.get("https://api.mathjs.org/v4/", params=params) as f:
+        async with self.bot.session.get(
+            "https://api.mathjs.org/v4/", params=params
+        ) as f:
             result = await f.text()
         await ctx.send(f"```yaml\n{result}```")
 
@@ -300,19 +355,25 @@ class Utilities(commands.Cog):
         """
         tables = {"todos": None, "economy": None, "highlights": None}
         for table in tables:
-            response = await self.bot.db.fetch(f"SELECT * FROM {table} WHERE user_id = $1", ctx.author.id)
+            response = await self.bot.db.fetch(
+                f"SELECT * FROM {table} WHERE user_id = $1", ctx.author.id
+            )
             if len(response) == 0:
                 continue
-            tables[table] = tabulate((dict(item) for item in response),
-                                     headers="keys",
-                                     tablefmt="github")
+            tables[table] = tabulate(
+                (dict(item) for item in response), headers="keys", tablefmt="github"
+            )
 
         p = "".join(
             "\n\n" + str(name.upper()) + ":\n" + (table or f"No data.")
             for name, table in tables.items()
         )
 
-        await ctx.send(file=discord.File(io.BytesIO(p.strip().encode("utf-8")), f"{ctx.author.name}_userdata.txt"))
+        await ctx.send(
+            file=discord.File(
+                io.BytesIO(p.strip().encode("utf-8")), f"{ctx.author.name}_userdata.txt"
+            )
+        )
 
     @commands.command()
     async def serverdata(self, ctx):
@@ -324,18 +385,24 @@ class Utilities(commands.Cog):
         """
         tables = {"prefixes": None, "economy": None, "guilds": None, "highlights": None}
         for table in tables:
-            response = await self.bot.db.fetch(f"SELECT * FROM {table} WHERE guild_id = $1", ctx.guild.id)
+            response = await self.bot.db.fetch(
+                f"SELECT * FROM {table} WHERE guild_id = $1", ctx.guild.id
+            )
             if len(response) == 0:
                 continue
-            tables[table] = tabulate((dict(item) for item in response),
-                                     headers="keys",
-                                     tablefmt="github")
+            tables[table] = tabulate(
+                (dict(item) for item in response), headers="keys", tablefmt="github"
+            )
 
         p = "".join(
             "\n\n" + str(name.upper()) + ":\n" + (table or f"No data.")
             for name, table in tables.items()
         )
-        await ctx.send(file=discord.File(io.BytesIO(p.strip().encode("utf-8")), f"{ctx.guild.name}_userdata.txt"))
+        await ctx.send(
+            file=discord.File(
+                io.BytesIO(p.strip().encode("utf-8")), f"{ctx.guild.name}_userdata.txt"
+            )
+        )
 
 
 def setup(bot):
