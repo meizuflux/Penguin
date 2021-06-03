@@ -25,13 +25,15 @@ class CommandErrorHandler(commands.Cog):
         if await self.bot.is_owner(ctx.author) and isinstance(error, owner_errors):
             return await ctx.reinvoke()
 
-        if not isinstance(error, (commands.CommandNotFound, commands.CommandOnCooldown)):
+        if not isinstance(
+            error, (commands.CommandNotFound, commands.CommandOnCooldown)
+        ):
             ctx.command.reset_cooldown(ctx)
 
         if isinstance(error, NotRegistered):
             return await ctx.send(str(error))
 
-        if hasattr(ctx.command, 'on_error'):
+        if hasattr(ctx.command, "on_error"):
             return
 
         cog = ctx.cog
@@ -40,7 +42,7 @@ class CommandErrorHandler(commands.Cog):
 
         ignored = (commands.CommandNotFound,)
 
-        error = getattr(error, 'original', error)
+        error = getattr(error, "original", error)
 
         if isinstance(error, ignored):
             return
@@ -49,15 +51,20 @@ class CommandErrorHandler(commands.Cog):
 
         if isinstance(error, commands.CheckFailure):
             if self.bot.maintenance:
-                return await ctx.send(embed=ctx.embed(title='⚠️ Maintenence mode is active.'))
+                return await ctx.send(
+                    embed=ctx.embed(title="⚠️ Maintenence mode is active.")
+                )
             if ctx.author.id in self.bot.blacklist:
-                reason = self.bot.blacklist.get(ctx.author.id, "No reason, you probably did something dumb.")
+                reason = self.bot.blacklist.get(
+                    ctx.author.id, "No reason, you probably did something dumb."
+                )
                 embed = ctx.embed(
-                    title='⚠️ You are blacklisted from using this bot globally.',
-                    description=(f'**Blacklisted For:** {reason}'
-                                 f'\n\nYou can join the support server [here]({self.bot.support_invite}) '
-                                 f'if you feel this is a mistake.'
-                                 )
+                    title="⚠️ You are blacklisted from using this bot globally.",
+                    description=(
+                        f"**Blacklisted For:** {reason}"
+                        f"\n\nYou can join the support server [here]({self.bot.support_invite}) "
+                        f"if you feel this is a mistake."
+                    ),
                 )
                 try:
                     await ctx.author.send(embed=embed)
@@ -66,19 +73,17 @@ class CommandErrorHandler(commands.Cog):
                 finally:
                     return
 
+            return await ctx.send(embed=ctx.embed(description=str(error)))
+
+        if isinstance(error, discord.Forbidden):
             return await ctx.send(
                 embed=ctx.embed(
-                    description=str(error)
+                    description=f"I do not have the correct permissions for `{command}`"
                 )
             )
 
-        if isinstance(error, discord.Forbidden):
-            return await ctx.send(embed=ctx.embed(
-                description=f'I do not have the correct permissions for `{command}`'
-            ))
-
         if isinstance(error, commands.CommandOnCooldown):
-            retry = humanize.precisedelta(error.retry_after, minimum_unit='seconds')
+            retry = humanize.precisedelta(error.retry_after, minimum_unit="seconds")
             cd = error.cooldown
             embed = ctx.embed(
                 description=(
@@ -92,7 +97,11 @@ class CommandErrorHandler(commands.Cog):
 
         if isinstance(error, commands.NoPrivateMessage):
             try:
-                return await ctx.author.send(embed=ctx.embed(description=f"{ctx.invoked_with} cannot be used in DM's"))
+                return await ctx.author.send(
+                    embed=ctx.embed(
+                        description=f"{ctx.invoked_with} cannot be used in DM's"
+                    )
+                )
             except discord.HTTPException:
                 pass
 
@@ -101,14 +110,16 @@ class CommandErrorHandler(commands.Cog):
             return await ctx.send(
                 embed=ctx.embed(
                     description=(
-                        f'`{errors[0]}` {errors[1]}\n'
-                        f'You can view the help for this command with `{ctx.clean_prefix}help` `{command}`'
+                        f"`{errors[0]}` {errors[1]}\n"
+                        f"You can view the help for this command with `{ctx.clean_prefix}help` `{command}`"
                     )
                 )
             )
 
         if isinstance(error, commands.DisabledCommand):
-            return await ctx.send(embed=ctx.embed(description=f'`{command}` has been disabled.'))
+            return await ctx.send(
+                embed=ctx.embed(description=f"`{command}` has been disabled.")
+            )
 
         if isinstance(error, commands.BadArgument):
             return await ctx.send(embed=ctx.embed(title=str(error)))
@@ -131,12 +142,17 @@ class CommandErrorHandler(commands.Cog):
             f"User: {ctx.author.name} ({ctx.author.id})\n"
             f"Jump URL: {ctx.message.jump_url}"
         )
-        embed = ctx.embed(title='AN ERROR OCCURED', url=await ctx.mystbin(pretty_traceback) + '.py', description=desc)
-        await self.bot.error_webhook.send(f"```py\n{''.join(formatted)}```", embed=embed)
+        embed = ctx.embed(
+            title="AN ERROR OCCURED",
+            url=await ctx.mystbin(pretty_traceback) + ".py",
+            description=desc,
+        )
+        await self.bot.error_webhook.send(
+            f"```py\n{''.join(formatted)}```", embed=embed
+        )
 
         await ctx.send(
-            f"Oops, an error occured. Here's some info on it:"
-            f"```py\n{error}\n```"
+            f"Oops, an error occured. Here's some info on it:" f"```py\n{error}\n```"
         )
 
 

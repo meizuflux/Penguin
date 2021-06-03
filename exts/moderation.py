@@ -29,10 +29,14 @@ class Target(commands.Converter):
             return user
 
         if user.top_role >= ctx.me.top_role:
-            raise commands.BadArgument("This members top role is higher than or equal to my top role.")
+            raise commands.BadArgument(
+                "This members top role is higher than or equal to my top role."
+            )
 
         if user.top_role >= ctx.author.top_role:
-            raise commands.BadArgument("This members top role is higher than or equal to your top role.")
+            raise commands.BadArgument(
+                "This members top role is higher than or equal to your top role."
+            )
 
         if user == ctx.author:
             raise commands.BadArgument(f"You can't {ctx.invoked_with} yourself.")
@@ -41,7 +45,9 @@ class Target(commands.Converter):
             raise commands.BadArgument("The bot can't take action against itself.")
 
         if user == ctx.guild.owner:
-            raise commands.BadArgument(f"You can't {ctx.invoked_with} the server owner.")
+            raise commands.BadArgument(
+                f"You can't {ctx.invoked_with} the server owner."
+            )
         return user
 
 
@@ -56,7 +62,8 @@ class Reason(commands.Converter):
 
 
 def get_reason(ctx, argument):
-    if not argument: argument = "No reason."
+    if not argument:
+        argument = "No reason."
     default = f"{str(ctx.author)}: {argument}"
 
     if len(default) > 500:
@@ -76,7 +83,9 @@ class Moderation(commands.Cog):
     async def kick(self, ctx, member: Target, *, reason=None):
         reason = get_reason(ctx, reason)
         with contextlib.suppress((discord.Forbidden, discord.HTTPException)):
-            await member.send(f"You have been kicked from **{ctx.guild.name}**.\n**{reason}**")
+            await member.send(
+                f"You have been kicked from **{ctx.guild.name}**.\n**{reason}**"
+            )
         await ctx.guild.kick(member, reason=reason)
         await ctx.message.add_reaction("<:check:314349398811475968>")
 
@@ -87,7 +96,9 @@ class Moderation(commands.Cog):
     async def ban(self, ctx, member: Target, *, reason=None):
         reason = get_reason(ctx, reason)
         with contextlib.suppress((discord.Forbidden, discord.HTTPException)):
-            await member.send(f"You have been banned from **{ctx.guild.name}**.\n**{reason}**")
+            await member.send(
+                f"You have been banned from **{ctx.guild.name}**.\n**{reason}**"
+            )
         await ctx.guild.ban(member, reason=reason)
         await ctx.message.add_reaction("<:check:314349398811475968>")
 
@@ -98,7 +109,9 @@ class Moderation(commands.Cog):
     async def softban(self, ctx, member: Target, *, reason=None):
         reason = get_reason(ctx, reason)
         with contextlib.suppress((discord.Forbidden, discord.HTTPException)):
-            await member.send(f"You have been soft banned from **{ctx.guild.name}**.\n**{reason}**")
+            await member.send(
+                f"You have been soft banned from **{ctx.guild.name}**.\n**{reason}**"
+            )
         await ctx.guild.ban(member, reason=reason)
         await ctx.guild.unban(member, reason=f"Softban by {ctx.author}")
         await ctx.message.add_reaction("<:check:314349398811475968>")
@@ -118,14 +131,20 @@ class Moderation(commands.Cog):
         try:
             deleted = await ctx.channel.purge(limit=limit, check=check)
         except discord.HTTPException as e:
-            return await ctx.send(embed=ctx.embed(title='Looks like Discord is having some issues.', description=e))
-        await ctx.send(embed=ctx.embed(title=f"Successfully deleted {len(deleted)} messages"))
+            return await ctx.send(
+                embed=ctx.embed(
+                    title="Looks like Discord is having some issues.", description=e
+                )
+            )
+        await ctx.send(
+            embed=ctx.embed(title=f"Successfully deleted {len(deleted)} messages")
+        )
 
     @_remove.command()
     async def messages(self, ctx, limit=100):
         await self.do_remove(ctx, limit, lambda p: True)
 
-    @_remove.command(aliases=['member'])
+    @_remove.command(aliases=["member"])
     async def user(self, ctx, user: discord.Member, limit=100):
         await self.do_remove(ctx, limit, lambda m: m.author == user)
 

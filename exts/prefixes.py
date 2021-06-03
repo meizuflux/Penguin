@@ -33,7 +33,9 @@ class Prefixes(commands.Cog):
     @mng_gld()
     async def add(self, ctx, prefix):
         if prefix in self.bot.prefixes[ctx.guild.id]:
-            return await ctx.send(embed=ctx.embed(description="This is already a prefix."))
+            return await ctx.send(
+                embed=ctx.embed(description="This is already a prefix.")
+            )
 
         sql = (
             "INSERT INTO prefixes(guild_id,prefix) "
@@ -49,11 +51,10 @@ class Prefixes(commands.Cog):
     @mng_gld()
     async def remove(self, ctx, prefix):
         if prefix not in self.bot.prefixes[ctx.guild.id]:
-            return await ctx.send(embed=ctx.embed(description="Invalid prefix provided."))
-        sql = (
-            "DELETE FROM prefixes "
-            "WHERE guild_id = $1 AND prefix = $2"
-        )
+            return await ctx.send(
+                embed=ctx.embed(description="Invalid prefix provided.")
+            )
+        sql = "DELETE FROM prefixes " "WHERE guild_id = $1 AND prefix = $2"
         await self.bot.db.execute(sql, ctx.guild.id, prefix)
         self.bot.prefixes[ctx.guild.id].remove(prefix)
         await ctx.send(embed=ctx.embed(description=f"Removed `{prefix}`"))
@@ -62,9 +63,12 @@ class Prefixes(commands.Cog):
     @mng_gld()
     async def edit(self, ctx, prefix):
         """Edits the prefix being used to invoke the command."""
-        if str(ctx.prefix).strip().replace('!', '') == self.bot.user.mention:
-            return await ctx.send(embed=ctx.embed(
-                description="You can't edit this. You can add a new prefix, but you can't delete the mention as a prefix."))
+        if str(ctx.prefix).strip().replace("!", "") == self.bot.user.mention:
+            return await ctx.send(
+                embed=ctx.embed(
+                    description="You can't edit this. You can add a new prefix, but you can't delete the mention as a prefix."
+                )
+            )
         insertion_sql = (
             "INSERT INTO prefixes (guild_id, prefix) "
             "VALUES ($1, $2) ON CONFLICT (guild_id, prefix) DO UPDATE SET prefix = $2"
@@ -72,14 +76,18 @@ class Prefixes(commands.Cog):
         await self.bot.db.execute(insertion_sql, ctx.guild.id, prefix)
         self.bot.prefixes[ctx.guild.id].remove(ctx.prefix)
         self.bot.prefixes[ctx.guild.id].append(prefix)
-        await ctx.send(embed=ctx.embed(description=f"Edited `{ctx.prefix}` to `{prefix}`"))
+        await ctx.send(
+            embed=ctx.embed(description=f"Edited `{ctx.prefix}` to `{prefix}`")
+        )
 
     @prefix.command()
     async def all(self, ctx):
         """View the prefixes on this server."""
         prefixes = '"\n"'.join(self.bot.prefixes[ctx.guild.id])
-        embed = ctx.embed(title=f"{ctx.plural('Prefix(s)', len(self.bot.prefixes[ctx.guild.id]))} on {ctx.guild.name}",
-                          description=f'```yaml\n"{prefixes}"```')
+        embed = ctx.embed(
+            title=f"{ctx.plural('Prefix(s)', len(self.bot.prefixes[ctx.guild.id]))} on {ctx.guild.name}",
+            description=f'```yaml\n"{prefixes}"```',
+        )
         await ctx.send(embed=embed)
 
 

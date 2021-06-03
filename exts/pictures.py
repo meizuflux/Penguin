@@ -19,7 +19,7 @@ import random
 
 from discord.ext import commands
 
-WAIFU_URL = 'https://waifu.pics/api/sfw/'
+WAIFU_URL = "https://waifu.pics/api/sfw/"
 PURRBOT_URL = "https://purrbot.site/api"
 
 
@@ -30,12 +30,12 @@ class Pictures(commands.Cog):
     async def send_waifu(self, ctx, category):
         async with self.bot.session.get(WAIFU_URL + category) as resp:
             waifu = await resp.json()
-        await ctx.send(embed=ctx.embed().set_image(url=waifu.get('url')))
+        await ctx.send(embed=ctx.embed().set_image(url=waifu.get("url")))
 
     async def send_purr(self, ctx, endpoint):
         async with self.bot.session.get(PURRBOT_URL + endpoint) as resp:
             purr = await resp.json()
-        await ctx.send(embed=ctx.embed().set_image(url=purr.get('link')))
+        await ctx.send(embed=ctx.embed().set_image(url=purr.get("link")))
 
     @commands.command()
     async def neko(self, ctx):
@@ -156,7 +156,7 @@ class Pictures(commands.Cog):
     @commands.command()
     async def eevee(self, ctx):
         """Sends a random picture of Eevee."""
-        types = ['gif', 'img']
+        types = ["gif", "img"]
         await self.send_purr(ctx, f"/img/sfw/eevee/{random.choice(types)}")
 
     @commands.command()
@@ -197,7 +197,7 @@ class Pictures(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Pictures(bot))
-    cog = bot.get_cog('Pictures')
+    cog = bot.get_cog("Pictures")
     for command in cog.get_commands():
         if not command.help:
             command.help = f"Sends a {command.qualified_name}."

@@ -1,8 +1,21 @@
 import random
 
-suits = ('Hearts', 'Diamonds', 'Spades', 'Clubs')
-values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'Jack': 10,
-          'Queen': 10, 'King': 10, 'Ace': 11}
+suits = ("Hearts", "Diamonds", "Spades", "Clubs")
+values = {
+    "2": 2,
+    "3": 3,
+    "4": 4,
+    "5": 5,
+    "6": 6,
+    "7": 7,
+    "8": 8,
+    "9": 9,
+    "10": 10,
+    "Jack": 10,
+    "Queen": 10,
+    "King": 10,
+    "Ace": 11,
+}
 
 playing = True
 
@@ -42,7 +55,7 @@ class Hand:
     def add_card(self, card):
         self.cards.append(card)
         self.value += values[card.rank]
-        if card.rank == 'Ace':
+        if card.rank == "Ace":
             self.aces += 1
 
     def adjust_for_ace(self):

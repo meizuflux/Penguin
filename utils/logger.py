@@ -19,20 +19,23 @@ import logging
 # Here's the repo link: https://github.com/platform-discord/travis-bott/blob/master/utils/logger.py#L22
 class Formatter(logging.Formatter):
     """Logging Formatter that adds colors"""
+
     grey = "\x1b[38m"
     green = "\x1b[32m"
     yellow = "\x1b[33m"
     red = "\x1b[31m"
     bold_red = "\x1b[31;1m"
     reset = "\x1b[0m"
-    _format = "%(levelname)s (%(name)s) |:| %(message)s |:| %(pathname)s LINE %(lineno)d"
+    _format = (
+        "%(levelname)s (%(name)s) |:| %(message)s |:| %(pathname)s LINE %(lineno)d"
+    )
 
     FORMATS = {
         logging.DEBUG: grey + _format + reset,
         logging.INFO: green + _format + reset,
         logging.WARNING: yellow + _format + reset,
         logging.ERROR: red + _format + reset,
-        logging.CRITICAL: bold_red + _format + reset
+        logging.CRITICAL: bold_red + _format + reset,
     }
 
     def format(self, record: logging.LogRecord) -> str:

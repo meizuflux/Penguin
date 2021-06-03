@@ -24,12 +24,12 @@ import itertools
 
 # THIS CODE IS DANNY'S, NOT MINE. I AM SIMPLE MODIFYING IT TO FIT MY PURPOSE.
 
-_GroupByEntry = namedtuple('_GroupByEntry', 'key items')
+_GroupByEntry = namedtuple("_GroupByEntry", "key items")
 
 
 class HelpGroup(ListPageSource):
     def __init__(self, entries, *, per_page):
-        key = lambda c: getattr(c.cog, 'qualified_name', 'Unsorted')
+        key = lambda c: getattr(c.cog, "qualified_name", "Unsorted")
         self.__entries = sorted(entries, key=key)
         nested = []
         self.nested_per_page = per_page
@@ -40,9 +40,17 @@ class HelpGroup(ListPageSource):
             size = len(g)
 
             # Chunk the nested pages
-            nested.extend(_GroupByEntry(key=k, items=g[i:i + per_page]) for i in range(0, size, per_page))
+            nested.extend(
+                _GroupByEntry(key=k, items=g[i : i + per_page])
+                for i in range(0, size, per_page)
+            )
 
-        nested.insert(0, _GroupByEntry(key="Walrus Help Command", items="None, this is simply a placeholder"))
+        nested.insert(
+            0,
+            _GroupByEntry(
+                key="Walrus Help Command", items="None, this is simply a placeholder"
+            ),
+        )
         super().__init__(nested, per_page=1)
 
     async def get_page(self, page_number):

@@ -24,7 +24,7 @@ from discord.ext import commands
 from exts.polaroid_manipulation import get_image_url
 from utils.argparse import Arguments
 
-NEKOBOT_URL = 'https://nekobot.xyz/api'
+NEKOBOT_URL = "https://nekobot.xyz/api"
 
 
 class Images(commands.Cog):
@@ -45,35 +45,64 @@ class Images(commands.Cog):
         embed.set_image(url=f"attachment://{method}.png")
         await ctx.send(embed=embed, file=file)
 
-    async def do_neko_image(self, ctx, endpoint, key='message'):
+    async def do_neko_image(self, ctx, endpoint, key="message"):
         async with self.bot.session.get(NEKOBOT_URL + endpoint) as resp:
             data = await resp.json()
         embed = ctx.embed().set_image(url=data[key])
         await ctx.send(embed=embed)
 
     @commands.command()
-    async def amiajoke(self, ctx, *,
-                       image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
+    async def amiajoke(
+        self,
+        ctx,
+        *,
+        image: typing.Union[
+            discord.PartialEmoji, discord.Member, discord.User, str
+        ] = None,
+    ):
         """Creates a "Am I a joke?" meme."""
-        await self.do_alex_image(ctx, method="amiajoke", args=[await get_image_url(ctx, image)])
+        await self.do_alex_image(
+            ctx, method="amiajoke", args=[await get_image_url(ctx, image)]
+        )
 
     @commands.command()
-    async def animeface(self, ctx, *,
-                        image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
+    async def animeface(
+        self,
+        ctx,
+        *,
+        image: typing.Union[
+            discord.PartialEmoji, discord.Member, discord.User, str
+        ] = None,
+    ):
         """Detects the anime faces in an image.
         Best to provide one, avatars don't really work great."""
-        await self.do_neko_image(ctx, endpoint="/imagegen?type=animeface&image=%s" % await get_image_url(ctx, image))
+        await self.do_neko_image(
+            ctx,
+            endpoint="/imagegen?type=animeface&image=%s"
+            % await get_image_url(ctx, image),
+        )
 
     @commands.command()
     async def trumptweet(self, ctx, *, text: str):
         """Generates a tweet from the one and only."""
-        await self.do_neko_image(ctx, endpoint="/imagegen?type=trumptweet&text=%s" % text)
+        await self.do_neko_image(
+            ctx, endpoint="/imagegen?type=trumptweet&text=%s" % text
+        )
 
     @commands.command()
-    async def baguette(self, ctx, *,
-                       image: typing.Union[discord.PartialEmoji, discord.Member, discord.User, str] = None):
+    async def baguette(
+        self,
+        ctx,
+        *,
+        image: typing.Union[
+            discord.PartialEmoji, discord.Member, discord.User, str
+        ] = None,
+    ):
         """Generates a tweet from the one and only."""
-        await self.do_neko_image(ctx, endpoint="/imagegen?type=baguette&url=%s" % await get_image_url(ctx, image))
+        await self.do_neko_image(
+            ctx,
+            endpoint="/imagegen?type=baguette&url=%s" % await get_image_url(ctx, image),
+        )
 
     @commands.command()
     async def clyde(self, ctx, *, text):
@@ -84,31 +113,41 @@ class Images(commands.Cog):
     async def fakecat(self, ctx):
         async with self.bot.session.get("https://thiscatdoesnotexist.com/") as resp:
             file = discord.File(io.BytesIO(await resp.read()), "fake.png")
-        embed = ctx.embed(title='This cat does not exist.').set_image(url="attachment://fake.png")
+        embed = ctx.embed(title="This cat does not exist.").set_image(
+            url="attachment://fake.png"
+        )
         await ctx.send(embed=embed, file=file)
 
     @commands.command()
     async def fakeperson(self, ctx):
-        async with self.bot.session.get("https://thispersondoesnotexist.com/image") as resp:
+        async with self.bot.session.get(
+            "https://thispersondoesnotexist.com/image"
+        ) as resp:
             file = discord.File(io.BytesIO(await resp.read()), "fake.png")
-        embed = ctx.embed(title='This person does not exist.').set_image(url="attachment://fake.png")
+        embed = ctx.embed(title="This person does not exist.").set_image(
+            url="attachment://fake.png"
+        )
         await ctx.send(embed=embed, file=file)
 
     @commands.command()
     async def fakeartwork(self, ctx):
         async with self.bot.session.get("https://thisartworkdoesnotexist.com/") as resp:
             file = discord.File(io.BytesIO(await resp.read()), "fake.png")
-        embed = ctx.embed(title='This artwork does not exist.').set_image(url="attachment://fake.png")
+        embed = ctx.embed(title="This artwork does not exist.").set_image(
+            url="attachment://fake.png"
+        )
         await ctx.send(embed=embed, file=file)
 
     @commands.command()
     async def fakehorse(self, ctx):
         async with self.bot.session.get("https://thishorsedoesnotexist.com/") as resp:
             file = discord.File(io.BytesIO(await resp.read()), "fake.png")
-        embed = ctx.embed(title='This horse does not exist.').set_image(url="attachment://fake.png")
+        embed = ctx.embed(title="This horse does not exist.").set_image(
+            url="attachment://fake.png"
+        )
         await ctx.send(embed=embed, file=file)
 
-    @commands.command(usage='[text] [--dark|--light]')
+    @commands.command(usage="[text] [--dark|--light]")
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.guild)
     async def supreme(self, ctx, *, text: str = "supreme"):
         """
@@ -120,9 +159,9 @@ class Images(commands.Cog):
         if text in {"-d", "--dark", "-l", "--light"}:
             text = "supreme " + text
         parser = Arguments(allow_abbrev=False, add_help=False)
-        parser.add_argument('input', nargs="+", default=None)
-        parser.add_argument('-d', '--dark', action='store_true')
-        parser.add_argument('-l', '--light', action='store_true')
+        parser.add_argument("input", nargs="+", default=None)
+        parser.add_argument("-d", "--dark", action="store_true")
+        parser.add_argument("-l", "--light", action="store_true")
 
         try:
             args = parser.parse_args(text.split())
@@ -132,7 +171,9 @@ class Images(commands.Cog):
         if args.dark and args.light:
             return await ctx.send("You can't have both dark and light, sorry.")
 
-        await self.do_alex_image(ctx, method="supreme", args=[" ".join(args.input), args.dark, args.light])
+        await self.do_alex_image(
+            ctx, method="supreme", args=[" ".join(args.input), args.dark, args.light]
+        )
 
 
 def setup(bot):

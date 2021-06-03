@@ -11,7 +11,7 @@ import re
 def finder(text, collection, *, key=None, lazy=True):
     suggestions = []
     text = str(text)
-    pat = '.*?'.join(map(re.escape, text))
+    pat = ".*?".join(map(re.escape, text))
     regex = re.compile(pat, flags=re.IGNORECASE)
     for item in collection:
         to_search = key(item) if key else item

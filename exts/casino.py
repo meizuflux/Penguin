@@ -38,19 +38,20 @@ class Blackjack:
     async def show_some(self, message=None):
         dealer_card = self.dealer.cards[1]
 
-        embed = self.ctx.embed(description=f"Type `hit` to draw another card or `stand` to pass.",
-                               color=discord.Color.green())
+        embed = self.ctx.embed(
+            description=f"Type `hit` to draw another card or `stand` to pass.",
+            color=discord.Color.green(),
+        )
         embed.set_footer(text=f"Cards remaining: {len(self.deck.deck)}/52")
 
         embed.add_field(
             name="Your hand:",
-            value=self.list_cards(self.player.cards) + f"\n\nValue: **{self.player.value}**"
+            value=self.list_cards(self.player.cards)
+            + f"\n\nValue: **{self.player.value}**",
         )
         embed.add_field(
             name="Dealer's hand:",
-            value=f"<hidden>\n"
-                  f"{dealer_card}\n\n"
-                  f"Value: **{int(dealer_card)}**"
+            value=f"<hidden>\n" f"{dealer_card}\n\n" f"Value: **{int(dealer_card)}**",
         )
 
         if message:
@@ -101,11 +102,13 @@ class Blackjack:
         embed.set_footer(text=f"Cards remaining: {len(self.deck.deck)}/52")
         embed.add_field(
             name="Your hand:",
-            value=self.list_cards(self.player.cards) + f"\n\nValue: **{self.player.value}**"
+            value=self.list_cards(self.player.cards)
+            + f"\n\nValue: **{self.player.value}**",
         )
         embed.add_field(
             name="Dealer's hand:",
-            value=self.list_cards(self.dealer.cards) + f"\n\nValue: **{self.dealer.value}**"
+            value=self.list_cards(self.dealer.cards)
+            + f"\n\nValue: **{self.dealer.value}**",
         )
         await self.message.edit(content=None, embed=embed)
 
@@ -129,10 +132,13 @@ class Blackjack:
                 self.playing = False
                 break
             try:
-                message = await self.ctx.bot.wait_for("message",
-                                                      timeout=30,
-                                                      check=lambda
-                                                          m: m.author == self.ctx.author and m.channel == self.ctx.channel and m.content.lower() in valid_options)
+                message = await self.ctx.bot.wait_for(
+                    "message",
+                    timeout=30,
+                    check=lambda m: m.author == self.ctx.author
+                    and m.channel == self.ctx.channel
+                    and m.content.lower() in valid_options,
+                )
             except asyncio.TimeoutError:
                 choice = "stand"
                 if self.player.value < 17:
@@ -169,20 +175,20 @@ class Blackjack:
 
         await self.show_all()
 
-        query = (
-            """
+        query = """
             UPDATE economy SET cash = cash + $1
             WHERE guild_id = $2 AND user_id = $3
             """
+        await self.ctx.bot.db.execute(
+            query, self.bet.total, self.ctx.guild.id, self.ctx.author.id
         )
-        await self.ctx.bot.db.execute(query, self.bet.total, self.ctx.guild.id, self.ctx.author.id)
 
 
 class Casino(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(aliases=['bj'])
+    @commands.command(aliases=["bj"])
     async def blackjack(self, ctx, bet: str):
         """Play a game of blackjack.
         If you do not respond, the bot will choose hit if your value is under 17, and hit otherwise.
@@ -191,12 +197,10 @@ class Casino(commands.Cog):
             `bet`: The bet you want to play. This takes from your wallet."""
         cash, _ = await get_stats(ctx, ctx.author.id)
         amount = get_number(bet, cash)
-        query = (
-            """
+        query = """
             UPDATE economy SET cash = cash - $1
             WHERE guild_id = $2 AND user_id = $3
             """
-        )
         await self.bot.db.execute(query, amount, ctx.guild.id, ctx.author.id)
 
         bj = Blackjack(ctx, amount)
@@ -220,12 +224,10 @@ class Casino(commands.Cog):
             total = -amount
             result = f"😥 No match. **${total}**"
 
-        query = (
-            """
+        query = """
             UPDATE economy SET cash = cash + $1
             WHERE guild_id = $2 AND user_id = $3
             """
-        )
         await self.bot.db.execute(query, total, ctx.guild.id, ctx.author.id)
         await ctx.send(embed=ctx.embed(description=f"{' '.join(e)}\n\n{result}"))
 
