@@ -4,3 +4,7 @@
 
 why would you want to make this seriously
 
+this bot is not meant for deployment by anyone but me. you can try, but it will be a pain.
+
+I'm gonna do a rewrite eventually but it's uh... a major project
+
