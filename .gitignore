@@ -2,6 +2,7 @@
 config.json
 config.py
 config.toml
+config.yml
 
 #misc
 facts.json

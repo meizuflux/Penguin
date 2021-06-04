@@ -9,6 +9,5 @@ discord-flags
 git+https://github.com/Rapptz/discord-ext-menus
 polaroid
 pillow
-pytessaract
 tabulate
 toml

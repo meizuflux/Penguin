@@ -53,12 +53,12 @@ class Images(commands.Cog):
 
     @commands.command()
     async def amiajoke(
-        self,
-        ctx,
-        *,
-        image: typing.Union[
-            discord.PartialEmoji, discord.Member, discord.User, str
-        ] = None,
+            self,
+            ctx,
+            *,
+            image: typing.Union[
+                discord.PartialEmoji, discord.Member, discord.User, str
+            ] = None,
     ):
         """Creates a "Am I a joke?" meme."""
         await self.do_alex_image(
@@ -67,19 +67,19 @@ class Images(commands.Cog):
 
     @commands.command()
     async def animeface(
-        self,
-        ctx,
-        *,
-        image: typing.Union[
-            discord.PartialEmoji, discord.Member, discord.User, str
-        ] = None,
+            self,
+            ctx,
+            *,
+            image: typing.Union[
+                discord.PartialEmoji, discord.Member, discord.User, str
+            ] = None,
     ):
         """Detects the anime faces in an image.
         Best to provide one, avatars don't really work great."""
         await self.do_neko_image(
             ctx,
             endpoint="/imagegen?type=animeface&image=%s"
-            % await get_image_url(ctx, image),
+                     % await get_image_url(ctx, image),
         )
 
     @commands.command()
@@ -90,14 +90,10 @@ class Images(commands.Cog):
         )
 
     @commands.command()
-    async def baguette(
-        self,
-        ctx,
-        *,
-        image: typing.Union[
-            discord.PartialEmoji, discord.Member, discord.User, str
-        ] = None,
-    ):
+    async def baguette(self, ctx, *,
+                       image: typing.Union[
+                           discord.PartialEmoji, discord.Member, discord.User, str
+                       ] = None):
         """Generates a tweet from the one and only."""
         await self.do_neko_image(
             ctx,
@@ -121,7 +117,7 @@ class Images(commands.Cog):
     @commands.command()
     async def fakeperson(self, ctx):
         async with self.bot.session.get(
-            "https://thispersondoesnotexist.com/image"
+                "https://thispersondoesnotexist.com/image"
         ) as resp:
             file = discord.File(io.BytesIO(await resp.read()), "fake.png")
         embed = ctx.embed(title="This person does not exist.").set_image(
